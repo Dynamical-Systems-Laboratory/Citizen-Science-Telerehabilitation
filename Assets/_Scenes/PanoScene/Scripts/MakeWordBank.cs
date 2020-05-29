@@ -13,7 +13,7 @@ public class MakeWordBank : MonoBehaviour {
     //Using the final wordbank Roni gave me:
     public EventSystem eventS;
     public ClickAction eventListener; //**
-    public FalconPointer fpointer;
+    //public FalconPointer fpointer;
 
     public TextAsset tagsText;
 	private List<GameObject> tagGameObjects;
@@ -246,7 +246,7 @@ public class MakeWordBank : MonoBehaviour {
 		focusor.SetActive(false);
 
 		falconHelper = GameObject.FindGameObjectWithTag ("FalconHelper");
-		state = GameObject.Find("Canvas").GetComponent<StateManager>();
+		state = GameObject.Find("Canvas").GetComponent<StateManager>(); //state of game**
 		tutorialArrow = GameObject.Find ("TutorialArrow");
 		secondTutorialArrow = GameObject.Find ("SecondTutorialArrow");
 		secondTutorialArrow.SetActive (false);
@@ -270,7 +270,7 @@ public class MakeWordBank : MonoBehaviour {
 		for (int i = 0; i < imageMaterials.Length; i++) {
 			imageMaterials [i] = imageMaterialsToDragIn [i];
 		}
-		tagsRemainingText = GameObject.FindGameObjectWithTag ("TagsRemainingText").GetComponent<Text>();
+		tagsRemainingText = GameObject.FindGameObjectWithTag ("TagsRemainingText").GetComponent<Text>(); // remaining tags**
 
         tagGameObjects = new List<GameObject>();
         foreach (Transform child in transform)
@@ -356,6 +356,12 @@ public class MakeWordBank : MonoBehaviour {
     // Update is called once per frame
     void Update(/*EventSystem eventSystem*/)
     {
+
+        if (Input.GetAxis("Horizontal") != 0 && stepOfTutorial > 12) //temp horizontal movement?
+        {
+            StateManager.cursorAdd.x = Input.GetAxis("Horizontal") * .003f;
+        }
+
         //To add:
         //Survey,
         //Beginning ppt slides
@@ -853,11 +859,12 @@ public class MakeWordBank : MonoBehaviour {
                     StateManager.moveCameraL = true;
                     StateManager.moveCameraR = true;
                     */
-                foreach (GameObject tag in tagGameObjects)
+                foreach (GameObject tag in tagGameObjects) //making sure tags stay on equal z axis'
                 {
                     Vector3 newPos = new Vector3(tag.transform.position.x, tag.transform.position.y, 0f);
                     tag.transform.Translate(newPos * Time.deltaTime);
                 }
+
                 helpTextContainer.SetActive(true);
                 focusor.transform.localPosition = new Vector3(208.12f, -235f, -271.39f); //transforming black thing (literally making the user focus on something)
                 focusor.transform.localScale = new Vector3(10.8f, 4.4f, 3f);
@@ -905,12 +912,7 @@ public class MakeWordBank : MonoBehaviour {
                     stepOfTutorial = 12;
                 }
                 */
-                //where is state from
 
-                if (Input.GetAxis("Horizontal") != 0) //temp horizontal movement?
-                {
-                    StateManager.cursorAdd.x = Input.GetAxis("Horizontal") * .003f;
-                }
                 //Debug.Log("Click: " + ClickAction.state.getSelected() + ", " + eventListener);
                 //Debug.Log("System: " + EventSystem.current + ", " + eventS);
 
@@ -923,29 +925,33 @@ public class MakeWordBank : MonoBehaviour {
                 //    GameObject obj = GameObject.FindGameObjectsWithTag(newTag.getText()).transform.position;
                 //}
 
-                Debug.Log(tagGameObjects[0].name + ": " + tagGameObjects[0].transform.position);
+                //debug statements to find position of object vs. center per tag (name)
+                //  GetComponent<Renderer>().bounds.center
+                /*Debug.Log(tagGameObjects[0].name + ": " + tagGameObjects[0].transform.position);
                 Debug.Log(tagGameObjects[1].name + ": " + tagGameObjects[1].transform.position);
                 Debug.Log(tagGameObjects[2].name + ": " + tagGameObjects[2].transform.position);
-                Debug.Log(tagGameObjects[3].name + ": " + tagGameObjects[3].transform.position);
-
+                Debug.Log(tagGameObjects[3].name + ": " + tagGameObjects[3].transform.position);*/
                 if (Input.GetKey(KeyCode.N))
                 {
                     float shortDist = 1000000f;
                     foreach (GameObject tag in tagGameObjects) //mathf.abs
                     {
-                        float newMin = Mathf.Abs( Vector3.Distance(state.getCursorPosition(), tag.transform.position) );
-                        Debug.Log("Searching Distances : " + newMin);
-                        if (newMin < shortDist)
+                        Vector3 cursMod = state.getCursorPosition() * StateManager.cursorPosMod; //added modifications to cursor
+                        cursMod += new Vector3(0f, 2f, 0.1f);
+                        float newMin = (cursMod - tag.transform.position).magnitude; //distancel (Vector3.Distance())
+                        //newMin = Mathf.Abs(newMin); //absolute value
+                        //Debug.Log(tag.name + " Distance : " + newMin);
+                        if (newMin < shortDist && cursMod.y > tag.transform.position.y)
                         {
                             shortDist = newMin;
                             toClick = tag;
                         }
                     }
-                    Debug.Log("Min Dist: " + shortDist + ", " + toClick.name);
+                    //Debug.Log("Min Dist: " + shortDist + ", " + toClick.name);
 
-                    if (shortDist < 105.889f && Input.GetKey(KeyCode.M))
+                    if (shortDist < 14f)
                     {
-                        Debug.Log("Object Clicked: " + toClick.name);
+                        //Debug.Log("Object Clicked: " + toClick.name);
                         //state.setSelected(toClick);
                         eventListener.OnPointerClick(toClick);
                     }
@@ -988,15 +994,13 @@ public class MakeWordBank : MonoBehaviour {
             }
             else if (stepOfTutorial == 16)
             {
-                Debug.Log("Got to next step " + stepOfTutorial);
-                if (Input.GetAxis("Horizontal") != 0) //temp horizontal movement?
-                {
-                    StateManager.cursorAdd.x = Input.GetAxis("Horizontal") * .003f;
-                }
+                Debug.Log("Object Clicked: " + state.getSelected().name);
+
+
 
                 if (Input.GetKey(KeyCode.B))
                 {
-                    state.setSelected(null);
+                    eventListener.OnPointerClick();
                 }
 
                     if (state.getSelected() == null)

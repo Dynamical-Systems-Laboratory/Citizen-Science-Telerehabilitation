@@ -17,7 +17,11 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 	public static GameObject cursorSphere; // Falcon cursor
 	public static List<GameObject> trashedTags;
 
+	public static GameObject tagCopy;
+
     public Material tagMaterial;
+
+    public static bool tagIsFollowing = false;
 
     public void Awake()
     {
@@ -34,27 +38,45 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		trashedTags = new List<GameObject> ();
     }
 
+    /* Clicking Logic:
+     * * if the click action is called AND a tag is within a certain distance/location parameters relative to the cursor AND there is not another tag already selected it is clicked
+     * * * on click, the tag's text turns red and the tag is moved to the present location of the cursor
+     * if there is an object held AND...
+     * * if the click action is called again AND the cursor is on the canvus, the text goes back to black and the tag is anchored to the image, and a new instance of the tag is put back in the original locations
+     * * if the click action is called AND the cursor is within a certain distance of a different tag, the tag is put back in its original location and the next tag is selected
+     * * if the click action is called again AND the cursor is over the trash can the tag goes into the trash (smaller tags are displayed under the trash)
+     *
+     * if words are in trash add a new word to the list of tags
+     * later -> implement button functionality for moving onto another image and quitting the game
+     * */
+
+
 	//This method is only needed when the user has clicked a tag, and the instantiated GameObject tag needs to follow the cursor:
 	public void Update() {
-		if (cursorTag != null) {
-			try {
-				//cursorTag.transform.localPosition = new Vector3(state.getCursorPosition().x, state.getCursorPosition().y, 100.25f);
-			//= new Vector3 (state.getCursorPosition().x, state.getCursorPosition().y, canvas.transform.position.z - 0.5f);
-			cursorTag.transform.localScale = new Vector3(-1f, 1f, 0.001f);
-			Vector2 pos;
-			RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform, Camera.current.WorldToScreenPoint(state.getCursorPosition()), Camera.current, out pos);
-			cursorTag.transform.position = canvas.transform.TransformPoint(pos) + Vector3.back * -0.25f;
-			cursorTag.transform.LookAt(cursorTag.transform.position + Vector3.back * cursorTag.transform.position.z);
-			}
-			catch (Exception e)
-			{}
-		}
+		//if (cursorTag != null) {
+		//	try {
+		//		//cursorTag.transform.localPosition = new Vector3(state.getCursorPosition().x, state.getCursorPosition().y, 100.25f);
+		//	//= new Vector3 (state.getCursorPosition().x, state.getCursorPosition().y, canvas.transform.position.z - 0.5f);
+		//	cursorTag.transform.localScale = new Vector3(-1f, 1f, 0.001f);
+		//	Vector2 pos;
+		//	RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform, Camera.current.WorldToScreenPoint(state.getCursorPosition()), Camera.current, out pos);
+		//	cursorTag.transform.position = canvas.transform.TransformPoint(pos) + Vector3.back * -0.25f;
+		//	cursorTag.transform.LookAt(cursorTag.transform.position + Vector3.back * cursorTag.transform.position.z);
+		//	}
+		//	catch (Exception e)
+		//	{}
+		//}
 
 		if (MakeWordBank.stepOfTutorial == 11 && trashedTags.Count != 0) {
 			for (int i = 0; i < trashedTags.Count; i++) {
 				Destroy (trashedTags [i]);
 			}
 			trashedTags.Clear();
+		}
+
+		if (tagIsFollowing)
+		{
+			state.getSelected().transform.position = state.getCursorPosition();
 		}
 	}
 
@@ -262,78 +284,51 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
             }
         }
     }
-	public void OnPointerClick(GameObject objectClicked)
+
+	public void OnPointerClick(GameObject objectClicked = null) //same method but takes in game obj
 	{
-		Debug.Log("Clicked: " + objectClicked.tag);
+		Debug.Log("Clicked/Unclicked: " + objectClicked.tag);
 
-		if (objectClicked.tag == "Tag") // A tag was pressed
+        if (objectClicked == null && state.getSelected() != null)
+        {
+			state.getSelected().GetComponent<Text>().color = Color.black;
+			tagIsFollowing = false;
+			//if over trash
+			//if over a different tag
+			//else
+
+		}
+
+		else if (objectClicked.tag == "Tag" && state.getSelected() == null) // A tag was pressed
 		{
-			/*
-			if (MakeWordBank.inTutorial && MakeWordBank.stepOfTutorial != 4 && MakeWordBank.stepOfTutorial != 8)
-            {
-                return;
-            }
-			if (MakeWordBank.stepOfTutorial == 8 && MakeWordBank.timeSpentOnStep8 <= 0.25f) {
-				return; //prevents glitch
-			}
-            
-			if (objectClicked.GetComponentInChildren<Text> ().color == Color.red) {
-				return; //Prevents trasher from clicking on a tag the tagger has selected in multiplayer
-			}
-            if (objectClicked.GetComponent<Text>() != null && objectClicked.GetComponent<Text>().color == Color.red)
-            {
-                return;
-            }
-            */
+			//Debug.Log(objectClicked.name); // Name of the object
 
-			Debug.Log(objectClicked.name); // Name of the object
-			GameObject currentTag = state.getSelected();
+			tagCopy = Instantiate(objectClicked);
+			state.setSelected(tagCopy);
 
-			if (currentTag != null && currentTag.GetComponent<Text>() != null)
-			{
-				currentTag.GetComponent<Text>().color = Color.black; // Reset the color of the previously selected tag
-			}
-			state.setSelected(objectClicked);
+			tagCopy.GetComponentInChildren<Text>().color = Color.red; //changes clicked tag's text color to red
 
-			//if (MakeWordBank.trasherPanel.transform.localPosition.y >= 3000) { //If the player doesn't have a panel blocking putting tags on the image:
-			objectClicked.GetComponentInChildren<Text>().color = Color.red;
+			tagIsFollowing = true;
+
 			for (int i = 0; i < MakeWordBank.tags.Length; i++)
 			{
-				if (objectClicked.GetComponentInChildren<Text>().text.Equals(MakeWordBank.tags[i].getText()))
-				{
+				if (tagCopy.GetComponentInChildren<Text>().text.Equals(MakeWordBank.tags[i].getText()))
+				{//if a tag's text equals the selected tag's text, make sure its not changing color
 					MakeWordBank.tags[i].isChangingColor = false;
 				}
 			}
-			//}
-
-			if (cursorTag != null)
-			{
-				Destroy(cursorTag);
-			}
-
-			//Make tag that follows cursor:
-			cursorTag = Instantiate(state.getSelected().transform.parent.gameObject, canvas.transform);
-			cursorTag.transform.LookAt(Vector3.zero);
-			//cursorTag.transform.Rotate (new Vector3 (0f, 0f, -3f));
-			cursorTag.layer = 5; //UI Layer
-			if (cursorSphere != null)
-			{
-				cursorSphere.GetComponent<MeshRenderer>().enabled = false;
-			}
-			//cursorTag.name = currentTag.GetComponent<Text> ().name;
-			//cursorTag.transform.localScale = new Vector3 (8.8f, 3.188f, 0.001f);
-		}
-		else if (objectClicked.tag == "QuitButton" && !MakeWordBank.inTutorial) // Quit button clicked by falcon
+        }
+        //cases where the user is not holding anything but is not clicking a tag
+		else if (state.getSelected() == null && objectClicked.tag == "QuitButton") // Quit button clicked
 		{
 			QuitGameScript.TaskOnClick();
 		}
-		else if (objectClicked.tag == "NextButton" && !MakeWordBank.inTutorial && !MakeWordBank.inPracticeLevel) // Next button clicked
+		else if (state.getSelected() == null && objectClicked.tag == "NextButton") // Next button clicked
 		{
 			MakeWordBank.nextImage();
 		}
-		else if (objectClicked.tag == "Bin") // The bin was pressed, so we move the tag to the bin
+		else if (state.getSelected() == null && objectClicked.tag == "Bin") // The bin was pressed, so we move the tag to the bin
 		{
-			Debug.Log("Bin Clicked");
 			GameObject currentTag = state.getSelected();
 			if (currentTag != null)
 			{

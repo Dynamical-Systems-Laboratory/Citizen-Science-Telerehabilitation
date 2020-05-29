@@ -63,7 +63,7 @@ public class PlayerScript : NetworkBehaviour {
 
 				if (finishedWaiting) { //Playing the game:
 					//Tell client (trasher) when the tagger is holding a tag:
-					if (ClickAction.state.getSelected ()) {
+					if (ClickAction.state.getSelected()) { //if state as a selected (aka not null)
 						nameLastTag = ClickAction.state.getSelected ().GetComponent<Text> ().text;
 						holdingTag = ClickAction.state.getSelected ().GetComponent<Text> ().name;
 						RpcTellClientTagIsHeld (nameLastTag);

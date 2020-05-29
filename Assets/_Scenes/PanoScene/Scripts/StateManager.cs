@@ -90,6 +90,7 @@ public class StateManager : MonoBehaviour {
     public static bool allSystemsGo = false; // variable that enables all movement functionality for camera and cursor upon update()
     public static Vector3 cursorAdd = new Vector3(0f, 0f, 0f);
 
+    public static float cursorPosMod = 239.36f;
 
     public GameObject getSelected()
     {
@@ -448,7 +449,7 @@ public class StateManager : MonoBehaviour {
         {
             cursorPos = nextCursorPos;
         }
-        Vector3 outCursor = cursorPos * 180;
+        Vector3 outCursor = cursorPos * cursorPosMod; //modifier to match tag vals (was 180)
         Debug.Log("Cursor Info: " + outCursor);
 
         Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
