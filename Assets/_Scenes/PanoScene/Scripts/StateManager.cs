@@ -89,6 +89,7 @@ public class StateManager : MonoBehaviour {
     public static bool makeCamReset = false; // resets the position of the camera to the middle of the image/starting pt.
     public static bool allSystemsGo = false; // variable that enables all movement functionality for camera and cursor upon update()
     public static Vector3 cursorAdd = new Vector3(0f, 0f, 0f);
+    public static Vector3 cameraAdd = new Vector3(0f, 0f, 0f);
 
     public static float cursorPosMod = 239.36f;
 
@@ -345,6 +346,9 @@ public class StateManager : MonoBehaviour {
             }
         }
 
+        nextCameraPos += cameraAdd;
+        cameraAdd = new Vector3(0f, 0f, 0f);
+
         // Enforce a boundary on rotating up/down
         if (nextCameraPos.x > 270f && nextCameraPos.x < 280f)
         {
@@ -405,7 +409,7 @@ public class StateManager : MonoBehaviour {
             //    nextCursorPos = new Vector3(cursorPos.x, (cursorPos.y + (0.0005f + 0.02f * avgDistance_y)), 0.418f);
             //    cursorU = true;
             //}
-            nextCursorPos = new Vector3(cursorPos.x, cursorPos.y + Input.GetAxis("Vertical")* keyspeed, 0.418f);
+            nextCursorPos = new Vector3(cursorPos.x, cursorPos.y + Input.GetAxis("Vertical") * keyspeed, 0.418f);
             cursorU = true;
         }
 
@@ -416,11 +420,12 @@ public class StateManager : MonoBehaviour {
             //    nextCursorPos = new Vector3(cursorPos.x, (cursorPos.y - (0.0005f + 0.02f * avgDistance_y)), 0.418f);
             //    cursorD = true;
             //}
-            nextCursorPos = new Vector3(cursorPos.x, cursorPos.y + Input.GetAxis("Vertical")* keyspeed, 0.418f);
+            nextCursorPos = new Vector3(cursorPos.x, cursorPos.y + Input.GetAxis("Vertical") * keyspeed, 0.418f);
             cursorD = true;
         }
 
         nextCursorPos += cursorAdd;
+        cursorAdd = new Vector3(0f,0f,0f);
 
         //Cursor cannot move past screen borders (bondaries)
         if (nextCursorPos.x > MakeWordBank.rightBound)
@@ -450,10 +455,10 @@ public class StateManager : MonoBehaviour {
             cursorPos = nextCursorPos;
         }
         Vector3 outCursor = cursorPos * cursorPosMod; //modifier to match tag vals (was 180)
-        Debug.Log("Cursor Info: " + outCursor);
+        Debug.Log("Cursor Info: " + cursorPos + ", Modified Cursor Info: " + outCursor);
 
-        Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
-        Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);
+        //Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
+        //Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);
 
         buttons = 0;
         if (kinectReady)

@@ -149,6 +149,7 @@ public class SimpleTutorial : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log("In Simple Tutorial: " + inSimpleTutorial);
         if (inSimpleTutorial)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
@@ -1515,7 +1516,6 @@ public class SimpleTutorial : MonoBehaviour
             else if (step == 35)
             {
                 canvas.SetActive(false);
-                inSimpleTutorial = false;
                 mainCamera.SetActive(true);
                 UICamera.SetActive(true);
                 videoCamera.SetActive(false);
@@ -1534,6 +1534,8 @@ public class SimpleTutorial : MonoBehaviour
                 StateManager.makeCursReset = true;
 
                 MakeWordBank.inTutorial = true;
+
+                inSimpleTutorial = false; //stops simple tutorial
             }
         }
     }
