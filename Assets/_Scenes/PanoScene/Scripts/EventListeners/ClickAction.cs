@@ -91,8 +91,9 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			state.getSelected().transform.position = new
               Vector3(state.getCursorPosition().x * StateManager.cursorPosMod, state.getCursorPosition().y * StateManager.cursorPosMod, initTagPos.z);
 		}
-		Debug.Log("Bin Distance: " + ((state.getCursorPosition()*StateManager.cursorPosMod) - trashy.transform.position).magnitude + ", isBy? " + isByTrash(state.getCursorPosition()));
-	}
+        Debug.Log("Bin Distance: " + ((state.getCursorPosition() * StateManager.cursorPosMod) - trashy.transform.position).magnitude +
+            ", isBy? " + isByTrash(state.getCursorPosition()) + ", Count: " + trashedTags.Count);
+    }
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -306,77 +307,66 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
         //    objectClicked = background;
         //}
 
-        if (objectClicked == null && isByTrash(state.getCursorPosition())) //if the cursor is over the trash, the obj we are looking at is the trash
-        {
+        if (objectClicked == null && isByTrash(state.getCursorPosition()) && state.getSelected() != null)
+		{//if the cursor is over the trash, the obj we are looking at is the trash
 			objectClicked = trashy;
         }
 
         if (objectClicked == null && state.getSelected() != null) // tag was placed  *******
         {
-            state.getSelected().GetComponentInChildren<Text>().color = Color.black; //instead of just GetComponent
+            state.getSelected().GetComponentInChildren<Text>().color = Color.blue; //instead of just GetComponent
+			state.getSelected().transform.localScale -= new Vector3(0.6f, 0.6f, 0f); //scale it down to 40% size (not thickness tho)
             tagIsFollowing = false;
             state.setSelected(null);
         }
 
 		else if (objectClicked.tag == "Bin" && state.getSelected() != null) // The bin was pressed, so we move the tag to the bin
 		{
-			if (MakeWordBank.sequenceIndex < MakeWordBank.wordBank.Count)
-			{
-				if (!MakeWordBank.inPracticeLevel && !MakeWordBank.inTutorial)
-				{
-					DataCollector.AddTag(state.getSelected().transform.parent.name);
-				}
-				GameObject newTrashedTag = Instantiate(state.getSelected().transform.parent.gameObject, canvas.transform); //trash icon
-				newTrashedTag.transform.localScale = new Vector3(newTrashedTag.transform.localScale.x / 2.0f, newTrashedTag.transform.localScale.y / 2.5f, newTrashedTag.transform.localScale.z);
-				newTrashedTag.transform.GetChild(0).GetComponent<Text>().color = Color.black;
-				newTrashedTag.transform.tag = "TrashedTag";
-				newTrashedTag.transform.GetChild(0).tag = "TrashedTag";
-				int verticalBump = 0;
-				if (trashedTags.Count >= 14 && trashedTags.Count < 28) //not sure what trashedTags.Count is
-				{
-					verticalBump = 168; //To prevent overlap
-				}
-				else if (trashedTags.Count >= 28 && trashedTags.Count < 42)
-				{
-					verticalBump = 606;
-				}
-				else if (trashedTags.Count >= 42)
-				{
-					verticalBump = 774;
-				}
+			//if (!MakeWordBank.inPracticeLevel && !MakeWordBank.inTutorial)
+			//{
+			//	DataCollector.AddTag(state.getSelected().transform.parent.name);
+			//}
+			state.getSelected().GetComponentInChildren<Text>().color = Color.black; //transform tag
+			state.getSelected().transform.localScale -= new Vector3(0.85f, 0.85f, 0f);
+			state.getSelected().transform.tag = "TrashedTag";
+			state.getSelected().transform.GetChild(0).tag = "TrashedTag";
 
-				int horizontalBump = 0;
-				if (trashedTags.Count >= 14 && trashedTags.Count < 28)
-				{
-					horizontalBump = 50;
-				}
-				else if (trashedTags.Count >= 28 && trashedTags.Count < 42)
-				{
-					horizontalBump = 0;
-				}
-				else if (trashedTags.Count >= 42)
-				{
-					horizontalBump = 50;
-				}
-				newTrashedTag.transform.position = canvas.transform.TransformPoint(new Vector2(320 + horizontalBump, -55 - 12 * trashedTags.Count + verticalBump)) + Vector3.back * -0.25f;
-				newTrashedTag.transform.LookAt(newTrashedTag.transform.position + Vector3.back * newTrashedTag.transform.position.z * -1);
-				trashedTags.Add(newTrashedTag);
-				trashedTags[trashedTags.Count - 1].layer = 5; //UI
-			}
-			MakeWordBank.replaceTag(state.getSelected(), false); //check over
-			state.getSelected().GetComponentInChildren<Text>().color = Color.clear;
-			state.getSelected().GetComponent<Text>().color = Color.clear; // Reset the color of the previously selected tag
-			if (cursorTag != null)
-			{
-				Destroy(cursorTag);
-				cursorTag = null;
-				if (cursorSphere != null)
-				{
-					cursorSphere.GetComponent<MeshRenderer>().enabled = true;
-				}
-			}
-			state.setSelected(null);
-			tagIsFollowing = false;
+			//int verticalBump = 0;
+			//if (trashedTags.Count >= 14 && trashedTags.Count < 28) //not sure what trashedTags.Count is
+			//{
+			//	verticalBump = 168; //To prevent overlap
+			//}
+			//else if (trashedTags.Count >= 28 && trashedTags.Count < 42)
+			//{
+			//	verticalBump = 606;
+			//}
+			//else if (trashedTags.Count >= 42)
+			//{
+			//	verticalBump = 774;
+			//}
+
+			//int horizontalBump = 0;
+			//if (trashedTags.Count >= 14 && trashedTags.Count < 28)
+			//{
+			//	horizontalBump = 50;
+			//}
+			//else if (trashedTags.Count >= 28 && trashedTags.Count < 42)
+			//{
+			//	horizontalBump = 0;
+			//}
+			//else if (trashedTags.Count >= 42)
+			//{
+			//	horizontalBump = 50;
+			//}
+			//newTrashedTag.transform.position = canvas.transform.TransformPoint(new Vector2(320 + horizontalBump, -55 - 12 * trashedTags.Count + verticalBump)) + Vector3.back * -0.25f;
+			state.getSelected().transform.position = new Vector3(trashy.transform.position.x, trashy.transform.position.y - 11.9f - (7f*trashedTags.Count), trashy.transform.position.z);
+			state.getSelected().transform.LookAt(state.getSelected().transform.position + Vector3.back * state.getSelected().transform.position.z * -1);
+            trashedTags.Add(state.getSelected());
+			//trashedTags[trashedTags.Count - 1].layer = 5; //UI
+
+			//MakeWordBank.replaceTag(state.getSelected(), false); //check over
+            state.setSelected(null);
+            tagIsFollowing = false;
 		}
 
 		else if (objectClicked.tag == "Tag" && state.getSelected() == null) // A tag was pressed  *******

@@ -1049,7 +1049,7 @@ public class MakeWordBank : MonoBehaviour {
 
                 if (timer > 1f)
                 {
-                    if (StateManager.falconButtons[1] == true && prevClick == false)
+                    if ((StateManager.falconButtons[1] == true && prevClick == false) || moveOn())
                     {
                         tutorialText.text = "Press the next image button to go to the next image\n" +
                         "(Push the rod forward to continue)";
