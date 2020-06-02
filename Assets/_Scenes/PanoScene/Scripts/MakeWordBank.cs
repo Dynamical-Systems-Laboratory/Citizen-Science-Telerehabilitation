@@ -380,24 +380,57 @@ public class MakeWordBank : MonoBehaviour {
             {
                 StateManager.cursorAdd.y = Input.GetAxis("Vertical") * .003f;
             }
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+            if (Input.GetKey(KeyCode.A))
             {
-                StateManager.cameraAdd.x = Input.GetAxis("Horizontal") * .003f;
+                StateManager.cameraAdd.x = -.6f;
             }
-            if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S))
+            if (Input.GetKey(KeyCode.D))
             {
-                StateManager.cameraAdd.y = Input.GetAxis("Vertical") * .003f;
+                StateManager.cameraAdd.x = .6f;
+            }
+            if (Input.GetKey(KeyCode.W))
+            {
+                StateManager.cameraAdd.y = .5f;
+            }
+            if (Input.GetKey(KeyCode.S))
+            {
+                StateManager.cameraAdd.y = -.5f;
             }
             //CLICKING
             if (Input.GetKey(KeyCode.B)) //select
             {
-                findObjClick();
+                if (ClickAction.isCloseToNext())
+                {
+                    eventListener.OnPointerClick(ClickAction.nextButton);
+                }
+                else if (ClickAction.isCloseToQuit())
+                {
+                    eventListener.OnPointerClick(ClickAction.quitButton);
+                }
+                else
+                {
+                    findObjClick();
+                }
             }
             if (Input.GetKey(KeyCode.N) && state.getSelected() != null) //deselect
-            {
-                eventListener.OnPointerClick();
+            { // (.1f is the bounds of the screen where the cursor is on the image side)
+                if (state.getCursorPosition().x < .1f) //placing on image canvas
+                {
+                    eventListener.OnPointerClick();
+                }
+                else if (ClickAction.isByTrash(state.getCursorPosition())) //trashing
+                {
+                    eventListener.OnPointerClick();
+                    newTag(ClickAction.initTagPos);
+                }
             }
         }
+        //if (stepOfTutorial >= 22)
+        //{
+        //    mainCamera.SetActive(true);
+        //    videoCamera.SetActive(false);
+        //    VP1.SetActive(false);
+        //}
         
         //To add:
         //Survey,
@@ -1053,7 +1086,7 @@ public class MakeWordBank : MonoBehaviour {
                     {
                         tutorialText.text = "Press the next image button to go to the next image\n" +
                         "(Push the rod forward to continue)";
-                        focusor.transform.localPosition = new Vector3(360f, 215f, 0f);
+                        focusor.transform.localPosition = new Vector3(360f, 215f, 0f); //edit focusor * (offset)
                         focusor.transform.localScale = new Vector3(15f, 1.65f, 3f);
                         //helpTextPanel.GetComponent<RectTransform>().sizeDelta
                         //= new Vector2(500, 60);
@@ -1073,7 +1106,7 @@ public class MakeWordBank : MonoBehaviour {
 
                 if (timer > 1f)
                 {
-                    if (StateManager.falconButtons[1] == true && prevClick == false)
+                    if (StateManager.falconButtons[1] == true && prevClick == false || moveOn())
                     {
                         focusor.transform.localPosition = new Vector3(158f, -200f, -350f);
                         focusor.transform.localScale = new Vector3(6.5f, 1.1f, 3f);
@@ -1096,7 +1129,7 @@ public class MakeWordBank : MonoBehaviour {
                 timer += Time.deltaTime;
                 if (timer > 1f)
                 {
-                    if (StateManager.falconButtons[1] == true && prevClick == false)
+                    if (StateManager.falconButtons[1] == true && prevClick == false || moveOn())
                     {
                         step22proceed = true;
                     }
@@ -1126,7 +1159,7 @@ public class MakeWordBank : MonoBehaviour {
                 timer += Time.deltaTime;
                 if (timer > 1f)
                 {
-                    if ((StateManager.falconButtons[1] == true && prevClick == false) || Input.GetKey(KeyCode.B)) //b to continue
+                    if ((StateManager.falconButtons[1] == true && prevClick == false) || moveOn()) //b to continue
                     { //Change for falcon
                       //END OF TUTORIAL:
                         timer = 0f;
@@ -1221,6 +1254,10 @@ public class MakeWordBank : MonoBehaviour {
     }
     public void findObjClick() //basically call clicking method
     {//theory --> go through index of tags and find the tag with the shortest distance to the cursor location to a certain val
+
+        //if not holding an object and close to either the quit or the next image button do that
+        //create get rid of object button
+
         float shortDist = 1000000f;
         foreach (GameObject tag in tagGameObjects) //mathf.abs
         {
@@ -1237,11 +1274,42 @@ public class MakeWordBank : MonoBehaviour {
         Debug.Log("Closest Object" + toClick.name + ", Tag: " + toClick.tag + ", Distance: " + shortDist);
         if (shortDist < 18.6f)// && Input.GetKey(KeyCode.G))
         {
+            if (state.getSelected() != null)
+            {
+                Destroy(state.getSelected());
+                state.setSelected(null);
+            }
             //Debug.Log("Object Clicked: " + toClick.name);
             //state.setSelected(toClick);
             eventListener.OnPointerClick(toClick);
             toClick = null;
         }
+    }
+
+    public void newTag(Vector3 location) //takes in the location of the tag u need replacing
+    {
+        //replace previous tag
+        float minDist = 100000f;
+        GameObject toReplace = tagGameObjects[0];
+        foreach (GameObject tag in tagGameObjects) //find obj
+        {
+            float newDist = (location - tag.transform.position).magnitude;
+            if (newDist < minDist)
+            {
+                minDist = newDist;
+                toReplace = tag;
+            }
+        }
+        Debug.Log("Replacing " + toReplace.name + " to " + tutorialWords[tutorialWordsIndex]);
+        for (int i = 0; i < tags.Length; i++) //replace tag text
+        {
+            if (toReplace.name == tags[i].getText())
+            {
+                tags[i].setText(tutorialWords[tutorialWordsIndex]);
+            }
+        }
+        toReplace.name = tutorialWords[tutorialWordsIndex]; //replace name of tagtag
+        tutorialWordsIndex++;
     }
 
     public static void nextImage()

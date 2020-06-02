@@ -1796,7 +1796,7 @@ GameObject:
   - component: {fileID: 129364700}
   - component: {fileID: 129364703}
   m_Layer: 5
-  m_Name: Button
+  m_Name: QuitButtonButton
   m_TagString: QuitButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3954,7 +3954,7 @@ GameObject:
   - component: {fileID: 274016214}
   - component: {fileID: 274016213}
   m_Layer: 5
-  m_Name: Button
+  m_Name: NextButtonButton
   m_TagString: NextButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

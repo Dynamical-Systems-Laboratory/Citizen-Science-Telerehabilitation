@@ -30,11 +30,14 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 	public static GameObject trashy;
     public static float maxBinDist = 8f; //distance of cursor from bin after cursorPosMod factor
 
+	public static GameObject nextButton;
+	public static GameObject quitButton;
+
 	public void Awake()
     {
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
 
-        tagPrefab = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		tagPrefab = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		tagPrefab.name = "TagPrefab"; //So it can be destroyed
         tagPrefab.transform.localScale = Vector3.zero;
 
@@ -45,6 +48,8 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		trashedTags = new List<GameObject> ();
 		background = GameObject.Find("Image"); // backgreound for the location where to place an image
         trashy = GameObject.Find("Bin");
+		nextButton = GameObject.Find("NextButtonButton");
+		quitButton = GameObject.Find("QuitButtonButton");
     }
 
     /* Clicking Logic:
@@ -91,9 +96,11 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			state.getSelected().transform.position = new
               Vector3(state.getCursorPosition().x * StateManager.cursorPosMod, state.getCursorPosition().y * StateManager.cursorPosMod, initTagPos.z);
 		}
-        Debug.Log("Bin Distance: " + ((state.getCursorPosition() * StateManager.cursorPosMod) - trashy.transform.position).magnitude +
-            ", isBy? " + isByTrash(state.getCursorPosition()) + ", Count: " + trashedTags.Count);
-    }
+		//Debug.Log("Bin Distance: " + ((state.getCursorPosition() * StateManager.cursorPosMod) - trashy.transform.position).magnitude +
+		//    ", isBy? " + isByTrash(state.getCursorPosition()) + ", Count: " + trashedTags.Count);
+		Debug.Log("Next Button Distance: " + ((state.getCursorPosition() * StateManager.cursorPosMod) - nextButton.transform.position).magnitude);
+		Debug.Log("Quit Button Distance: " + ((state.getCursorPosition() * StateManager.cursorPosMod) - quitButton.transform.position).magnitude);
+	}
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -331,33 +338,6 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			state.getSelected().transform.tag = "TrashedTag";
 			state.getSelected().transform.GetChild(0).tag = "TrashedTag";
 
-			//int verticalBump = 0;
-			//if (trashedTags.Count >= 14 && trashedTags.Count < 28) //not sure what trashedTags.Count is
-			//{
-			//	verticalBump = 168; //To prevent overlap
-			//}
-			//else if (trashedTags.Count >= 28 && trashedTags.Count < 42)
-			//{
-			//	verticalBump = 606;
-			//}
-			//else if (trashedTags.Count >= 42)
-			//{
-			//	verticalBump = 774;
-			//}
-
-			//int horizontalBump = 0;
-			//if (trashedTags.Count >= 14 && trashedTags.Count < 28)
-			//{
-			//	horizontalBump = 50;
-			//}
-			//else if (trashedTags.Count >= 28 && trashedTags.Count < 42)
-			//{
-			//	horizontalBump = 0;
-			//}
-			//else if (trashedTags.Count >= 42)
-			//{
-			//	horizontalBump = 50;
-			//}
 			//newTrashedTag.transform.position = canvas.transform.TransformPoint(new Vector2(320 + horizontalBump, -55 - 12 * trashedTags.Count + verticalBump)) + Vector3.back * -0.25f;
 			state.getSelected().transform.position = new Vector3(trashy.transform.position.x, trashy.transform.position.y - 11.9f - (7f*trashedTags.Count), trashy.transform.position.z);
 			state.getSelected().transform.LookAt(state.getSelected().transform.position + Vector3.back * state.getSelected().transform.position.z * -1);
@@ -365,7 +345,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			//trashedTags[trashedTags.Count - 1].layer = 5; //UI
 
 			//MakeWordBank.replaceTag(state.getSelected(), false); //check over
-            state.setSelected(null);
+			state.setSelected(null);
             tagIsFollowing = false;
 		}
 
@@ -389,12 +369,12 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 				}
 			}
         }
-        //cases where the user is not holding anything but is not clicking a tag
-		else if (state.getSelected() == null && objectClicked.tag == "QuitButton") // Quit button clicked
+
+		else if (objectClicked.tag == "QuitButton") // Quit button clicked
 		{
 			QuitGameScript.TaskOnClick();
 		}
-		else if (state.getSelected() == null && objectClicked.tag == "NextButton") // Next button clicked
+		else if (objectClicked.tag == "NextButton") // Next button clicked
 		{
 			MakeWordBank.nextImage();
 		}
@@ -462,7 +442,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
         throw new NotImplementedException();
     }
 
-	private static bool isByTrash(Vector3 pos) //helper method for finding trash can
+	public static bool isByTrash(Vector3 pos) //helper method for finding trash can
 	{
 		pos *= StateManager.cursorPosMod;
         if (pos.x > 57.8f && pos.x < 77.5f && pos.y > -9.8f && pos.y < 18.4f)
@@ -473,6 +453,22 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
         {
 			return true;
         }
+		return false;
+	}
+    public static bool isCloseToQuit()
+    {
+        if (((state.getCursorPosition() * StateManager.cursorPosMod) - quitButton.transform.position).magnitude < 15.1f)
+        {
+            return true;
+        }
+		return false;
+    }
+	public static bool isCloseToNext()
+	{
+		if (((state.getCursorPosition() *StateManager.cursorPosMod) - nextButton.transform.position).magnitude < 15.1f)
+		{
+			return true;
+		}
 		return false;
 	}
 }

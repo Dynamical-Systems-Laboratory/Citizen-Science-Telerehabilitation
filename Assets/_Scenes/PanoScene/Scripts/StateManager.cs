@@ -156,12 +156,15 @@ public class StateManager : MonoBehaviour {
             moveCameraR = true;
             moveCameraU = true;
             moveCameraD = true;
-        }
-        if (Kinect.LHandPos.x != 0 || Kinect.LHandPos.y != 0 || Kinect.LHandPos.z != 0)
-        {
-            kinectReady = true;
-        }
+            makeCursReset = false;
+            makeCamReset = false;
 
+        }
+        //if (Kinect.LHandPos.x != 0 || Kinect.LHandPos.y != 0 || Kinect.LHandPos.z != 0)
+        //{
+        //    kinectReady = true;
+        //}
+        kinectReady = true;
         /*
         if (Math.Abs(Kinect.LHandPos.z - Kinect.LShoulderPos.z) < smallestLHdiff) {
             smallestLHdiff = Math.Abs(Kinect.LHandPos.z - Kinect.LShoulderPos.z);
@@ -200,50 +203,50 @@ public class StateManager : MonoBehaviour {
         falconButtons[1] = false;
         rodClicked = false;
 
-        LHandSpeed = (Kinect.LHandPos.z - prevLHand_z) / Time.deltaTime;
-        RHandSpeed = (Kinect.RHandPos.z - prevRHand_z) / Time.deltaTime;
-        LElbowSpeed = (Kinect.LElbowPos.y - prevLElbow_y) / Time.deltaTime;
-        RElbowSpeed = (Kinect.RElbowPos.y - prevRElbow_y) / Time.deltaTime;
+        //LHandSpeed = (Kinect.LHandPos.z - prevLHand_z) / Time.deltaTime;
+        //RHandSpeed = (Kinect.RHandPos.z - prevRHand_z) / Time.deltaTime;
+        //LElbowSpeed = (Kinect.LElbowPos.y - prevLElbow_y) / Time.deltaTime;
+        //RElbowSpeed = (Kinect.RElbowPos.y - prevRElbow_y) / Time.deltaTime;
 
         // If the user push the rod and then pull the rod OR pull the rod and then push the rod at a certain speed within 3.5 seconds, register a click
         //Change for calibration
-        if (speedInitializeTime < 3.5f)
-        {
-            speedInitializeTime += Time.deltaTime;
-            Tuple<float, float, float, float> speed = new Tuple<float, float, float, float>(LHandSpeed, RHandSpeed, LElbowSpeed, RElbowSpeed);
-            speeds.Add(speed);
-        }
-        else
-        {
-            for (int i = 0; i < speeds.Count; i++)
-            {
-                if ((Kinect.LShoulderPos.y > Kinect.LElbowPos.y) && (Kinect.LElbowPos.y < Kinect.LHandPos.y) 
-                    && (Kinect.RShoulderPos.y > Kinect.RElbowPos.y) && (Kinect.RElbowPos.y < Kinect.RHandPos.y)) 
-                {
-                    if (speeds[i].Item1 > 0.45 && LHandSpeed < -0.45 && speeds[i].Item2 > 0.45 && RHandSpeed < -0.45
-                    && speeds[i].Item3 < -0.09 && LElbowSpeed > 0.09 && speeds[i].Item4 < -0.09 && RElbowSpeed > 0.09)
-                    {
-                        falconButtons[1] = true;
-                        rodClicked = true;
-                    }
-                    else if (speeds[i].Item1 < -0.45 && LHandSpeed > 0.45 && speeds[i].Item2 < -0.45 && RHandSpeed > 0.45
-                        && speeds[i].Item3 > 0.09 && LElbowSpeed < -0.09 && speeds[i].Item4 > 0.09 && RElbowSpeed < -0.09)
-                    {
-                        falconButtons[1] = true;
-                        rodClicked = true;
-                    }
-                }
-            }
+        //if (speedInitializeTime < 3.5f)
+        //{
+        //    speedInitializeTime += Time.deltaTime;
+        //    Tuple<float, float, float, float> speed = new Tuple<float, float, float, float>(LHandSpeed, RHandSpeed, LElbowSpeed, RElbowSpeed);
+        //    speeds.Add(speed);
+        //}
+        //else
+        //{
+        //    for (int i = 0; i < speeds.Count; i++)
+        //    {
+        //        if ((Kinect.LShoulderPos.y > Kinect.LElbowPos.y) && (Kinect.LElbowPos.y < Kinect.LHandPos.y) 
+        //            && (Kinect.RShoulderPos.y > Kinect.RElbowPos.y) && (Kinect.RElbowPos.y < Kinect.RHandPos.y)) 
+        //        {
+        //            if (speeds[i].Item1 > 0.45 && LHandSpeed < -0.45 && speeds[i].Item2 > 0.45 && RHandSpeed < -0.45
+        //            && speeds[i].Item3 < -0.09 && LElbowSpeed > 0.09 && speeds[i].Item4 < -0.09 && RElbowSpeed > 0.09)
+        //            {
+        //                falconButtons[1] = true;
+        //                rodClicked = true;
+        //            }
+        //            else if (speeds[i].Item1 < -0.45 && LHandSpeed > 0.45 && speeds[i].Item2 < -0.45 && RHandSpeed > 0.45
+        //                && speeds[i].Item3 > 0.09 && LElbowSpeed < -0.09 && speeds[i].Item4 > 0.09 && RElbowSpeed < -0.09)
+        //            {
+        //                falconButtons[1] = true;
+        //                rodClicked = true;
+        //            }
+        //        }
+        //    }
 
-            for (int i = 0; i < speeds.Count - 1; i++)
-            {
-                speeds[i] = speeds[i + 1];
-            }
+        //    for (int i = 0; i < speeds.Count - 1; i++)
+        //    {
+        //        speeds[i] = speeds[i + 1];
+        //    }
 
-            Tuple<float, float, float, float> new_speed = new Tuple<float, float, float, float>(LHandSpeed, RHandSpeed, LElbowSpeed, RElbowSpeed);
+        //    Tuple<float, float, float, float> new_speed = new Tuple<float, float, float, float>(LHandSpeed, RHandSpeed, LElbowSpeed, RElbowSpeed);
 
-            speeds[speeds.Count - 1] = new_speed;
-        }
+        //    speeds[speeds.Count - 1] = new_speed;
+        //}
         if (Input.GetKey(KeyCode.B)) //new update - forwards and backwards
         {
             rodClicked = true;
@@ -264,10 +267,10 @@ public class StateManager : MonoBehaviour {
         pushCoolDown += Time.deltaTime;
         */
 
-        prevLElbow_y = Kinect.LElbowPos.y;
-        prevRElbow_y = Kinect.RElbowPos.y;
-        prevLHand_z = Kinect.LHandPos.z;
-        prevRHand_z = Kinect.RHandPos.z;
+        //prevLElbow_y = Kinect.LElbowPos.y;
+        //prevRElbow_y = Kinect.RElbowPos.y;
+        //prevLHand_z = Kinect.LHandPos.z;
+        //prevRHand_z = Kinect.RHandPos.z;
 
         cameraL = false;
         cameraR = false;
@@ -277,10 +280,10 @@ public class StateManager : MonoBehaviour {
         cameraUpCoolDown += Time.deltaTime;
         cameraDownCoolDown += Time.deltaTime;
 
-        if (!SimpleTutorial.inSimpleTutorial)
-        { //Allow camera to rotate in SimpleTutorial
-            falconButtons[0] = false ;
-        }
+        //if (!SimpleTutorial.inSimpleTutorial)
+        //{ //Allow camera to rotate in SimpleTutorial
+        //    falconButtons[0] = false ;
+        //}
 
         if (moveCameraL)
         {
@@ -371,8 +374,8 @@ public class StateManager : MonoBehaviour {
         Debug.Log("Camera Info: " + cameraPos);
 
 
-        avgDistance_x = Mathf.Abs(((Kinect.LHandPos.x - Kinect.LShoulderPos.x) + (Kinect.RHandPos.x - Kinect.RShoulderPos.x)) / 2);
-        avgDistance_y = Mathf.Abs(((Kinect.LHandPos.y - Kinect.LShoulderPos.y) + (Kinect.RHandPos.y - Kinect.RShoulderPos.y)) / 2);
+        //avgDistance_x = Mathf.Abs(((Kinect.LHandPos.x - Kinect.LShoulderPos.x) + (Kinect.RHandPos.x - Kinect.RShoulderPos.x)) / 2);
+        //avgDistance_y = Mathf.Abs(((Kinect.LHandPos.y - Kinect.LShoulderPos.y) + (Kinect.RHandPos.y - Kinect.RShoulderPos.y)) / 2);
 
         cursorL = false;
         cursorR = false;
