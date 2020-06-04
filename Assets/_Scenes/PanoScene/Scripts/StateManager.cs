@@ -93,6 +93,9 @@ public class StateManager : MonoBehaviour {
 
     public static float cursorPosMod = 239.36f;
 
+    public static GameObject mainCamera;
+    public bool cameraMoving;
+
     public GameObject getSelected()
     {
         return selected;
@@ -142,20 +145,21 @@ public class StateManager : MonoBehaviour {
         yield return new WaitForSeconds(5f);
         this.falconCursor = GameObject.Find("CursorSphere");
         this.falconCamera = GameObject.Find("CursorCamera").GetComponent<Camera>();
+        mainCamera = GameObject.Find("Main Camera");
     }
 
     private void Update()
     {
         if (allSystemsGo)
         {
-            moveCursorL = true; // cursors
-            moveCursorR = true;
-            moveCursorU = true;
-            moveCursorD = true;
-            moveCameraL = true; // cameras
-            moveCameraR = true;
-            moveCameraU = true;
-            moveCameraD = true;
+            //moveCursorL = true; // cursors
+            //moveCursorR = true;
+            //moveCursorU = true;
+            //moveCursorD = true;
+            //moveCameraL = true; // cameras
+            //moveCameraR = true;
+            //moveCameraU = true;
+            //moveCameraD = true;
             makeCursReset = false;
             makeCamReset = false;
 
@@ -349,18 +353,21 @@ public class StateManager : MonoBehaviour {
             }
         }
 
-        nextCameraPos += cameraAdd;
+        if (moveCameraL || moveCameraR || moveCameraU || moveCameraD)
+        {
+            nextCameraPos += cameraAdd;
+        }
         cameraAdd = new Vector3(0f, 0f, 0f);
 
         // Enforce a boundary on rotating up/down
-        if (nextCameraPos.x > 270f && nextCameraPos.x < 280f)
-        {
-            nextCameraPos.x = 280f;
-        }
-        else if (nextCameraPos.x > 35f && nextCameraPos.x < 90f)
-        {
-            nextCameraPos.x = 35f;
-        }
+        //if (nextCameraPos.x > 270f && nextCameraPos.x < 280f)
+        //{
+        //    nextCameraPos.x = 280f;
+        //}
+        //else if (nextCameraPos.x > 35f && nextCameraPos.x < 90f)
+        //{
+        //    nextCameraPos.x = 35f;
+        //}
 
         if (makeCamReset) //cam reset method
         {
@@ -369,11 +376,19 @@ public class StateManager : MonoBehaviour {
         }
         else
         {
-            cameraPos = nextCameraPos;
+            if (cameraMoving)
+            {
+                //mainCamera.transform.Rotate(new Vector3(0f, -nextCameraPos.x * Time.deltaTime, 0f)); // rotating
+                //mainCamera.transform.eulerAngles = new Vector3(nextCameraPos.y, nextCameraPos.x, 0f);
+                //mainCamera.transform.Rotate(new Vector3(-cameraPos.y, 0f, 0f)); // rotating
+                mainCamera.transform.Rotate(nextCameraPos * Time.deltaTime);
+                //cameraPos = new Vector3(0f, 0f, 0f);
+            }
+            //cameraPos = nextCameraPos;
         }
         Debug.Log("Camera Info: " + cameraPos);
-
-
+        
+        
         //avgDistance_x = Mathf.Abs(((Kinect.LHandPos.x - Kinect.LShoulderPos.x) + (Kinect.RHandPos.x - Kinect.RShoulderPos.x)) / 2);
         //avgDistance_y = Mathf.Abs(((Kinect.LHandPos.y - Kinect.LShoulderPos.y) + (Kinect.RHandPos.y - Kinect.RShoulderPos.y)) / 2);
 
@@ -382,7 +397,7 @@ public class StateManager : MonoBehaviour {
         cursorU = false;
         cursorD = false;
 
-        float keyspeed = 0.002f;
+        float keyspeed = 0.003f;
         if (moveCursorL)
         {
             //if ((Kinect.LHandPos.x - Kinect.LShoulderPos.x) < (SimpleTutorial.LHandLeftAverage * 0.4f) && (Kinect.RHandPos.x - Kinect.RShoulderPos.x) < (SimpleTutorial.RHandLeftAverage * 0.4f))
@@ -427,7 +442,10 @@ public class StateManager : MonoBehaviour {
             cursorD = true;
         }
 
-        nextCursorPos += cursorAdd;
+        if (moveCursorL || moveCursorR || moveCursorU || moveCursorD)
+        {
+            nextCursorPos += cursorAdd;
+        }
         cursorAdd = new Vector3(0f,0f,0f);
 
         //Cursor cannot move past screen borders (bondaries)
@@ -460,8 +478,8 @@ public class StateManager : MonoBehaviour {
         Vector3 outCursor = cursorPos * cursorPosMod; //modifier to match tag vals (was 180)
         Debug.Log("Cursor Info: " + cursorPos + ", Modified Cursor Info: " + outCursor);
 
-        //Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
-        //Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);
+        Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
+        Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);
 
         buttons = 0;
         if (kinectReady)

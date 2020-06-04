@@ -363,7 +363,7 @@ public class MakeWordBank : MonoBehaviour {
          * * arrow keys = cursor movement
          * * b = cursor select
          * * n = cursor deselect
-         * * wasd = camera movement
+         * * tfgh = camera movement
          * * v = progress
          * * m = drop object
          */
@@ -371,30 +371,52 @@ public class MakeWordBank : MonoBehaviour {
         if (stepOfTutorial >= 12)
         {
             StateManager.allSystemsGo = true;
+            StateManager.moveCursorL = true; // cursors
+            StateManager.moveCursorR = true;
+            StateManager.moveCursorU = true;
+            StateManager.moveCursorD = true;
+            StateManager.moveCameraL = true; // cameras
+            StateManager.moveCameraR = true;
+            StateManager.moveCameraU = true;
+            StateManager.moveCameraD = true;
             //MOVEMENT
-            if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow))
+            if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow)) //cursor
             {
-                StateManager.cursorAdd.x = Input.GetAxis("Horizontal") * .003f;
+                StateManager.moveCameraR = false;
+                StateManager.moveCameraL = false;
+                StateManager.moveCameraU = false;
+                StateManager.moveCameraD = false;
+                if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow))
+                {
+                    StateManager.cursorAdd.x = Input.GetAxis("Horizontal") * .003f;
+                }
+                if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
+                {
+                    StateManager.cursorAdd.y = Input.GetAxis("Vertical") * .003f;
+                }
             }
-            if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
+            else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)) //camera
             {
-                StateManager.cursorAdd.y = Input.GetAxis("Vertical") * .003f;
-            }
-            if (Input.GetKey(KeyCode.A))
-            {
-                StateManager.cameraAdd.x = -.6f;
-            }
-            if (Input.GetKey(KeyCode.D))
-            {
-                StateManager.cameraAdd.x = .6f;
-            }
-            if (Input.GetKey(KeyCode.W))
-            {
-                StateManager.cameraAdd.y = .5f;
-            }
-            if (Input.GetKey(KeyCode.S))
-            {
-                StateManager.cameraAdd.y = -.5f;
+                StateManager.moveCursorR = false;
+                StateManager.moveCursorL = false;
+                StateManager.moveCursorU = false;
+                StateManager.moveCursorD = false;
+                if (Input.GetKey(KeyCode.D))
+                {
+                    StateManager.cameraAdd.x = -.6f;
+                }
+                if (Input.GetKey(KeyCode.A))
+                {
+                    StateManager.cameraAdd.x = .6f;
+                }
+                if (Input.GetKey(KeyCode.W))
+                {
+                    StateManager.cameraAdd.y = .5f;
+                }
+                if (Input.GetKey(KeyCode.S))
+                {
+                    StateManager.cameraAdd.y = -.5f;
+                }
             }
             //CLICKING
             if (Input.GetKey(KeyCode.B)) //select
@@ -412,7 +434,7 @@ public class MakeWordBank : MonoBehaviour {
                     findObjClick();
                 }
             }
-            if (Input.GetKey(KeyCode.N) && state.getSelected() != null) //deselect
+            else if (Input.GetKey(KeyCode.N) && state.getSelected() != null) //deselect
             { // (.1f is the bounds of the screen where the cursor is on the image side)
                 if (state.getCursorPosition().x < .1f) //placing on image canvas
                 {
@@ -424,7 +446,7 @@ public class MakeWordBank : MonoBehaviour {
                     newTag(ClickAction.initTagPos);
                 }
             }
-            if (Input.GetKey(KeyCode.M) && state.getSelected() != null)
+            else if (Input.GetKey(KeyCode.M) && state.getSelected() != null)
             {
                 ClickAction.dropObject();
             }
@@ -434,7 +456,7 @@ public class MakeWordBank : MonoBehaviour {
             mainCamera.SetActive(true);
             //mainCamera.transform.localRotation = angle;
             //mainCamera.transform.Rotate(state.getCameraPosition());
-
+            state.cameraMoving = true;
             UICamera.SetActive(true);
             videoCamera.SetActive(false);
             //VP1.SetActive(false);

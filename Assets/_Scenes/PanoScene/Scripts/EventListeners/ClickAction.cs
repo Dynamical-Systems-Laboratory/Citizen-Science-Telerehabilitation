@@ -47,6 +47,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
         trashy = GameObject.Find("Bin");
 		nextButton = GameObject.Find("NextButtonButton");
 		quitButton = GameObject.Find("QuitButtonButton");
+		
     }
 
     /* Clicking Logic:
@@ -85,8 +86,8 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			trashedTags.Clear();
 		}
 
-		bool isNull = state.getSelected() == null;
-		Debug.Log("Selected Elem: " + state.getSelected() + ", isNull? " + isNull.ToString());
+		//bool isNull = state.getSelected() == null;
+		//Debug.Log("Selected Elem: " + state.getSelected() + ", isNull? " + isNull.ToString());
 
 		if (tagIsFollowing)
 		{
