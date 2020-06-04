@@ -364,8 +364,8 @@ public class MakeWordBank : MonoBehaviour {
          * * b = cursor select
          * * n = cursor deselect
          * * wasd = camera movement
-         * * V = progress
-         *
+         * * v = progress
+         * * m = drop object
          */
 
         if (stepOfTutorial >= 12)
@@ -424,14 +424,23 @@ public class MakeWordBank : MonoBehaviour {
                     newTag(ClickAction.initTagPos);
                 }
             }
+            if (Input.GetKey(KeyCode.M) && state.getSelected() != null)
+            {
+                ClickAction.dropObject();
+            }
         }
-        //if (stepOfTutorial >= 22)
-        //{
-        //    mainCamera.SetActive(true);
-        //    videoCamera.SetActive(false);
-        //    VP1.SetActive(false);
-        //}
-        
+        if (stepOfTutorial >= 22)
+        { //camera control?
+            mainCamera.SetActive(true);
+            //mainCamera.transform.localRotation = angle;
+            //mainCamera.transform.Rotate(state.getCameraPosition());
+
+            UICamera.SetActive(true);
+            videoCamera.SetActive(false);
+            //VP1.SetActive(false);
+            //VP5.SetActive(false);
+        }
+
         //To add:
         //Survey,
         //Beginning ppt slides
@@ -911,30 +920,28 @@ public class MakeWordBank : MonoBehaviour {
             }
             else if (stepOfTutorial == 13)
             {
-                /*
-                if (clickVP.isPlaying)
-                {
-                    startedPlaying = true;
-                }
+                //if (clickVP.isPlaying)
+                //{
+                //    startedPlaying = true;
+                //}
 
-                if (startedPlaying && (!clickVP.isPlaying))
-                {
-                    mainCamera.SetActive(true);
-                    UICamera.SetActive(true);
-                    videoCamera.SetActive(false);
-                    VP5.SetActive(false);
-                    startedPlaying = false;
-                    StateManager.moveCameraU = true;
-                    StateManager.moveCameraD = true;
-                    StateManager.moveCameraL = true;
-                    StateManager.moveCameraR = true;
-                    */
+                //if (startedPlaying && (!clickVP.isPlaying))
+                //{
+                mainCamera.SetActive(true);
+                UICamera.SetActive(true);
+                videoCamera.SetActive(false);
+                //VP5.SetActive(false);
+                startedPlaying = false;
+                StateManager.moveCameraU = true;
+                StateManager.moveCameraD = true;
+                StateManager.moveCameraL = true;
+                StateManager.moveCameraR = true;
+                    
                 foreach (GameObject tag in tagGameObjects) //making sure tags stay on equal z axis'
                 {
                     Vector3 newPos = new Vector3(tag.transform.position.x, tag.transform.position.y, 0f);
                     tag.transform.Translate(newPos * Time.deltaTime);
                 }
-
                 helpTextContainer.SetActive(true);
                 focusor.transform.localPosition = new Vector3(208.12f, -235f, -271.39f); //transforming black thing (literally making the user focus on something)
                 focusor.transform.localScale = new Vector3(10.8f, 4.4f, 3f);
@@ -1141,16 +1148,14 @@ public class MakeWordBank : MonoBehaviour {
                     focusor.SetActive(false);
                     helpTextContainer.SetActive(false);
                     welcomeScreen.SetActive(true);
+                    mainCamera.SetActive(true);
+                    UICamera.SetActive(true);
+                    videoCamera.SetActive(false);
+                    //VP1.SetActive(false);
+                    //VP5.SetActive(false);
                     welcomeText.text = "Now let's do a practice level" + "\n" +
                     "It will be just like a real level but data will not be collected" + "\n" + "(Push the rod forward to begin the practice level)";
-                    StateManager.moveCameraU = true;
-                    StateManager.moveCameraD = true;
-                    StateManager.moveCameraL = true;
-                    StateManager.moveCameraR = true;
-                    StateManager.moveCursorU = true;
-                    StateManager.moveCursorD = true;
-                    StateManager.moveCursorL = true;
-                    StateManager.moveCursorR = true;
+                    StateManager.allSystemsGo = true;
                     stepOfTutorial++;
                 }
             }
@@ -1289,7 +1294,7 @@ public class MakeWordBank : MonoBehaviour {
     public void newTag(Vector3 location) //takes in the location of the tag u need replacing
     {
         //replace previous tag
-        float minDist = 100000f;
+        float minDist = 1000000f;
         GameObject toReplace = tagGameObjects[0];
         foreach (GameObject tag in tagGameObjects) //find obj
         {
@@ -1300,16 +1305,28 @@ public class MakeWordBank : MonoBehaviour {
                 toReplace = tag;
             }
         }
-        Debug.Log("Replacing " + toReplace.name + " to " + tutorialWords[tutorialWordsIndex]);
+        string newName;
+        if (inTutorial)
+        {
+            newName = tutorialWords[tutorialWordsIndex];
+        }
+        else
+        {
+            newName = "placeholder";
+        }
+        Debug.Log("Replacing " + toReplace.name + " to " + newName);
         for (int i = 0; i < tags.Length; i++) //replace tag text
         {
             if (toReplace.name == tags[i].getText())
             {
-                tags[i].setText(tutorialWords[tutorialWordsIndex]);
+                tags[i].setText(newName); //replace tutorialWords with more
             }
         }
-        toReplace.name = tutorialWords[tutorialWordsIndex]; //replace name of tagtag
+        toReplace.name = newName; //replace name of tagtag
+
+        //if (inTutorial) {
         tutorialWordsIndex++;
+        //}
     }
 
     public static void nextImage()

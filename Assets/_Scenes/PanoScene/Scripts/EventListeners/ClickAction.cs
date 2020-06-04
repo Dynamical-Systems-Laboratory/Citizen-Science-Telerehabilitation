@@ -16,21 +16,18 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 	public static GameObject cursorTag; //Tag that follows cursor
 	public static GameObject cursorSphere; // Falcon cursor
 	public static List<GameObject> trashedTags; //representation of tags
+	public Material tagMaterial;
 
 	public static GameObject tagCopy;
 	public static Vector3 initTagPos;
-
-	public static GameObject background;
-
-    public Material tagMaterial;
+	public static GameObject background; //image ref
 
     public static bool tagIsFollowing = false;
-	public static Vector3 toPrint;
 
-	public static GameObject trashy;
+	public static GameObject trashy; //trash ref
     public static float maxBinDist = 8f; //distance of cursor from bin after cursorPosMod factor
 
-	public static GameObject nextButton;
+	public static GameObject nextButton; //button refs
 	public static GameObject quitButton;
 
 	public void Awake()
@@ -98,8 +95,8 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		}
 		//Debug.Log("Bin Distance: " + ((state.getCursorPosition() * StateManager.cursorPosMod) - trashy.transform.position).magnitude +
 		//    ", isBy? " + isByTrash(state.getCursorPosition()) + ", Count: " + trashedTags.Count);
-		Debug.Log("Next Button Distance: " + ((state.getCursorPosition() * StateManager.cursorPosMod) - nextButton.transform.position).magnitude);
-		Debug.Log("Quit Button Distance: " + ((state.getCursorPosition() * StateManager.cursorPosMod) - quitButton.transform.position).magnitude);
+		//Debug.Log("Next Button Distance: " + nextButton.transform.position);
+		//Debug.Log("Quit Button Distance: " + quitButton.transform.position);
 	}
 
     public void OnPointerClick(PointerEventData eventData)
@@ -423,7 +420,6 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		//	state.getSelected().transform.LookAt(Vector3.zero);
 		//	state.getSelected().GetComponentInChildren<Text>().color = Color.red;*
 
-		//	toPrint = state.getSelected().transform.position;
 		//	//get rid of the existing copy
 		//	Destroy(state.getSelected());*/
 		//	state.setSelected(null);
@@ -441,6 +437,14 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
     {
         throw new NotImplementedException();
     }
+    public static void dropObject()
+    {
+		Destroy(state.getSelected());
+		state.setSelected(null);
+		tagIsFollowing = false;
+		initTagPos = new Vector3(0f,0f,0f);
+		//tagCopy = null;
+	}
 
 	public static bool isByTrash(Vector3 pos) //helper method for finding trash can
 	{

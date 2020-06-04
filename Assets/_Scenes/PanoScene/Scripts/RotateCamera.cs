@@ -17,7 +17,6 @@ public class RotateCamera : MonoBehaviour
     private Rect cameraBounds;
 
 	private void Start() {
-		this.mousepos = Input.mousePosition; // Tracking the mouse position in case the controller isn't connected
 		this.zoom = 0f;
         buttons = new bool[] { false, false, false, false };
 
@@ -26,13 +25,14 @@ public class RotateCamera : MonoBehaviour
         cameraBounds = cam.GetComponent<Camera>().pixelRect;
 
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
+		this.mousepos = state.getCameraPosition();  // Tracking the mouse position in case the controller isn't connected
 
-        this.panning = false;
+		this.panning = false;
 	}
 
 	private void Update()
 	{
-        
+        //this.mousepos = state.getCameraPosition();   
         if (!state.isKinectReady()) // Not using the contoller, so mouse is fine
 		{
 			if (Input.mouseScrollDelta.y != 0f)
