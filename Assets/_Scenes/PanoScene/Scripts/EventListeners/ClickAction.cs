@@ -96,8 +96,8 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		}
 		//Debug.Log("Bin Distance: " + ((state.getCursorPosition() * StateManager.cursorPosMod) - trashy.transform.position).magnitude +
 		//    ", isBy? " + isByTrash(state.getCursorPosition()) + ", Count: " + trashedTags.Count);
-		Debug.Log("Next Button Distance: " + (nextButton.transform.position-state.getCursorPosition()).magnitude);
-		Debug.Log("Quit Button Distance: " + (quitButton.transform.position - state.getCursorPosition()).magnitude);
+		//Debug.Log("Next Button Distance: " + (nextButton.transform.position - state.getCursorPosition() * StateManager.cursorPosMod).magnitude + ", " + (nextButton.transform.position - state.getCursorPosition() * StateManager.cursorPosMod));
+		//Debug.Log("Quit Button Distance: " + (quitButton.transform.position - state.getCursorPosition() * StateManager.cursorPosMod).magnitude);
 	}
 
     public void OnPointerClick(PointerEventData eventData)
@@ -461,19 +461,29 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		return false;
 	}
     public static bool isCloseToQuit()
-    {
-        if (((state.getCursorPosition() * StateManager.cursorPosMod) - quitButton.transform.position).magnitude < 15.1f)
+	{ //state.getCursorPosition()*StateManager.cursorPosMod
+		Vector3 diff = (quitButton.transform.position - state.getCursorPosition() * StateManager.cursorPosMod);
+		if (diff.x > 5.5 || diff.x < -9.2)
         {
-            return true;
+			return false;
         }
-		return false;
+        if (diff.y > 16 || diff.y < -14.5)
+        {
+			return false;
+        }
+		return true;
     }
 	public static bool isCloseToNext()
 	{
-		if (((state.getCursorPosition() *StateManager.cursorPosMod) - nextButton.transform.position).magnitude < 15.1f)
+		Vector3 diff = (nextButton.transform.position - state.getCursorPosition() * StateManager.cursorPosMod);
+		if (diff.x > 5.5 || diff.x < -9.2)
 		{
-			return true;
+			return false;
 		}
-		return false;
+		if (diff.y > 16 || diff.y < -14.5)
+		{
+			return false;
+		}
+		return true;
 	}
 }
