@@ -96,8 +96,8 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		}
 		//Debug.Log("Bin Distance: " + ((state.getCursorPosition() * StateManager.cursorPosMod) - trashy.transform.position).magnitude +
 		//    ", isBy? " + isByTrash(state.getCursorPosition()) + ", Count: " + trashedTags.Count);
-		//Debug.Log("Next Button Distance: " + nextButton.transform.position);
-		//Debug.Log("Quit Button Distance: " + quitButton.transform.position);
+		Debug.Log("Next Button Distance: " + (nextButton.transform.position-state.getCursorPosition()).magnitude);
+		Debug.Log("Quit Button Distance: " + (quitButton.transform.position - state.getCursorPosition()).magnitude);
 	}
 
     public void OnPointerClick(PointerEventData eventData)

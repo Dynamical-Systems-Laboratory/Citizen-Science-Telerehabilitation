@@ -288,7 +288,7 @@ public class StateManager : MonoBehaviour {
         //{ //Allow camera to rotate in SimpleTutorial
         //    falconButtons[0] = false ;
         //}
-
+        nextCameraPos = cameraPos;
         if (moveCameraL)
         {
             //if (Kinect.RHandPos.y > Kinect.LHandPos.y && Kinect_Angle(Kinect.RHandPos.x, Kinect.RHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2) > (SimpleTutorial.angleLeftAverage * 0.4f))
@@ -299,7 +299,7 @@ public class StateManager : MonoBehaviour {
             //}
             if (Input.GetKey(KeyCode.A))
             {
-                nextCameraPos = new Vector3(cameraPos.x, (cameraPos.y - 0.5f), 0f);
+                nextCameraPos += new Vector3(0f, -0.5f, 0f);
                 cameraL = true;
             }
         }
@@ -315,7 +315,7 @@ public class StateManager : MonoBehaviour {
             //}
             if (Input.GetKey(KeyCode.D))
             {
-                nextCameraPos = new Vector3(cameraPos.x, (cameraPos.y + 0.5f), 0f);
+                nextCameraPos += new Vector3(0f, 0.5f, 0f);
                 cameraR = true;
             }
         }
@@ -331,7 +331,7 @@ public class StateManager : MonoBehaviour {
             //}
             if (Input.GetKey(KeyCode.W))
             {
-                nextCameraPos = new Vector3((cameraPos.x - .6f), cameraPos.y, 0f);
+                nextCameraPos += new Vector3(-.6f, 0f, 0f);
                 cameraU = true;
             }
         }
@@ -348,14 +348,14 @@ public class StateManager : MonoBehaviour {
             //}
             if (Input.GetKey(KeyCode.S))
             {
-                nextCameraPos = new Vector3((cameraPos.x + .6f), cameraPos.y, 0f);
+                nextCameraPos += new Vector3(.6f, 0f, 0f);
                 cameraD = true;
             }
         }
 
         if (moveCameraL || moveCameraR || moveCameraU || moveCameraD)
         {
-            nextCameraPos += cameraAdd;
+            nextCameraPos -= cameraAdd;
         }
         cameraAdd = new Vector3(0f, 0f, 0f);
 
@@ -368,6 +368,15 @@ public class StateManager : MonoBehaviour {
         //{
         //    nextCameraPos.x = 35f;
         //}
+        //new boundaries [-16.8,17.4]
+        if (nextCameraPos.x < -16.8)
+        {
+            nextCameraPos.x = -16.8f;
+        }
+        else if (nextCameraPos.x > 17.4)
+        {
+            nextCameraPos.x = 17.4f;
+        }
 
         if (makeCamReset) //cam reset method
         {
@@ -376,18 +385,21 @@ public class StateManager : MonoBehaviour {
         }
         else
         {
+            Debug.Log("Camera Info: " + nextCameraPos);
             if (cameraMoving)
             {
-                //mainCamera.transform.Rotate(new Vector3(0f, -nextCameraPos.x * Time.deltaTime, 0f)); // rotating
-                //mainCamera.transform.eulerAngles = new Vector3(nextCameraPos.y, nextCameraPos.x, 0f);
-                //mainCamera.transform.Rotate(new Vector3(-cameraPos.y, 0f, 0f)); // rotating
-                mainCamera.transform.Rotate(nextCameraPos * Time.deltaTime);
-                //cameraPos = new Vector3(0f, 0f, 0f);
+                float camSpeed = 3f;
+                //quarterion rotations ***
+                Quaternion qRotation = Quaternion.Euler(nextCameraPos * camSpeed);// * Time.deltaTime);
+                mainCamera.transform.rotation = qRotation;
+                //world coord * translation vector *  (-rotation matrix * translation vector)
+                //mainCamera.transform.Rotate(0f, -nextCameraPos.x * camSpeed * Time.deltaTime, 0f, Space.Self);
+                //mainCamera.transform.Rotate(new Vector3(0f, -nextCameraPos.x * multFactor * Time.deltaTime, 0f, Space.Self));
+                //mainCamera.transform.Rotate(nextCameraPos * Time.deltaTime);
             }
-            //cameraPos = nextCameraPos;
+            cameraPos = nextCameraPos;
+
         }
-        Debug.Log("Camera Info: " + cameraPos);
-        
         
         //avgDistance_x = Mathf.Abs(((Kinect.LHandPos.x - Kinect.LShoulderPos.x) + (Kinect.RHandPos.x - Kinect.RShoulderPos.x)) / 2);
         //avgDistance_y = Mathf.Abs(((Kinect.LHandPos.y - Kinect.LShoulderPos.y) + (Kinect.RHandPos.y - Kinect.RShoulderPos.y)) / 2);
@@ -397,7 +409,7 @@ public class StateManager : MonoBehaviour {
         cursorU = false;
         cursorD = false;
 
-        float keyspeed = 0.003f;
+        float keyspeed = 0.0035f;
         if (moveCursorL)
         {
             //if ((Kinect.LHandPos.x - Kinect.LShoulderPos.x) < (SimpleTutorial.LHandLeftAverage * 0.4f) && (Kinect.RHandPos.x - Kinect.RShoulderPos.x) < (SimpleTutorial.RHandLeftAverage * 0.4f))

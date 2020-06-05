@@ -403,19 +403,23 @@ public class MakeWordBank : MonoBehaviour {
                 StateManager.moveCursorD = false;
                 if (Input.GetKey(KeyCode.D))
                 {
-                    StateManager.cameraAdd.x = -.6f;
+                    //StateManager.cameraAdd.x = -.6f;
+                    StateManager.moveCameraD = true;
                 }
                 if (Input.GetKey(KeyCode.A))
                 {
-                    StateManager.cameraAdd.x = .6f;
+                    //StateManager.cameraAdd.x = .6f;
+                    StateManager.moveCameraD = true;
                 }
                 if (Input.GetKey(KeyCode.W))
                 {
-                    StateManager.cameraAdd.y = .5f;
+                    //StateManager.cameraAdd.y = .5f;
+                    StateManager.moveCameraD = true;
                 }
                 if (Input.GetKey(KeyCode.S))
                 {
-                    StateManager.cameraAdd.y = -.5f;
+                    //StateManager.cameraAdd.y = -.5f;
+                    StateManager.moveCameraD = true;
                 }
             }
             //CLICKING
