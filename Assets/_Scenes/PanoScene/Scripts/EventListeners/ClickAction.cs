@@ -30,6 +30,8 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 	public static GameObject nextButton; //button refs
 	public static GameObject quitButton;
 
+    
+
 	public void Awake()
     {
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
@@ -322,6 +324,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
             state.getSelected().GetComponentInChildren<Text>().color = Color.blue; //instead of just GetComponent
 			state.getSelected().transform.localScale -= new Vector3(0.6f, 0.6f, 0f); //scale it down to 40% size (not thickness tho)
             tagIsFollowing = false;
+			state.tagsPlaced.Add(state.getSelected()); //adds to movement list
             state.setSelected(null);
         }
 
@@ -356,6 +359,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			state.setSelected(tagCopy); //clicked tag = copy of tag
 
 			tagCopy.GetComponentInChildren<Text>().color = Color.red; //changes clicked tag's text color to red
+			tagCopy.layer = 5; //UI layer
 
 			tagIsFollowing = true;
 
@@ -375,8 +379,9 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		else if (objectClicked.tag == "NextButton") // Next button clicked
 		{
 			MakeWordBank.nextImage();
+			//tagSphere.GetComponent<Renderer>().material = imageMaterials[imageIndex]
 		}
-		
+
 		//else if ((objectClicked == null || objectClicked.tag == "Image") && state.getSelected() != null) // The image area was pressed, so here we cast a tag onto the sphere
 		//{
 		//	Vector3 cursorPosition = Camera.current.WorldToScreenPoint(state.getCursorPosition()); // Use the cursor position to cast a ray onto the sphere
@@ -408,7 +413,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		//	GameObject textContainer = new GameObject();
 		//	textContainer.transform.parent = newObject.transform;
 
-  //          //creates text thing that displays
+		//          //creates text thing that displays
 		//	TextMesh text = textContainer.AddComponent<TextMesh>();
 		//	text.text = state.getSelected().transform.parent.name;
 		//	text.fontSize = 20;
@@ -417,7 +422,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		//	text.name = state.getSelected().transform.parent.name + "_Text";
 
 		//	/*state.getSelected().transform.localScale /= 239.36f; // state.cursorPosMod
-  //          state.getSelected().transform.position = state.getCursorPosition(); // state.cursorPosMod
+		//          state.getSelected().transform.position = state.getCursorPosition(); // state.cursorPosMod
 		//	state.getSelected().transform.LookAt(Vector3.zero);
 		//	state.getSelected().GetComponentInChildren<Text>().color = Color.red;*
 
@@ -425,10 +430,10 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		//	Destroy(state.getSelected());*/
 		//	state.setSelected(null);
 
-  //          //stop following cursor
+		//          //stop following cursor
 		//	tagIsFollowing = false;
 		//}
-        else
+		else
         {
 			Debug.Log("OnPointerClicked is not doing the things...");
 			Debug.Log("Obj: " + objectClicked.name + ", tag: " + objectClicked.tag);
