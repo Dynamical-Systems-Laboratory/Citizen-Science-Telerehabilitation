@@ -137,6 +137,21 @@ public class StateManager : MonoBehaviour {
     { //Calculate rod rotation angle about the z axis
         return (Mathf.Atan2((y1 - standard_y), (x1 - standard_x))) * (180 / Mathf.PI);
     }
+
+    public float getLowestAngle(float num)
+    {
+        num %= 360;
+        if (num > 180)
+        {
+            return (num - 360);
+        }
+        else if(num < -180)
+        {
+            return (360 + num);
+        }
+        return num;
+    }
+
     void Awake()
     {
         falconButtons = new bool[4] { false, false, false, false };
@@ -393,51 +408,43 @@ public class StateManager : MonoBehaviour {
         }
         else
         {
-            Debug.Log("Camera Info: " + nextCameraPos);
+            float camSpeed = 2f;
+            Debug.Log("Camera Info: (" + nextCameraPos.y*camSpeed + ", " + nextCameraPos.x*camSpeed + ", " + nextCameraPos.z*camSpeed + ")");
             if (cameraMoving)
             {
-                float camSpeed = 2f;
                 //quarterion rotations ***
                 Quaternion qRotation = Quaternion.Euler(nextCameraPos * camSpeed);// * Time.deltaTime);
                 mainCamera.transform.rotation = qRotation;
-                //world coord * translation vector *  (-rotation matrix * translation vector)
-                //mainCamera.transform.Rotate(0f, -nextCameraPos.x * camSpeed * Time.deltaTime, 0f, Space.Self);
-                //mainCamera.transform.Rotate(new Vector3(0f, -nextCameraPos.x * multFactor * Time.deltaTime, 0f, Space.Self));
-                //mainCamera.transform.Rotate(nextCameraPos * Time.deltaTime);
 
                 //tags movement
                 Vector3 change = (nextCameraPos-cameraPos) * camSpeed; //take the amount that the camera moves and displace all placed tags by it
                 foreach (GameObject obj in tagsPlaced) //8
                 {
-                    obj.transform.position -= new Vector3(change.y*2, -change.x*1.75f, 0f);
-
-                    Vector3 tagDist = (obj.transform.position - nextCameraPos);
-
-                    //if (tagDist.x < -89 || tagDist.x > 9.4 || tagDist.y < -24 || tagDist.y > 50)
-                    //Color newColor = obj.GetComponentInChildren<Renderer>().material.color; //changing background color
+                    obj.transform.position -= new Vector3(change.y*camSpeed, -change.x*1.65f, 0f);
+                    //Debug.Log("Object " + obj.name + ": " + obj.transform.position + ", offset: " + (obj.transform.position - nextCameraPos));
+                    float objX = getLowestAngle(obj.transform.position.x / 2);
+                    float camX = getLowestAngle(nextCameraPos.y*camSpeed);
+                    float offset = objX - camX;
+                    //Debug.Log("Obj: " + objX + ", Camera: " + camX + ", Offset: " + offset);
+                    
                     Color newColor = obj.GetComponent<Image>().color;
-                    if (tagDist.x > 7) //disapear
+                    if (offset > 25.5 || offset < -62) //disapear after a certain x (factoring for full rotations of 180 degrees)
                     {
                         obj.GetComponentInChildren<Text>().color = Color.clear; //text color change
                         newColor.a = 0;
-                        //obj.GetComponent<MeshRenderer>().enabled = false;
-                        //obj.GetComponent<Color>().a = 0f;
                     }
                     else //reapear
                     {
                         obj.GetComponentInChildren<Text>().color = Color.blue;
                         newColor.a = .391f; // (100/255) = (.39/1) - transfer to 0->1 scale
                     }
-                    //obj.GetComponent<Image>().material.color = newColor;
                     obj.GetComponent<Image>().color = newColor;
                 }
             }
         }
-        foreach (GameObject obj in tagsPlaced)
-        {
-            Debug.Log("Object " + obj.name + ": " + (obj.transform.position - nextCameraPos));
-        }
+
         cameraPos = nextCameraPos;
+
         //avgDistance_x = Mathf.Abs(((Kinect.LHandPos.x - Kinect.LShoulderPos.x) + (Kinect.RHandPos.x - Kinect.RShoulderPos.x)) / 2);
         //avgDistance_y = Mathf.Abs(((Kinect.LHandPos.y - Kinect.LShoulderPos.y) + (Kinect.RHandPos.y - Kinect.RShoulderPos.y)) / 2);
 

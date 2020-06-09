@@ -147,6 +147,9 @@ public class MakeWordBank : MonoBehaviour {
 
     public static Text tagsRemainingText;
 
+    public static GameObject nextButton; //button refs
+    public static GameObject quitButton;
+
     public static List<string> wordBank = new List<string>();
     public static GameObject focusor;
     public static GameObject tutorialArrow;
@@ -351,6 +354,9 @@ public class MakeWordBank : MonoBehaviour {
         videoCamera = GameObject.Find("VideoCamera");
 
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
+
+        nextButton = GameObject.Find("NextButtonButton");
+        quitButton = GameObject.Find("QuitButtonButton");
     }
 
     public GameObject toClick = null; // obj for clicking
@@ -358,7 +364,7 @@ public class MakeWordBank : MonoBehaviour {
     // Update is called once per frame
     void Update(/*EventSystem eventSystem*/)
     {
-
+        Debug.Log("inTutorial: " + inTutorial.ToString() + " , inPractLvl: " + inPracticeLevel.ToString());
         /* Button MoveSets
          * * arrow keys = cursor movement
          * * b = cursor select
@@ -425,13 +431,13 @@ public class MakeWordBank : MonoBehaviour {
             //CLICKING
             if (Input.GetKey(KeyCode.B)) //select
             {
-                if (ClickAction.isCloseToNext())
+                if (ClickAction.buttonClose(nextButton.transform.position))
                 {
-                    eventListener.OnPointerClick(ClickAction.nextButton);
+                    eventListener.OnPointerClick(nextButton);
                 }
-                else if (ClickAction.isCloseToQuit())
+                else if (ClickAction.buttonClose(quitButton.transform.position))
                 {
-                    eventListener.OnPointerClick(ClickAction.quitButton);
+                    eventListener.OnPointerClick(quitButton);
                 }
                 else
                 {

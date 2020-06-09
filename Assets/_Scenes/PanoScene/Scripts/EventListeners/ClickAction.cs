@@ -27,11 +27,6 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 	public static GameObject trashy; //trash ref
     public static float maxBinDist = 8f; //distance of cursor from bin after cursorPosMod factor
 
-	public static GameObject nextButton; //button refs
-	public static GameObject quitButton;
-
-    
-
 	public void Awake()
     {
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
@@ -47,9 +42,6 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		trashedTags = new List<GameObject> ();
 		background = GameObject.Find("Image"); // backgreound for the location where to place an image
         trashy = GameObject.Find("Bin");
-		nextButton = GameObject.Find("NextButtonButton");
-		quitButton = GameObject.Find("QuitButtonButton");
-		
     }
 
     /* Clicking Logic:
@@ -96,11 +88,11 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			state.getSelected().transform.position = new
               Vector3(state.getCursorPosition().x * StateManager.cursorPosMod, state.getCursorPosition().y * StateManager.cursorPosMod, initTagPos.z);
 		}
-		//Debug.Log("Bin Distance: " + ((state.getCursorPosition() * StateManager.cursorPosMod) - trashy.transform.position).magnitude +
-		//    ", isBy? " + isByTrash(state.getCursorPosition()) + ", Count: " + trashedTags.Count);
-		//Debug.Log("Next Button Distance: " + (nextButton.transform.position - state.getCursorPosition() * StateManager.cursorPosMod).magnitude + ", " + (nextButton.transform.position - state.getCursorPosition() * StateManager.cursorPosMod));
-		//Debug.Log("Quit Button Distance: " + (quitButton.transform.position - state.getCursorPosition() * StateManager.cursorPosMod).magnitude);
-	}
+        //Debug.Log("Bin Distance: " + ((state.getCursorPosition() * StateManager.cursorPosMod) - trashy.transform.position).magnitude +
+        //    ", isBy? " + isByTrash(state.getCursorPosition()) + ", Count: " + trashedTags.Count);
+        //Debug.Log("Next Button Distance: " + isCloseToNext().ToString() + ", " + (nextButton.transform.position - state.getCursorPosition() * StateManager.cursorPosMod).magnitude + ", " + (nextButton.transform.position - state.getCursorPosition() * StateManager.cursorPosMod));
+        //Debug.Log("Quit Button Distance: " + (quitButton.transform.position - state.getCursorPosition() * StateManager.cursorPosMod).magnitude);
+    }
 
     public void OnPointerClick(PointerEventData eventData) //not in use atm...
     {
@@ -468,27 +460,14 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
         }
 		return false;
 	}
-    public static bool isCloseToQuit()
-	{ //state.getCursorPosition()*StateManager.cursorPosMod
-		Vector3 diff = (quitButton.transform.position - state.getCursorPosition() * StateManager.cursorPosMod);
-		if (diff.x > 5.5 || diff.x < -9.2)
-        {
-			return false;
-        }
-        if (diff.y > 16 || diff.y < -14.5)
-        {
-			return false;
-        }
-		return true;
-    }
-	public static bool isCloseToNext()
-	{
-		Vector3 diff = (nextButton.transform.position - state.getCursorPosition() * StateManager.cursorPosMod);
-		if (diff.x > 5.5 || diff.x < -9.2)
+	public static bool buttonClose(Vector3 pos)
+	{ //nextButton.transform.position
+		Vector3 diff = (pos - state.getCursorPosition() * StateManager.cursorPosMod);
+		if (diff.y > 5.5 || diff.y < -9.2)
 		{
 			return false;
 		}
-		if (diff.y > 16 || diff.y < -14.5)
+		if (diff.x > 16 || diff.x < -14.5)
 		{
 			return false;
 		}
