@@ -419,16 +419,17 @@ public class StateManager : MonoBehaviour {
                     if (tagDist.x > 7) //disapear
                     {
                         obj.GetComponentInChildren<Text>().color = Color.clear; //text color change
-                        //newColor.a = 0;
+                        newColor.a = 0;
                         //obj.GetComponent<MeshRenderer>().enabled = false;
                         //obj.GetComponent<Color>().a = 0f;
                     }
                     else //reapear
                     {
                         obj.GetComponentInChildren<Text>().color = Color.blue;
-                        //newColor.a = 100;
+                        newColor.a = .391f; // (100/255) = (.39/1) - transfer to 0->1 scale
                     }
                     //obj.GetComponent<Image>().material.color = newColor;
+                    obj.GetComponent<Image>().color = newColor;
                 }
             }
         }

@@ -102,7 +102,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		//Debug.Log("Quit Button Distance: " + (quitButton.transform.position - state.getCursorPosition() * StateManager.cursorPosMod).magnitude);
 	}
 
-    public void OnPointerClick(PointerEventData eventData)
+    public void OnPointerClick(PointerEventData eventData) //not in use atm...
     {
         // OnClick code goes here ...
         GameObject objectClicked = eventData.pointerCurrentRaycast.gameObject; // get the object that was pressed
@@ -360,6 +360,9 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 
 			tagCopy.GetComponentInChildren<Text>().color = Color.red; //changes clicked tag's text color to red
 			tagCopy.layer = 4; //UI Layer
+			//Image newImage = Instantiate(tagCopy.GetComponent<Image>()); //deep copy image
+            //Destroy(tagCopy.GetComponent<Image>());
+			//tagCopy.AddComponent<Image>();
 
 			tagIsFollowing = true;
 
