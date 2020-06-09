@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
+using UnityEngine.UI;
 /*
  StateManager is an object used for accessing and setting the state of the program 
  across the various scripts that manipulate the state.
@@ -97,6 +97,7 @@ public class StateManager : MonoBehaviour {
     public bool cameraMoving;
 
     public List<GameObject> tagsPlaced;
+    //public List<InvisTag> invisTags;
 
     public GameObject getSelected()
     {
@@ -406,11 +407,34 @@ public class StateManager : MonoBehaviour {
 
                 //tags movement
                 Vector3 change = (nextCameraPos-cameraPos) * camSpeed; //take the amount that the camera moves and displace all placed tags by it
-                foreach (GameObject obj in tagsPlaced)
+                foreach (GameObject obj in tagsPlaced) //8
                 {
                     obj.transform.position -= new Vector3(change.y*2, -change.x*1.75f, 0f);
+
+                    Vector3 tagDist = (obj.transform.position - nextCameraPos);
+
+                    //if (tagDist.x < -89 || tagDist.x > 9.4 || tagDist.y < -24 || tagDist.y > 50)
+                    //Color newColor = obj.GetComponentInChildren<Renderer>().material.color; //changing background color
+                    Color newColor = obj.GetComponent<Image>().color;
+                    if (tagDist.x > 7) //disapear
+                    {
+                        obj.GetComponentInChildren<Text>().color = Color.clear; //text color change
+                        //newColor.a = 0;
+                        //obj.GetComponent<MeshRenderer>().enabled = false;
+                        //obj.GetComponent<Color>().a = 0f;
+                    }
+                    else //reapear
+                    {
+                        obj.GetComponentInChildren<Text>().color = Color.blue;
+                        //newColor.a = 100;
+                    }
+                    //obj.GetComponent<Image>().material.color = newColor;
                 }
             }
+        }
+        foreach (GameObject obj in tagsPlaced)
+        {
+            Debug.Log("Object " + obj.name + ": " + (obj.transform.position - nextCameraPos));
         }
         cameraPos = nextCameraPos;
         //avgDistance_x = Mathf.Abs(((Kinect.LHandPos.x - Kinect.LShoulderPos.x) + (Kinect.RHandPos.x - Kinect.RShoulderPos.x)) / 2);
@@ -523,4 +547,11 @@ public class StateManager : MonoBehaviour {
         //Debug.Log("Update() exit - StateManager");
     }
 
+}
+
+struct InvisTag
+{
+    string name;
+    //color blue
+    Vector3 location;
 }

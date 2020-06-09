@@ -359,7 +359,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			state.setSelected(tagCopy); //clicked tag = copy of tag
 
 			tagCopy.GetComponentInChildren<Text>().color = Color.red; //changes clicked tag's text color to red
-			tagCopy.layer = 5; //UI layer
+			tagCopy.layer = 4; //UI Layer
 
 			tagIsFollowing = true;
 
@@ -382,58 +382,58 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			//tagSphere.GetComponent<Renderer>().material = imageMaterials[imageIndex]
 		}
 
-		//else if ((objectClicked == null || objectClicked.tag == "Image") && state.getSelected() != null) // The image area was pressed, so here we cast a tag onto the sphere
-		//{
-		//	Vector3 cursorPosition = Camera.current.WorldToScreenPoint(state.getCursorPosition()); // Use the cursor position to cast a ray onto the sphere
-		//	Ray ray = Camera.main.ScreenPointToRay(cursorPosition);  // The ray that will be casted onto the sphere
+        ////else if ((objectClicked == null || objectClicked.tag == "Image") && state.getSelected() != null) // The image area was pressed, so here we cast a tag onto the sphere
+        ////{
+        //Vector3 cursorPosition = Camera.current.WorldToScreenPoint(state.getCursorPosition()); // Use the cursor position to cast a ray onto the sphere
+        //Ray ray = Camera.main.ScreenPointToRay(cursorPosition);  // The ray that will be casted onto the sphere
 
-		//	// In the following two lines, since the sphere collider is outside the sphere
-		//	// We move the point of the ray well outside of the sphere, then invert the direction
-		//	// This way, we cast ray to the same point of the sphere, but from the outside rather than the inside
-		//	ray.origin = ray.GetPoint(100);
-		//	ray.direction = -ray.direction;
+        //// In the following two lines, since the sphere collider is outside the sphere
+        //// We move the point of the ray well outside of the sphere, then invert the direction
+        //// This way, we cast ray to the same point of the sphere, but from the outside rather than the inside
+        //ray.origin = ray.GetPoint(100);
+        //ray.direction = -ray.direction;
 
-		//	RaycastHit hit; // The raycast
+        //RaycastHit hit; // The raycast
 
-		//	Debug.DrawRay(ray.origin, ray.direction, Color.red, 5);
-		//	if (Physics.Raycast(ray, out hit))
-		//	{
+        //Debug.DrawRay(ray.origin, ray.direction, Color.red, 5);
+        //if (Physics.Raycast(ray, out hit))
+        //{
 
-		//	}
+        //}
 
-		//	//game object instiantiated
-		//	GameObject newObject = Instantiate(tagPrefab, canvas.transform.position, Quaternion.identity); // Create the new object using the tagPrefab
-		//	newObject.transform.LookAt(Vector3.zero); // Make it face the center of the sphere*
-		//	newObject.transform.localScale = new Vector3(0.25f, 0.1f, 0.00001f);
-		//	newObject.name = state.getSelected().transform.parent.name; // CHANGE THIS LATER
-		//	newObject.transform.parent = sphere.transform;
-		//	//newObject.GetComponent<Renderer>().material = new Material(Shader.Find("Diffuse"));
+        ////game object instiantiated
+        //GameObject newObject = Instantiate(tagPrefab, canvas.transform.position, Quaternion.identity); // Create the new object using the tagPrefab
+        //newObject.transform.LookAt(Vector3.zero); // Make it face the center of the sphere*
+        //newObject.transform.localScale = new Vector3(0.25f, 0.1f, 0.00001f);
+        //newObject.name = state.getSelected().transform.parent.name; // CHANGE THIS LATER
+        //newObject.transform.parent = sphere.transform;
+        ////newObject.GetComponent<Renderer>().material = new Material(Shader.Find("Diffuse"));
 
-		//	//object to hold container
-		//	GameObject textContainer = new GameObject();
-		//	textContainer.transform.parent = newObject.transform;
+        ////object to hold container
+        //GameObject textContainer = new GameObject();
+        //textContainer.transform.parent = newObject.transform;
 
-		//          //creates text thing that displays
-		//	TextMesh text = textContainer.AddComponent<TextMesh>();
-		//	text.text = state.getSelected().transform.parent.name;
-		//	text.fontSize = 20;
-		//	text.alignment = TextAlignment.Center;
-		//	text.anchor = TextAnchor.MiddleCenter;
-		//	text.name = state.getSelected().transform.parent.name + "_Text";
+        ////creates text thing that displays
+        //TextMesh text = textContainer.AddComponent<TextMesh>();
+        //text.text = state.getSelected().transform.parent.name;
+        //text.fontSize = 20;
+        //text.alignment = TextAlignment.Center;
+        //text.anchor = TextAnchor.MiddleCenter;
+        //text.name = state.getSelected().transform.parent.name + "_Text";
 
-		//	/*state.getSelected().transform.localScale /= 239.36f; // state.cursorPosMod
-		//          state.getSelected().transform.position = state.getCursorPosition(); // state.cursorPosMod
-		//	state.getSelected().transform.LookAt(Vector3.zero);
-		//	state.getSelected().GetComponentInChildren<Text>().color = Color.red;*
+        ///*state.getSelected().transform.localScale /= 239.36f; // state.cursorPosMod
+        //      state.getSelected().transform.position = state.getCursorPosition(); // state.cursorPosMod
+        //state.getSelected().transform.LookAt(Vector3.zero);
+        //state.getSelected().GetComponentInChildren<Text>().color = Color.red;*
 
-		//	//get rid of the existing copy
-		//	Destroy(state.getSelected());*/
-		//	state.setSelected(null);
+        ////get rid of the existing copy
+        //Destroy(state.getSelected());*/
+        //state.setSelected(null);
 
-		//          //stop following cursor
-		//	tagIsFollowing = false;
-		//}
-		else
+        ////stop following cursor
+        //tagIsFollowing = false;
+        ////}
+        else
         {
 			Debug.Log("OnPointerClicked is not doing the things...");
 			Debug.Log("Obj: " + objectClicked.name + ", tag: " + objectClicked.tag);
