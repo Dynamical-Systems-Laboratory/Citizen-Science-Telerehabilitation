@@ -364,7 +364,7 @@ public class MakeWordBank : MonoBehaviour {
     // Update is called once per frame
     void Update(/*EventSystem eventSystem*/)
     {
-        Debug.Log("inTutorial: " + inTutorial.ToString() + " , inPractLvl: " + inPracticeLevel.ToString());
+        Debug.Log("inTutorial: " + inTutorial.ToString() + " , inPractLvl: " + inPracticeLevel.ToString() + ", TagTutorial: " + skipTaggingTutorialStep.ToString());
         /* Button MoveSets
          * * arrow keys = cursor movement
          * * b = cursor select
@@ -1211,6 +1211,7 @@ public class MakeWordBank : MonoBehaviour {
                             sequenceIndex++;
                         }
                         tagSphere.GetComponent<Renderer>().material = imageMaterials[imageIndex]; //in first image
+                        //imageIndex++;
                         foreach (Transform t in ClickAction.sphere.transform)
                         {
                             Destroy(t.gameObject);
@@ -1341,6 +1342,12 @@ public class MakeWordBank : MonoBehaviour {
         if (inTutorial)
         {
             newName = tutorialWords[tutorialWordsIndex];
+            tutorialWordsIndex++;
+        }
+        else if (inPracticeLevel)
+        {
+            newName = wordBank[SEQUENCE[imageIndex, sequenceIndex]];
+            sequenceIndex++;
         }
         else
         {
@@ -1355,10 +1362,6 @@ public class MakeWordBank : MonoBehaviour {
             }
         }
         toReplace.name = newName; //replace name of tagtag
-
-        //if (inTutorial) {
-        tutorialWordsIndex++;
-        //}
     }
 
     public static void nextImage()

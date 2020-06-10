@@ -98,6 +98,7 @@ public class StateManager : MonoBehaviour {
 
     private float camSpeed = 2f; //factor that speeds up the camera's movement
     public float xOffset = 25.7f; //factor that sets tags to dissapear after being a certain dist away from camera's center
+    private float cursorSpeed = 1.25f; //factor that speeds up cursor's movement
 
     public List<GameObject> tagsPlaced;
     //public List<InvisTag> invisTags;
@@ -426,11 +427,11 @@ public class StateManager : MonoBehaviour {
                 {
                     obj.transform.position -= new Vector3(change.y*camSpeed, -change.x*1.65f, 0f);
 
-                    float offset = (obj.transform.position.x - nextCameraPos.y);
+                    //float offset = (obj.transform.position.x - nextCameraPos.y);
                     //Debug.Log("Object " + obj.name + ": " + obj.transform.position + ", offset: " + (obj.transform.position - nextCameraPos) + ", " + offset);
 
                     Color newColor = obj.GetComponent<Image>().color;
-                    if (offset > xOffset /*|| offset < -65*/) //disapear after a certain x (factoring for full rotations of 180 degrees)
+                    if (obj.transform.position.x > 10 && obj.transform.position.x < 101)//offset > xOffset) disapear after a certain x (factoring for full rotations of 180 degrees)
                     {
                         obj.GetComponentInChildren<Text>().color = Color.clear; //text color change
                         newColor.a = 0;
@@ -455,8 +456,8 @@ public class StateManager : MonoBehaviour {
         cursorU = false;
         cursorD = false;
 
-        float keyspeed = 0.0035f;
-        float keyspeed2 = .0028f;
+        float keyspeed = 0.0035f * cursorSpeed;
+        float keyspeed2 = .0028f * cursorSpeed;
         if (moveCursorL)
         {
             //if ((Kinect.LHandPos.x - Kinect.LShoulderPos.x) < (SimpleTutorial.LHandLeftAverage * 0.4f) && (Kinect.RHandPos.x - Kinect.RShoulderPos.x) < (SimpleTutorial.RHandLeftAverage * 0.4f))
