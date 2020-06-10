@@ -96,6 +96,9 @@ public class StateManager : MonoBehaviour {
     public static GameObject mainCamera;
     public bool cameraMoving;
 
+    private float camSpeed = 2f; //factor that speeds up the camera's movement
+    public float xOffset = 25.7f; //factor that sets tags to dissapear after being a certain dist away from camera's center
+
     public List<GameObject> tagsPlaced;
     //public List<InvisTag> invisTags;
 
@@ -138,7 +141,7 @@ public class StateManager : MonoBehaviour {
         return (Mathf.Atan2((y1 - standard_y), (x1 - standard_x))) * (180 / Mathf.PI);
     }
 
-    public float getLowestAngle(float num)
+    public float getLowestAngle(float num) //resets positional rotation to be the abs lowest possible representation
     {
         num %= 360;
         if (num > 180)
@@ -318,7 +321,7 @@ public class StateManager : MonoBehaviour {
             //}
             if (Input.GetKey(KeyCode.A))
             {
-                nextCameraPos += new Vector3(0f, -0.6f, 0f);
+                nextCameraPos += new Vector3(0f, -0.6f * camSpeed, 0f);
                 //change += new Vector3(0f, -0.45f, 0f);
                 cameraL = true;
             }
@@ -335,7 +338,7 @@ public class StateManager : MonoBehaviour {
             //}
             if (Input.GetKey(KeyCode.D))
             {
-                nextCameraPos += new Vector3(0f, 0.6f, 0f);
+                nextCameraPos += new Vector3(0f, 0.6f * camSpeed, 0f);
                 //change += new Vector3(0f, 0.45f, 0f);
                 cameraR = true;
             }
@@ -352,7 +355,7 @@ public class StateManager : MonoBehaviour {
             //}
             if (Input.GetKey(KeyCode.W))
             {
-                nextCameraPos += new Vector3(-.45f, 0f, 0f);
+                nextCameraPos += new Vector3(-.45f * camSpeed, 0f, 0f);
                 //change += new Vector3(-.6f, 0f, 0f);
                 cameraU = true;
             }
@@ -370,7 +373,7 @@ public class StateManager : MonoBehaviour {
             //}
             if (Input.GetKey(KeyCode.S))
             {
-                nextCameraPos += new Vector3(.45f, 0f, 0f);
+                nextCameraPos += new Vector3(.45f * camSpeed, 0f, 0f);
                 //change += new Vector3(.6f, 0f, 0f);
                 cameraD = true;
             }
@@ -391,14 +394,14 @@ public class StateManager : MonoBehaviour {
         //{
         //    nextCameraPos.x = 35f;
         //}
-        //new boundaries [-16.8,17.4]
-        if (nextCameraPos.x < -16.8)
+        //old boundaries [-16.8,17.4]
+        if (nextCameraPos.x < -90)
         {
-            nextCameraPos.x = -16.8f;
+            nextCameraPos.x = -90f;
         }
-        else if (nextCameraPos.x > 17.4)
+        else if (nextCameraPos.x > 90)
         {
-            nextCameraPos.x = 17.4f;
+            nextCameraPos.x = 90f;
         }
 
         if (makeCamReset) //cam reset method
@@ -408,27 +411,26 @@ public class StateManager : MonoBehaviour {
         }
         else
         {
-            float camSpeed = 2f;
-            Debug.Log("Camera Info: (" + nextCameraPos.y*camSpeed + ", " + nextCameraPos.x*camSpeed + ", " + nextCameraPos.z*camSpeed + ")");
+            nextCameraPos.y = getLowestAngle(nextCameraPos.y); //reset x pos if goes too far
+            //nextCameraPos = new Vector3(nextCameraPos.x*camSpeed, nextCameraPos.y*camSpeed,nextCameraPos.x*camSpeed);
+            Debug.Log("Camera Info: (" + nextCameraPos.y + ", " + nextCameraPos.x + ", " + nextCameraPos.z + ")");
             if (cameraMoving)
             {
                 //quarterion rotations ***
-                Quaternion qRotation = Quaternion.Euler(nextCameraPos * camSpeed);// * Time.deltaTime);
+                Quaternion qRotation = Quaternion.Euler(nextCameraPos);// * Time.deltaTime);
                 mainCamera.transform.rotation = qRotation;
 
                 //tags movement
-                Vector3 change = (nextCameraPos-cameraPos) * camSpeed; //take the amount that the camera moves and displace all placed tags by it
+                Vector3 change = (nextCameraPos-cameraPos); //take the amount that the camera moves and displace all placed tags by it
                 foreach (GameObject obj in tagsPlaced) //8
                 {
                     obj.transform.position -= new Vector3(change.y*camSpeed, -change.x*1.65f, 0f);
-                    //Debug.Log("Object " + obj.name + ": " + obj.transform.position + ", offset: " + (obj.transform.position - nextCameraPos));
-                    float objX = getLowestAngle(obj.transform.position.x / 2);
-                    float camX = getLowestAngle(nextCameraPos.y*camSpeed);
-                    float offset = objX - camX;
-                    //Debug.Log("Obj: " + objX + ", Camera: " + camX + ", Offset: " + offset);
-                    
+
+                    float offset = (obj.transform.position.x - nextCameraPos.y);
+                    //Debug.Log("Object " + obj.name + ": " + obj.transform.position + ", offset: " + (obj.transform.position - nextCameraPos) + ", " + offset);
+
                     Color newColor = obj.GetComponent<Image>().color;
-                    if (offset > 25.5 || offset < -62) //disapear after a certain x (factoring for full rotations of 180 degrees)
+                    if (offset > xOffset /*|| offset < -65*/) //disapear after a certain x (factoring for full rotations of 180 degrees)
                     {
                         obj.GetComponentInChildren<Text>().color = Color.clear; //text color change
                         newColor.a = 0;
