@@ -152,8 +152,8 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
             {
                 cursorSphere.GetComponent<MeshRenderer>().enabled = false;
             }
-			//cursorTag.name = currentTag.GetComponent<Text> ().name;
-			//cursorTag.transform.localScale = new Vector3 (8.8f, 3.188f, 0.001f);
+            //cursorTag.name = currentTag.GetComponent<Text>().name;
+            //cursorTag.transform.localScale = new Vector3(8.8f, 3.188f, 0.001f);
         }
 		else if (objectClicked.tag == "QuitButton" && !MakeWordBank.inTutorial) // Quit button clicked by falcon
         {
@@ -332,7 +332,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			state.getSelected().transform.GetChild(0).tag = "TrashedTag";
 
 			//newTrashedTag.transform.position = canvas.transform.TransformPoint(new Vector2(320 + horizontalBump, -55 - 12 * trashedTags.Count + verticalBump)) + Vector3.back * -0.25f;
-			state.getSelected().transform.position = new Vector3(trashy.transform.position.x, trashy.transform.position.y - 11.9f - (7f*trashedTags.Count), trashy.transform.position.z);
+			state.getSelected().transform.position = new Vector3(trashy.transform.position.x, trashy.transform.position.y - 12.1f - (8.5f*trashedTags.Count), trashy.transform.position.z);
 			state.getSelected().transform.LookAt(state.getSelected().transform.position + Vector3.back * state.getSelected().transform.position.z * -1);
             trashedTags.Add(state.getSelected());
 			//trashedTags[trashedTags.Count - 1].layer = 5; //UI
@@ -369,6 +369,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 
 		else if (objectClicked.tag == "QuitButton") // Quit button clicked
 		{
+			destroyTags();
 			QuitGameScript.TaskOnClick();
 		}
 		else if (objectClicked.tag == "NextButton") // Next button clicked
@@ -472,5 +473,13 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			return false;
 		}
 		return true;
+	}
+    public static void destroyTags()
+    {
+		foreach (GameObject tag in state.tagsPlaced)
+		{
+			Destroy(tag);
+		}
+		state.tagsPlaced.Clear();
 	}
 }

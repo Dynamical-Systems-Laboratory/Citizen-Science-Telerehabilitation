@@ -239,6 +239,7 @@ public class MakeWordBank : MonoBehaviour {
     //tag GameObjects should have unique names (doesn't matter what the names are), the parent
     //GameObjects' names can be changed though with no problem
     public static Tag[] tags;
+    public static int practiceMoveOn;
 
     void Awake() {
         DataCollector.MakeFolder();
@@ -471,6 +472,11 @@ public class MakeWordBank : MonoBehaviour {
             videoCamera.SetActive(false);
             //VP1.SetActive(false);
             //VP5.SetActive(false);
+            if (inPracticeLevel)
+            {
+                practiceMoveOn = state.tagsPlaced.Count;
+            }
+            
         }
 
         //To add:
@@ -1226,7 +1232,7 @@ public class MakeWordBank : MonoBehaviour {
                         numTagsRemaining = 3;
 
                         helpTextContainer.SetActive(true);
-                        tutorialText.text = "Place 3 more tags to begin data collection";
+                        tutorialText.text = "Place 3 tags and then move to the next image to begin data collection";
                         //helpTextPanel.GetComponent<RectTransform>().sizeDelta
                         //= new Vector2(500, 60);
                         //tutorialText.GetComponent<RectTransform>().sizeDelta
@@ -1370,22 +1376,26 @@ public class MakeWordBank : MonoBehaviour {
         { //On last image, then quit:
             QuitGameScript.quitGame();
         }
-        if (!inTutorial)
+        if (!inTutorial && inPracticeLevel && practiceMoveOn < 3)
+        {
+            tutorialText.text = "Please place another " + (3-practiceMoveOn) + "tags...";
+        }
+        else if (!inTutorial)
         {
             if (!inPracticeLevel)
             { //Are we not in the practice level:
                 DataCollector.Flush();
             }
-            if (!skipTaggingTutorialStep)
-            { //Only set these if you're the tagger:
-                Transform lastTag = tagSphere.transform.GetChild(tagSphere.transform.childCount - 1);
+            //if (!skipTaggingTutorialStep) //from old version of game with multiple people
+            //{ //Only set these if you're the tagger:
+            //    Transform lastTag = tagSphere.transform.GetChild(tagSphere.transform.childCount - 1);
 
-                positionLastTag = lastTag.localPosition;
-                rotationLastTag = lastTag.localRotation.eulerAngles;
-                scaleLastTag = lastTag.localScale;
-            }
+            //    positionLastTag = lastTag.localPosition;
+            //    rotationLastTag = lastTag.localRotation.eulerAngles;
+            //    scaleLastTag = lastTag.localScale;
+            //}
 
-            if (ClickAction.cursorTag != null)
+            if (ClickAction.cursorTag != null) //cursor gameObject?
             {
                 Destroy(ClickAction.cursorTag);
                 ClickAction.cursorTag = null;
@@ -1399,14 +1409,14 @@ public class MakeWordBank : MonoBehaviour {
                 Destroy(t.gameObject, 0.08f);
             }
 
-            for (int i = 0; i < ClickAction.trashedTags.Count; i++)
+            for (int i = 0; i < ClickAction.trashedTags.Count; i++) //take out trash
             {
                 Destroy(ClickAction.trashedTags[i]);
             }
             ClickAction.trashedTags.Clear();
 
-            imageIndex++;
-            tagSphere.GetComponent<Renderer>().material = imageMaterials[imageIndex];
+            imageIndex++; 
+            tagSphere.GetComponent<Renderer>().material = imageMaterials[imageIndex]; //next image
             sequenceIndex = 0;
             for (int tagsIndex = 0; tagsIndex < tags.Length; tagsIndex++)
             {
@@ -1415,12 +1425,15 @@ public class MakeWordBank : MonoBehaviour {
 
                 sequenceIndex++;
             }
+            //save tag name, position, and image index
+            ClickAction.destroyTags();
+
             if (inPracticeLevel)
             {
                 helpTextContainer.SetActive(false);
                 practiceLevelText.SetActive(false);
                 welcomeText.text = "You have completed the practice level.\nPush the rod forward to " +
-                    "begin data collection";
+                    "begin data collection"; //not displayed?
                 welcomeScreen.SetActive(true);
                 welcomeScreen.SetActive(false);
                 inScreenBeforeExperiment = true;
@@ -1497,6 +1510,7 @@ public class MakeWordBank : MonoBehaviour {
                 else
                 {
                     nextImage();
+                    //Debug.Log("Problem with next image call (replace tag)"); //check later**
                 }
             }
         }

@@ -91,16 +91,17 @@ public class StateManager : MonoBehaviour {
     public static Vector3 cursorAdd = new Vector3(0f, 0f, 0f);
     public static Vector3 cameraAdd = new Vector3(0f, 0f, 0f);
 
-    public static float cursorPosMod = 239.36f;
+    public static float cursorPosMod = 239.36f; //modifier for sphere to ui translation
 
     public static GameObject mainCamera;
     public bool cameraMoving;
 
     private float camSpeed = 2f; //factor that speeds up the camera's movement
     public float xOffset = 25.7f; //factor that sets tags to dissapear after being a certain dist away from camera's center
-    private float cursorSpeed = 1.25f; //factor that speeds up cursor's movement
+    private float cursorSpeed = 1.35f; //factor that speeds up cursor's movement
 
     public List<GameObject> tagsPlaced;
+
     //public List<InvisTag> invisTags;
 
     public GameObject getSelected()
@@ -425,7 +426,7 @@ public class StateManager : MonoBehaviour {
                 Vector3 change = (nextCameraPos-cameraPos); //take the amount that the camera moves and displace all placed tags by it
                 foreach (GameObject obj in tagsPlaced) //8
                 {
-                    obj.transform.position -= new Vector3(change.y*camSpeed, -change.x*1.65f, 0f);
+                    obj.transform.position -= new Vector3(change.y*camSpeed, -change.x*1.64f, 0f);
 
                     //float offset = (obj.transform.position.x - nextCameraPos.y);
                     //Debug.Log("Object " + obj.name + ": " + obj.transform.position + ", offset: " + (obj.transform.position - nextCameraPos) + ", " + offset);
