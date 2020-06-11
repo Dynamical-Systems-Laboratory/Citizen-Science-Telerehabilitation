@@ -97,7 +97,7 @@ public class StateManager : MonoBehaviour {
     public bool cameraMoving;
 
     private float camSpeed = 2f; //factor that speeds up the camera's movement
-    public float xOffset = 25.7f; //factor that sets tags to dissapear after being a certain dist away from camera's center
+    public float xOffset = 25.9f; //factor that sets tags to dissapear after being a certain dist away from camera's center
     private float cursorSpeed = 1.35f; //factor that speeds up cursor's movement
 
     public List<GameObject> tagsPlaced;

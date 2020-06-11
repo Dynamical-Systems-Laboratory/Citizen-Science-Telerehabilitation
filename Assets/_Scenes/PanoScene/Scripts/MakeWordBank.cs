@@ -1378,7 +1378,7 @@ public class MakeWordBank : MonoBehaviour {
         }
         if (!inTutorial && inPracticeLevel && practiceMoveOn < 3)
         {
-            tutorialText.text = "Please place another " + (3-practiceMoveOn) + "tags...";
+            tutorialText.text = "Please place another " + (3-practiceMoveOn) + " tags to move on.";
         }
         else if (!inTutorial)
         {
@@ -1434,7 +1434,7 @@ public class MakeWordBank : MonoBehaviour {
                 practiceLevelText.SetActive(false);
                 welcomeText.text = "You have completed the practice level.\nPush the rod forward to " +
                     "begin data collection"; //not displayed?
-                welcomeScreen.SetActive(true);
+                //welcomeScreen.SetActive(true);
                 welcomeScreen.SetActive(false);
                 inScreenBeforeExperiment = true;
                 inPracticeLevel = false;
