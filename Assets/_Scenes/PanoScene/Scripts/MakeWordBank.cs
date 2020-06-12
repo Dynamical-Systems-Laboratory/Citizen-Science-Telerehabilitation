@@ -1345,19 +1345,16 @@ public class MakeWordBank : MonoBehaviour {
             }
         }
         string newName;
-        if (inTutorial)
+        if (inTutorial || inPracticeLevel)
         {
             newName = tutorialWords[tutorialWordsIndex];
             tutorialWordsIndex++;
         }
-        else if (inPracticeLevel)
-        {
-            newName = wordBank[SEQUENCE[imageIndex, sequenceIndex]];
-            sequenceIndex++;
-        }
         else
         {
-            newName = "placeholder";
+            newName = wordBank[SEQUENCE[imageIndex, sequenceIndex]];
+            sequenceIndex++; //same as practice level?
+            //newName = "placeholder";
         }
         Debug.Log("Replacing " + toReplace.name + " to " + newName);
         for (int i = 0; i < tags.Length; i++) //replace tag text
