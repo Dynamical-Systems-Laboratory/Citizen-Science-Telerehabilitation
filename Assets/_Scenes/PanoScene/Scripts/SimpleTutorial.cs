@@ -156,6 +156,11 @@ public class SimpleTutorial : MonoBehaviour
             {
                 step = 35;//changed from 35
             }
+            
+            if (initialized && Input.GetKey(KeyCode.Space))
+            {
+                step = 25;
+            }
 
             if (!initialized)
             {
@@ -299,7 +304,7 @@ public class SimpleTutorial : MonoBehaviour
                 text.text = "The image can be panned to the left and right";
                 camera_y -= 0.5f;
                 StateManager.falconButtons[0] = true;
-                StateManager.nextCameraPos = new Vector3(0f, camera_y, 0.418f);
+                StateManager.cameraAdd = new Vector3(0f, 40f * Time.deltaTime, 0f); //.418f z?
 
                 timer += Time.deltaTime;
 
@@ -326,7 +331,7 @@ public class SimpleTutorial : MonoBehaviour
                 //text.text = "The image can be panned to the right";
                 camera_y += 0.5f;
                 StateManager.falconButtons[0] = true;
-                StateManager.nextCameraPos = new Vector3(0f, camera_y, 0.418f);
+                StateManager.cameraAdd = new Vector3(0f, -40f * Time.deltaTime, 0f);
 
                 timer += Time.deltaTime;
 
@@ -342,7 +347,7 @@ public class SimpleTutorial : MonoBehaviour
 
                 if (timer > 1f)
                 {
-                    StateManager.nextCameraPos = new Vector3(0f, 0f, 0f);
+                    StateManager.makeCamReset = true;
                     camera_y = 0f;
                     timer = 0f;
                     step++;
@@ -362,15 +367,15 @@ public class SimpleTutorial : MonoBehaviour
                 //Create pauses to mimic the discreet rotations
                 cameraTimer += Time.deltaTime;
 
-                if (cameraTimer > 0.5f)
-                {
-                    cameraMove = !cameraMove;
-                    cameraTimer = 0f;
-                }
-
+                //if (cameraTimer > 0.5f)
+                //{
+                //    cameraMove = !cameraMove;
+                //    cameraTimer = 0f;
+                //}
+                cameraMove = true;
                 if (cameraMove)
                 {
-                    StateManager.nextCameraPos = new Vector3(camera_x, 0f, 0.418f);
+                    StateManager.cameraAdd = new Vector3(30f * Time.deltaTime, 0f, 0f);
 
                 }
 
@@ -410,15 +415,16 @@ public class SimpleTutorial : MonoBehaviour
 
                 cameraTimer += Time.deltaTime;
 
-                if (cameraTimer > 0.5f)
-                {
-                    cameraMove = !cameraMove;
-                    cameraTimer = 0f;
-                }
 
+                //if (cameraTimer > 0.5f)
+                //{
+                //    cameraMove = !cameraMove;
+                //    cameraTimer = 0f;
+                //}
+                cameraMove = true;
                 if (cameraMove)
                 {
-                    StateManager.nextCameraPos = new Vector3(camera_x, 0f, 0.418f);
+                    StateManager.cameraAdd = new Vector3(-30f * Time.deltaTime, 0f, 0f);
                 }
 
                 timer += Time.deltaTime;
@@ -435,7 +441,7 @@ public class SimpleTutorial : MonoBehaviour
 
                 if (timer > 1f)
                 {
-                    StateManager.nextCameraPos = new Vector3(0f, 0f, 0f);
+                    StateManager.makeCamReset = true;
                     camera_x = 0f;
                     timer = 0f;
                     step++;
@@ -899,7 +905,7 @@ public class SimpleTutorial : MonoBehaviour
                 StateManager.moveCursorD = false; //all cursor movement disabled by this pt.
                 mainCamera.SetActive(false);
                 videoCamera.SetActive(true);
-                StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
+                StateManager.makeCursReset = true;
                 step++;
             }
             else if (step == 26)
@@ -964,7 +970,7 @@ public class SimpleTutorial : MonoBehaviour
                                 maxAngle = Kinect_Angle(Kinect.RHandPos.x, Kinect.RHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2);
                             }
 
-                            if (StateManager.nextCameraPos.y == (prevCameraAngle + MakeWordBank.camHorizontalBound)) //originally -16f
+                            if (StateManager.nextCameraPos.y <= (prevCameraAngle + MakeWordBank.camHorizontalBound)) //originally -16f
                             { //The image can be panned around indefinitely so change in position is used
                                 angleLeftTotal += maxAngle;
                                 maxAngle = 0f;
@@ -992,7 +998,7 @@ public class SimpleTutorial : MonoBehaviour
             }
             else if (step == 27)
             {
-                StateManager.nextCameraPos = new Vector3(0f, 0f, 0f);
+                StateManager.makeCamReset = true;
                 prevCameraAngle = 0f;
                 step++;
             }
@@ -1059,7 +1065,7 @@ public class SimpleTutorial : MonoBehaviour
                             }
                         }
 
-                        if (StateManager.nextCameraPos.y == (prevCameraAngle - MakeWordBank.camHorizontalBound)) //originally -20f
+                        if (StateManager.nextCameraPos.y >= (prevCameraAngle - MakeWordBank.camHorizontalBound)) //originally -20f
                         {
                             angleRightTotal += maxAngle;
                             maxAngle = 0f;
@@ -1090,7 +1096,7 @@ public class SimpleTutorial : MonoBehaviour
                 VP2.SetActive(true);
                 cameraUDVP.Play();
                 StateManager.moveCameraR = false;
-                StateManager.nextCameraPos = new Vector3(0f, 0f, 0f);
+                StateManager.makeCamReset = true;
                 StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
                 prevCameraAngle = 0f;
                 step++;
@@ -1191,7 +1197,7 @@ public class SimpleTutorial : MonoBehaviour
             }
             else if (step == 31)
             {
-                StateManager.nextCameraPos = new Vector3(0f, 0f, 0f);
+                StateManager.makeCamReset = true;
                 prevCameraAngle = StateManager.cameraPos.x;
                 step++;
             }
@@ -1285,7 +1291,7 @@ public class SimpleTutorial : MonoBehaviour
                 VP5.SetActive(true);
                 clickVP.Play();
                 StateManager.moveCameraD = false; //cam's false too now
-                StateManager.nextCameraPos = new Vector3(0f, 0f, 0f);
+                StateManager.makeCamReset = true;
                 step++;
             }
             else if (step == 34)

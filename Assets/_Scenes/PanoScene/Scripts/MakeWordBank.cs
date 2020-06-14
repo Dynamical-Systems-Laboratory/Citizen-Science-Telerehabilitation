@@ -185,9 +185,9 @@ public class MakeWordBank : MonoBehaviour {
     public static float leftBound = -.35f; // cursor
     public static float rightBound = .34f;
     public static float upperBound = 0.239f;
-    public static float lowerBound = -0.198f;
+    public static float lowerBound = -0.22f;
 
-    public static float camHorizontalBound = -25f; // camera
+    public static float camHorizontalBound = -20f; // camera
     public static float camVerticalBound = -16f;
 
     public static Vector3 centerScreen = new Vector3(0f, 0.01f, 0f);
@@ -460,6 +460,7 @@ public class MakeWordBank : MonoBehaviour {
             else if (Input.GetKey(KeyCode.M) && state.getSelected() != null)
             {
                 ClickAction.dropObject();
+                //alternative dropObject that lets you pick up and move a tag that has already been placed?
             }
         }
         if (stepOfTutorial >= 22)

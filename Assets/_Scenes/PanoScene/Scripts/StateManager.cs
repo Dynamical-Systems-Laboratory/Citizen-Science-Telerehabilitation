@@ -381,7 +381,7 @@ public class StateManager : MonoBehaviour {
             }
         }
 
-        if (moveCameraL || moveCameraR || moveCameraU || moveCameraD)
+        if (moveCameraL || moveCameraR || moveCameraU || moveCameraD || cameraAdd != new Vector3(0f, 0f, 0f))
         {
             nextCameraPos -= cameraAdd;
         }
@@ -426,7 +426,7 @@ public class StateManager : MonoBehaviour {
                 Vector3 change = (nextCameraPos-cameraPos); //take the amount that the camera moves and displace all placed tags by it
                 foreach (GameObject obj in tagsPlaced) //8
                 {
-                    obj.transform.position -= new Vector3(change.y*camSpeed, -change.x*1.64f, 0f);
+                    obj.transform.position -= new Vector3(change.y * camSpeed, -change.x * 1.64f / 2f * camSpeed, 0f);
 
                     //float offset = (obj.transform.position.x - nextCameraPos.y);
                     //Debug.Log("Object " + obj.name + ": " + obj.transform.position + ", offset: " + (obj.transform.position - nextCameraPos) + ", " + offset);
@@ -539,8 +539,8 @@ public class StateManager : MonoBehaviour {
         Vector3 outCursor = cursorPos * cursorPosMod; //modifier to match tag vals (was 180)
         Debug.Log("Cursor Info: " + cursorPos + ", Modified Cursor Info: " + outCursor);
 
-        //Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
-        //Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);
+        Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
+        Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);
 
         buttons = 0;
         if (kinectReady)
