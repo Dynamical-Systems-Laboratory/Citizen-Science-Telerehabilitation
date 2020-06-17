@@ -95,8 +95,11 @@ public class StateManager : MonoBehaviour {
 
     public static GameObject mainCamera;
     public bool cameraMoving;
+    public static Vector3 absRotation; //rotation of camera without lowest abs val conversion
 
-    private float camSpeed = 2f; //factor that speeds up the camera's movement
+    public float userCamSpeed = 1.5f;
+    public float camSpeed = 1; //factor that speeds up the camera's movement
+
     public float xOffset = 25.9f; //factor that sets tags to dissapear after being a certain dist away from camera's center
     private float cursorSpeed = 1.35f; //factor that speeds up cursor's movement
 
@@ -169,6 +172,7 @@ public class StateManager : MonoBehaviour {
         this.falconCursor = GameObject.Find("CursorSphere");
         this.falconCamera = GameObject.Find("CursorCamera").GetComponent<Camera>();
         mainCamera = GameObject.Find("Main Camera");
+        camSpeed = Mathf.Pow(2, userCamSpeed / 2); //cam speed reroute
     }
 
     private void Update()
@@ -185,7 +189,6 @@ public class StateManager : MonoBehaviour {
             //moveCameraD = true;
             makeCursReset = false;
             makeCamReset = false;
-
         }
         //if (Kinect.LHandPos.x != 0 || Kinect.LHandPos.y != 0 || Kinect.LHandPos.z != 0)
         //{
@@ -274,7 +277,7 @@ public class StateManager : MonoBehaviour {
 
         //    speeds[speeds.Count - 1] = new_speed;
         //}
-        if (Input.GetKey(KeyCode.B)) //new update - forwards and backwards
+        if (Input.GetKey(KeyCode.V)) //new update - forwards and backwards
         {
             rodClicked = true;
         }
@@ -324,7 +327,7 @@ public class StateManager : MonoBehaviour {
             if (Input.GetKey(KeyCode.A))
             {
                 nextCameraPos += new Vector3(0f, -0.6f * camSpeed, 0f);
-                //change += new Vector3(0f, -0.45f, 0f);
+                absRotation += new Vector3(0f, -0.6f * camSpeed, 0f);
                 cameraL = true;
             }
         }
@@ -341,7 +344,7 @@ public class StateManager : MonoBehaviour {
             if (Input.GetKey(KeyCode.D))
             {
                 nextCameraPos += new Vector3(0f, 0.6f * camSpeed, 0f);
-                //change += new Vector3(0f, 0.45f, 0f);
+                absRotation += new Vector3(0f, 0.6f * camSpeed, 0f);
                 cameraR = true;
             }
         }
@@ -358,7 +361,7 @@ public class StateManager : MonoBehaviour {
             if (Input.GetKey(KeyCode.W))
             {
                 nextCameraPos += new Vector3(-.45f * camSpeed, 0f, 0f);
-                //change += new Vector3(-.6f, 0f, 0f);
+                absRotation += new Vector3(-.45f * camSpeed, 0f, 0f);
                 cameraU = true;
             }
         }
@@ -376,7 +379,7 @@ public class StateManager : MonoBehaviour {
             if (Input.GetKey(KeyCode.S))
             {
                 nextCameraPos += new Vector3(.45f * camSpeed, 0f, 0f);
-                //change += new Vector3(.6f, 0f, 0f);
+                absRotation += new Vector3(.45f * camSpeed, 0f, 0f);
                 cameraD = true;
             }
         }
@@ -397,25 +400,36 @@ public class StateManager : MonoBehaviour {
         //    nextCameraPos.x = 35f;
         //}
         //old boundaries [-16.8,17.4]
-        if (nextCameraPos.x < -90)
+
+        if (nextCameraPos.x < MakeWordBank.camBot) //[-90,90]
         {
-            nextCameraPos.x = -90f;
+            nextCameraPos.x = MakeWordBank.camBot;
         }
-        else if (nextCameraPos.x > 90)
+        else if (nextCameraPos.x > MakeWordBank.camTop)
         {
-            nextCameraPos.x = 90f;
+            nextCameraPos.x = MakeWordBank.camTop;
+        }
+
+        if (absRotation.x < MakeWordBank.camBot)
+        {
+            absRotation.x = MakeWordBank.camBot;
+        }
+        else if (absRotation.x > MakeWordBank.camTop)
+        {
+            absRotation.x = MakeWordBank.camTop;
         }
 
         if (makeCamReset) //cam reset method
         {
             nextCameraPos = new Vector3(0f, 0f, 0f);
+            absRotation = nextCameraPos;
             makeCamReset = false;
         }
         else
         {
             nextCameraPos.y = getLowestAngle(nextCameraPos.y); //reset x pos if goes too far
             //nextCameraPos = new Vector3(nextCameraPos.x*camSpeed, nextCameraPos.y*camSpeed,nextCameraPos.x*camSpeed);
-            Debug.Log("Camera Info: (" + nextCameraPos.y + ", " + nextCameraPos.x + ", " + nextCameraPos.z + ")");
+            Debug.Log("Camera Info: (" + nextCameraPos.y + ", " + nextCameraPos.x + ", " + nextCameraPos.z + "), abs: " + absRotation);
             if (cameraMoving)
             {
                 //quarterion rotations ***
@@ -432,7 +446,7 @@ public class StateManager : MonoBehaviour {
                     //Debug.Log("Object " + obj.name + ": " + obj.transform.position + ", offset: " + (obj.transform.position - nextCameraPos) + ", " + offset);
 
                     Color newColor = obj.GetComponent<Image>().color;
-                    if (obj.transform.position.x > 10 && obj.transform.position.x < 101)//offset > xOffset) disapear after a certain x (factoring for full rotations of 180 degrees)
+                    if (obj.transform.position.x > 15 && obj.transform.position.x < 101)//offset > xOffset) disapear after a certain x (factoring for full rotations of 180 degrees)
                     {
                         obj.GetComponentInChildren<Text>().color = Color.clear; //text color change
                         newColor.a = 0;
@@ -542,20 +556,20 @@ public class StateManager : MonoBehaviour {
         Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
         Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);
 
-        buttons = 0;
-        if (kinectReady)
-        {
-            buttons |= falconButtons[0] ? 1 : 0; // middle button
-            buttons |= falconButtons[1] ? 2 : 0; // left button
-            buttons |= falconButtons[2] ? 4 : 0; // top button
-            buttons |= falconButtons[3] ? 2 : 0; // right button
-        }
-        else
-        {
-            cursorPos = Input.mousePosition;
-            buttons |= Input.GetMouseButton(1) ? 1 : 0; // right mouse button
-            buttons |= Input.GetMouseButton(0) ? 2 : 0; // left mouse button
-        }
+        //buttons = 0;
+        //if (kinectReady)
+        //{
+        //    buttons |= falconButtons[0] ? 1 : 0; // middle button
+        //    buttons |= falconButtons[1] ? 2 : 0; // left button
+        //    buttons |= falconButtons[2] ? 4 : 0; // top button
+        //    buttons |= falconButtons[3] ? 2 : 0; // right button
+        //}
+        //else
+        //{
+        //    cursorPos = Input.mousePosition;
+        //    buttons |= Input.GetMouseButton(1) ? 1 : 0; // right mouse button
+        //    buttons |= Input.GetMouseButton(0) ? 2 : 0; // left mouse button
+        //}
         //Debug.Log("Update() exit - StateManager");
     }
 

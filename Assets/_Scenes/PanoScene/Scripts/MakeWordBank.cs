@@ -182,13 +182,15 @@ public class MakeWordBank : MonoBehaviour {
     public static bool skipTrashingTutorialStep = false;
     public static bool continueAfterOtherQuit = false;
 
-    public static float leftBound = -.35f; // cursor
-    public static float rightBound = .34f;
-    public static float upperBound = 0.239f;
-    public static float lowerBound = -0.22f;
+    public static float leftBound = -92.1f / StateManager.cursorPosMod;//-.41f; // cursor
+    public static float rightBound = 90.5f / StateManager.cursorPosMod;//.39f;
+    public static float upperBound = 58.4f / StateManager.cursorPosMod;///0.239f;
+    public static float lowerBound = -0.215f;
 
     public static float camHorizontalBound = -20f; // camera
     public static float camVerticalBound = -16f;
+    public static float camTop = 90;
+    public static float camBot = -90;
 
     public static Vector3 centerScreen = new Vector3(0f, 0.01f, 0f);
 
@@ -430,6 +432,7 @@ public class MakeWordBank : MonoBehaviour {
                 }
             }
             //CLICKING
+            //V for button press
             if (Input.GetKey(KeyCode.B)) //select
             {
                 if (ClickAction.buttonClose(nextButton.transform.position))

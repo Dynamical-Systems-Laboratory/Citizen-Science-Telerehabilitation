@@ -158,7 +158,7 @@ public class SimpleTutorial : MonoBehaviour
             }
             
             if (initialized && Input.GetKey(KeyCode.Space))
-            {
+            { //camera movement ~ issue
                 step = 25;
             }
 
@@ -926,12 +926,12 @@ public class SimpleTutorial : MonoBehaviour
                         text.text = "Pan the image to the left by rotating the rod counter-clockwise" + "\n"
                             + "with your right hand moving upward and your left hand moving downward";
 
-                        if (Kinect_Angle(Kinect.RHandPos.x, Kinect.RHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2) > maxAngle)
-                        {
-                            maxAngle = Kinect_Angle(Kinect.RHandPos.x, Kinect.RHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2);
-                        }
+                        //if (Kinect_Angle(Kinect.RHandPos.x, Kinect.RHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2) > maxAngle)
+                        //{
+                        //    maxAngle = Kinect_Angle(Kinect.RHandPos.x, Kinect.RHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2);
+                        //}
 
-                        if (StateManager.nextCameraPos.y <= MakeWordBank.camHorizontalBound) //originally -16f
+                        if (StateManager.absRotation.y <= MakeWordBank.camHorizontalBound) //originally -16f
                         {
                             angleLeftTotal += maxAngle;
                             maxAngle = 0f;
@@ -958,7 +958,7 @@ public class SimpleTutorial : MonoBehaviour
 
                         if (!logged && !StateManager.cameraL)
                         {
-                            prevCameraAngle = StateManager.cameraPos.y;
+                            prevCameraAngle = StateManager.absRotation.y; //cameraPos?
                             resetted = true;
                             logged = true;
                         }
@@ -970,7 +970,7 @@ public class SimpleTutorial : MonoBehaviour
                                 maxAngle = Kinect_Angle(Kinect.RHandPos.x, Kinect.RHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2);
                             }
 
-                            if (StateManager.nextCameraPos.y <= (prevCameraAngle + MakeWordBank.camHorizontalBound)) //originally -16f
+                            if (StateManager.absRotation.y <= (prevCameraAngle + MakeWordBank.camHorizontalBound)) //originally -16f
                             { //The image can be panned around indefinitely so change in position is used
                                 angleLeftTotal += maxAngle;
                                 maxAngle = 0f;
@@ -1023,7 +1023,7 @@ public class SimpleTutorial : MonoBehaviour
                         }
                     }
 
-                    if (StateManager.nextCameraPos.y >= -MakeWordBank.camHorizontalBound) //originally 16f
+                    if (StateManager.absRotation.y >= -MakeWordBank.camHorizontalBound) //originally 16f
                     {
                         angleRightTotal += maxAngle;
                         maxAngle = 0f;
@@ -1049,7 +1049,7 @@ public class SimpleTutorial : MonoBehaviour
 
                     if (!logged && !StateManager.cameraR)
                     {
-                        prevCameraAngle = StateManager.cameraPos.y;
+                        prevCameraAngle = StateManager.absRotation.y;
                         resetted = true;
                         logged = true;
                     }
@@ -1065,7 +1065,7 @@ public class SimpleTutorial : MonoBehaviour
                             }
                         }
 
-                        if (StateManager.nextCameraPos.y >= (prevCameraAngle - MakeWordBank.camHorizontalBound)) //originally -20f
+                        if (StateManager.absRotation.y >= (prevCameraAngle - MakeWordBank.camHorizontalBound)) //originally -20f
                         {
                             angleRightTotal += maxAngle;
                             maxAngle = 0f;
@@ -1158,7 +1158,10 @@ public class SimpleTutorial : MonoBehaviour
                             text.text = "Good job! Now repeat this movement for 1 more time" + "\n"
                                  + "Move your hands as fast as you can every time";
                         }
-
+                        if (StateManager.nextCameraPos.x >= MakeWordBank.camTop) //if goes over bounds than reset
+                        {
+                            StateManager.makeCamReset = true;
+                        }
                         if (StateManager.cameraU)
                         {
                             moved = true;
@@ -1210,7 +1213,6 @@ public class SimpleTutorial : MonoBehaviour
                 {
                     text.text = "Pan the image downward by rotating both your wrists down" + "\n"
                         + "and then back to level as fast as you can";
-
                     if (StateManager.cameraD)
                     {
                         moved = true;
@@ -1250,7 +1252,10 @@ public class SimpleTutorial : MonoBehaviour
                         text.text = "Good job! Now repeat this movement for 1 more time" + "\n"
                              + "Move your hands as fast as you can every time";
                     }
-
+                    if (StateManager.nextCameraPos.x <= MakeWordBank.camBot) //if goes over bounds than reset
+                    {
+                        StateManager.makeCamReset = true;
+                    }
                     if (StateManager.cameraD)
                     {
                         moved = true;

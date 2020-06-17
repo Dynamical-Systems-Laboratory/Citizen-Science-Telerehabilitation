@@ -595,4 +595,5 @@ public struct TagInfo {
 	public string name;
 	public int userID;
 	public float timeStamp;
+    //public float imageNumber;
 };
