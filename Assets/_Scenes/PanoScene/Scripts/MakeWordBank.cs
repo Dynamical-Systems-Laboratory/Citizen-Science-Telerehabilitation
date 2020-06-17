@@ -1349,16 +1349,18 @@ public class MakeWordBank : MonoBehaviour {
             }
         }
         string newName;
-        if (inTutorial || inPracticeLevel)
+        if ((inTutorial || inPracticeLevel))
         {
             newName = tutorialWords[tutorialWordsIndex];
             tutorialWordsIndex++;
+            tagsRemainingText.text = (tutorialWords.Length - (tutorialWordsIndex+1)).ToString() + " Tags Left";
         }
         else
         {
             newName = wordBank[SEQUENCE[imageIndex, sequenceIndex]];
             sequenceIndex++; //same as practice level?
             //newName = "placeholder";
+            tagsRemainingText.text = (SEQUENCE.Length/51 - (sequenceIndex+1)).ToString() + " Tags Left";
         }
         Debug.Log("Replacing " + toReplace.name + " to " + newName);
         for (int i = 0; i < tags.Length; i++) //replace tag text

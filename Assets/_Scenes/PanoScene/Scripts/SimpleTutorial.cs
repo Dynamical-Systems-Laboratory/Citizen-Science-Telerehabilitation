@@ -156,11 +156,6 @@ public class SimpleTutorial : MonoBehaviour
             {
                 step = 35;//changed from 35
             }
-            
-            if (initialized && Input.GetKey(KeyCode.Space))
-            { //camera movement ~ issue
-                step = 25;
-            }
 
             if (!initialized)
             {
