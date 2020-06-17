@@ -985,8 +985,8 @@ public class MakeWordBank : MonoBehaviour {
                     tag.transform.Translate(newPos * Time.deltaTime);
                 }
                 helpTextContainer.SetActive(true);
-                focusor.transform.localPosition = new Vector3(208.12f, -235f, -271.39f); //transforming black thing (literally making the user focus on something)
-                focusor.transform.localScale = new Vector3(10.8f, 4.4f, 3f);
+                focusor.transform.localPosition = new Vector3(208.12f, -276.5f, -271.39f); //transforming black thing (literally making the user focus on something)
+                focusor.transform.localScale = new Vector3(10.8f, 4.62f, 3f);
                 tutorialText.text = "This list of words may describe objects in the image" + "\n"
                     + "(Push the rod forward to continue)";
                 //helpTextPanel.GetComponent<RectTransform>().sizeDelta
@@ -1006,7 +1006,7 @@ public class MakeWordBank : MonoBehaviour {
                 {
                     if ((StateManager.falconButtons[1] == true && prevClick == false) || moveOn())
                     {
-                        focusor.transform.localPosition = new Vector3(208.12f, -155f, -271.39f);
+                        focusor.transform.localPosition = new Vector3(208.12f, -187.6f, -271.39f);
                         focusor.transform.localScale = new Vector3(10.8f, 1.1f, 3f);
                         tutorialText.text = "Select the tag \"Building\" by pushing the rod";
                         timer = 0f;
@@ -1077,8 +1077,8 @@ public class MakeWordBank : MonoBehaviour {
                     if (StateManager.falconButtons[1] == true && prevClick == false || moveOn())
                     {
                         timer = 0f;
-                        focusor.transform.localPosition = new Vector3(208.12f, -235f, -271.39f);
-                        focusor.transform.localScale = new Vector3(10.8f, 4.4f, 3f);
+                        focusor.transform.localPosition = new Vector3(208.12f, -276.5f, -271.39f);
+                        focusor.transform.localScale = new Vector3(10.8f, 4.62f, 3f);
                         tutorialText.text = "Select a tag you would like to discard from the wordbank";
                         //helpTextPanel.GetComponent<RectTransform>().sizeDelta
                         //= new Vector2(500, 60);
@@ -1111,8 +1111,8 @@ public class MakeWordBank : MonoBehaviour {
             {
                 if (state.getSelected() == null)
                 {
-                    focusor.transform.localPosition = new Vector3(208.12f, -235f, -271.39f);
-                    focusor.transform.localScale = new Vector3(10.8f, 4.4f, 3f);
+                    focusor.transform.localPosition = new Vector3(208.12f, -276.5f, -271.39f);
+                    focusor.transform.localScale = new Vector3(10.8f, 4.62f, 3f);
                     tutorialText.text = "The tag you trashed is replaced with a new one" + "\n"
                         + "(Push the rod forward to continue)"; ;
                     //helpTextPanel.GetComponent<RectTransform>().sizeDelta
@@ -1135,7 +1135,7 @@ public class MakeWordBank : MonoBehaviour {
                     {
                         tutorialText.text = "Press the next image button to go to the next image\n" +
                         "(Push the rod forward to continue)";
-                        focusor.transform.localPosition = new Vector3(360f, 215f, 0f); //edit focusor * (offset)
+                        focusor.transform.localPosition = new Vector3(332.5f, 141f, 0f); //edit focusor * (offset)
                         focusor.transform.localScale = new Vector3(15f, 1.65f, 3f);
                         //helpTextPanel.GetComponent<RectTransform>().sizeDelta
                         //= new Vector2(500, 60);
@@ -1157,8 +1157,8 @@ public class MakeWordBank : MonoBehaviour {
                 {
                     if (StateManager.falconButtons[1] == true && prevClick == false || moveOn())
                     {
-                        focusor.transform.localPosition = new Vector3(158f, -200f, -350f);
-                        focusor.transform.localScale = new Vector3(6.5f, 1.1f, 3f);
+                        focusor.transform.localPosition = new Vector3(166.2f, 305f, -350f);
+                        focusor.transform.localScale = new Vector3(7.1f, 1.1f, 3f);
                         tutorialText.text
                         = "You can quit any time you want by pressing the Quit button" + "\n" +
                         "(Push the rod forward to continue)";

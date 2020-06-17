@@ -97,7 +97,7 @@ public class StateManager : MonoBehaviour {
     public bool cameraMoving;
     public static Vector3 absRotation; //rotation of camera without lowest abs val conversion
 
-    public float userCamSpeed = 1.5f;
+    public float userCamSpeed = 1.8f;
     public float camSpeed = 1; //factor that speeds up the camera's movement
 
     public float xOffset = 25.9f; //factor that sets tags to dissapear after being a certain dist away from camera's center
