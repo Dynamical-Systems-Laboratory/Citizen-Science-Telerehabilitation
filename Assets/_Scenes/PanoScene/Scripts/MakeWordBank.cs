@@ -235,6 +235,8 @@ public class MakeWordBank : MonoBehaviour {
 
     public static bool initialized = false;
 
+    public static bool inHomeScreen = false;
+
     //Array of the container class I made below for a "Tag" object - since it's static, 
     //you can have an eventlistener on another class and call methods like MakeWordBank.replaceTag(GameObject obj)
     //which replaces the Tag with the next Tag name in line, uploaded from the .csv file.
@@ -444,6 +446,11 @@ public class MakeWordBank : MonoBehaviour {
                 else if (ClickAction.buttonClose(quitButton.transform.position))
                 {
                     eventListener.OnPointerClick(quitButton);
+
+                    homeCamera.SetActive(true);
+                    mainCamera.SetActive(false);
+                    UICamera.SetActive(false);
+                    videoCamera.SetActive(false);
                 }
                 else
                 {

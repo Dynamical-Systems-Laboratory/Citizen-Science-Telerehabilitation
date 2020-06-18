@@ -28,6 +28,7 @@ TagManager:
   - StartGameButton
   - ProfileButton
   - CalibrateButton
+  - AboutProjectButton
   layers:
   - Default
   - TransparentFX
