@@ -97,7 +97,6 @@ public class StateManager : MonoBehaviour {
     public bool cameraMoving;
     public static Vector3 absRotation; //rotation of camera without lowest abs val conversion
 
-    public float userCamSpeed = 1.8f;
     public float camSpeed = 1; //factor that speeds up the camera's movement
 
     public float xOffset = 25.9f; //factor that sets tags to dissapear after being a certain dist away from camera's center
@@ -172,7 +171,7 @@ public class StateManager : MonoBehaviour {
         this.falconCursor = GameObject.Find("CursorSphere");
         this.falconCamera = GameObject.Find("CursorCamera").GetComponent<Camera>();
         mainCamera = GameObject.Find("Main Camera");
-        camSpeed = Mathf.Pow(2, userCamSpeed / 2); //cam speed reroute
+        //camSpeed = Mathf.Pow(2, userCamSpeed / 2); //cam speed reroute
     }
 
     private void Update()
@@ -316,6 +315,7 @@ public class StateManager : MonoBehaviour {
         //}
 
         nextCameraPos = cameraPos;
+
         if (moveCameraL)
         {
             //if (Kinect.RHandPos.y > Kinect.LHandPos.y && Kinect_Angle(Kinect.RHandPos.x, Kinect.RHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2) > (SimpleTutorial.angleLeftAverage * 0.4f))
@@ -419,6 +419,12 @@ public class StateManager : MonoBehaviour {
             absRotation.x = MakeWordBank.camTop;
         }
 
+        //if (Input.GetKey(KeyCode.Y))
+        //{
+        //    camSpeed += .01f;
+        //}
+        //Debug.Log("Cam Speed: " + camSpeed);
+
         if (makeCamReset) //cam reset method
         {
             nextCameraPos = new Vector3(0f, 0f, 0f);
@@ -440,7 +446,8 @@ public class StateManager : MonoBehaviour {
                 Vector3 change = (nextCameraPos-cameraPos); //take the amount that the camera moves and displace all placed tags by it
                 foreach (GameObject obj in tagsPlaced) //8
                 {
-                    obj.transform.position -= new Vector3(change.y * camSpeed, -change.x * 1.64f / 2f * camSpeed, 0f);
+                    obj.transform.position -= new Vector3(change.y * 1.82f, -change.x * 1.672f, 0f);
+                    //obj.transform.position -= change;
 
                     //float offset = (obj.transform.position.x - nextCameraPos.y);
                     //Debug.Log("Object " + obj.name + ": " + obj.transform.position + ", offset: " + (obj.transform.position - nextCameraPos) + ", " + offset);

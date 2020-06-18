@@ -223,6 +223,7 @@ public class MakeWordBank : MonoBehaviour {
     public static GameObject mainCamera;
     public static GameObject UICamera;
     public static GameObject videoCamera;
+    public static GameObject homeCamera;
 
     public static bool play1 = false;
     public static bool play2 = false;
@@ -355,6 +356,7 @@ public class MakeWordBank : MonoBehaviour {
         mainCamera = GameObject.Find("Main Camera");
         UICamera = GameObject.Find("UICamera");
         videoCamera = GameObject.Find("VideoCamera");
+        homeCamera = GameObject.Find("HomeCamera");
 
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
 
@@ -491,9 +493,11 @@ public class MakeWordBank : MonoBehaviour {
         {
             if (!initialized)
             {
-                //mainCamera.SetActive(true);
-                //UICamera.SetActive(true);
-                //videoCamera.SetActive(false);
+                mainCamera.SetActive(true);
+                UICamera.SetActive(true);
+                videoCamera.SetActive(false);
+                homeCamera.SetActive(false);
+
                 StateManager.moveCameraU = true;
                 StateManager.moveCameraD = true;
                 StateManager.moveCameraL = true;

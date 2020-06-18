@@ -13,6 +13,7 @@ public class SimpleTutorial : MonoBehaviour
     public static GameObject mainCamera;
     public static GameObject UICamera;
     public static GameObject videoCamera;
+    public static GameObject homeCamera;
     public static GameObject canvas;
     public static Camera cam;
 
@@ -126,6 +127,7 @@ public class SimpleTutorial : MonoBehaviour
         mainCamera = GameObject.Find("Main Camera");
         UICamera = GameObject.Find("UICamera");
         videoCamera = GameObject.Find("VideoCamera");
+        homeCamera = GameObject.Find("HomeCamera");
         cam = mainCamera.GetComponent<Camera>();
         textPanel = GameObject.Find("TextPanel");
         //text = GameObject.Find("Text").GetComponent<Text>() as Text;
@@ -162,6 +164,7 @@ public class SimpleTutorial : MonoBehaviour
                 mainCamera.SetActive(true);
                 UICamera.SetActive(false);
                 videoCamera.SetActive(false);
+                homeCamera.SetActive(false);
                 circle.SetActive(false);
                 cam.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
                 StateManager.moveCameraU = false;

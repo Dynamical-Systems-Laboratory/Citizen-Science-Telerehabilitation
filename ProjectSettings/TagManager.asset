@@ -23,6 +23,11 @@ TagManager:
   - NextButton
   - SimpleTutorialText
   - Circle
+  - HomeCanvas
+  - HomeCamera
+  - StartGameButton
+  - ProfileButton
+  - CalibrateButton
   layers:
   - Default
   - TransparentFX
