@@ -64,7 +64,7 @@ public class HomeScreen : MonoBehaviour
         //main loop
         if (canContinue)
         {
-
+            Debug.Log("in home screen... " + MakeWordBank.inHomeScreen.ToString());
             //Clicking
             if (Input.GetKey(KeyCode.B))
             {
@@ -73,6 +73,7 @@ public class HomeScreen : MonoBehaviour
                     homeCamera.SetActive(false);
                     mainCamera.SetActive(true);
                     UICamera.SetActive(true);
+                    MakeWordBank.inHomeScreen = false;
                 }
                 else if (ClickAction.buttonClose(profileButton.transform.position))
                 {

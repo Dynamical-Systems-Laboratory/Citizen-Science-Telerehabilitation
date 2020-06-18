@@ -446,7 +446,7 @@ public class MakeWordBank : MonoBehaviour {
                 else if (ClickAction.buttonClose(quitButton.transform.position))
                 {
                     eventListener.OnPointerClick(quitButton);
-
+                    inHomeScreen = true;
                     homeCamera.SetActive(true);
                     mainCamera.SetActive(false);
                     UICamera.SetActive(false);

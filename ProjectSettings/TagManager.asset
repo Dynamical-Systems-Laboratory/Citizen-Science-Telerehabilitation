@@ -29,6 +29,7 @@ TagManager:
   - ProfileButton
   - CalibrateButton
   - AboutProjectButton
+  - QuitButton2
   layers:
   - Default
   - TransparentFX
