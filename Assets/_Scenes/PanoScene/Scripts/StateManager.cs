@@ -97,7 +97,7 @@ public class StateManager : MonoBehaviour {
     public bool cameraMoving;
     public static Vector3 absRotation; //rotation of camera without lowest abs val conversion
 
-    public float camSpeed = 1; //factor that speeds up the camera's movement
+    public static float camSpeed = 1; //factor that speeds up the camera's movement
 
     public float xOffset = 25.9f; //factor that sets tags to dissapear after being a certain dist away from camera's center
     private float cursorSpeed = 1.35f; //factor that speeds up cursor's movement
@@ -171,7 +171,6 @@ public class StateManager : MonoBehaviour {
         this.falconCursor = GameObject.Find("CursorSphere");
         this.falconCamera = GameObject.Find("CursorCamera").GetComponent<Camera>();
         mainCamera = GameObject.Find("Main Camera");
-        //camSpeed = Mathf.Pow(2, userCamSpeed / 2); //cam speed reroute
     }
 
     private void Update()
@@ -419,11 +418,11 @@ public class StateManager : MonoBehaviour {
             absRotation.x = MakeWordBank.camTop;
         }
 
-        //if (Input.GetKey(KeyCode.Y))
-        //{
-        //    camSpeed += .01f;
-        //}
-        //Debug.Log("Cam Speed: " + camSpeed);
+        if (Input.GetKey(KeyCode.Y))
+        {
+            camSpeed += .01f;
+        }
+        Debug.Log("Cam Speed: " + camSpeed);
 
         if (makeCamReset) //cam reset method
         {
@@ -434,7 +433,6 @@ public class StateManager : MonoBehaviour {
         else
         {
             nextCameraPos.y = getLowestAngle(nextCameraPos.y); //reset x pos if goes too far
-            //nextCameraPos = new Vector3(nextCameraPos.x*camSpeed, nextCameraPos.y*camSpeed,nextCameraPos.x*camSpeed);
             Debug.Log("Camera Info: (" + nextCameraPos.y + ", " + nextCameraPos.x + ", " + nextCameraPos.z + "), abs: " + absRotation);
             if (cameraMoving)
             {
@@ -446,8 +444,7 @@ public class StateManager : MonoBehaviour {
                 Vector3 change = (nextCameraPos-cameraPos); //take the amount that the camera moves and displace all placed tags by it
                 foreach (GameObject obj in tagsPlaced) //8
                 {
-                    obj.transform.position -= new Vector3(change.y * 1.82f, -change.x * 1.672f, 0f);
-                    //obj.transform.position -= change;
+                    obj.transform.position -= new Vector3(change.y * 3.56f, -change.x * 3.58f, 0f); //**
 
                     //float offset = (obj.transform.position.x - nextCameraPos.y);
                     //Debug.Log("Object " + obj.name + ": " + obj.transform.position + ", offset: " + (obj.transform.position - nextCameraPos) + ", " + offset);

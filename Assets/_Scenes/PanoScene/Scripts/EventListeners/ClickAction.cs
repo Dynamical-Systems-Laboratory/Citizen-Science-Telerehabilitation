@@ -314,7 +314,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
         if (objectClicked == null && state.getSelected() != null) // tag was placed  *******
         {
             state.getSelected().GetComponentInChildren<Text>().color = Color.blue; //instead of just GetComponent
-			state.getSelected().transform.localScale -= new Vector3(0.6f, 0.6f, 0f); //scale it down to 40% size (not thickness tho)
+			state.getSelected().transform.localScale -= new Vector3(0.5f, 0.5f, 0f); //scale it down to 40% size (not thickness tho)
             tagIsFollowing = false;
 			state.tagsPlaced.Add(state.getSelected()); //adds to movement list
             state.setSelected(null);
