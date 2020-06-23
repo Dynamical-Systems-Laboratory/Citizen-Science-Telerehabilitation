@@ -48,14 +48,14 @@ public class PowerpointScript : MonoBehaviour {
 						delay = 0f;
 						transitionTime = 1f;
 					} else { //Wait for keystroke
-						if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.BackQuote) && !Input.GetKeyDown(KeyCode.Escape)) {
+						if (MakeWordBank.moveOn() && !Input.GetKeyDown(KeyCode.BackQuote) && !Input.GetKeyDown(KeyCode.Escape)) {
 							slideIndex++;
 							delay = 0f;
 							transitionTime = 0.75f;
 						}
 					}
 				} else { //Powerpoint over:
-					if (Input.anyKeyDown) {
+					if (MakeWordBank.moveOn()) {
 						gameObject.SetActive (false);
                         //MakeWordBank.inTutorial = true;
                         SimpleTutorial.inSimpleTutorial = true;

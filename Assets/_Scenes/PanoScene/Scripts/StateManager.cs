@@ -98,8 +98,11 @@ public class StateManager : MonoBehaviour {
     public static Vector3 absRotation; //rotation of camera without lowest abs val conversion
 
     public float xOffset = 25.9f; //factor that sets tags to dissapear after being a certain dist away from camera's center
-    public static float camSpeed = 1.5f; //factor that speeds up the camera's movement
-    private float cursorSpeed = 1.2f; //factor that speeds up cursor's movement
+
+    public static float camSpeed = 1.6f; //factor that speeds up the camera's movement
+    public static float cursorSpeed = 2.5f; //factor that speeds up cursor's movement
+    public static float cursorSize = -0.4f; //factor that makes cursor bigger or smaller
+
 
     public List<GameObject> tagsPlaced;
 
@@ -417,11 +420,10 @@ public class StateManager : MonoBehaviour {
             absRotation.x = MakeWordBank.camTop;
         }
 
-        if (Input.GetKey(KeyCode.Y))
-        {
-            camSpeed += .01f;
-        }
-        Debug.Log("Cam Speed: " + camSpeed);
+        //if (Input.GetKey(KeyCode.Y))
+        //{
+        //    camSpeed += .01f;
+        //}
 
         if (makeCamReset) //cam reset method
         {
@@ -432,7 +434,7 @@ public class StateManager : MonoBehaviour {
         else
         {
             nextCameraPos.y = getLowestAngle(nextCameraPos.y); //reset x pos if goes too far
-            Debug.Log("Camera Info: (" + nextCameraPos.y + ", " + nextCameraPos.x + ", " + nextCameraPos.z + "), abs: " + absRotation);
+            Debug.Log("Camera Info: (" + nextCameraPos.y + ", " + nextCameraPos.x + ", " + nextCameraPos.z + "), abs: " + absRotation + ", speed: " + camSpeed);
             if (cameraMoving)
             {
                 //quarterion rotations ***
@@ -544,12 +546,14 @@ public class StateManager : MonoBehaviour {
                 cursorD = true;
             }
         }
-
+        Debug.Log("cursorAdd: " + cursorAdd);
         if (moveCursorL || moveCursorR || moveCursorU || moveCursorD)
         {
             nextCursorPos += cursorAdd;
         }
         cursorAdd = new Vector3(0f,0f,0f);
+
+        nextCursorPos.z = -cursorSize;
 
         //Cursor cannot move past screen borders (bondaries)
         if (nextCursorPos.x > MakeWordBank.rightBound)
@@ -569,9 +573,18 @@ public class StateManager : MonoBehaviour {
             nextCursorPos.y = MakeWordBank.lowerBound;
         }
 
+        //if (Input.GetKey(KeyCode.T))
+        //{
+        //    cursorSize += .0006f;
+        //}
+        //if (Input.GetKey(KeyCode.Y))
+        //{
+        //    cursorSize -= .0006f;
+        //}
+
         if (makeCursReset)
         {
-            cursorPos = new Vector3(0f, 0f, 0.418f);
+            cursorPos = new Vector3(0f, 0f, -cursorSize);
             makeCursReset = false;
         }
         else
@@ -579,7 +592,7 @@ public class StateManager : MonoBehaviour {
             cursorPos = nextCursorPos;
         }
         Vector3 outCursor = cursorPos * cursorPosMod; //modifier to match tag vals (was 180)
-        Debug.Log("Cursor Info: " + cursorPos + ", Modified Cursor Info: " + outCursor);
+        Debug.Log("Cursor Info: " + cursorPos + ", *Mod: " + outCursor + ", Size: " + cursorSize);
 
         Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
         Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);
@@ -603,9 +616,9 @@ public class StateManager : MonoBehaviour {
 
 }
 
-struct InvisTag
-{
-    string name;
-    //color blue
-    Vector3 location;
-}
+//struct InvisTag
+//{
+//    string name;
+//    //color blue
+//    Vector3 location;
+//}

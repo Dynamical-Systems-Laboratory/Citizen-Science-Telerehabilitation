@@ -224,6 +224,7 @@ public class MakeWordBank : MonoBehaviour {
     public static GameObject UICamera;
     public static GameObject videoCamera;
     public static GameObject homeCamera;
+    public static GameObject cursorCamera;
 
     public static bool play1 = false;
     public static bool play2 = false;
@@ -359,11 +360,15 @@ public class MakeWordBank : MonoBehaviour {
         UICamera = GameObject.Find("UICamera");
         videoCamera = GameObject.Find("VideoCamera");
         homeCamera = GameObject.Find("HomeCamera");
+        cursorCamera = GameObject.Find("CursorCamera");
 
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
 
         nextButton = GameObject.Find("NextButtonButton");
         quitButton = GameObject.Find("QuitButtonButton");
+
+        homeCamera.SetActive(false); //precausion
+        cursorCamera.SetActive(false);
     }
 
     public GameObject toClick = null; // obj for clicking
@@ -371,7 +376,10 @@ public class MakeWordBank : MonoBehaviour {
     // Update is called once per frame
     void Update(/*EventSystem eventSystem*/)
     {
-        Debug.Log("inTutorial: " + inTutorial.ToString() + " , inPractLvl: " + inPracticeLevel.ToString() + ", TagTutorial: " + skipTaggingTutorialStep.ToString());
+        Debug.Log("MainC: " + mainCamera.activeSelf + ", UIC: " + UICamera.activeSelf + ", HomeC: " + homeCamera.activeSelf +
+            ", VidC: " + videoCamera.activeSelf + ", CursorC: " + cursorCamera.activeSelf);
+        Debug.Log("inTutorial: " + inTutorial.ToString() + " , inPractLvl: " + inPracticeLevel.ToString() + ", inHome: " + inHomeScreen.ToString());
+        
         /* Button MoveSets
          * * arrow keys = cursor movement
          * * b = cursor select
@@ -380,7 +388,6 @@ public class MakeWordBank : MonoBehaviour {
          * * v = progress
          * * m = drop object
          */
-        Debug.Log("UICam: " + UICamera.name + ", " + UICamera.activeInHierarchy.ToString() + ", " + UICamera.activeSelf.ToString());
         if (stepOfTutorial >= 12)
         {
             StateManager.allSystemsGo = true;
@@ -399,13 +406,29 @@ public class MakeWordBank : MonoBehaviour {
                 StateManager.moveCameraL = false;
                 StateManager.moveCameraU = false;
                 StateManager.moveCameraD = false;
-                if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow))
+                //if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow))
+                //{
+                //    StateManager.cursorAdd.x += Input.GetAxis("Horizontal") * .003f;
+                //}
+                //if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
+                //{
+                //    StateManager.cursorAdd.y += Input.GetAxis("Vertical") * .003f;
+                //}
+                if (Input.GetKey(KeyCode.RightArrow))
                 {
-                    StateManager.cursorAdd.x = Input.GetAxis("Horizontal") * .003f;
+                    StateManager.moveCursorR = true;
                 }
-                if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
+                if (Input.GetKey(KeyCode.LeftArrow))
                 {
-                    StateManager.cursorAdd.y = Input.GetAxis("Vertical") * .003f;
+                    StateManager.moveCursorL = true;
+                }
+                if (Input.GetKey(KeyCode.UpArrow))
+                {
+                    StateManager.moveCursorU = true;
+                }
+                if (Input.GetKey(KeyCode.DownArrow))
+                {
+                    StateManager.moveCursorD = true;
                 }
             }
             else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)) //camera
@@ -417,17 +440,17 @@ public class MakeWordBank : MonoBehaviour {
                 if (Input.GetKey(KeyCode.D))
                 {
                     //StateManager.cameraAdd.x = -.6f;
-                    StateManager.moveCameraD = true;
+                    StateManager.moveCameraR = true;
                 }
                 if (Input.GetKey(KeyCode.A))
                 {
                     //StateManager.cameraAdd.x = .6f;
-                    StateManager.moveCameraD = true;
+                    StateManager.moveCameraL = true;
                 }
                 if (Input.GetKey(KeyCode.W))
                 {
                     //StateManager.cameraAdd.y = .5f;
-                    StateManager.moveCameraD = true;
+                    StateManager.moveCameraU = true;
                 }
                 if (Input.GetKey(KeyCode.S))
                 {
@@ -446,11 +469,11 @@ public class MakeWordBank : MonoBehaviour {
                 else if (ClickAction.buttonClose(quitButton.transform.position))
                 {
                     eventListener.OnPointerClick(quitButton);
-                    inHomeScreen = true;
                     homeCamera.SetActive(true);
                     mainCamera.SetActive(false);
                     UICamera.SetActive(false);
                     videoCamera.SetActive(false);
+                    inHomeScreen = true;
                 }
                 else
                 {
@@ -533,7 +556,7 @@ public class MakeWordBank : MonoBehaviour {
             { //Welcome screen step:
                 //timeSpentAfterSurvey += Time.deltaTime;
                 //if (timeSpentAfterSurvey >= 2f)
-                if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Escape))
+                if (moveOn() && !Input.GetKeyDown(KeyCode.Escape))
                 { //Move to the next step (change for falcon):
                     welcomeScreen.SetActive(false);
                     helpTextContainer.SetActive(false);

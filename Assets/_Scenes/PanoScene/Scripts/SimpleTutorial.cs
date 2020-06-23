@@ -118,7 +118,7 @@ public class SimpleTutorial : MonoBehaviour
     public static UnityEngine.Video.VideoPlayer clickVP;
 
     public static bool startedPlaying = false;
-
+    //public static bool calibrationEdgeCase = false;
 
 
     // Start is called before the first frame update
@@ -164,7 +164,8 @@ public class SimpleTutorial : MonoBehaviour
                 mainCamera.SetActive(true);
                 UICamera.SetActive(false);
                 videoCamera.SetActive(false);
-                homeCamera.SetActive(false);
+                MakeWordBank.homeCamera.SetActive(false);
+                MakeWordBank.cursorCamera.SetActive(true);
                 circle.SetActive(false);
                 cam.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
                 StateManager.moveCameraU = false;
@@ -187,7 +188,7 @@ public class SimpleTutorial : MonoBehaviour
 
             if (step == 0)
             {
-                if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Escape))
+                if (MakeWordBank.moveOn() && !Input.GetKeyDown(KeyCode.Escape))
                 {
                     step++;
                 }
@@ -196,8 +197,8 @@ public class SimpleTutorial : MonoBehaviour
             { //Show user what movements can be done
                 text.text = "The cursor can be moved to the left and right";
                 cursor_x -= 0.004f;
-                StateManager.nextCursorPos = new Vector3(cursor_x, 0f, 0.418f);
-
+                //StateManager.nextCursorPos = new Vector3(cursor_x, 0f, 0.418f);
+                StateManager.cursorAdd = new Vector3(-40f * Time.deltaTime, 0f, 0f);
                 timer += Time.deltaTime;
 
                 if (timer > shortInterval)
@@ -223,8 +224,8 @@ public class SimpleTutorial : MonoBehaviour
             {
                 //text.text = "The cursor can be moved to the right";
                 cursor_x += 0.004f;
-                StateManager.nextCursorPos = new Vector3(cursor_x, 0f, 0.418f);
-
+                //StateManager.nextCursorPos = new Vector3(cursor_x, 0f, 0.418f);
+                StateManager.cursorAdd = new Vector3(40f * Time.deltaTime, 0f, 0f);
                 timer += Time.deltaTime;
 
                 if (timer > longInterval)
@@ -239,7 +240,8 @@ public class SimpleTutorial : MonoBehaviour
 
                 if (timer > 1f)
                 {
-                    StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
+                    //StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
+                    StateManager.makeCursReset = true;
                     cursor_x = 0f;
                     timer = 0f;
                     step++;
@@ -249,8 +251,8 @@ public class SimpleTutorial : MonoBehaviour
             {
                 text.text = "The cursor can be moved upward and downward";
                 cursor_y += 0.004f;
-                StateManager.nextCursorPos = new Vector3(0f, cursor_y, 0.418f);
-
+                //StateManager.nextCursorPos = new Vector3(0f, cursor_y, 0.418f);
+                StateManager.cursorAdd = new Vector3(0f, 30f * Time.deltaTime, 0f);
                 timer += Time.deltaTime;
 
                 if (timer > shortInterval)
@@ -275,7 +277,7 @@ public class SimpleTutorial : MonoBehaviour
             {
                 //text.text = "The cursor can be moved downward";
                 cursor_y -= 0.004f;
-                StateManager.nextCursorPos = new Vector3(0f, cursor_y, 0.418f);
+                StateManager.cursorAdd = new Vector3(0f, -30f * Time.deltaTime, 0f);
 
                 timer += Time.deltaTime;
 
@@ -291,7 +293,8 @@ public class SimpleTutorial : MonoBehaviour
 
                 if (timer > 1f)
                 {
-                    StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
+                    //StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
+                    StateManager.makeCursReset = true;
                     cursor_y = 0f;
                     timer = 0f;
                     step++;
@@ -449,7 +452,7 @@ public class SimpleTutorial : MonoBehaviour
             {
                 text.text = "Now it's your turn to try all these movements" + "\n" + "(Press any key or click the mouse to continue)";
 
-                if (Input.anyKeyDown && !Input.GetKeyDown(KeyCode.Escape))
+                if (MakeWordBank.moveOn() && !Input.GetKeyDown(KeyCode.Escape))
                 {
                     mainCamera.SetActive(false);
                     videoCamera.SetActive(true);
