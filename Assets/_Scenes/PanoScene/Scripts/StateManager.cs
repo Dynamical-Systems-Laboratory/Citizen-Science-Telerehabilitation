@@ -98,8 +98,8 @@ public class StateManager : MonoBehaviour {
     public static Vector3 absRotation; //rotation of camera without lowest abs val conversion
 
     public float xOffset = 25.9f; //factor that sets tags to dissapear after being a certain dist away from camera's center
-    public static float camSpeed = 1.2f; //factor that speeds up the camera's movement
-    private float cursorSpeed = 2f; //factor that speeds up cursor's movement
+    public static float camSpeed = 1.5f; //factor that speeds up the camera's movement
+    private float cursorSpeed = 1.2f; //factor that speeds up cursor's movement
 
     public List<GameObject> tagsPlaced;
 
@@ -324,8 +324,8 @@ public class StateManager : MonoBehaviour {
             //}
             if (Input.GetKey(KeyCode.A))
             {
-                nextCameraPos += new Vector3(0f, -0.6f * camSpeed, 0f);
-                absRotation += new Vector3(0f, -0.6f * camSpeed, 0f);
+                nextCameraPos += new Vector3(0f, -20f * camSpeed * Time.deltaTime, 0f);
+                absRotation += new Vector3(0f, -20f * camSpeed * Time.deltaTime, 0f);
                 cameraL = true;
             }
         }
@@ -341,8 +341,8 @@ public class StateManager : MonoBehaviour {
             //}
             if (Input.GetKey(KeyCode.D))
             {
-                nextCameraPos += new Vector3(0f, 0.6f * camSpeed, 0f);
-                absRotation += new Vector3(0f, 0.6f * camSpeed, 0f);
+                nextCameraPos += new Vector3(0f, 20f * camSpeed * Time.deltaTime, 0f);
+                absRotation += new Vector3(0f, 20f * camSpeed * Time.deltaTime, 0f);
                 cameraR = true;
             }
         }
@@ -358,8 +358,8 @@ public class StateManager : MonoBehaviour {
             //}
             if (Input.GetKey(KeyCode.W))
             {
-                nextCameraPos += new Vector3(-.45f * camSpeed, 0f, 0f);
-                absRotation += new Vector3(-.45f * camSpeed, 0f, 0f);
+                nextCameraPos += new Vector3(-14f * camSpeed * Time.deltaTime, 0f, 0f);
+                absRotation += new Vector3(-14f * camSpeed * Time.deltaTime, 0f, 0f);
                 cameraU = true;
             }
         }
@@ -376,8 +376,8 @@ public class StateManager : MonoBehaviour {
             //}
             if (Input.GetKey(KeyCode.S))
             {
-                nextCameraPos += new Vector3(.45f * camSpeed, 0f, 0f);
-                absRotation += new Vector3(.45f * camSpeed, 0f, 0f);
+                nextCameraPos += new Vector3(14f * camSpeed * Time.deltaTime, 0f, 0f);
+                absRotation += new Vector3(14f * camSpeed * Time.deltaTime, 0f, 0f);
                 cameraD = true;
             }
         }
@@ -474,8 +474,9 @@ public class StateManager : MonoBehaviour {
         cursorU = false;
         cursorD = false;
 
-        float keyspeed = 0.0035f * cursorSpeed; //x
-        float keyspeed2 = .0007f * cursorSpeed; //y
+        //float keyspeed = 0.07f * cursorSpeed; //x
+        //float keyspeed2 = .00016f * cursorSpeed; //y
+        nextCursorPos = cursorPos;
         if (moveCursorL)
         {
             //if ((Kinect.LHandPos.x - Kinect.LShoulderPos.x) < (SimpleTutorial.LHandLeftAverage * 0.4f) && (Kinect.RHandPos.x - Kinect.RShoulderPos.x) < (SimpleTutorial.RHandLeftAverage * 0.4f))
@@ -483,8 +484,14 @@ public class StateManager : MonoBehaviour {
             //    nextCursorPos = new Vector3((cursorPos.x - (0.0005f + 0.02f * avgDistance_x)), cursorPos.y, 0.418f);
             //    cursorL = true;
             //}
-            nextCursorPos = new Vector3(cursorPos.x + Input.GetAxis("Horizontal")* keyspeed, cursorPos.y, 0.418f);
-            cursorL = true;
+
+            //nextCursorPos = new Vector3(cursorPos.x + Input.GetAxis("Horizontal")* keyspeed, cursorPos.y, 0.418f);
+            //cursorL = true;
+            if (Input.GetKey(KeyCode.LeftArrow))
+            {
+                nextCursorPos += new Vector3(-.06f * cursorSpeed * Time.deltaTime, 0f, 0f);
+                cursorL = true;
+            }
         }
 
         if (moveCursorR)
@@ -494,8 +501,14 @@ public class StateManager : MonoBehaviour {
             //    nextCursorPos = new Vector3((cursorPos.x + (0.0005f + 0.02f * avgDistance_x)), cursorPos.y, 0.418f);
             //    cursorR = true;
             //}
-            nextCursorPos = new Vector3(cursorPos.x + Input.GetAxis("Horizontal")* keyspeed, cursorPos.y, 0.418f);
-            cursorR = true;
+
+            //nextCursorPos = new Vector3(cursorPos.x + Input.GetAxis("Horizontal")* keyspeed, cursorPos.y, 0.418f);
+            //cursorR = true;
+            if (Input.GetKey(KeyCode.RightArrow))
+            {
+                nextCursorPos += new Vector3(.06f * cursorSpeed * Time.deltaTime, 0f, 0f);
+                cursorR = true;
+            }
         }
 
         if (moveCursorU)
@@ -505,8 +518,14 @@ public class StateManager : MonoBehaviour {
             //    nextCursorPos = new Vector3(cursorPos.x, (cursorPos.y + (0.0005f + 0.02f * avgDistance_y)), 0.418f);
             //    cursorU = true;
             //}
-            nextCursorPos = new Vector3(cursorPos.x, cursorPos.y + Input.GetAxis("Vertical") * keyspeed2, 0.418f);
-            cursorU = true;
+
+            //nextCursorPos = new Vector3(cursorPos.x, cursorPos.y + Input.GetAxis("Vertical") * keyspeed2, 0.418f);
+            //cursorU = true;
+            if (Input.GetKey(KeyCode.UpArrow))
+            {
+                nextCursorPos += new Vector3(0f, .04f * cursorSpeed * Time.deltaTime, 0f);
+                cursorU = true;
+            }
         }
 
         if (moveCursorD)
@@ -516,8 +535,14 @@ public class StateManager : MonoBehaviour {
             //    nextCursorPos = new Vector3(cursorPos.x, (cursorPos.y - (0.0005f + 0.02f * avgDistance_y)), 0.418f);
             //    cursorD = true;
             //}
-            nextCursorPos = new Vector3(cursorPos.x, cursorPos.y + Input.GetAxis("Vertical") * keyspeed2, 0.418f);
-            cursorD = true;
+
+            //nextCursorPos = new Vector3(cursorPos.x, cursorPos.y + Input.GetAxis("Vertical") * keyspeed2, 0.418f);
+            //cursorD = true;
+            if (Input.GetKey(KeyCode.DownArrow))
+            {
+                nextCursorPos += new Vector3(0f, -.04f * cursorSpeed * Time.deltaTime, 0f);
+                cursorD = true;
+            }
         }
 
         if (moveCursorL || moveCursorR || moveCursorU || moveCursorD)
