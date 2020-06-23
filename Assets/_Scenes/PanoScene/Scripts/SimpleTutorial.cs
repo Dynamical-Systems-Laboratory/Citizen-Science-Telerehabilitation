@@ -198,7 +198,7 @@ public class SimpleTutorial : MonoBehaviour
                 text.text = "The cursor can be moved to the left and right";
                 cursor_x -= 0.004f;
                 //StateManager.nextCursorPos = new Vector3(cursor_x, 0f, 0.418f);
-                StateManager.cursorAdd = new Vector3(-40f * Time.deltaTime, 0f, 0f);
+                StateManager.cursorAdd = new Vector3(-.2f * Time.deltaTime, 0f, 0f);
                 timer += Time.deltaTime;
 
                 if (timer > shortInterval)
@@ -225,7 +225,7 @@ public class SimpleTutorial : MonoBehaviour
                 //text.text = "The cursor can be moved to the right";
                 cursor_x += 0.004f;
                 //StateManager.nextCursorPos = new Vector3(cursor_x, 0f, 0.418f);
-                StateManager.cursorAdd = new Vector3(40f * Time.deltaTime, 0f, 0f);
+                StateManager.cursorAdd = new Vector3(.2f * Time.deltaTime, 0f, 0f);
                 timer += Time.deltaTime;
 
                 if (timer > longInterval)
@@ -252,7 +252,7 @@ public class SimpleTutorial : MonoBehaviour
                 text.text = "The cursor can be moved upward and downward";
                 cursor_y += 0.004f;
                 //StateManager.nextCursorPos = new Vector3(0f, cursor_y, 0.418f);
-                StateManager.cursorAdd = new Vector3(0f, 30f * Time.deltaTime, 0f);
+                StateManager.cursorAdd = new Vector3(0f, .15f * Time.deltaTime, 0f);
                 timer += Time.deltaTime;
 
                 if (timer > shortInterval)
@@ -277,7 +277,7 @@ public class SimpleTutorial : MonoBehaviour
             {
                 //text.text = "The cursor can be moved downward";
                 cursor_y -= 0.004f;
-                StateManager.cursorAdd = new Vector3(0f, -30f * Time.deltaTime, 0f);
+                StateManager.cursorAdd = new Vector3(0f, -.15f * Time.deltaTime, 0f);
 
                 timer += Time.deltaTime;
 

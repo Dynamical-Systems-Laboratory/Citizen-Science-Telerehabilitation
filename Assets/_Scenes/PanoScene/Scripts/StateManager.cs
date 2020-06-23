@@ -384,7 +384,7 @@ public class StateManager : MonoBehaviour {
                 cameraD = true;
             }
         }
-
+        
         if (moveCameraL || moveCameraR || moveCameraU || moveCameraD || cameraAdd != new Vector3(0f, 0f, 0f))
         {
             nextCameraPos -= cameraAdd;
@@ -442,7 +442,7 @@ public class StateManager : MonoBehaviour {
                 mainCamera.transform.rotation = qRotation;
 
                 //tags movement
-                Vector3 change = (nextCameraPos-cameraPos); //take the amount that the camera moves and displace all placed tags by it
+                Vector3 change = (nextCameraPos - cameraPos); //take the amount that the camera moves and displace all placed tags by it
                 foreach (GameObject obj in tagsPlaced) //8
                 {
                     obj.transform.position -= new Vector3(change.y * 3.565f, -change.x * 3.58f, 0f); //**
@@ -546,8 +546,8 @@ public class StateManager : MonoBehaviour {
                 cursorD = true;
             }
         }
-        Debug.Log("cursorAdd: " + cursorAdd);
-        if (moveCursorL || moveCursorR || moveCursorU || moveCursorD)
+        
+        if (moveCursorL || moveCursorR || moveCursorU || moveCursorD || cursorAdd != new Vector3(0f, 0f, 0f))
         {
             nextCursorPos += cursorAdd;
         }

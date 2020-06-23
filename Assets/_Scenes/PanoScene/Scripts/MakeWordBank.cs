@@ -182,8 +182,8 @@ public class MakeWordBank : MonoBehaviour {
     public static bool skipTrashingTutorialStep = false;
     public static bool continueAfterOtherQuit = false;
 
-    public static float leftBound = -92.1f / StateManager.cursorPosMod;//-.41f; // cursor
-    public static float rightBound = 90.5f / StateManager.cursorPosMod;//.39f;
+    public static float leftBound = -90f / StateManager.cursorPosMod;//-.41f; // cursor
+    public static float rightBound = 86.5f / StateManager.cursorPosMod;//.39f;
     public static float upperBound = 58.4f / StateManager.cursorPosMod;///0.239f;
     public static float lowerBound = -0.215f;
 
