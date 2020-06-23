@@ -456,6 +456,7 @@ public class SimpleTutorial : MonoBehaviour
                 {
                     mainCamera.SetActive(false);
                     videoCamera.SetActive(true);
+                    MakeWordBank.cursorCamera.SetActive(false);
                     VP3.SetActive(true);
                     cursorLRVP.Play();
                     step++;
@@ -472,6 +473,7 @@ public class SimpleTutorial : MonoBehaviour
                 {
                     mainCamera.SetActive(true);
                     videoCamera.SetActive(false);
+                    MakeWordBank.cursorCamera.SetActive(true);
                     VP3.SetActive(false);
                     StateManager.moveCursorL = true;
 
@@ -680,6 +682,7 @@ public class SimpleTutorial : MonoBehaviour
             {
                 mainCamera.SetActive(false);
                 videoCamera.SetActive(true);
+                MakeWordBank.cursorCamera.SetActive(false);
                 VP4.SetActive(true);
                 cursorUDVP.Play();
                 StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
@@ -696,6 +699,7 @@ public class SimpleTutorial : MonoBehaviour
                 {
                     mainCamera.SetActive(true);
                     videoCamera.SetActive(false);
+                    MakeWordBank.cursorCamera.SetActive(true);
                     VP4.SetActive(false);
                     StateManager.moveCursorR = false;
                     StateManager.moveCursorU = true;
@@ -906,6 +910,7 @@ public class SimpleTutorial : MonoBehaviour
                 StateManager.moveCursorD = false; //all cursor movement disabled by this pt.
                 mainCamera.SetActive(false);
                 videoCamera.SetActive(true);
+                MakeWordBank.cursorCamera.SetActive(false);
                 StateManager.makeCursReset = true;
                 step++;
             }
@@ -919,6 +924,7 @@ public class SimpleTutorial : MonoBehaviour
                 {
                     mainCamera.SetActive(true);
                     videoCamera.SetActive(false);
+                    MakeWordBank.cursorCamera.SetActive(true);
                     VP1.SetActive(false);     
                     StateManager.moveCameraL = true;
 
@@ -1094,6 +1100,7 @@ public class SimpleTutorial : MonoBehaviour
             {
                 mainCamera.SetActive(false);
                 videoCamera.SetActive(true);
+                MakeWordBank.cursorCamera.SetActive(false);
                 VP2.SetActive(true);
                 cameraUDVP.Play();
                 StateManager.moveCameraR = false;
@@ -1114,6 +1121,7 @@ public class SimpleTutorial : MonoBehaviour
                 {
                     mainCamera.SetActive(true);
                     videoCamera.SetActive(false);
+                    MakeWordBank.cursorCamera.SetActive(true);
                     VP2.SetActive(false);       
                     StateManager.moveCameraU = true;
 
@@ -1294,6 +1302,7 @@ public class SimpleTutorial : MonoBehaviour
             {
                 mainCamera.SetActive(false);
                 videoCamera.SetActive(true);
+                MakeWordBank.cursorCamera.SetActive(false);
                 VP5.SetActive(true);
                 clickVP.Play();
                 StateManager.moveCameraD = false; //cam's false too now
@@ -1311,6 +1320,7 @@ public class SimpleTutorial : MonoBehaviour
                 {
                     mainCamera.SetActive(true);
                     videoCamera.SetActive(false);
+                    MakeWordBank.cursorCamera.SetActive(true);
                     VP5.SetActive(false);
                     circle.SetActive(true);
 
@@ -1531,6 +1541,7 @@ public class SimpleTutorial : MonoBehaviour
                 mainCamera.SetActive(true);
                 UICamera.SetActive(true);
                 videoCamera.SetActive(false);
+                MakeWordBank.cursorCamera.SetActive(true);
                 cam.rect = new Rect(0.0f, 0.0f, 0.622f, 1.0f);
 
                 StateManager.moveCameraU = true;
