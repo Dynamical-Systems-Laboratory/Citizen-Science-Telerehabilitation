@@ -97,10 +97,9 @@ public class StateManager : MonoBehaviour {
     public bool cameraMoving;
     public static Vector3 absRotation; //rotation of camera without lowest abs val conversion
 
-    public static float camSpeed = 1; //factor that speeds up the camera's movement
-
     public float xOffset = 25.9f; //factor that sets tags to dissapear after being a certain dist away from camera's center
-    private float cursorSpeed = 1.35f; //factor that speeds up cursor's movement
+    public static float camSpeed = 1.2f; //factor that speeds up the camera's movement
+    private float cursorSpeed = 2f; //factor that speeds up cursor's movement
 
     public List<GameObject> tagsPlaced;
 
@@ -444,7 +443,7 @@ public class StateManager : MonoBehaviour {
                 Vector3 change = (nextCameraPos-cameraPos); //take the amount that the camera moves and displace all placed tags by it
                 foreach (GameObject obj in tagsPlaced) //8
                 {
-                    obj.transform.position -= new Vector3(change.y * 3.56f, -change.x * 3.58f, 0f); //**
+                    obj.transform.position -= new Vector3(change.y * 3.565f, -change.x * 3.58f, 0f); //**
 
                     //float offset = (obj.transform.position.x - nextCameraPos.y);
                     //Debug.Log("Object " + obj.name + ": " + obj.transform.position + ", offset: " + (obj.transform.position - nextCameraPos) + ", " + offset);
@@ -475,8 +474,8 @@ public class StateManager : MonoBehaviour {
         cursorU = false;
         cursorD = false;
 
-        float keyspeed = 0.0035f * cursorSpeed;
-        float keyspeed2 = .0028f * cursorSpeed;
+        float keyspeed = 0.0035f * cursorSpeed; //x
+        float keyspeed2 = .0007f * cursorSpeed; //y
         if (moveCursorL)
         {
             //if ((Kinect.LHandPos.x - Kinect.LShoulderPos.x) < (SimpleTutorial.LHandLeftAverage * 0.4f) && (Kinect.RHandPos.x - Kinect.RShoulderPos.x) < (SimpleTutorial.RHandLeftAverage * 0.4f))

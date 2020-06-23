@@ -380,7 +380,7 @@ public class MakeWordBank : MonoBehaviour {
          * * v = progress
          * * m = drop object
          */
-
+        Debug.Log("UICam: " + UICamera.name + ", " + UICamera.activeInHierarchy.ToString() + ", " + UICamera.activeSelf.ToString());
         if (stepOfTutorial >= 12)
         {
             StateManager.allSystemsGo = true;
@@ -475,11 +475,9 @@ public class MakeWordBank : MonoBehaviour {
                 //alternative dropObject that lets you pick up and move a tag that has already been placed?
             }
         }
-        if (stepOfTutorial >= 22)
-        { //camera control?
+        if (stepOfTutorial == 22 || stepOfTutorial == 23) //just in case
+        { //camera control...?
             mainCamera.SetActive(true);
-            //mainCamera.transform.localRotation = angle;
-            //mainCamera.transform.Rotate(state.getCameraPosition());
             state.cameraMoving = true;
             UICamera.SetActive(true);
             videoCamera.SetActive(false);

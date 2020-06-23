@@ -18,10 +18,13 @@ public class HomeScreen : MonoBehaviour
     public static GameObject homeCamera;
 
     //buttons
-    public static GameObject startGameButton;
+    public static GameObject[] buttons = new GameObject[6];
+
+    public static GameObject startGameButton; //main buttons
     public static GameObject profileButton;
     public static GameObject calibrateButton;
-    public static GameObject aboutButton;
+    public static GameObject tutorialButton;
+    public static GameObject aboutButton; //side buttons
     public static GameObject quitButton;
 
     //other
@@ -48,12 +51,28 @@ public class HomeScreen : MonoBehaviour
         startGameButton = GameObject.Find("StartGameButton");
         profileButton = GameObject.Find("ProfileButton");
         calibrateButton = GameObject.Find("CalibrateButton");
+        tutorialButton = GameObject.Find("TutorialButton");
         aboutButton = GameObject.Find("AboutProjectButton");
         quitButton = GameObject.Find("QuitButton2");
 
+        buttons[0] = startGameButton;
+        buttons[1] = profileButton;
+        buttons[2] = calibrateButton;
+        buttons[3] = tutorialButton;
+        buttons[4] = aboutButton;
+        buttons[5] = quitButton;
     }
     void Update()
     {
+        //making sure it stays open (uniturrupted)
+        if (MakeWordBank.inHomeScreen)
+        {
+            homeCamera.SetActive(true);
+            mainCamera.SetActive(false);
+            UICamera.SetActive(false);
+            //videoCamera.SetActive(false);
+        }
+
         //continue conditions
         canContinue = MakeWordBank.inHomeScreen;
         if (MakeWordBank.inTutorial)
@@ -61,10 +80,17 @@ public class HomeScreen : MonoBehaviour
             canContinue = false;
         }
 
+        Debug.Log("Home Screening: " + MakeWordBank.inHomeScreen.ToString() + ", Doing:" + canContinue.ToString());
+
         //main loop
         if (canContinue)
         {
-            Debug.Log("in home screen... " + MakeWordBank.inHomeScreen.ToString());
+            Debug.Log("Home Cursors: " + homeState.getCursorPosition() + ", original: " + state.getCursorPosition());
+
+            foreach (GameObject button in buttons)
+            {
+                Debug.Log(button.name + ": " + button.transform.position + ", dist: " + (button.transform.position - homeState.getCursorPosition()).magnitude);
+            }
             //Clicking
             if (Input.GetKey(KeyCode.B))
             {
