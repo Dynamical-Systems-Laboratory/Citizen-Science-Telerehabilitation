@@ -172,7 +172,7 @@ public class StateManager : MonoBehaviour {
         yield return new WaitForSeconds(5f);
         this.falconCursor = GameObject.Find("CursorSphere");
         this.falconCamera = GameObject.Find("CursorCamera").GetComponent<Camera>();
-        mainCamera = GameObject.Find("Main Camera");
+        mainCamera = GameObject.Find("MainCamera");
     }
 
     private void Update()
@@ -439,11 +439,11 @@ public class StateManager : MonoBehaviour {
             {
                 //quarterion rotations ***
                 Quaternion qRotation = Quaternion.Euler(nextCameraPos);// * Time.deltaTime);
-                mainCamera.transform.rotation = qRotation;
+                mainCamera.transform.rotation = qRotation; //check
 
                 //tags movement
                 Vector3 change = (nextCameraPos - cameraPos); //take the amount that the camera moves and displace all placed tags by it
-                foreach (GameObject obj in tagsPlaced) //8
+                foreach (GameObject obj in tagsPlaced)
                 {
                     obj.transform.position -= new Vector3(change.y * 3.565f, -change.x * 3.58f, 0f); //**
 
@@ -592,7 +592,7 @@ public class StateManager : MonoBehaviour {
             cursorPos = nextCursorPos;
         }
         Vector3 outCursor = cursorPos * cursorPosMod; //modifier to match tag vals (was 180)
-        Debug.Log("Cursor Info: " + cursorPos + ", *Mod: " + outCursor + ", Size: " + cursorSize);
+        Debug.Log("Cursor Info: " + cursorPos + ", *Mod: " + outCursor + ", Size: " + -cursorSize);
 
         Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
         Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);

@@ -124,7 +124,7 @@ public class SimpleTutorial : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mainCamera = GameObject.Find("Main Camera");
+        mainCamera = GameObject.Find("MainCamera");
         UICamera = GameObject.Find("UICamera");
         videoCamera = GameObject.Find("VideoCamera");
         homeCamera = GameObject.Find("HomeCamera");

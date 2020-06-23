@@ -98,7 +98,7 @@ public class DataCollector : MonoBehaviour
 
     void Start()
     {
-        cam = GameObject.Find("Main Camera");
+        cam = GameObject.Find("MainCamera");
         cameraRot = new List<Vector3>();
         times = new List<float>();
         elapsedTime = 0f;

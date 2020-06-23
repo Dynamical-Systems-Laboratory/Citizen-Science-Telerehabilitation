@@ -20,7 +20,7 @@ public class RotateCamera : MonoBehaviour
 		this.zoom = 0f;
         buttons = new bool[] { false, false, false, false };
 
-        this.cam = GameObject.Find("Main Camera");
+        this.cam = GameObject.Find("MainCamera");
         // Get camera bounds
         cameraBounds = cam.GetComponent<Camera>().pixelRect;
 

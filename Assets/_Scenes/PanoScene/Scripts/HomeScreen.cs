@@ -1,5 +1,4 @@
-﻿//using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,7 +37,7 @@ public class HomeScreen : MonoBehaviour
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
         homeState = GameObject.Find("HomeCanvas").GetComponent<StateManager>(); //implement
 
-        mainCamera = GameObject.Find("Main Camera");
+        mainCamera = GameObject.Find("MainCamera");
         UICamera = GameObject.Find("UICamera");
         homeCamera = GameObject.Find("HomeCamera"); //implement
 
