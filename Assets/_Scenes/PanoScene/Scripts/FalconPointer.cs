@@ -16,7 +16,7 @@ public class FalconPointer : PointerInputModule
 
     public override void Process()
 	{
-		PointerEventData falconEventData = this.GetFalconEventData();
+		//PointerEventData falconEventData = this.GetFalconEventData();
 	}
 
     public void Awake ()

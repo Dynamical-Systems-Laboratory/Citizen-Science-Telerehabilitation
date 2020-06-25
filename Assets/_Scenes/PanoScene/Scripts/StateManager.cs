@@ -99,8 +99,8 @@ public class StateManager : MonoBehaviour {
 
     public float xOffset = 25.9f; //factor that sets tags to dissapear after being a certain dist away from camera's center
 
-    public static float camSpeed = 1.6f; //factor that speeds up the camera's movement
-    public static float cursorSpeed = 2.5f; //factor that speeds up cursor's movement
+    public static float camSpeed = 1.8f; //factor that speeds up the camera's movement
+    public static float cursorSpeed = 2.8f; //factor that speeds up cursor's movement
     public static float cursorSize = -0.4f; //factor that makes cursor bigger or smaller
 
 
@@ -173,6 +173,7 @@ public class StateManager : MonoBehaviour {
         this.falconCursor = GameObject.Find("CursorSphere");
         this.falconCamera = GameObject.Find("CursorCamera").GetComponent<Camera>();
         mainCamera = GameObject.Find("MainCamera");
+        //mainCamera = MakeWordBank.mainCamera;
     }
 
     private void Update()
@@ -439,7 +440,7 @@ public class StateManager : MonoBehaviour {
             {
                 //quarterion rotations ***
                 Quaternion qRotation = Quaternion.Euler(nextCameraPos);// * Time.deltaTime);
-                mainCamera.transform.rotation = qRotation; //check
+                mainCamera.transform.rotation = qRotation; //occassionally not instanced...?
 
                 //tags movement
                 Vector3 change = (nextCameraPos - cameraPos); //take the amount that the camera moves and displace all placed tags by it
@@ -525,7 +526,7 @@ public class StateManager : MonoBehaviour {
             //cursorU = true;
             if (Input.GetKey(KeyCode.UpArrow))
             {
-                nextCursorPos += new Vector3(0f, .04f * cursorSpeed * Time.deltaTime, 0f);
+                nextCursorPos += new Vector3(0f, .048f * cursorSpeed * Time.deltaTime, 0f);
                 cursorU = true;
             }
         }
@@ -542,7 +543,7 @@ public class StateManager : MonoBehaviour {
             //cursorD = true;
             if (Input.GetKey(KeyCode.DownArrow))
             {
-                nextCursorPos += new Vector3(0f, -.04f * cursorSpeed * Time.deltaTime, 0f);
+                nextCursorPos += new Vector3(0f, -.048f * cursorSpeed * Time.deltaTime, 0f);
                 cursorD = true;
             }
         }
@@ -594,8 +595,8 @@ public class StateManager : MonoBehaviour {
         Vector3 outCursor = cursorPos * cursorPosMod; //modifier to match tag vals (was 180)
         Debug.Log("Cursor Info: " + cursorPos + ", *Mod: " + outCursor + ", Size: " + -cursorSize);
 
-        Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
-        Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);
+        //Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
+        //Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);
 
         //buttons = 0;
         //if (kinectReady)

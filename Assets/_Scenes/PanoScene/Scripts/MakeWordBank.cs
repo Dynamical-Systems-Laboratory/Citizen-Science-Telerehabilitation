@@ -364,8 +364,8 @@ public class MakeWordBank : MonoBehaviour {
 
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
 
-        nextButton = GameObject.Find("NextButtonButton");
-        quitButton = GameObject.Find("QuitButtonButton");
+        nextButton = GameObject.Find("NextButton");
+        quitButton = GameObject.Find("HomeButton");
 
         homeCamera.SetActive(false); //precausion
         cursorCamera.SetActive(false);

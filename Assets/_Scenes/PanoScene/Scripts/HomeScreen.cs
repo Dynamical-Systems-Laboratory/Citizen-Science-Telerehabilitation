@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+//MonoBehavior required for unity to read (also script attatched to game object)
 public class HomeScreen : MonoBehaviour
 {
     //general
     public StateManager state;
-    public StateManager homeState; //container
-
     public ClickAction eventListener;
-    public ClickAction homeListener;
 
+    //cameras
     public static GameObject mainCamera;
     public static GameObject UICamera;
     public static GameObject homeCamera;
@@ -30,29 +29,30 @@ public class HomeScreen : MonoBehaviour
     public static Text welcomeText;
     public static Text tutorialText;
 
-    private static bool canContinue = true;
+    private static bool canContinue = false;
+
+    public static Vector3 stateModifier = new Vector3(-100.2f + 2.8f, 500f, 66.6f); //offset of button positions relative to makewordbank
+
     void Awake()
     {
         
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
-        homeState = GameObject.Find("HomeCanvas").GetComponent<StateManager>(); //implement
 
         mainCamera = GameObject.Find("MainCamera");
         UICamera = GameObject.Find("UICamera");
-        homeCamera = GameObject.Find("HomeCamera"); //implement
+        homeCamera = GameObject.Find("HomeCamera");
 
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
-        homeListener = GameObject.Find("HomeCanvas").GetComponent<ClickAction>(); //implement
+        //homeListener = GameObject.Find("HomeCanvas").GetComponent<ClickAction>();
 
         tutorialText = GameObject.FindGameObjectWithTag("TutorialText").GetComponent<Text>() as Text;
-        welcomeText = GameObject.FindGameObjectWithTag("WelcomeText").GetComponent<Text>() as Text; //implement
 
         startGameButton = GameObject.Find("StartGameButton");
         profileButton = GameObject.Find("ProfileButton");
         calibrateButton = GameObject.Find("CalibrateButton");
         tutorialButton = GameObject.Find("TutorialButton");
         aboutButton = GameObject.Find("AboutProjectButton");
-        quitButton = GameObject.Find("QuitButton2");
+        quitButton = GameObject.Find("QuitButton");
 
         buttons[0] = startGameButton;
         buttons[1] = profileButton;
@@ -61,6 +61,8 @@ public class HomeScreen : MonoBehaviour
         buttons[4] = aboutButton;
         buttons[5] = quitButton;
     }
+    
+
     void Update()
     {
         //making sure it stays open (uniturrupted)
@@ -84,38 +86,55 @@ public class HomeScreen : MonoBehaviour
         //main loop
         if (canContinue)
         {
-            Debug.Log("Home Cursors: " + homeState.getCursorPosition() + ", original: " + state.getCursorPosition());
-
             foreach (GameObject button in buttons)
             {
-                Debug.Log(button.name + ": " + button.transform.position + ", dist: " + (button.transform.position - homeState.getCursorPosition()).magnitude);
+                if(button != null)
+                {
+                    Debug.Log(button.name + ": " + ((button.transform.position-stateModifier) - (state.getCursorPosition() * StateManager.cursorPosMod)) + ", " + (button.transform.position-stateModifier) + ", " + (button.transform.position - (state.getCursorPosition()*StateManager.cursorPosMod)).magnitude);
+                }
             }
             //Clicking
             if (Input.GetKey(KeyCode.B))
             {
-                if (ClickAction.buttonClose(startGameButton.transform.position))
+                float dist = 100000000;
+                GameObject obj = buttons[0];
+                foreach (GameObject button in buttons)
                 {
-                    homeCamera.SetActive(false);
-                    mainCamera.SetActive(true);
-                    UICamera.SetActive(true);
-                    MakeWordBank.inHomeScreen = false;
+                    if (button != null)
+                    {
+                        Vector3 newDist = (button.transform.position - stateModifier) - (state.getCursorPosition() * StateManager.cursorPosMod * 3/2);
+                        if (newDist.magnitude < dist)
+                        {
+                            dist = newDist.magnitude;
+                            obj = button;
+                        }
+                    }
                 }
-                else if (ClickAction.buttonClose(profileButton.transform.position))
-                {
+                Debug.Log("Closest Button: " + obj.name + ", " + ClickAction.buttonClose2(obj.transform.position));
 
-                }
-                else if (ClickAction.buttonClose(calibrateButton.transform.position))
-                {
+                //if (ClickAction.buttonClose(startGameButton.transform.position))
+                //{
+                //    homeCamera.SetActive(false);
+                //    mainCamera.SetActive(true);
+                //    UICamera.SetActive(true);
+                //    MakeWordBank.inHomeScreen = false;
+                //}
+                //else if (ClickAction.buttonClose(profileButton.transform.position))
+                //{
 
-                }
-                else if (ClickAction.buttonClose(aboutButton.transform.position))
-                {
+                //}
+                //else if (ClickAction.buttonClose(calibrateButton.transform.position))
+                //{
 
-                }
-                else if (ClickAction.buttonClose(quitButton.transform.position))
-                {
-                    QuitGameScript.TaskOnClick();
-                }
+                //}
+                //else if (ClickAction.buttonClose(aboutButton.transform.position))
+                //{
+
+                //}
+                //else if (ClickAction.buttonClose(quitButton.transform.position))
+                //{
+                //    QuitGameScript.TaskOnClick();
+                //}
             }
 
 

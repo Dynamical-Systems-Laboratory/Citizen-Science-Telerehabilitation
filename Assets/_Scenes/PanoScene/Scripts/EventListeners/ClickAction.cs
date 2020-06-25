@@ -473,7 +473,21 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		}
 		return true;
 	}
-    public static void destroyTags()
+	public static bool buttonClose2(Vector3 pos) //for home screen ui
+	{ //nextButton.transform.position
+		Vector3 diff = (pos - HomeScreen.stateModifier) - (state.getCursorPosition() * StateManager.cursorPosMod * 3/2);
+		if (diff.y > -21.9 || diff.y < -41)
+		{
+			return false;
+		}
+		if (diff.x > 23.9 || diff.x < -24.3)
+		{
+			return false;
+		}
+		return true;
+	}
+
+	public static void destroyTags()
     {
 		foreach (GameObject tag in state.tagsPlaced)
 		{
