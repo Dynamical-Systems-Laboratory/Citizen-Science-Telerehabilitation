@@ -32,7 +32,7 @@ public class HomeScreen : MonoBehaviour
     private static bool canContinue = false;
 
     public static Vector3 stateModifier = new Vector3(-100.2f + 2.8f, 500f, 66.6f); //offset of button positions relative to makewordbank
-
+    public static float scale = 1.72f;//3/2;
     void Awake()
     {
         
@@ -82,7 +82,7 @@ public class HomeScreen : MonoBehaviour
         }
 
         Debug.Log("Home Screening: " + MakeWordBank.inHomeScreen.ToString() + ", Doing:" + canContinue.ToString());
-
+        Debug.Log("Scaled Cursor:" + (state.getCursorPosition() * StateManager.cursorPosMod * scale));
         //main loop
         if (canContinue)
         {
@@ -90,7 +90,7 @@ public class HomeScreen : MonoBehaviour
             {
                 if(button != null)
                 {
-                    Debug.Log(button.name + ": " + ((button.transform.position-stateModifier) - (state.getCursorPosition() * StateManager.cursorPosMod)) + ", " + (button.transform.position-stateModifier) + ", " + (button.transform.position - (state.getCursorPosition()*StateManager.cursorPosMod)).magnitude);
+                    Debug.Log(button.name + ": " + ((button.transform.position - stateModifier) - (state.getCursorPosition() * StateManager.cursorPosMod * scale)) + ", " + (button.transform.position - stateModifier));
                 }
             }
             //Clicking
@@ -102,7 +102,7 @@ public class HomeScreen : MonoBehaviour
                 {
                     if (button != null)
                     {
-                        Vector3 newDist = (button.transform.position - stateModifier) - (state.getCursorPosition() * StateManager.cursorPosMod * 3/2);
+                        Vector3 newDist = (button.transform.position - stateModifier) - (state.getCursorPosition() * StateManager.cursorPosMod * scale);
                         if (newDist.magnitude < dist)
                         {
                             dist = newDist.magnitude;

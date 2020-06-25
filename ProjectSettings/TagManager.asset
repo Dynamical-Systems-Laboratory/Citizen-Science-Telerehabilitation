@@ -29,8 +29,8 @@ TagManager:
   - ProfileButton
   - CalibrateButton
   - AboutProjectButton
-  - QuitButton2
   - TutorialButton
+  - HomeButton
   layers:
   - Default
   - TransparentFX

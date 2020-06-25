@@ -475,12 +475,12 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 	}
 	public static bool buttonClose2(Vector3 pos) //for home screen ui
 	{ //nextButton.transform.position
-		Vector3 diff = (pos - HomeScreen.stateModifier) - (state.getCursorPosition() * StateManager.cursorPosMod * 3/2);
-		if (diff.y > -21.9 || diff.y < -41)
+		Vector3 diff = (pos - HomeScreen.stateModifier) - (state.getCursorPosition() * StateManager.cursorPosMod * HomeScreen.scale); //2:3 scaling modifier																								 //}
+		if (diff.y > 11 || diff.y < -19.8)
 		{
 			return false;
 		}
-		if (diff.x > 23.9 || diff.x < -24.3)
+		if (diff.x > 41 || diff.x < -42)
 		{
 			return false;
 		}

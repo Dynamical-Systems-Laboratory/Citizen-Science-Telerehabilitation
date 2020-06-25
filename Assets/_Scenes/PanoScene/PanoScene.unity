@@ -1796,8 +1796,8 @@ GameObject:
   - component: {fileID: 129364700}
   - component: {fileID: 129364703}
   m_Layer: 5
-  m_Name: QuitButtonButton
-  m_TagString: QuitButton
+  m_Name: HomeButton
+  m_TagString: HomeButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4305,7 +4305,7 @@ GameObject:
   - component: {fileID: 274016214}
   - component: {fileID: 274016213}
   m_Layer: 5
-  m_Name: NextButtonButton
+  m_Name: NextButton
   m_TagString: NextButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7793,8 +7793,6 @@ GameObject:
   - component: {fileID: 539249135}
   - component: {fileID: 539249134}
   - component: {fileID: 539249133}
-  - component: {fileID: 539249132}
-  - component: {fileID: 539249131}
   - component: {fileID: 539249138}
   - component: {fileID: 539249139}
   m_Layer: 5
@@ -7804,34 +7802,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &539249131
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 539249130}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 304c8640f3c71264a97ee6cc06e17069, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tagMaterial: {fileID: 0}
---- !u!114 &539249132
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 539249130}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f5a7c0a7a5024e4f9d233954880f530, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cameraMoving: 0
-  xOffset: 25.9
-  tagsPlaced: []
 --- !u!223 &539249133
 Canvas:
   m_ObjectHideFlags: 0
@@ -15571,7 +15541,7 @@ GameObject:
   - component: {fileID: 1080177676}
   m_Layer: 5
   m_Name: QuitButton
-  m_TagString: QuitButton2
+  m_TagString: QuitButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -21097,8 +21067,8 @@ GameObject:
   - component: {fileID: 1386706313}
   - component: {fileID: 1386706312}
   m_Layer: 5
-  m_Name: Quit
-  m_TagString: QuitButton
+  m_Name: Home
+  m_TagString: HomeButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -24373,7 +24343,7 @@ GameObject:
   - component: {fileID: 1597140257}
   - component: {fileID: 1597140256}
   m_Layer: 5
-  m_Name: Next Image
+  m_Name: Next
   m_TagString: NextButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -25666,7 +25636,7 @@ GameObject:
   - component: {fileID: 1689006501}
   m_Layer: 5
   m_Name: Quit
-  m_TagString: QuitButton2
+  m_TagString: QuitButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -27043,7 +27013,7 @@ GameObject:
   - component: {fileID: 1785344729}
   - component: {fileID: 1785344728}
   m_Layer: 5
-  m_Name: QuitButtonPanel
+  m_Name: HomeButtonPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
