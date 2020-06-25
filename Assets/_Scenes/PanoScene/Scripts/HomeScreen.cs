@@ -6,6 +6,9 @@ using UnityEngine.UI;
 //MonoBehavior required for unity to read (also script attatched to game object)
 public class HomeScreen : MonoBehaviour
 {
+    //main
+    public static bool inHomeScreen;
+
     //general
     public StateManager state;
     public ClickAction eventListener;
@@ -66,7 +69,7 @@ public class HomeScreen : MonoBehaviour
     void Update()
     {
         //making sure it stays open (uniturrupted)
-        if (MakeWordBank.inHomeScreen)
+        if (inHomeScreen)
         {
             homeCamera.SetActive(true);
             mainCamera.SetActive(false);
@@ -75,24 +78,24 @@ public class HomeScreen : MonoBehaviour
         }
 
         //continue conditions
-        canContinue = MakeWordBank.inHomeScreen;
+        canContinue = inHomeScreen;
         if (MakeWordBank.inTutorial)
         {
             canContinue = false;
         }
 
-        Debug.Log("Home Screening: " + MakeWordBank.inHomeScreen.ToString() + ", Doing:" + canContinue.ToString());
-        Debug.Log("Scaled Cursor:" + (state.getCursorPosition() * StateManager.cursorPosMod * scale));
+        Debug.Log("Screens Home(" + inHomeScreen.ToString() + ") ProjectInfo(" + PowerpointScript.inSlides + ") Calibrate(" + Calibration.inCalibrating + ")");
+        //Debug.Log("Scaled Cursor:" + (state.getCursorPosition() * StateManager.cursorPosMod * scale));
         //main loop
         if (canContinue)
         {
-            foreach (GameObject button in buttons)
-            {
-                if(button != null)
-                {
-                    Debug.Log(button.name + ": " + ((button.transform.position - stateModifier) - (state.getCursorPosition() * StateManager.cursorPosMod * scale)) + ", " + (button.transform.position - stateModifier));
-                }
-            }
+            //foreach (GameObject button in buttons)
+            //{
+            //    if(button != null)
+            //    {
+            //        Debug.Log(button.name + ": " + ((button.transform.position - stateModifier) - (state.getCursorPosition() * StateManager.cursorPosMod * scale)) + ", " + (button.transform.position - stateModifier));
+            //    }
+            //}
             //Clicking
             if (Input.GetKey(KeyCode.B))
             {
@@ -112,29 +115,42 @@ public class HomeScreen : MonoBehaviour
                 }
                 Debug.Log("Closest Button: " + obj.name + ", " + ClickAction.buttonClose2(obj.transform.position));
 
-                //if (ClickAction.buttonClose(startGameButton.transform.position))
-                //{
-                //    homeCamera.SetActive(false);
-                //    mainCamera.SetActive(true);
-                //    UICamera.SetActive(true);
-                //    MakeWordBank.inHomeScreen = false;
-                //}
-                //else if (ClickAction.buttonClose(profileButton.transform.position))
-                //{
+                if (ClickAction.buttonClose2(obj.transform.position))
+                {
+                    if (obj.name == startGameButton.name)
+                    {
+                        homeCamera.SetActive(false);
+                        mainCamera.SetActive(true);
+                        UICamera.SetActive(true);
+                        inHomeScreen = false;
+                        //reload last level (read data stuff here)
+                    }
+                    else if (obj.name == profileButton.name)
+                    {
+                        //make UserProfile.cs
+                    }
+                    else if (obj.name == calibrateButton.name)
+                    {
+                        Calibration.inCalibrating = true;
+                    }
+                    else if (obj.name == tutorialButton.name)
+                    {
 
-                //}
-                //else if (ClickAction.buttonClose(calibrateButton.transform.position))
-                //{
-
-                //}
-                //else if (ClickAction.buttonClose(aboutButton.transform.position))
-                //{
-
-                //}
-                //else if (ClickAction.buttonClose(quitButton.transform.position))
-                //{
-                //    QuitGameScript.TaskOnClick();
-                //}
+                    }
+                    else if (obj.name == aboutButton.name)
+                    {
+                        PowerpointScript.inSlides = true;
+                        homeCamera.SetActive(true);
+                    }
+                    else if (obj.name == quitButton.name)
+                    {
+                        QuitGameScript.TaskOnClick();
+                    }
+                    else
+                    {
+                        Debug.Log("Unknown Gameobject Button Found: " + obj.name);
+                    }
+                }
             }
 
 

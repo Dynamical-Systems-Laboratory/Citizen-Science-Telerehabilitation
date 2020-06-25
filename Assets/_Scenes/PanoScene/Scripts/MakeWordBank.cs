@@ -236,8 +236,6 @@ public class MakeWordBank : MonoBehaviour {
 
     public static bool initialized = false;
 
-    public static bool inHomeScreen = false;
-
     //Array of the container class I made below for a "Tag" object - since it's static, 
     //you can have an eventlistener on another class and call methods like MakeWordBank.replaceTag(GameObject obj)
     //which replaces the Tag with the next Tag name in line, uploaded from the .csv file.
@@ -378,7 +376,7 @@ public class MakeWordBank : MonoBehaviour {
     {
         Debug.Log("MainC: " + mainCamera.activeSelf + ", UIC: " + UICamera.activeSelf + ", HomeC: " + homeCamera.activeSelf +
             ", VidC: " + videoCamera.activeSelf + ", CursorC: " + cursorCamera.activeSelf);
-        Debug.Log("inTutorial: " + inTutorial.ToString() + " , inPractLvl: " + inPracticeLevel.ToString() + ", inHome: " + inHomeScreen.ToString());
+        Debug.Log("inTutorial: " + inTutorial.ToString() + " , inPractLvl: " + inPracticeLevel.ToString() + ", inHome: " + HomeScreen.inHomeScreen.ToString());
         
         /* Button MoveSets
          * * arrow keys = cursor movement
@@ -406,14 +404,6 @@ public class MakeWordBank : MonoBehaviour {
                 StateManager.moveCameraL = false;
                 StateManager.moveCameraU = false;
                 StateManager.moveCameraD = false;
-                //if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow))
-                //{
-                //    StateManager.cursorAdd.x += Input.GetAxis("Horizontal") * .003f;
-                //}
-                //if (Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
-                //{
-                //    StateManager.cursorAdd.y += Input.GetAxis("Vertical") * .003f;
-                //}
                 if (Input.GetKey(KeyCode.RightArrow))
                 {
                     StateManager.moveCursorR = true;
@@ -460,42 +450,45 @@ public class MakeWordBank : MonoBehaviour {
             }
             //CLICKING
             //V for button press
-            if (Input.GetKey(KeyCode.B)) //select
+            if (!HomeScreen.inHomeScreen && !PowerpointScript.inSlides)
             {
-                if (ClickAction.buttonClose(nextButton.transform.position))
+                if (Input.GetKey(KeyCode.B)) //select
                 {
-                    eventListener.OnPointerClick(nextButton);
+                    if (ClickAction.buttonClose(nextButton.transform.position))
+                    {
+                        eventListener.OnPointerClick(nextButton);
+                    }
+                    else if (ClickAction.buttonClose(quitButton.transform.position))
+                    {
+                        eventListener.OnPointerClick(quitButton);
+                        homeCamera.SetActive(true);
+                        mainCamera.SetActive(false);
+                        UICamera.SetActive(false);
+                        videoCamera.SetActive(false);
+                        HomeScreen.inHomeScreen = true;
+                    }
+                    else
+                    {
+                        findObjClick();
+                    }
                 }
-                else if (ClickAction.buttonClose(quitButton.transform.position))
+                else if (Input.GetKey(KeyCode.N) && state.getSelected() != null) //deselect
+                { // (.1f is the bounds of the screen where the cursor is on the image side)
+                    if (state.getCursorPosition().x < .1f) //placing on image canvas
+                    {
+                        eventListener.OnPointerClick();
+                    }
+                    else if (ClickAction.isByTrash(state.getCursorPosition())) //trashing
+                    {
+                        eventListener.OnPointerClick();
+                        newTag(ClickAction.initTagPos);
+                    }
+                }
+                else if (Input.GetKey(KeyCode.M) && state.getSelected() != null)
                 {
-                    eventListener.OnPointerClick(quitButton);
-                    homeCamera.SetActive(true);
-                    mainCamera.SetActive(false);
-                    UICamera.SetActive(false);
-                    videoCamera.SetActive(false);
-                    inHomeScreen = true;
+                    ClickAction.dropObject();
+                    //alternative dropObject that lets you pick up and move a tag that has already been placed?
                 }
-                else
-                {
-                    findObjClick();
-                }
-            }
-            else if (Input.GetKey(KeyCode.N) && state.getSelected() != null) //deselect
-            { // (.1f is the bounds of the screen where the cursor is on the image side)
-                if (state.getCursorPosition().x < .1f) //placing on image canvas
-                {
-                    eventListener.OnPointerClick();
-                }
-                else if (ClickAction.isByTrash(state.getCursorPosition())) //trashing
-                {
-                    eventListener.OnPointerClick();
-                    newTag(ClickAction.initTagPos);
-                }
-            }
-            else if (Input.GetKey(KeyCode.M) && state.getSelected() != null)
-            {
-                ClickAction.dropObject();
-                //alternative dropObject that lets you pick up and move a tag that has already been placed?
             }
         }
         if (stepOfTutorial == 22 || stepOfTutorial == 23) //just in case
@@ -513,11 +506,8 @@ public class MakeWordBank : MonoBehaviour {
             
         }
 
-        //To add:
-        //Survey,
-        //Beginning ppt slides
-
-        if (inTutorial)
+        //Start of Runtime Stuff
+        if (inTutorial && !HomeScreen.inHomeScreen)
         {
             if (!initialized)
             {

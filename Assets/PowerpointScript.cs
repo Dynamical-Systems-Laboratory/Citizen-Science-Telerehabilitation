@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PowerpointScript : MonoBehaviour {
+	public static bool inSlides = true;
+	public static bool hasBeenToTutorial = false;
+
 	public static RawImage[] slides;
 	public static int slideIndex = 1; //Start shifting to first text element of first slide
 
@@ -29,14 +32,23 @@ public class PowerpointScript : MonoBehaviour {
 	}
 	
 	void Update () {
-		//if (NetworkManagerScript.hudOff) {
-
+        if (inSlides) {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                gameObject.SetActive(false);
-                //MakeWordBank.inTutorial = true;
-                SimpleTutorial.inSimpleTutorial = true;
-            }
+                gameObject.SetActive(false); //??
+				slideIndex = 1;
+				inSlides = false;
+                if (!hasBeenToTutorial)
+                {
+					SimpleTutorial.inSimpleTutorial = true;
+					hasBeenToTutorial = true;
+				}
+                else
+                {
+					HomeScreen.homeCamera.SetActive(true);
+                }
+				
+			}
 
             delay += Time.deltaTime;
 			slides [slideIndex].color = Color.Lerp (colorBegin, colorEnd, delay / transitionTime);
@@ -59,9 +71,11 @@ public class PowerpointScript : MonoBehaviour {
 						gameObject.SetActive (false);
                         //MakeWordBank.inTutorial = true;
                         SimpleTutorial.inSimpleTutorial = true;
-                    }
+					    slideIndex = 1;
+						inSlides = false;
+					}
 				}
 			}
-		//}
+        }
 	}
 }
