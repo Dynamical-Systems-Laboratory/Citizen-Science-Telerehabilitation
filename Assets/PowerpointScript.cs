@@ -47,7 +47,6 @@ public class PowerpointScript : MonoBehaviour {
                 {
 					HomeScreen.homeCamera.SetActive(true);
                 }
-				
 			}
 
             delay += Time.deltaTime;
@@ -68,11 +67,18 @@ public class PowerpointScript : MonoBehaviour {
 					}
 				} else { //Powerpoint over:
 					if (MakeWordBank.moveOn()) {
-						gameObject.SetActive (false);
-                        //MakeWordBank.inTutorial = true;
-                        SimpleTutorial.inSimpleTutorial = true;
-					    slideIndex = 1;
+						gameObject.SetActive(false); //??
+						slideIndex = 1;
 						inSlides = false;
+						if (!hasBeenToTutorial)
+						{
+							SimpleTutorial.inSimpleTutorial = true;
+							hasBeenToTutorial = true;
+						}
+						else
+						{
+							HomeScreen.homeCamera.SetActive(true);
+						}
 					}
 				}
 			}

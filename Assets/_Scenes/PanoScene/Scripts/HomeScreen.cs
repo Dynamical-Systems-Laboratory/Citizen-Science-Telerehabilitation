@@ -139,8 +139,8 @@ public class HomeScreen : MonoBehaviour
                     }
                     else if (obj.name == aboutButton.name)
                     {
+                        homeCamera.SetActive(false);
                         PowerpointScript.inSlides = true;
-                        homeCamera.SetActive(true);
                     }
                     else if (obj.name == quitButton.name)
                     {
