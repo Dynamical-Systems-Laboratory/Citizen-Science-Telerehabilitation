@@ -36,6 +36,12 @@ public class HomeScreen : MonoBehaviour
 
     public static Vector3 stateModifier = new Vector3(-100.2f + 2.8f, 500f, 66.6f); //offset of button positions relative to makewordbank
     public static float scale = 1.72f;//3/2;
+
+    //button colors
+    public static float colorFactor = 195f / 255f;
+    public static Color unhighlighted = new Color(colorFactor, colorFactor, colorFactor, 1f);
+    public static Color highlighted = new Color(1f, 1f, 1f, 1f);
+
     void Awake()
     {
         
@@ -50,12 +56,12 @@ public class HomeScreen : MonoBehaviour
 
         tutorialText = GameObject.FindGameObjectWithTag("TutorialText").GetComponent<Text>() as Text;
 
-        startGameButton = GameObject.Find("StartGameButton");
-        profileButton = GameObject.Find("ProfileButton");
-        calibrateButton = GameObject.Find("CalibrateButton");
-        tutorialButton = GameObject.Find("TutorialButton");
-        aboutButton = GameObject.Find("AboutProjectButton");
-        quitButton = GameObject.Find("QuitButton");
+        startGameButton = GameObject.Find("StartGamePanel");
+        profileButton = GameObject.Find("ProfilePanel");
+        calibrateButton = GameObject.Find("CalibratePanel");
+        tutorialButton = GameObject.Find("TutorialPanel");
+        aboutButton = GameObject.Find("ProjectPanel");
+        quitButton = GameObject.Find("QuitPanel");
 
         buttons[0] = startGameButton;
         buttons[1] = profileButton;
@@ -89,32 +95,32 @@ public class HomeScreen : MonoBehaviour
         //main loop
         if (canContinue)
         {
-            //foreach (GameObject button in buttons)
-            //{
-            //    if(button != null)
-            //    {
-            //        Debug.Log(button.name + ": " + ((button.transform.position - stateModifier) - (state.getCursorPosition() * StateManager.cursorPosMod * scale)) + ", " + (button.transform.position - stateModifier));
-            //    }
-            //}
-            //Clicking
-            if (Input.GetKey(KeyCode.B))
+            float dist = 100000000; //find closest object
+            GameObject obj = buttons[0];
+            foreach (GameObject button in buttons)
             {
-                float dist = 100000000;
-                GameObject obj = buttons[0];
-                foreach (GameObject button in buttons)
+                if (button != null)
                 {
-                    if (button != null)
+                    Vector3 newDist = (button.transform.position - stateModifier) - (state.getCursorPosition() * StateManager.cursorPosMod * scale);
+                    if (newDist.magnitude < dist)
                     {
-                        Vector3 newDist = (button.transform.position - stateModifier) - (state.getCursorPosition() * StateManager.cursorPosMod * scale);
-                        if (newDist.magnitude < dist)
-                        {
-                            dist = newDist.magnitude;
-                            obj = button;
-                        }
+                        dist = newDist.magnitude;
+                        obj = button;
                     }
                 }
-                Debug.Log("Closest Button: " + obj.name + ", " + ClickAction.buttonClose2(obj.transform.position));
+            }
+            Debug.Log("Closest Button: " + obj.name + ", " + ClickAction.buttonClose2(obj.transform.position));
+            if (ClickAction.buttonClose2(obj.transform.position)) //highlight color
+            {
+                obj.GetComponent<Image>().color = highlighted;
+            }
+            else
+            {
+                obj.GetComponent<Image>().color = unhighlighted;
+            }
 
+            if (Input.GetKey(KeyCode.B)) //clicking
+            {
                 if (ClickAction.buttonClose2(obj.transform.position))
                 {
                     if (obj.name == startGameButton.name)
