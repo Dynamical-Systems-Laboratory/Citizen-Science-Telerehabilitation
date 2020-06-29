@@ -7,8 +7,9 @@ using UnityEngine.EventSystems;
 using System;
 using UnityEngine.Video;
 
-public class SimpleTutorial : MonoBehaviour
+public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be considered Calibrate.cs
 {
+    public StateManager state;
     public static bool inSimpleTutorial = false;
     public static GameObject mainCamera;
     public static GameObject UICamera;
@@ -124,6 +125,7 @@ public class SimpleTutorial : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        state = GameObject.Find("Canvas").GetComponent<StateManager>(); //state of game**
         mainCamera = GameObject.Find("MainCamera");
         UICamera = GameObject.Find("UICamera");
         videoCamera = GameObject.Find("VideoCamera");
@@ -151,8 +153,7 @@ public class SimpleTutorial : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log("In Simple Tutorial: " + inSimpleTutorial);
-        if (inSimpleTutorial)
+        if (state.getState() == 4)
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
@@ -1556,9 +1557,10 @@ public class SimpleTutorial : MonoBehaviour
 
                 StateManager.makeCursReset = true;
 
-                MakeWordBank.inTutorial = true;
+                //MakeWordBank.inTutorial = true;
+                state.setState(5);
 
-                inSimpleTutorial = false; //stops simple tutorial
+                //inSimpleTutorial = false; //stops simple tutorial
             }
         }
     }

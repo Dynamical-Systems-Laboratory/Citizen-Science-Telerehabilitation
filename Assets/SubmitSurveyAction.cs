@@ -14,10 +14,14 @@ public class SubmitSurveyAction : MonoBehaviour
 	public string finalGenderChoice = "";
 
 	public Slider[] questionSliders;
+
+	public StateManager state;
+
 	void Start()
 	{
 		Button btn = gameObject.GetComponent<Button>();
 		btn.onClick.AddListener(TaskOnClick);
+		state = GameObject.Find("Canvas").GetComponent<StateManager>(); //state of game**
 	}
 
 	void TaskOnClick()
@@ -62,8 +66,9 @@ public class SubmitSurveyAction : MonoBehaviour
 
 
 		gameObject.transform.parent.parent.gameObject.SetActive (false);
-		MakeWordBank.inTutorial = true;
-        if (GameObject.Find("Falcon"))
+		//MakeWordBank.inTutorial = true;
+		state.setState(5);
+		if (GameObject.Find("Falcon"))
         {
             foreach(Camera obj in Resources.FindObjectsOfTypeAll<Camera>())
             {

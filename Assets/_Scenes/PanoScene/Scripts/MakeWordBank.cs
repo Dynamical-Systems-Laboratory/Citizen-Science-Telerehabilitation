@@ -164,8 +164,9 @@ public class MakeWordBank : MonoBehaviour {
     public static GameObject dataCollector;
     public static Vector3 positionLastTag, rotationLastTag, scaleLastTag; //For use in PlayerScript when the last tag of an image is dropped:
 
-    public static bool inTutorial = false;
+    public static bool inTutorial = false; //***
     public static bool inPracticeLevel = false;
+
     public static int stepOfTutorial = 0;
     public static float timePannedInTutorial = 0f;
     public static float timeSpentOnStep8 = 0f;
@@ -376,7 +377,6 @@ public class MakeWordBank : MonoBehaviour {
     {
         Debug.Log("MainC: " + mainCamera.activeSelf + ", UIC: " + UICamera.activeSelf + ", HomeC: " + homeCamera.activeSelf +
             ", VidC: " + videoCamera.activeSelf + ", CursorC: " + cursorCamera.activeSelf);
-        Debug.Log("inTutorial: " + inTutorial.ToString() + " , inPractLvl: " + inPracticeLevel.ToString() + ", inHome: " + HomeScreen.inHomeScreen.ToString());
         
         /* Button MoveSets
          * * arrow keys = cursor movement
@@ -450,7 +450,7 @@ public class MakeWordBank : MonoBehaviour {
             }
             //CLICKING
             //V for button press
-            if (!HomeScreen.inHomeScreen && !PowerpointScript.inSlides)
+            if (state.getState() == 2)
             {
                 if (Input.GetKey(KeyCode.B)) //select
                 {
@@ -465,7 +465,7 @@ public class MakeWordBank : MonoBehaviour {
                         mainCamera.SetActive(false);
                         UICamera.SetActive(false);
                         videoCamera.SetActive(false);
-                        HomeScreen.inHomeScreen = true;
+                        state.setState(1);
                     }
                     else
                     {
@@ -499,7 +499,7 @@ public class MakeWordBank : MonoBehaviour {
             videoCamera.SetActive(false);
             //VP1.SetActive(false);
             //VP5.SetActive(false);
-            if (inPracticeLevel)
+            if (state.getState() == 7) //inPracticeLevel
             {
                 practiceMoveOn = state.tagsPlaced.Count;
             }
@@ -507,7 +507,7 @@ public class MakeWordBank : MonoBehaviour {
         }
 
         //Start of Runtime Stuff
-        if (inTutorial && !HomeScreen.inHomeScreen)
+        if (state.getState() == 2 || state.getState() == 7)
         {
             if (!initialized)
             {
@@ -1232,7 +1232,7 @@ public class MakeWordBank : MonoBehaviour {
                     { //Change for falcon
                       //END OF TUTORIAL:
                         timer = 0f;
-                        inTutorial = false;
+                        //inTutorial = false;
                         //dataCollector.SetActive (true); Don't collect data for practice level
                         welcomeScreen.SetActive(false);
 
@@ -1267,7 +1267,8 @@ public class MakeWordBank : MonoBehaviour {
                         //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
 
                         stepOfTutorial++; //End
-                        inPracticeLevel = true;
+                        //inPracticeLevel = true;
+                        state.setState(7);
                         practiceLevelText.SetActive(true);
                     }
                 }
@@ -1371,7 +1372,7 @@ public class MakeWordBank : MonoBehaviour {
             }
         }
         string newName;
-        if ((inTutorial || inPracticeLevel))
+        if ((state.getState() == 5 || state.getState() == 7))
         {
             newName = tutorialWords[tutorialWordsIndex];
             tutorialWordsIndex++;

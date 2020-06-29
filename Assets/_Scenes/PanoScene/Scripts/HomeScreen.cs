@@ -6,12 +6,12 @@ using UnityEngine.UI;
 //MonoBehavior required for unity to read (also script attatched to game object)
 public class HomeScreen : MonoBehaviour
 {
-    //main
-    public static bool inHomeScreen;
+    //inHomeScreen = 1
 
     //general
     public StateManager state;
     public ClickAction eventListener;
+    public PowerpointScript slides;
 
     //cameras
     public static GameObject mainCamera;
@@ -53,6 +53,7 @@ public class HomeScreen : MonoBehaviour
 
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
         //homeListener = GameObject.Find("HomeCanvas").GetComponent<ClickAction>();
+        slides = GameObject.Find("Canvas").GetComponent<PowerpointScript>();
 
         tutorialText = GameObject.FindGameObjectWithTag("TutorialText").GetComponent<Text>() as Text;
 
@@ -74,26 +75,7 @@ public class HomeScreen : MonoBehaviour
 
     void Update()
     {
-        //making sure it stays open (uniturrupted)
-        if (inHomeScreen)
-        {
-            homeCamera.SetActive(true);
-            mainCamera.SetActive(false);
-            UICamera.SetActive(false);
-            //videoCamera.SetActive(false);
-        }
-
-        //continue conditions
-        canContinue = inHomeScreen;
-        if (MakeWordBank.inTutorial)
-        {
-            canContinue = false;
-        }
-
-        Debug.Log("Screens Home(" + inHomeScreen.ToString() + ") ProjectInfo(" + PowerpointScript.inSlides + ") Calibrate(" + Calibration.inCalibrating + ")");
-        //Debug.Log("Scaled Cursor:" + (state.getCursorPosition() * StateManager.cursorPosMod * scale));
-        //main loop
-        if (canContinue)
+        if (state.getState() == 1)
         {
             float dist = 100000000; //find closest object
             GameObject obj = buttons[0];
@@ -109,7 +91,7 @@ public class HomeScreen : MonoBehaviour
                     }
                 }
             }
-            Debug.Log("Closest Button: " + obj.name + ", " + ClickAction.buttonClose2(obj.transform.position));
+            //Debug.Log("Closest Button: " + obj.name + ", " + ClickAction.buttonClose2(obj.transform.position));
             if (ClickAction.buttonClose2(obj.transform.position)) //highlight color
             {
                 obj.GetComponent<Image>().color = highlighted;
@@ -123,30 +105,43 @@ public class HomeScreen : MonoBehaviour
             {
                 if (ClickAction.buttonClose2(obj.transform.position))
                 {
+                    obj.GetComponent<Image>().color = unhighlighted;
                     if (obj.name == startGameButton.name)
                     {
+                        StateManager.makeCamReset = true;
                         homeCamera.SetActive(false);
-                        mainCamera.SetActive(true);
-                        UICamera.SetActive(true);
-                        inHomeScreen = false;
-                        //reload last level (read data stuff here)
+                        if (state.hasPracticed)
+                        {
+                            state.setState(2);
+                        }
+                        else
+                        {
+                            state.setState(7);
+                        }
+                        //reload last level & tags (read data stuff here)
                     }
                     else if (obj.name == profileButton.name)
                     {
                         //make UserProfile.cs
+                        state.setState(3);
                     }
                     else if (obj.name == calibrateButton.name)
                     {
-                        Calibration.inCalibrating = true;
-                    }
+                        state.setState(4);
+                    } 
                     else if (obj.name == tutorialButton.name)
                     {
-
+                        state.setState(5);
                     }
                     else if (obj.name == aboutButton.name)
                     {
                         homeCamera.SetActive(false);
-                        PowerpointScript.inSlides = true;
+                        state.setState(6);
+                        MakeWordBank.UICamera.SetActive(true);
+                        StateManager.makeCursReset = true;
+                        MakeWordBank.cursorCamera.SetActive(false);
+                        //GameObject.FindGameObjectWithTag("Slides").SetActive(true);
+                        GameObject.Find("Canvas").GetComponent<PowerpointScript>().enabled = true;
                     }
                     else if (obj.name == quitButton.name)
                     {

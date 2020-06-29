@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PowerpointScript : MonoBehaviour {
-	public static bool inSlides = true;
+	//public static bool inSlides = true;
 	public static bool hasBeenToTutorial = false;
 
 	public static RawImage[] slides;
@@ -14,6 +14,7 @@ public class PowerpointScript : MonoBehaviour {
 	static Color colorBegin;
 	static Color colorEnd;
 	static float transitionTime = 1.0f;
+	public StateManager state;
 
 	void Awake()
 	{
@@ -29,24 +30,34 @@ public class PowerpointScript : MonoBehaviour {
 			slides [index] = img.GetComponent<RawImage>();
 			index++;
 		}
+		gameObject.SetActive(true);
+		state = GameObject.Find("Canvas").GetComponent<StateManager>();
 	}
 	
 	void Update () {
-        if (inSlides) {
-            if (Input.GetKeyDown(KeyCode.Escape))
+        if (state.getState() == 6) {
+			Debug.Log("reading slide data...");
+			gameObject.SetActive(true);
+			MakeWordBank.mainCamera.SetActive(false);
+			MakeWordBank.UICamera.SetActive(true);
+			MakeWordBank.videoCamera.SetActive(false);
+			if (Input.GetKeyDown(KeyCode.Escape))
             {
-                gameObject.SetActive(false); //??
-				slideIndex = 1;
-				inSlides = false;
+                gameObject.SetActive(false);
+                slideIndex = 1;
                 if (!hasBeenToTutorial)
                 {
-					SimpleTutorial.inSimpleTutorial = true;
+					//SimpleTutorial.inSimpleTutorial = true;
+					state.setState(4);
 					hasBeenToTutorial = true;
 				}
                 else
                 {
 					HomeScreen.homeCamera.SetActive(true);
-                }
+					MakeWordBank.mainCamera.SetActive(false);
+					//HomeScreeninHomeScreen = true;
+					state.setState(1);
+				}
 			}
 
             delay += Time.deltaTime;
@@ -67,17 +78,17 @@ public class PowerpointScript : MonoBehaviour {
 					}
 				} else { //Powerpoint over:
 					if (MakeWordBank.moveOn()) {
-						gameObject.SetActive(false); //??
-						slideIndex = 1;
-						inSlides = false;
+                        gameObject.SetActive(false);
+                        slideIndex = 1;
 						if (!hasBeenToTutorial)
 						{
-							SimpleTutorial.inSimpleTutorial = true;
+							//SimpleTutorial.inSimpleTutorial = true;
+							state.setState(4);
 							hasBeenToTutorial = true;
 						}
 						else
 						{
-							HomeScreen.homeCamera.SetActive(true);
+							state.setState(1);
 						}
 					}
 				}

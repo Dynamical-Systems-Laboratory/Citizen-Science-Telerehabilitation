@@ -103,10 +103,97 @@ public class StateManager : MonoBehaviour {
     public static float cursorSpeed = 2.8f; //factor that speeds up cursor's movement
     public static float cursorSize = -0.4f; //factor that makes cursor bigger or smaller
 
+    public bool hasPracticed = false; //has gone through practice level
 
     public List<GameObject> tagsPlaced;
-
     //public List<InvisTag> invisTags;
+
+    private int userState;
+    /* 0 = Quit
+     * 1 = Home
+     * 2 = In-Game
+     * 3 = Profile
+     * 4 = Calibration
+     * 5 = Button Tutorial
+     * 6 = About Project
+     * 7 = Practice Level
+     */
+    public int getState()
+    {
+        return userState;
+    }
+    public void setState(int newState)
+    {
+        userState = newState;
+        updateState();
+    }
+    public void updateState()
+    {
+        switch (userState)
+        {
+            case 1:
+                Debug.Log("State: Home");
+                MakeWordBank.mainCamera.SetActive(false);
+                MakeWordBank.homeCamera.SetActive(true);
+                MakeWordBank.UICamera.SetActive(false);
+                MakeWordBank.videoCamera.SetActive(false);
+                MakeWordBank.cursorCamera.SetActive(true);
+                break;
+            case 2:
+                Debug.Log("State: Game");
+                MakeWordBank.mainCamera.SetActive(true);
+                MakeWordBank.homeCamera.SetActive(false);
+                MakeWordBank.UICamera.SetActive(true);
+                MakeWordBank.videoCamera.SetActive(false);
+                MakeWordBank.cursorCamera.SetActive(true);
+                break;
+            case 3:
+                Debug.Log("State: Profile");
+                MakeWordBank.mainCamera.SetActive(false);
+                MakeWordBank.homeCamera.SetActive(false);
+                MakeWordBank.UICamera.SetActive(false);
+                MakeWordBank.videoCamera.SetActive(false);
+                MakeWordBank.cursorCamera.SetActive(true);
+                //MakeWordBank.profileCamera
+                break;
+            case 4:
+                Debug.Log("State: Calibrate");
+                MakeWordBank.mainCamera.SetActive(true);
+                MakeWordBank.homeCamera.SetActive(false);
+                MakeWordBank.UICamera.SetActive(false);
+                MakeWordBank.videoCamera.SetActive(false);
+                MakeWordBank.cursorCamera.SetActive(true);
+                break;
+            case 5:
+                Debug.Log("State: Tutorial");
+                MakeWordBank.mainCamera.SetActive(true);
+                MakeWordBank.homeCamera.SetActive(false);
+                MakeWordBank.UICamera.SetActive(true);
+                MakeWordBank.videoCamera.SetActive(false);
+                MakeWordBank.cursorCamera.SetActive(true);
+                break;
+            case 6:
+                Debug.Log("State: About Project");
+                MakeWordBank.mainCamera.SetActive(false);
+                MakeWordBank.homeCamera.SetActive(false);
+                MakeWordBank.UICamera.SetActive(true);
+                MakeWordBank.videoCamera.SetActive(false);
+                MakeWordBank.cursorCamera.SetActive(false);
+                GameObject.Find("Canvas").GetComponent<PowerpointScript>().enabled = true;
+                break;
+            case 7:
+                Debug.Log("State: Practice");
+                MakeWordBank.mainCamera.SetActive(true);
+                MakeWordBank.homeCamera.SetActive(false);
+                MakeWordBank.UICamera.SetActive(true);
+                MakeWordBank.videoCamera.SetActive(false);
+                MakeWordBank.cursorCamera.SetActive(true);
+                break;
+            default:
+                Debug.Log("User State Issue: " + userState);
+                break;
+        }
+    }
 
     public GameObject getSelected()
     {
