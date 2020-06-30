@@ -1187,7 +1187,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -6231, y: -6.3245087}
+  m_AnchoredPosition: {x: -6231, y: -6.3244476}
   m_SizeDelta: {x: -280, y: 89.01001}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &74824780
@@ -3280,7 +3280,7 @@ GameObject:
   - component: {fileID: 196777462}
   - component: {fileID: 196777466}
   m_Layer: 0
-  m_Name: MainCamera
+  m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11541,7 +11541,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 4940, y: -6.3245087}
+  m_AnchoredPosition: {x: 4940, y: -6.3244476}
   m_SizeDelta: {x: -678, y: 89.009995}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &802630043

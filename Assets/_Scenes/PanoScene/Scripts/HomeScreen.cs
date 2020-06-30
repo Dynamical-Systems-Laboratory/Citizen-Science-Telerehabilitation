@@ -32,8 +32,6 @@ public class HomeScreen : MonoBehaviour
     public static Text welcomeText;
     public static Text tutorialText;
 
-    private static bool canContinue = false;
-
     public static Vector3 stateModifier = new Vector3(-100.2f + 2.8f, 500f, 66.6f); //offset of button positions relative to makewordbank
     public static float scale = 1.72f;//3/2;
 
@@ -44,10 +42,9 @@ public class HomeScreen : MonoBehaviour
 
     void Awake()
     {
-        
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
 
-        mainCamera = GameObject.Find("Main Camera");
+        mainCamera = GameObject.Find("Main Camera"); //space for naming convension error reasons
         UICamera = GameObject.Find("UICamera");
         homeCamera = GameObject.Find("HomeCamera");
 
@@ -135,10 +132,11 @@ public class HomeScreen : MonoBehaviour
                     }
                     else if (obj.name == aboutButton.name)
                     {
-                        state.setState(6);
                         StateManager.makeCursReset = true;
                         //GameObject.FindGameObjectWithTag("Slides").SetActive(true);
-                        GameObject.Find("Canvas").GetComponent<PowerpointScript>().enabled = true;
+                        //GameObject.Find("Canvas").GetComponent<PowerpointScript>().enabled = true;
+                        //GameObject.Find("Powerpoint").SetActive(true);
+                        state.setState(6);
                     }
                     else if (obj.name == quitButton.name)
                     {

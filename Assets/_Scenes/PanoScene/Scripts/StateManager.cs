@@ -183,7 +183,7 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.UICamera.SetActive(true);
                 MakeWordBank.videoCamera.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(false);
-                GameObject.Find("Canvas").GetComponent<PowerpointScript>().enabled = true;
+                //GameObject.Find("Canvas").GetComponent<PowerpointScript>().enabled = true;
                 break;
             case 7:
                 //Debug.Log("State: Practice");

@@ -16,6 +16,9 @@ public class PowerpointScript : MonoBehaviour {
 	static float transitionTime = 1.0f;
 	public StateManager state;
 
+	//extra
+	private GameObject background;
+
 	void Awake()
 	{
 		colorBegin = new Color (1f, 1f, 1f, 0f);
@@ -31,17 +34,17 @@ public class PowerpointScript : MonoBehaviour {
 			index++;
 		}
 		gameObject.SetActive(true);
+
 		state = GameObject.Find("Canvas").GetComponent<StateManager>();
+		background = MakeWordBank.welcomeScreen;
 	}
 	
 	void Update () {
         if (state.getState() == 6) {
-			//Debug.Log("reading slide data...");
+			//gameObject.SetActive(true);
+			gameObject.transform.position = new Vector3(0f, 0f, 100f);
+			background.SetActive(true);
 
-			gameObject.SetActive(true);
-			MakeWordBank.mainCamera.SetActive(false);
-			MakeWordBank.UICamera.SetActive(true);
-			MakeWordBank.videoCamera.SetActive(false);
 			if (Input.GetKeyDown(KeyCode.Escape))
             {
                 if (!hasBeenToTutorial)
@@ -53,9 +56,11 @@ public class PowerpointScript : MonoBehaviour {
                 else
                 {
 					state.setState(1);
+					background.SetActive(false);
 				}
 				slideIndex = 1;
-				gameObject.SetActive(false);
+                //gameObject.SetActive(false);
+                gameObject.transform.position = new Vector3(0f,0f, -500f);
 			}
 
             delay += Time.deltaTime;
@@ -63,12 +68,16 @@ public class PowerpointScript : MonoBehaviour {
 			if (slides [slideIndex].color == Color.white) { //Change slides
 				if (slideIndex < slides.Length - 1) { //Still in powerpoint:
 					//If we're still in a slide or going to the next slide:
-					if (slides [slideIndex + 1].name.Substring (0, 7).Equals (slides [slideIndex].name.Substring (0, 7)) && delay > 2f) {
+					if (slides [slideIndex + 1].name.Substring (0, 7).Equals (slides [slideIndex].name.Substring (0, 7)) && delay > 2f)
+                    {
 						slideIndex++;
 						delay = 0f;
 						transitionTime = 1f;
-					} else { //Wait for keystroke
-						if (MakeWordBank.moveOn() && !Input.GetKeyDown(KeyCode.BackQuote) && !Input.GetKeyDown(KeyCode.Escape)) {
+					}
+                    else
+                    { //Wait for keystroke
+						if (MakeWordBank.moveOn() && !Input.GetKeyDown(KeyCode.BackQuote) && !Input.GetKeyDown(KeyCode.Escape))
+                        {
 							slideIndex++;
 							delay = 0f;
 							transitionTime = 0.75f;
@@ -85,9 +94,11 @@ public class PowerpointScript : MonoBehaviour {
 						else
 						{
 							state.setState(1);
+							background.SetActive(false);
 						}
 						slideIndex = 1;
-						gameObject.SetActive(false);
+						//gameObject.SetActive(false);
+						gameObject.transform.position = new Vector3(0f, 0f, -1200f);
 					}
 				}
 			}
