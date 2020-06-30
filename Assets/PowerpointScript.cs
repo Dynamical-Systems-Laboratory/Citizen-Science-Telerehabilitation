@@ -36,15 +36,14 @@ public class PowerpointScript : MonoBehaviour {
 	
 	void Update () {
         if (state.getState() == 6) {
-			Debug.Log("reading slide data...");
+			//Debug.Log("reading slide data...");
+
 			gameObject.SetActive(true);
 			MakeWordBank.mainCamera.SetActive(false);
 			MakeWordBank.UICamera.SetActive(true);
 			MakeWordBank.videoCamera.SetActive(false);
 			if (Input.GetKeyDown(KeyCode.Escape))
             {
-                gameObject.SetActive(false);
-                slideIndex = 1;
                 if (!hasBeenToTutorial)
                 {
 					//SimpleTutorial.inSimpleTutorial = true;
@@ -53,11 +52,10 @@ public class PowerpointScript : MonoBehaviour {
 				}
                 else
                 {
-					HomeScreen.homeCamera.SetActive(true);
-					MakeWordBank.mainCamera.SetActive(false);
-					//HomeScreeninHomeScreen = true;
 					state.setState(1);
 				}
+				slideIndex = 1;
+				gameObject.SetActive(false);
 			}
 
             delay += Time.deltaTime;
@@ -78,8 +76,6 @@ public class PowerpointScript : MonoBehaviour {
 					}
 				} else { //Powerpoint over:
 					if (MakeWordBank.moveOn()) {
-                        gameObject.SetActive(false);
-                        slideIndex = 1;
 						if (!hasBeenToTutorial)
 						{
 							//SimpleTutorial.inSimpleTutorial = true;
@@ -90,6 +86,8 @@ public class PowerpointScript : MonoBehaviour {
 						{
 							state.setState(1);
 						}
+						slideIndex = 1;
+						gameObject.SetActive(false);
 					}
 				}
 			}

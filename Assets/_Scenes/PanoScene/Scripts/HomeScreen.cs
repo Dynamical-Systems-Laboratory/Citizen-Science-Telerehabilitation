@@ -135,16 +135,14 @@ public class HomeScreen : MonoBehaviour
                     }
                     else if (obj.name == aboutButton.name)
                     {
-                        homeCamera.SetActive(false);
                         state.setState(6);
-                        MakeWordBank.UICamera.SetActive(true);
                         StateManager.makeCursReset = true;
-                        MakeWordBank.cursorCamera.SetActive(false);
                         //GameObject.FindGameObjectWithTag("Slides").SetActive(true);
                         GameObject.Find("Canvas").GetComponent<PowerpointScript>().enabled = true;
                     }
                     else if (obj.name == quitButton.name)
                     {
+                        state.setState(0);
                         QuitGameScript.TaskOnClick();
                     }
                     else

@@ -354,7 +354,7 @@ public class MakeWordBank : MonoBehaviour {
         VP4.SetActive(false);
         VP5.SetActive(false);
         */
-
+        
         mainCamera = GameObject.Find("MainCamera");
         UICamera = GameObject.Find("UICamera");
         videoCamera = GameObject.Find("VideoCamera");
@@ -382,7 +382,7 @@ public class MakeWordBank : MonoBehaviour {
          * * arrow keys = cursor movement
          * * b = cursor select
          * * n = cursor deselect
-         * * tfgh = camera movement
+         * * wasd = camera movement
          * * v = progress
          * * m = drop object
          */
@@ -450,7 +450,7 @@ public class MakeWordBank : MonoBehaviour {
             }
             //CLICKING
             //V for button press
-            if (state.getState() == 2)
+            if (state.getState() == 2 || state.getState() == 7 || state.getState() == 5) //home or practice level or button tutorial
             {
                 if (Input.GetKey(KeyCode.B)) //select
                 {
@@ -506,6 +506,23 @@ public class MakeWordBank : MonoBehaviour {
             
         }
 
+        if(state.getState() == 5) //edge cases with old booleans
+        {
+            inTutorial = true;
+        }
+        else
+        {
+            inTutorial = false;
+        }
+        if (state.getState() == 4)
+        {
+            SimpleTutorial.inSimpleTutorial = true;
+        }
+        else
+        {
+            SimpleTutorial.inSimpleTutorial = false;
+        }
+
         //Start of Runtime Stuff
         if (state.getState() == 2 || state.getState() == 7)
         {
@@ -538,6 +555,7 @@ public class MakeWordBank : MonoBehaviour {
                     videoCamera.SetActive(false);
                     step22proceed = true;
                     stepOfTutorial = 22;
+                    state.setState(5);
                 }
             }
 
@@ -567,7 +585,7 @@ public class MakeWordBank : MonoBehaviour {
                     tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x + 2, -22);
                     helpTextContainer.transform.localPosition = new Vector3(-220f, 200f, 0f);
                     */
-
+                    state.setState(5);
                     stepOfTutorial = 13; //All videos moved to pleTutorial, sSimtart with step 13
                 }
 
@@ -607,7 +625,7 @@ public class MakeWordBank : MonoBehaviour {
                     StateManager.moveCameraR = true;
                     helpTextContainer.SetActive(true);
                     //Change the size of the box
-                    tutorialText.text = "Pan the image to the left" + "\n" + "(To replay the video, press the space bar on your keyboard)";
+                    tutorialText.text = "Pan the image to the left" + "\n" + "(To replay the video, press the space bar on your keyboard)"; //space?
                     //Width from 150->218
                     //228,24
                     helpTextPanel.GetComponent<RectTransform>().sizeDelta
@@ -1221,6 +1239,7 @@ public class MakeWordBank : MonoBehaviour {
                     "It will be just like a real level but data will not be collected" + "\n" + "(Push the rod forward to begin the practice level)";
                     StateManager.allSystemsGo = true;
                     stepOfTutorial++;
+                    state.setState(7);
                 }
             }
             else if (stepOfTutorial == 23)

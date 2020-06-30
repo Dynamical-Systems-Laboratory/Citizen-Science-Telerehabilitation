@@ -108,7 +108,7 @@ public class StateManager : MonoBehaviour {
     public List<GameObject> tagsPlaced;
     //public List<InvisTag> invisTags;
 
-    private int userState;
+    private int userState = 6;
     /* 0 = Quit
      * 1 = Home
      * 2 = In-Game
@@ -118,6 +118,7 @@ public class StateManager : MonoBehaviour {
      * 6 = About Project
      * 7 = Practice Level
      */
+     //Mock order: 6,4,5,7,1,0,1,7,2,1,3,1,2,1,0
     public int getState()
     {
         return userState;
@@ -126,13 +127,15 @@ public class StateManager : MonoBehaviour {
     {
         userState = newState;
         updateState();
+        makeCursReset = true;
+        makeCamReset = true;
     }
     public void updateState()
     {
         switch (userState)
         {
             case 1:
-                Debug.Log("State: Home");
+                //Debug.Log("State: Home");
                 MakeWordBank.mainCamera.SetActive(false);
                 MakeWordBank.homeCamera.SetActive(true);
                 MakeWordBank.UICamera.SetActive(false);
@@ -140,7 +143,7 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.cursorCamera.SetActive(true);
                 break;
             case 2:
-                Debug.Log("State: Game");
+                //Debug.Log("State: Game");
                 MakeWordBank.mainCamera.SetActive(true);
                 MakeWordBank.homeCamera.SetActive(false);
                 MakeWordBank.UICamera.SetActive(true);
@@ -148,7 +151,7 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.cursorCamera.SetActive(true);
                 break;
             case 3:
-                Debug.Log("State: Profile");
+                //Debug.Log("State: Profile");
                 MakeWordBank.mainCamera.SetActive(false);
                 MakeWordBank.homeCamera.SetActive(false);
                 MakeWordBank.UICamera.SetActive(false);
@@ -157,7 +160,7 @@ public class StateManager : MonoBehaviour {
                 //MakeWordBank.profileCamera
                 break;
             case 4:
-                Debug.Log("State: Calibrate");
+                //Debug.Log("State: Calibrate");
                 MakeWordBank.mainCamera.SetActive(true);
                 MakeWordBank.homeCamera.SetActive(false);
                 MakeWordBank.UICamera.SetActive(false);
@@ -165,15 +168,15 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.cursorCamera.SetActive(true);
                 break;
             case 5:
-                Debug.Log("State: Tutorial");
-                MakeWordBank.mainCamera.SetActive(true);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.UICamera.SetActive(true);
-                MakeWordBank.videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(true);
+                //Debug.Log("State: Tutorial");
+                //MakeWordBank.mainCamera.SetActive(true);
+                //MakeWordBank.homeCamera.SetActive(false);
+                //MakeWordBank.UICamera.SetActive(true);
+                //MakeWordBank.videoCamera.SetActive(false);
+                //MakeWordBank.cursorCamera.SetActive(true);
                 break;
             case 6:
-                Debug.Log("State: About Project");
+                //Debug.Log("State: About Project");
                 MakeWordBank.mainCamera.SetActive(false);
                 MakeWordBank.homeCamera.SetActive(false);
                 MakeWordBank.UICamera.SetActive(true);
@@ -182,7 +185,7 @@ public class StateManager : MonoBehaviour {
                 GameObject.Find("Canvas").GetComponent<PowerpointScript>().enabled = true;
                 break;
             case 7:
-                Debug.Log("State: Practice");
+                //Debug.Log("State: Practice");
                 MakeWordBank.mainCamera.SetActive(true);
                 MakeWordBank.homeCamera.SetActive(false);
                 MakeWordBank.UICamera.SetActive(true);
@@ -190,7 +193,7 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.cursorCamera.SetActive(true);
                 break;
             default:
-                Debug.Log("User State Issue: " + userState);
+                //Debug.Log("User State Issue: " + userState);
                 break;
         }
     }
@@ -265,6 +268,36 @@ public class StateManager : MonoBehaviour {
 
     private void Update()
     {
+        switch (userState)
+        {
+            case 0:
+                Debug.Log("State: Quit");
+                break;
+            case 1:
+                Debug.Log("State: Home");
+                break;
+            case 2:
+                Debug.Log("State: Game");
+                break;
+            case 3:
+                Debug.Log("State: Profile");
+                break;
+            case 4:
+                Debug.Log("State: Calibrating");
+                break;
+            case 5:
+                Debug.Log("State: Button Tutorial");
+                break;
+            case 6:
+                Debug.Log("State: About Project");
+                break;
+            case 7:
+                Debug.Log("State: Practice Level");
+                break;
+            default:
+                Debug.Log("State: Error " + userState);
+                break;
+        }
         if (allSystemsGo)
         {
             //moveCursorL = true; // cursors

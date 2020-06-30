@@ -686,7 +686,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 MakeWordBank.cursorCamera.SetActive(false);
                 VP4.SetActive(true);
                 cursorUDVP.Play();
-                StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
+                //StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
+                StateManager.makeCursReset = true;
                 step++;
             }
             else if (step == 22)
@@ -1538,7 +1539,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
             else if (step == 35)
             {
-                canvas.SetActive(false);
+                //canvas.SetActive(false);
                 mainCamera.SetActive(true);
                 UICamera.SetActive(true);
                 videoCamera.SetActive(false);
@@ -1560,7 +1561,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 //MakeWordBank.inTutorial = true;
                 state.setState(5);
 
-                //inSimpleTutorial = false; //stops simple tutorial
+                inSimpleTutorial = false; //stops simple tutorial
             }
         }
     }

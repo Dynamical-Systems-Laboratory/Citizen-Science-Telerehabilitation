@@ -1187,7 +1187,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -6231, y: -6.3246307}
+  m_AnchoredPosition: {x: -6231, y: -6.3245087}
   m_SizeDelta: {x: -280, y: 89.01001}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &74824780
@@ -2288,6 +2288,7 @@ MonoBehaviour:
   - {fileID: 1358170669}
   - {fileID: 199825618}
   - {fileID: 1070517565}
+  state: {fileID: 0}
 --- !u!1 &153994876
 GameObject:
   m_ObjectHideFlags: 0
@@ -7815,6 +7816,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d8bf2643b74a4e208534ee57c929535, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: {fileID: 0}
 --- !u!223 &539249133
 Canvas:
   m_ObjectHideFlags: 0
@@ -7958,6 +7960,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   state: {fileID: 0}
   eventListener: {fileID: 0}
+  slides: {fileID: 0}
 --- !u!1 &554965234
 GameObject:
   m_ObjectHideFlags: 0
@@ -11538,7 +11541,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 4940, y: -6.3246307}
+  m_AnchoredPosition: {x: 4940, y: -6.3245087}
   m_SizeDelta: {x: -678, y: 89.009995}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &802630043
@@ -20084,6 +20087,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c6c10ba2faa6254bbd0caf27fb7f4f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: {fileID: 0}
 --- !u!1 &1306547148
 GameObject:
   m_ObjectHideFlags: 0
@@ -20707,6 +20711,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8d8bf2643b74a4e208534ee57c929535, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  state: {fileID: 0}
 --- !u!1 &1344499509
 GameObject:
   m_ObjectHideFlags: 0
@@ -26946,6 +26951,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraMoving: 0
   xOffset: 25.9
+  hasPracticed: 0
   tagsPlaced: []
 --- !u!114 &1766072909
 MonoBehaviour:
@@ -28372,7 +28378,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1878484553}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 304c8640f3c71264a97ee6cc06e17069, type: 3}
   m_Name: 
@@ -28385,13 +28391,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1878484553}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f5a7c0a7a5024e4f9d233954880f530, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   cameraMoving: 0
   xOffset: 25.9
+  hasPracticed: 0
   tagsPlaced: []
 --- !u!114 &1878484556
 MonoBehaviour:

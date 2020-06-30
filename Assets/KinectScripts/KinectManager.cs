@@ -1304,10 +1304,10 @@ public class KinectManager : MonoBehaviour
 		}
 		
 		// Kill the program with ESC.
-		if(Input.GetKeyDown(KeyCode.Escape))
+		/*if(Input.GetKeyDown(KeyCode.Escape))
 		{
 			Application.Quit();
-		}
+		}*/
 	}
 	
 	// Make sure to kill the Kinect on quitting.
