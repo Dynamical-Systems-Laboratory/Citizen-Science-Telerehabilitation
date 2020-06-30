@@ -166,14 +166,15 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.UICamera.SetActive(false);
                 MakeWordBank.videoCamera.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(true);
+                //SimpleTutorial.canvas.SetActive(true);
                 break;
             case 5:
                 //Debug.Log("State: Tutorial");
-                //MakeWordBank.mainCamera.SetActive(true);
-                //MakeWordBank.homeCamera.SetActive(false);
-                //MakeWordBank.UICamera.SetActive(true);
-                //MakeWordBank.videoCamera.SetActive(false);
-                //MakeWordBank.cursorCamera.SetActive(true);
+                MakeWordBank.mainCamera.SetActive(true);
+                MakeWordBank.homeCamera.SetActive(false);
+                MakeWordBank.UICamera.SetActive(true);
+                MakeWordBank.videoCamera.SetActive(false);
+                MakeWordBank.cursorCamera.SetActive(true);
                 break;
             case 6:
                 //Debug.Log("State: About Project");

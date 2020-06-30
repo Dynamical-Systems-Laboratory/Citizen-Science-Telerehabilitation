@@ -524,8 +524,9 @@ public class MakeWordBank : MonoBehaviour {
         }
 
         //Start of Runtime Stuff
-        if (state.getState() == 2 || state.getState() == 7)
+        if (state.getState() == 2 || state.getState() == 7 || state.getState() == 5)
         {
+            Debug.Log("Running ButtonTutorial & Co...");
             if (!initialized)
             {
                 mainCamera.SetActive(true);

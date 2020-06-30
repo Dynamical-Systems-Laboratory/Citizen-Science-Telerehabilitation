@@ -155,6 +155,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     {
         if (state.getState() == 4)
         {
+            canvas.SetActive(true);
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 step = 35;//changed from 35
@@ -1539,7 +1540,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
             else if (step == 35)
             {
-                //canvas.SetActive(false);
+                canvas.SetActive(false);
                 mainCamera.SetActive(true);
                 UICamera.SetActive(true);
                 videoCamera.SetActive(false);
