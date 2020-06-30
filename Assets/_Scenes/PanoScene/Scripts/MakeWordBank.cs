@@ -355,7 +355,7 @@ public class MakeWordBank : MonoBehaviour {
         VP5.SetActive(false);
         */
         
-        mainCamera = GameObject.Find("MainCamera");
+        mainCamera = GameObject.Find("Main Camera");
         UICamera = GameObject.Find("UICamera");
         videoCamera = GameObject.Find("VideoCamera");
         homeCamera = GameObject.Find("HomeCamera");

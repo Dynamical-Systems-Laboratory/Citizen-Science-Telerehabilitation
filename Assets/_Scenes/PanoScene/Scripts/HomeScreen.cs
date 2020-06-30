@@ -47,7 +47,7 @@ public class HomeScreen : MonoBehaviour
         
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
 
-        mainCamera = GameObject.Find("MainCamera");
+        mainCamera = GameObject.Find("Main Camera");
         UICamera = GameObject.Find("UICamera");
         homeCamera = GameObject.Find("HomeCamera");
 

@@ -126,7 +126,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     void Start()
     {
         state = GameObject.Find("Canvas").GetComponent<StateManager>(); //state of game**
-        mainCamera = GameObject.Find("MainCamera");
+        mainCamera = GameObject.Find("Main Camera");
         UICamera = GameObject.Find("UICamera");
         videoCamera = GameObject.Find("VideoCamera");
         homeCamera = GameObject.Find("HomeCamera");

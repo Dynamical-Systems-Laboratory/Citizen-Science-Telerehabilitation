@@ -263,7 +263,7 @@ public class StateManager : MonoBehaviour {
         yield return new WaitForSeconds(5f);
         this.falconCursor = GameObject.Find("CursorSphere");
         this.falconCamera = GameObject.Find("CursorCamera").GetComponent<Camera>();
-        mainCamera = GameObject.Find("MainCamera");
+        mainCamera = GameObject.Find("Main Camera");
         //mainCamera = MakeWordBank.mainCamera;
     }
 
