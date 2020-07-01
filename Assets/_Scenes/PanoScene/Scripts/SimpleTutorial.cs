@@ -1219,7 +1219,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             else if (step == 31)
             {
                 StateManager.makeCamReset = true;
-                prevCameraAngle = StateManager.cameraPos.x;
+                prevCameraAngle = 0f;// StateManager.cameraPos.x;
                 step++;
             }
             else if (step == 32)

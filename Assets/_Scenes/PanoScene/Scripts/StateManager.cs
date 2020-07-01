@@ -101,7 +101,7 @@ public class StateManager : MonoBehaviour {
 
     public static float camSpeed = 1.8f; //factor that speeds up the camera's movement
     public static float cursorSpeed = 2.8f; //factor that speeds up cursor's movement
-    public static float cursorSize = -0.4f; //factor that makes cursor bigger or smaller
+    public static float cursorSize = -0.418f; //factor that makes cursor bigger or smaller
 
     public bool hasPracticed = false; //has gone through practice level
 
@@ -299,19 +299,20 @@ public class StateManager : MonoBehaviour {
                 Debug.Log("State: Error " + userState);
                 break;
         }
-        if (allSystemsGo)
+        /*if (allSystemsGo)
         {
-            //moveCursorL = true; // cursors
-            //moveCursorR = true;
-            //moveCursorU = true;
-            //moveCursorD = true;
-            //moveCameraL = true; // cameras
-            //moveCameraR = true;
-            //moveCameraU = true;
-            //moveCameraD = true;
-            makeCursReset = false;
-            makeCamReset = false;
-        }
+            moveCursorL = true; // cursors
+            moveCursorR = true;
+            moveCursorU = true;
+            moveCursorD = true;
+            moveCameraL = true; // cameras
+            moveCameraR = true;
+            moveCameraU = true;
+            moveCameraD = true;
+            //makeCursReset = false;
+            //makeCamReset = false;
+        }*/
+
         //if (Kinect.LHandPos.x != 0 || Kinect.LHandPos.y != 0 || Kinect.LHandPos.z != 0)
         //{
         //    kinectReady = true;

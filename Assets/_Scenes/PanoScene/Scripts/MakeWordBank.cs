@@ -390,7 +390,7 @@ public class MakeWordBank : MonoBehaviour {
         if (stepOfTutorial >= 12 && (SimpleTutorial.step > 34))
         {
             Debug.Log("in the movement loop...");
-            StateManager.allSystemsGo = true;
+            //StateManager.allSystemsGo = true;
             StateManager.moveCursorL = true; // cursors
             StateManager.moveCursorR = true;
             StateManager.moveCursorU = true;
@@ -1240,7 +1240,7 @@ public class MakeWordBank : MonoBehaviour {
                     //VP5.SetActive(false);
                     welcomeText.text = "Now let's do a practice level" + "\n" +
                     "It will be just like a real level but data will not be collected" + "\n" + "(Push the rod forward to begin the practice level)";
-                    StateManager.allSystemsGo = true;
+                    //StateManager.allSystemsGo = true;
                     stepOfTutorial++;
                     state.setState(7);
                 }

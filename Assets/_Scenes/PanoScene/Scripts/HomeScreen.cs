@@ -89,6 +89,7 @@ public class HomeScreen : MonoBehaviour
                 }
             }
             //Debug.Log("Closest Button: " + obj.name + ", " + ClickAction.buttonClose2(obj.transform.position));
+
             if (ClickAction.buttonClose2(obj.transform.position)) //highlight color
             {
                 obj.GetComponent<Image>().color = highlighted;
@@ -157,7 +158,6 @@ public class HomeScreen : MonoBehaviour
                     }
                 }
             }
-
 
         }
     }
