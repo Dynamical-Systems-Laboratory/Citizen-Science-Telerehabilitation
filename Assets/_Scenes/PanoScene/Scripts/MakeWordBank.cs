@@ -128,11 +128,11 @@ public class MakeWordBank : MonoBehaviour {
         }
     };
 
-    static string[] tutorialWords = {
+    public static string[] tutorialWords = {
         "Water","Bank", "Tree", "Building", "Sky", "Sun", "Boat", "Mountain",
         "Man", "Sign", "Bridge", "Rail", "Vent", "Billboard", "Truck"
-    };
-    static int tutorialWordsIndex = 0;
+    }; //15
+    public static int tutorialWordsIndex = 0;
     public static int sequenceIndex = 0; //Indicates which element of predetermined sequence we're on, should reset to 0 every turnover
     static int imageIndex = 0; //Index for which 360 Material to use as well as which predetermined random int sequence to use
 
@@ -321,7 +321,8 @@ public class MakeWordBank : MonoBehaviour {
 
         tagSphere.GetComponent<Renderer>().material = tutorialImageMaterial;
         //Word bank isn't applicable for the tutorial level:
-        for (int i = 0; i < tags.Length; i++) {
+        for (int i = 0; i < tags.Length; i++)
+        {
             tags[i].setText(tutorialWords[tutorialWordsIndex]);
             tutorialWordsIndex++;
         }
@@ -354,7 +355,7 @@ public class MakeWordBank : MonoBehaviour {
         VP4.SetActive(false);
         VP5.SetActive(false);
         */
-        
+
         mainCamera = GameObject.Find("Main Camera");
         UICamera = GameObject.Find("UICamera");
         videoCamera = GameObject.Find("VideoCamera");
@@ -369,7 +370,7 @@ public class MakeWordBank : MonoBehaviour {
         homeCamera.SetActive(false); //precausion
         cursorCamera.SetActive(false);
     }
-
+    
     public GameObject toClick = null; // obj for clicking
 
     // Update is called once per frame

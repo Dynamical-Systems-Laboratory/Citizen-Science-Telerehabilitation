@@ -130,6 +130,16 @@ public class HomeScreen : MonoBehaviour
                     } 
                     else if (obj.name == tutorialButton.name)
                     {
+                        MakeWordBank.stepOfTutorial = 13;
+                        MakeWordBank.focusor.SetActive(true);
+
+                        for (int i = 0; i < MakeWordBank.tags.Length; i++)
+                        {
+                            MakeWordBank.tags[i].setText(MakeWordBank.tutorialWords[MakeWordBank.tutorialWordsIndex]);
+                            MakeWordBank.tutorialWordsIndex = (MakeWordBank.tutorialWordsIndex + 1) % 14;
+
+                        }
+
                         state.setState(5);
                     }
                     else if (obj.name == aboutButton.name)
