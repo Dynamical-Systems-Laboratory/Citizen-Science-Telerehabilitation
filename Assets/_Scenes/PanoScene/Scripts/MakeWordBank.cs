@@ -225,6 +225,7 @@ public class MakeWordBank : MonoBehaviour {
     public static GameObject UICamera;
     public static GameObject videoCamera;
     public static GameObject homeCamera;
+    public static GameObject profileCamera;
     public static GameObject cursorCamera;
 
     public static bool play1 = false;
@@ -361,6 +362,7 @@ public class MakeWordBank : MonoBehaviour {
         videoCamera = GameObject.Find("VideoCamera");
         homeCamera = GameObject.Find("HomeCamera");
         cursorCamera = GameObject.Find("CursorCamera");
+        profileCamera = GameObject.Find("ProfileCamera");
 
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
 
@@ -389,7 +391,7 @@ public class MakeWordBank : MonoBehaviour {
          */
         if (stepOfTutorial >= 12 && (SimpleTutorial.step > 34))
         {
-            Debug.Log("in the movement loop...");
+            //Debug.Log("in the movement loop...");
             //StateManager.allSystemsGo = true;
             StateManager.moveCursorL = true; // cursors
             StateManager.moveCursorR = true;
@@ -528,7 +530,7 @@ public class MakeWordBank : MonoBehaviour {
         //Start of Runtime Stuff
         if (state.getState() == 2 || state.getState() == 7 || state.getState() == 5)
         {
-            Debug.Log("Running ButtonTutorial & Co...");
+            //Debug.Log("Running ButtonTutorial & Co...");
             if (!initialized)
             {
                 mainCamera.SetActive(true);
@@ -548,19 +550,19 @@ public class MakeWordBank : MonoBehaviour {
             }
 
             timer3 += Time.deltaTime;
-            if (timer3 > 0.5f)
-            {
+            //if (timer3 > 0.5f)
+            //{
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
                     focusor.SetActive(false);
-                    mainCamera.SetActive(true);
-                    UICamera.SetActive(true);
-                    videoCamera.SetActive(false);
+                    //mainCamera.SetActive(true);
+                    //UICamera.SetActive(true);
+                    //videoCamera.SetActive(false);
                     step22proceed = true;
                     stepOfTutorial = 22;
                     state.setState(5);
                 }
-            }
+            //}
 
             buttons = state.getButtons();
             if (stepOfTutorial == 0)

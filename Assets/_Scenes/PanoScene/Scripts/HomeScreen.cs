@@ -13,11 +13,6 @@ public class HomeScreen : MonoBehaviour
     public ClickAction eventListener;
     public PowerpointScript slides;
 
-    //cameras
-    public static GameObject mainCamera;
-    public static GameObject UICamera;
-    public static GameObject homeCamera;
-
     //buttons
     public static GameObject[] buttons = new GameObject[6];
 
@@ -43,10 +38,6 @@ public class HomeScreen : MonoBehaviour
     void Awake()
     {
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
-
-        mainCamera = GameObject.Find("Main Camera"); //space for naming convension error reasons
-        UICamera = GameObject.Find("UICamera");
-        homeCamera = GameObject.Find("HomeCamera");
 
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
         //homeListener = GameObject.Find("HomeCanvas").GetComponent<ClickAction>();
@@ -107,7 +98,7 @@ public class HomeScreen : MonoBehaviour
                     if (obj.name == startGameButton.name)
                     {
                         StateManager.makeCamReset = true;
-                        homeCamera.SetActive(false);
+                        //homeCamera.SetActive(false);
                         if (state.hasPracticed)
                         {
                             state.setState(2);
@@ -116,11 +107,10 @@ public class HomeScreen : MonoBehaviour
                         {
                             state.setState(7);
                         }
-                        //reload last level & tags (read data stuff here)
+                        //TODO: reload last level & tags (read data stuff here)
                     }
                     else if (obj.name == profileButton.name)
                     {
-                        //make UserProfile.cs
                         state.setState(3);
                     }
                     else if (obj.name == calibrateButton.name)

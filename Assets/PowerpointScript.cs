@@ -44,10 +44,11 @@ public class PowerpointScript : MonoBehaviour {
 			//gameObject.SetActive(true);
 			gameObject.transform.position = new Vector3(0f, 0f, 100f);
 			background.SetActive(true);
-
+			Debug.Log("Slide #: " + slideIndex);
 			if (Input.GetKeyDown(KeyCode.Escape))
             {
-                if (!hasBeenToTutorial)
+				slideIndex = 1;
+				if (!hasBeenToTutorial)
                 {
 					//SimpleTutorial.inSimpleTutorial = true;
 					state.setState(4);
@@ -58,7 +59,6 @@ public class PowerpointScript : MonoBehaviour {
 					state.setState(1);
 					background.SetActive(false);
 				}
-				slideIndex = 1;
                 //gameObject.SetActive(false);
                 gameObject.transform.position = new Vector3(0f,0f, -500f);
 			}

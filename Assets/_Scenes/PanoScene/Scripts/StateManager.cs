@@ -138,6 +138,7 @@ public class StateManager : MonoBehaviour {
                 //Debug.Log("State: Home");
                 MakeWordBank.mainCamera.SetActive(false);
                 MakeWordBank.homeCamera.SetActive(true);
+                MakeWordBank.profileCamera.SetActive(false);
                 MakeWordBank.UICamera.SetActive(false);
                 MakeWordBank.videoCamera.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(true);
@@ -146,6 +147,7 @@ public class StateManager : MonoBehaviour {
                 //Debug.Log("State: Game");
                 MakeWordBank.mainCamera.SetActive(true);
                 MakeWordBank.homeCamera.SetActive(false);
+                MakeWordBank.profileCamera.SetActive(false);
                 MakeWordBank.UICamera.SetActive(true);
                 MakeWordBank.videoCamera.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(true);
@@ -154,6 +156,7 @@ public class StateManager : MonoBehaviour {
                 //Debug.Log("State: Profile");
                 MakeWordBank.mainCamera.SetActive(false);
                 MakeWordBank.homeCamera.SetActive(false);
+                MakeWordBank.profileCamera.SetActive(true);
                 MakeWordBank.UICamera.SetActive(false);
                 MakeWordBank.videoCamera.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(true);
@@ -163,6 +166,7 @@ public class StateManager : MonoBehaviour {
                 //Debug.Log("State: Calibrate");
                 MakeWordBank.mainCamera.SetActive(true);
                 MakeWordBank.homeCamera.SetActive(false);
+                MakeWordBank.profileCamera.SetActive(false);
                 MakeWordBank.UICamera.SetActive(false);
                 MakeWordBank.videoCamera.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(true);
@@ -172,6 +176,7 @@ public class StateManager : MonoBehaviour {
                 //Debug.Log("State: Tutorial");
                 MakeWordBank.mainCamera.SetActive(true);
                 MakeWordBank.homeCamera.SetActive(false);
+                MakeWordBank.profileCamera.SetActive(false);
                 MakeWordBank.UICamera.SetActive(true);
                 MakeWordBank.videoCamera.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(true);
@@ -180,6 +185,7 @@ public class StateManager : MonoBehaviour {
                 //Debug.Log("State: About Project");
                 MakeWordBank.mainCamera.SetActive(false);
                 MakeWordBank.homeCamera.SetActive(false);
+                MakeWordBank.profileCamera.SetActive(false);
                 MakeWordBank.UICamera.SetActive(true);
                 MakeWordBank.videoCamera.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(false);
@@ -189,12 +195,19 @@ public class StateManager : MonoBehaviour {
                 //Debug.Log("State: Practice");
                 MakeWordBank.mainCamera.SetActive(true);
                 MakeWordBank.homeCamera.SetActive(false);
+                MakeWordBank.profileCamera.SetActive(false);
                 MakeWordBank.UICamera.SetActive(true);
                 MakeWordBank.videoCamera.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(true);
                 break;
             default:
                 //Debug.Log("User State Issue: " + userState);
+                MakeWordBank.mainCamera.SetActive(false);
+                MakeWordBank.homeCamera.SetActive(false);
+                MakeWordBank.profileCamera.SetActive(false);
+                MakeWordBank.UICamera.SetActive(false);
+                MakeWordBank.videoCamera.SetActive(false);
+                MakeWordBank.cursorCamera.SetActive(false);
                 break;
         }
     }
