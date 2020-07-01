@@ -120,7 +120,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
     public static bool startedPlaying = false;
     //public static bool calibrationEdgeCase = false;
-
+    private static bool hasCompleted = false;
 
     // Start is called before the first frame update
     void Start()
@@ -149,17 +149,13 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
         cursorUDVP = VP4.GetComponent<UnityEngine.Video.VideoPlayer>();
         clickVP = VP5.GetComponent<UnityEngine.Video.VideoPlayer>();   
     }
-
+   
     // Update is called once per frame
     void Update()
     {
         if (state.getState() == 4)
         {
             canvas.SetActive(true);
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                step = 35;//changed from 35
-            }
 
             if (!initialized)
             {
@@ -180,18 +176,28 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 StateManager.moveCursorR = false;
                 StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
                 StateManager.kinectReady = true;
+                StateManager.makeCamReset = true;
+                StateManager.makeCursReset = true;
                 VP1.SetActive(false);
                 VP2.SetActive(false);
                 VP3.SetActive(false);
                 VP4.SetActive(false);
                 VP5.SetActive(false);
                 initialized = true;
+                step = 0;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                step = 35;//changed from 35
             }
 
             if (step == 0)
             {
                 if (MakeWordBank.moveOn() && !Input.GetKeyDown(KeyCode.Escape))
                 {
+                    StateManager.makeCamReset = true;
+                    StateManager.makeCursReset = true;
                     step++;
                 }
             }
@@ -1560,9 +1566,18 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 StateManager.makeCursReset = true;
 
                 //MakeWordBank.inTutorial = true;
-                state.setState(5);
-
                 inSimpleTutorial = false; //stops simple tutorial
+                initialized = false;
+
+                if (hasCompleted)
+                {
+                    state.setState(1);
+                }
+                else
+                {
+                    state.setState(5);
+                    hasCompleted = true;
+                }
             }
         }
     }

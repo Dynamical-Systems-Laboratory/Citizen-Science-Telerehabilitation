@@ -36,7 +36,7 @@ public class HomeScreen : MonoBehaviour
     public static float scale = 1.72f;//3/2;
 
     //button colors
-    public static float colorFactor = 195f / 255f;
+    public static float colorFactor = 183f / 255f;
     public static Color unhighlighted = new Color(colorFactor, colorFactor, colorFactor, 1f);
     public static Color highlighted = new Color(1f, 1f, 1f, 1f);
 
@@ -124,6 +124,8 @@ public class HomeScreen : MonoBehaviour
                     }
                     else if (obj.name == calibrateButton.name)
                     {
+                        SimpleTutorial.initialized = false;
+                        StateManager.makeCursReset = true;
                         state.setState(4);
                     } 
                     else if (obj.name == tutorialButton.name)
@@ -132,10 +134,6 @@ public class HomeScreen : MonoBehaviour
                     }
                     else if (obj.name == aboutButton.name)
                     {
-                        StateManager.makeCursReset = true;
-                        //GameObject.FindGameObjectWithTag("Slides").SetActive(true);
-                        //GameObject.Find("Canvas").GetComponent<PowerpointScript>().enabled = true;
-                        //GameObject.Find("Powerpoint").SetActive(true);
                         state.setState(6);
                     }
                     else if (obj.name == quitButton.name)

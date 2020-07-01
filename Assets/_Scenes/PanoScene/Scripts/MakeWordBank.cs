@@ -386,8 +386,9 @@ public class MakeWordBank : MonoBehaviour {
          * * v = progress
          * * m = drop object
          */
-        if (stepOfTutorial >= 12)
+        if (stepOfTutorial >= 12 && (SimpleTutorial.step > 34))
         {
+            Debug.Log("in the movement loop...");
             StateManager.allSystemsGo = true;
             StateManager.moveCursorL = true; // cursors
             StateManager.moveCursorR = true;
