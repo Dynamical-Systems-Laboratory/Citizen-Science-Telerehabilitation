@@ -14,7 +14,7 @@ public class UserProfile : MonoBehaviour
     public PowerpointScript slides;
 
     //buttons
-    public static Vector3[] buttons = new Vector3[3];
+    public static GameObject[] buttons = new GameObject[3];
 
     public static GameObject homeButton; //main buttons
     public static GameObject userInfo;
@@ -36,8 +36,8 @@ public class UserProfile : MonoBehaviour
         homeButton = GameObject.Find("HomeButton2");
         userInfo = GameObject.Find("UserText");
 
-        buttons[0] = homeButton.transform.position;
-        buttons[1] = userInfo.Title.transform.position;
+        buttons[0] = homeButton;
+        buttons[1] = userInfo;
         //buttons[2] = progressBar;
     }
 
@@ -96,54 +96,4 @@ public class UserProfile : MonoBehaviour
         }
     }
 
-}
-
-public class UserInfo
-{
-    //general
-    public string userName = "User #00001";
-    private string dateJoined = "mm/dd/yyyy";
-    private float timeLogged;
-
-    //data
-    public void logData(int numTags, bool addImage)
-    {
-        tagsPlaced += numTags;
-        if (addImage)
-        {
-            ++imagesCompleted;
-        }
-    }
-    public void logJoin()
-    {
-        dateJoined = System.DateTime.Now.ToString();
-    }
-    public void logTime(float toAdd) //UserInfo.logTime(Time.Delta);
-    {
-        timeLogged += toAdd;
-    }
-
-    //progression
-    private int imagesCompleted = 0;
-    private int tagsPlaced = 0;
-    private int sessionsLogged = 1;
-    
-    public float getProgress()//outputs a %/100 of progress based on user info 
-    {
-        return 0f;
-    }
-
-    //access
-    public string getTimeLogged()
-    {
-        string time = "";
-        time += Mathf.Floor(timeLogged / 360) + "h ";
-        time += Mathf.Floor((timeLogged%360) / 60) + "m ";
-        time += (timeLogged % 60) + "s";
-        return time;
-    }
-    public int[] getProgressData()
-    {
-        return new int[] {imagesCompleted, tagsPlaced, sessionsLogged};
-    }
 }

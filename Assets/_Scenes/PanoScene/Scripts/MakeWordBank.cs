@@ -247,7 +247,11 @@ public class MakeWordBank : MonoBehaviour {
     public static Tag[] tags;
     public static int practiceMoveOn;
 
+    public UserInfo user;
+
     void Awake() {
+        user.logJoin();
+
         DataCollector.MakeFolder();
         tagSphere = GameObject.FindGameObjectWithTag("TagSphere");
         imageMaterials = new Material[imageMaterialsToDragIn.Length];
@@ -378,6 +382,8 @@ public class MakeWordBank : MonoBehaviour {
     // Update is called once per frame
     void Update(/*EventSystem eventSystem*/)
     {
+        user.logTime(Time.deltaTime); //add time
+
         Debug.Log("MainC: " + mainCamera.activeSelf + ", UIC: " + UICamera.activeSelf + ", HomeC: " + homeCamera.activeSelf +
             ", VidC: " + videoCamera.activeSelf + ", CursorC: " + cursorCamera.activeSelf);
         
@@ -460,6 +466,8 @@ public class MakeWordBank : MonoBehaviour {
                 {
                     if (ClickAction.buttonClose(nextButton.transform.position))
                     {
+                        user.logData(state.tagsPlaced.Count, true);
+
                         eventListener.OnPointerClick(nextButton);
                     }
                     else if (ClickAction.buttonClose(quitButton.transform.position))
@@ -1596,5 +1604,77 @@ public class Tag
         tag.name = next_text;
         //text.name = next_text; //The Text Object name acts as the identifier when you click on it and should be unique
         text.text = next_text;
+    }
+}
+
+public class UserInfo
+{
+    //general
+    private string userName = "User #00001";
+    private string dateJoined = "mm/dd/yyyy";
+    private float timeLogged = 0f;
+
+    //data
+    public void logData(int numTags, bool addImage)
+    {
+        tagsPlaced += numTags;
+        if (addImage)
+        {
+            ++imagesCompleted;
+        }
+    }
+    public void logJoin()
+    {
+        dateJoined = System.DateTime.Now.ToString();
+    }
+    public void logTime(float toAdd) //UserInfo.logTime(Time.Delta);
+    {
+        timeLogged += toAdd;
+    }
+    public void changeName(string newName)
+    {
+        userName = newName;
+    }
+
+    //progression
+    private int imagesCompleted = 0;
+    private int tagsPlaced = 0;
+    private int sessionsLogged = 1;
+
+    public float getProgress()//outputs a %/100 of progress based on user info 
+    {
+        return 0f;
+    }
+
+    //user settings
+    private float cameraSpeed = 1.8f;
+    private float cursorSpeed = 2.8f;
+    private float cursorSize = -0.418f;
+
+    public void updateSettings()
+    {
+        cameraSpeed = StateManager.camSpeed;
+        cursorSpeed = StateManager.cursorSpeed;
+        cursorSize = StateManager.cursorSize;
+    }
+
+    //accessors
+    public string getName() { return userName; }
+    public string getDateJoined() { return dateJoined; }
+    public string getTimeLogged()
+    {
+        string time = "";
+        time += Mathf.Floor(timeLogged / 360) + "h ";
+        time += Mathf.Floor((timeLogged % 360) / 60) + "m ";
+        time += (timeLogged % 60) + "s";
+        return time;
+    }
+    public int[] getProgressData()
+    {
+        return new int[] { imagesCompleted, tagsPlaced, sessionsLogged };
+    }
+    public float[] getSettingData()
+    {
+        return new float[] { cameraSpeed, cursorSpeed, cursorSize };
     }
 }
