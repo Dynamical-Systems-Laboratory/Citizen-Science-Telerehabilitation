@@ -38,6 +38,9 @@ TagManager:
   - ProgressBackground
   - ProgressPercent
   - UserInfo
+  - EasyButton
+  - MediumButton
+  - HardButton
   layers:
   - Default
   - TransparentFX

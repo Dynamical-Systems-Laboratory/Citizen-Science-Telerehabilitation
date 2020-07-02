@@ -499,7 +499,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 15, y: 0.8}
+  m_AnchoredPosition: {x: 17, y: 0.8}
   m_SizeDelta: {x: 0, y: 0.099999905}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &24369768
@@ -533,7 +533,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Time Logged: 0h 2m'
+  m_Text: 'Time Logged: 0h 2m 0s'
 --- !u!222 &24369769
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5485,7 +5485,6 @@ RectTransform:
   - {fileID: 2008750158}
   - {fileID: 1528036794}
   - {fileID: 1837983105}
-  - {fileID: 1787234449}
   m_Father: {fileID: 1840084683}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5603,7 +5602,7 @@ GameObject:
   - component: {fileID: 345647411}
   m_Layer: 5
   m_Name: MediumText
-  m_TagString: HomeButton
+  m_TagString: MediumButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7598,7 +7597,7 @@ GameObject:
   - component: {fileID: 470875841}
   m_Layer: 5
   m_Name: EasyButton
-  m_TagString: HomeButton
+  m_TagString: EasyButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -10464,7 +10463,7 @@ Transform:
   m_LocalScale: {x: 166.04245, y: 94.519005, z: 107.526886}
   m_Children: []
   m_Father: {fileID: 1840084683}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: -88.59801, y: 0, z: 0}
 --- !u!64 &639919144
 MeshCollider:
@@ -10684,7 +10683,7 @@ GameObject:
   - component: {fileID: 654005967}
   m_Layer: 5
   m_Name: EasyText
-  m_TagString: HomeButton
+  m_TagString: EasyButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -11421,7 +11420,7 @@ GameObject:
   - component: {fileID: 705173270}
   m_Layer: 5
   m_Name: HardButton
-  m_TagString: HomeButton
+  m_TagString: HardButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -22554,7 +22553,7 @@ RectTransform:
   m_Children:
   - {fileID: 1008502902}
   m_Father: {fileID: 1840084683}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -25645,7 +25644,7 @@ GameObject:
   - component: {fileID: 1546926501}
   m_Layer: 5
   m_Name: MediumButton
-  m_TagString: HomeButton
+  m_TagString: MediumButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29328,18 +29327,18 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1787234448}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.72808963, y: 1, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 270}
+  m_LocalScale: {x: 12.495496, y: 6.2319627, z: 1.5041465}
   m_Children:
   - {fileID: 470875840}
   - {fileID: 1546926500}
   - {fileID: 705173269}
-  m_Father: {fileID: 338369234}
-  m_RootOrder: 3
+  m_Father: {fileID: 1840084683}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 13, y: -33.3}
+  m_AnchoredPosition: {x: 217.10608, y: -304.52435}
   m_SizeDelta: {x: 70.6, y: 23}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1787234450
@@ -29582,7 +29581,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 17.7, y: -6.300003}
+  m_AnchoredPosition: {x: 14.9, y: -6.300003}
   m_SizeDelta: {x: 0, y: 0.099999905}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1793456104
@@ -30847,6 +30846,7 @@ RectTransform:
   m_Children:
   - {fileID: 348086723}
   - {fileID: 338369234}
+  - {fileID: 1787234449}
   - {fileID: 1368699205}
   - {fileID: 639919143}
   m_Father: {fileID: 0}
@@ -32393,7 +32393,7 @@ GameObject:
   - component: {fileID: 1978331764}
   m_Layer: 5
   m_Name: HardText
-  m_TagString: HomeButton
+  m_TagString: HardButton
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

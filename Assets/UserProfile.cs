@@ -14,7 +14,7 @@ public class UserProfile : MonoBehaviour
     public PowerpointScript slides;
 
     //buttons
-    public static GameObject[] buttons = new GameObject[3];
+    public static Vector3[] buttons = new Vector3[3];
 
     public static GameObject homeButton; //main buttons
     public static GameObject userInfo;
@@ -33,11 +33,11 @@ public class UserProfile : MonoBehaviour
 
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
 
-        homeButton = GameObject.Find("StartGamePanel");
-        userInfo = GameObject.Find("ProfilePanel");
+        homeButton = GameObject.Find("HomeButton2");
+        userInfo = GameObject.Find("UserText");
 
-        buttons[0] = homeButton;
-        buttons[1] = userInfo;
+        buttons[0] = homeButton.transform.position;
+        buttons[1] = userInfo.Title.transform.position;
         //buttons[2] = progressBar;
     }
 
@@ -48,11 +48,12 @@ public class UserProfile : MonoBehaviour
         {
             float dist = 100000000; //find closest object
             GameObject obj = buttons[0];
+            Vector3 newDist = new Vector3(0f,0f,0f);
             foreach (GameObject button in buttons)
             {
                 if (button != null)
                 {
-                    Vector3 newDist = (button.transform.position - stateModifier2) - (state.getCursorPosition() * StateManager.cursorPosMod * scale);
+                    newDist = (button.transform.position - stateModifier2) - (state.getCursorPosition() * StateManager.cursorPosMod * scale);
                     if (newDist.magnitude < dist)
                     {
                         dist = newDist.magnitude;
@@ -60,7 +61,7 @@ public class UserProfile : MonoBehaviour
                     }
                 }
             }
-            //Debug.Log("Closest Button: " + obj.name + ", " + ClickAction.buttonClose2(obj.transform.position));
+            Debug.Log("Closest Button: " + obj.name + ", " + ClickAction.buttonClose2(obj.transform.position) + ", " + newDist);
 
             if (ClickAction.buttonClose2(obj.transform.position)) //highlight color
             {
@@ -95,4 +96,54 @@ public class UserProfile : MonoBehaviour
         }
     }
 
+}
+
+public class UserInfo
+{
+    //general
+    public string userName = "User #00001";
+    private string dateJoined = "mm/dd/yyyy";
+    private float timeLogged;
+
+    //data
+    public void logData(int numTags, bool addImage)
+    {
+        tagsPlaced += numTags;
+        if (addImage)
+        {
+            ++imagesCompleted;
+        }
+    }
+    public void logJoin()
+    {
+        dateJoined = System.DateTime.Now.ToString();
+    }
+    public void logTime(float toAdd) //UserInfo.logTime(Time.Delta);
+    {
+        timeLogged += toAdd;
+    }
+
+    //progression
+    private int imagesCompleted = 0;
+    private int tagsPlaced = 0;
+    private int sessionsLogged = 1;
+    
+    public float getProgress()//outputs a %/100 of progress based on user info 
+    {
+        return 0f;
+    }
+
+    //access
+    public string getTimeLogged()
+    {
+        string time = "";
+        time += Mathf.Floor(timeLogged / 360) + "h ";
+        time += Mathf.Floor((timeLogged%360) / 60) + "m ";
+        time += (timeLogged % 60) + "s";
+        return time;
+    }
+    public int[] getProgressData()
+    {
+        return new int[] {imagesCompleted, tagsPlaced, sessionsLogged};
+    }
 }
