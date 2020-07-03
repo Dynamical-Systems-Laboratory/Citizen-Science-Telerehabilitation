@@ -247,11 +247,9 @@ public class MakeWordBank : MonoBehaviour {
     public static Tag[] tags;
     public static int practiceMoveOn;
 
-    public UserInfo user;
+    public UserInfo user = new UserInfo();
 
     void Awake() {
-        user.logJoin();
-
         DataCollector.MakeFolder();
         tagSphere = GameObject.FindGameObjectWithTag("TagSphere");
         imageMaterials = new Material[imageMaterialsToDragIn.Length];
@@ -375,6 +373,9 @@ public class MakeWordBank : MonoBehaviour {
 
         homeCamera.SetActive(false); //precausion
         cursorCamera.SetActive(false);
+
+        user.logJoin();
+        user.addSession();
     }
     
     public GameObject toClick = null; // obj for clicking
@@ -383,6 +384,7 @@ public class MakeWordBank : MonoBehaviour {
     void Update(/*EventSystem eventSystem*/)
     {
         user.logTime(Time.deltaTime); //add time
+        user.show();
 
         Debug.Log("MainC: " + mainCamera.activeSelf + ", UIC: " + UICamera.activeSelf + ", HomeC: " + homeCamera.activeSelf +
             ", VidC: " + videoCamera.activeSelf + ", CursorC: " + cursorCamera.activeSelf);
@@ -466,7 +468,7 @@ public class MakeWordBank : MonoBehaviour {
                 {
                     if (ClickAction.buttonClose(nextButton.transform.position))
                     {
-                        user.logData(state.tagsPlaced.Count, true);
+                        user.logData(state.tagsPlaced, imageIndex);
 
                         eventListener.OnPointerClick(nextButton);
                     }
@@ -1609,25 +1611,45 @@ public class Tag
 
 public class UserInfo
 {
+    public UserInfo(string name = "Example", string datejoined = "mm/dd/yyyy")
+    {
+        this.userName = name;
+        this.dateJoined = datejoined;
+    }
+
     //general
-    private string userName = "User #00001";
-    private string dateJoined = "mm/dd/yyyy";
+    private string userName;
+    private string dateJoined;
     private float timeLogged = 0f;
 
     //data
-    public void logData(int numTags, bool addImage)
+    private struct TagInfo //all tag related info needed to reload and track progress
     {
-        tagsPlaced += numTags;
-        if (addImage)
+        public TagInfo(string newName, Vector3 newLocation, int associatedImage) : this()
         {
-            ++imagesCompleted;
+            this.name = newName;
+            this.location = newLocation;
+            this.image = associatedImage;
         }
+        public string name;
+        public Vector3 location;
+        public int image; //associated image index
+    }
+
+    public void logData(List<GameObject> addTags, int addImage)
+    {
+        foreach(GameObject newTag in addTags)
+        {
+            TagInfo toog = new TagInfo(newTag.name, newTag.transform.position, addImage);
+            tags.Add(toog);
+        }
+        imagesCompleted.Add(addImage);
     }
     public void logJoin()
     {
         dateJoined = System.DateTime.Now.ToString();
     }
-    public void logTime(float toAdd) //UserInfo.logTime(Time.Delta);
+    public void logTime(float toAdd) //UserInfo.logTime(Time.deltaTime);
     {
         timeLogged += toAdd;
     }
@@ -1635,14 +1657,16 @@ public class UserInfo
     {
         userName = newName;
     }
+    public void addSession() { ++sessionsLogged; }
 
     //progression
-    private int imagesCompleted = 0;
-    private int tagsPlaced = 0;
-    private int sessionsLogged = 1;
+    private List<int> imagesCompleted; //list of images by index - last index'd image is most recent/present
+    private List<TagInfo> tags;
+    private int sessionsLogged = 0;
 
     public float getProgress()//outputs a %/100 of progress based on user info 
     {
+        //TODO: add joycon tracking
         return 0f;
     }
 
@@ -1671,10 +1695,17 @@ public class UserInfo
     }
     public int[] getProgressData()
     {
-        return new int[] { imagesCompleted, tagsPlaced, sessionsLogged };
+        return new int[] { imagesCompleted.Count, tags.Count, sessionsLogged };
     }
     public float[] getSettingData()
     {
         return new float[] { cameraSpeed, cursorSpeed, cursorSize };
+    }
+
+    //other
+    public void show()
+    {
+        Debug.Log("User: " + userName + ", Date Joined: " + dateJoined + ", Time: " + getTimeLogged());
+        Debug.Log("Ims: " + imagesCompleted + ", Tags: " + tags.Count + ", Sessions: " + sessionsLogged);
     }
 }

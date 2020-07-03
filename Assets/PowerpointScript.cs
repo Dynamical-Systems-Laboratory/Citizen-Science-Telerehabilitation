@@ -43,7 +43,10 @@ public class PowerpointScript : MonoBehaviour {
         if (state.getState() == 6) {
 			//gameObject.SetActive(true);
 			gameObject.transform.position = new Vector3(0f, 0f, 100f);
-			background.SetActive(true);
+			if (background != null)
+			{
+				background.SetActive(true);
+			}
 			Debug.Log("Slide #: " + slideIndex);
 			if (Input.GetKeyDown(KeyCode.Escape))
             {

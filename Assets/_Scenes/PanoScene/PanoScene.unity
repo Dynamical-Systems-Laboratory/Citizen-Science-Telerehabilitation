@@ -499,7 +499,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 17, y: 0.8}
+  m_AnchoredPosition: {x: 17, y: 0.8000002}
   m_SizeDelta: {x: 0, y: 0.099999905}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &24369768
@@ -10132,7 +10132,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 612057826}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &612057829
 Camera:
   m_ObjectHideFlags: 0
@@ -10704,7 +10704,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -24.6, y: 0}
+  m_AnchoredPosition: {x: -24.600002, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &654005967
@@ -11590,7 +11590,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -21.100002, y: 0.5000018}
+  m_AnchoredPosition: {x: -21.100002, y: 0.5000019}
   m_SizeDelta: {x: 0, y: 0.099999905}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &731271534
@@ -15259,7 +15259,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -25.3, y: -6.7000046}
+  m_AnchoredPosition: {x: -25.3, y: -6.7000036}
   m_SizeDelta: {x: 0, y: 0.099999905}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &967284757
@@ -29581,7 +29581,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 14.9, y: -6.300003}
+  m_AnchoredPosition: {x: 14.9, y: -6.300002}
   m_SizeDelta: {x: 0, y: 0.099999905}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1793456104
@@ -31618,7 +31618,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1930998585}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &1930998588
 Camera:
   m_ObjectHideFlags: 0
@@ -32740,7 +32740,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'User #00001'
+  m_Text: 'User: Example'
 --- !u!222 &2006924011
 CanvasRenderer:
   m_ObjectHideFlags: 0
