@@ -101,8 +101,8 @@ public class StateManager : MonoBehaviour {
 
     public float xOffset = 25.9f; //factor that sets tags to dissapear after being a certain dist away from camera's center
 
-    public static float camSpeed = 1.8f; //factor that speeds up the camera's movement
-    public static float cursorSpeed = 2.8f; //factor that speeds up cursor's movement
+    public static float camSpeed = 2f; //factor that speeds up the camera's movement
+    public static float cursorSpeed = 3.5f; //factor that speeds up cursor's movement
     public static float cursorSize = -0.418f; //factor that makes cursor bigger or smaller
 
     public bool hasPracticed = false; //has gone through practice level
@@ -591,7 +591,7 @@ public class StateManager : MonoBehaviour {
                 Vector3 change = (nextCameraPos - cameraPos); //take the amount that the camera moves and displace all placed tags by it
                 foreach (GameObject obj in tagsPlaced)
                 {
-                    obj.transform.position -= new Vector3(change.y * 3.565f, -change.x * 3.58f, 0f); //**
+                    obj.transform.position -= new Vector3(change.y * 1.815f, -change.x * 1.805f, 0f); //**
 
                     //float offset = (obj.transform.position.x - nextCameraPos.y);
                     //Debug.Log("Object " + obj.name + ": " + obj.transform.position + ", offset: " + (obj.transform.position - nextCameraPos) + ", " + offset);

@@ -384,8 +384,8 @@ public class MakeWordBank : MonoBehaviour {
         state.user.logTime(Time.deltaTime); //add time
         state.user.show();
 
-        Debug.Log("MainC: " + mainCamera.activeSelf + ", UIC: " + UICamera.activeSelf + ", HomeC: " + homeCamera.activeSelf +
-            ", VidC: " + videoCamera.activeSelf + ", CursorC: " + cursorCamera.activeSelf);
+        //Debug.Log("MainC: " + mainCamera.activeSelf + ", UIC: " + UICamera.activeSelf + ", HomeC: " + homeCamera.activeSelf +
+        //    ", VidC: " + videoCamera.activeSelf + ", CursorC: " + cursorCamera.activeSelf);
         
         /* Button MoveSets
          * * arrow keys = cursor movement
@@ -1620,6 +1620,8 @@ public class UserInfo //not sure if : this() is necessary
     {
         this.userName = name;
         this.dateJoined = datejoined;
+
+        updateSettings();
     }
 
     //general
@@ -1684,9 +1686,9 @@ public class UserInfo //not sure if : this() is necessary
     }
 
     //user settings
-    private float cameraSpeed = 1.8f;
-    private float cursorSpeed = 2.8f;
-    private float cursorSize = -0.418f;
+    private float cameraSpeed;
+    private float cursorSpeed;
+    private float cursorSize;
 
     public void updateSettings()
     {
