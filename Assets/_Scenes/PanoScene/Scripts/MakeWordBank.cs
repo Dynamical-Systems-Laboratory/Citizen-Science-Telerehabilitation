@@ -247,8 +247,6 @@ public class MakeWordBank : MonoBehaviour {
     public static Tag[] tags;
     public static int practiceMoveOn;
 
-    public UserInfo user = new UserInfo();
-
     void Awake() {
         DataCollector.MakeFolder();
         tagSphere = GameObject.FindGameObjectWithTag("TagSphere");
@@ -374,8 +372,8 @@ public class MakeWordBank : MonoBehaviour {
         homeCamera.SetActive(false); //precausion
         cursorCamera.SetActive(false);
 
-        user.logJoin();
-        user.addSession();
+        state.user.logJoin(); //if no data read
+        state.user.addSession();
     }
     
     public GameObject toClick = null; // obj for clicking
@@ -383,8 +381,8 @@ public class MakeWordBank : MonoBehaviour {
     // Update is called once per frame
     void Update(/*EventSystem eventSystem*/)
     {
-        user.logTime(Time.deltaTime); //add time
-        user.show();
+        state.user.logTime(Time.deltaTime); //add time
+        state.user.show();
 
         Debug.Log("MainC: " + mainCamera.activeSelf + ", UIC: " + UICamera.activeSelf + ", HomeC: " + homeCamera.activeSelf +
             ", VidC: " + videoCamera.activeSelf + ", CursorC: " + cursorCamera.activeSelf);
@@ -468,8 +466,11 @@ public class MakeWordBank : MonoBehaviour {
                 {
                     if (ClickAction.buttonClose(nextButton.transform.position))
                     {
-                        user.logData(state.tagsPlaced, imageIndex);
-
+                        state.user.logData(state.tagsPlaced, imageIndex);
+                        if(state.getState() == 7)
+                        {
+                            state.user.setLevelProgress(true, true);
+                        }
                         eventListener.OnPointerClick(nextButton);
                     }
                     else if (ClickAction.buttonClose(quitButton.transform.position))
@@ -535,6 +536,10 @@ public class MakeWordBank : MonoBehaviour {
         else
         {
             SimpleTutorial.inSimpleTutorial = false;
+        }
+        if (state.getState() == 7)
+        {
+            state.user.setLevelProgress(true);
         }
 
         //Start of Runtime Stuff
@@ -1609,7 +1614,7 @@ public class Tag
     }
 }
 
-public class UserInfo
+public class UserInfo //not sure if : this() is necessary
 {
     public UserInfo(string name = "Example", string datejoined = "mm/dd/yyyy")
     {
@@ -1640,8 +1645,8 @@ public class UserInfo
     {
         foreach(GameObject newTag in addTags)
         {
-            TagInfo toog = new TagInfo(newTag.name, newTag.transform.position, addImage);
-            tags.Add(toog);
+            TagInfo tempTag = new TagInfo(newTag.name, newTag.transform.position, addImage);
+            tags.Add(tempTag);
         }
         imagesCompleted.Add(addImage);
     }
@@ -1660,9 +1665,17 @@ public class UserInfo
     public void addSession() { ++sessionsLogged; }
 
     //progression
-    private List<int> imagesCompleted; //list of images by index - last index'd image is most recent/present
-    private List<TagInfo> tags;
+    private List<int> imagesCompleted = new List<int>(); //list of images by index - last index'd image is most recent/present
+    private List<TagInfo> tags = new List<TagInfo>();
     private int sessionsLogged = 0;
+
+    private bool startedPracticeLevel = false;
+    private bool finishedPracticeLevel = false;
+    public void setLevelProgress(bool started, bool finished = false)
+    {
+        startedPracticeLevel = started;
+        finishedPracticeLevel = finished;
+    }
 
     public float getProgress()//outputs a %/100 of progress based on user info 
     {
@@ -1690,7 +1703,7 @@ public class UserInfo
         string time = "";
         time += Mathf.Floor(timeLogged / 360) + "h ";
         time += Mathf.Floor((timeLogged % 360) / 60) + "m ";
-        time += (timeLogged % 60) + "s";
+        time += Mathf.Floor(timeLogged % 60) + "s";
         return time;
     }
     public int[] getProgressData()
@@ -1701,11 +1714,15 @@ public class UserInfo
     {
         return new float[] { cameraSpeed, cursorSpeed, cursorSize };
     }
+    public bool[] getPracticeLevelState()
+    {
+        return new bool[] { startedPracticeLevel, finishedPracticeLevel };
+    }
 
     //other
     public void show()
     {
-        Debug.Log("User: " + userName + ", Date Joined: " + dateJoined + ", Time: " + getTimeLogged());
-        Debug.Log("Ims: " + imagesCompleted + ", Tags: " + tags.Count + ", Sessions: " + sessionsLogged);
+        Debug.Log("*User: " + userName + ", Time: " + getTimeLogged() + ", Date Joined: " + dateJoined);
+        Debug.Log("*Ims: " + imagesCompleted.Count + ", Tags: " + tags.Count + ", Sessions: " + sessionsLogged);
     }
 }

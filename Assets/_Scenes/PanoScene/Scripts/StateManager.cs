@@ -20,6 +20,8 @@ public class StateManager : MonoBehaviour {
      * Rod Movement/Speed = n/m = forward/back
      */
 
+    public UserInfo user = new UserInfo(); //main user to store info
+
     private GameObject selected = null; // The current tag being selected
     private GameObject falconCursor; // The cursor being manipulated by the falcon
 
@@ -269,14 +271,22 @@ public class StateManager : MonoBehaviour {
     {
         falconButtons = new bool[4] { false, false, false, false };
         speeds = new List<Tuple<float, float, float, float>>();
+        mainCamera = GameObject.Find("Main Camera");
+        if (mainCamera == null)
+        {
+            mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        }
+        if (mainCamera == null)
+        {
+            mainCamera = MakeWordBank.mainCamera;
+        }
     }
-
     private IEnumerator Start()
     {
         yield return new WaitForSeconds(5f);
         this.falconCursor = GameObject.Find("CursorSphere");
         this.falconCamera = GameObject.Find("CursorCamera").GetComponent<Camera>();
-        mainCamera = GameObject.Find("Main Camera");
+        //mainCamera = GameObject.Find("Main Camera");
         //mainCamera = MakeWordBank.mainCamera;
     }
 
