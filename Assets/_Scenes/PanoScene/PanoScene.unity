@@ -533,7 +533,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Time Logged: 0h 2m 0s'
+  m_Text: 'Time Logged: 0h 0m 0s'
 --- !u!222 &24369769
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1422,7 +1422,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -6231, y: -6.3244476}
+  m_AnchoredPosition: {x: -6231, y: -6.324463}
   m_SizeDelta: {x: -280, y: 89.01001}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &74824780
@@ -4915,7 +4915,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 20.8, y: 7.75}
+  m_AnchoredPosition: {x: 20.5, y: 7.75}
   m_SizeDelta: {x: 0, y: 0.099999905}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &304442980
@@ -9907,7 +9907,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -177.79492, y: -8.675095}
+  m_AnchoredPosition: {x: -177.79492, y: -8.67511}
   m_SizeDelta: {x: -220.01, y: 98.25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &600539635
@@ -12843,7 +12843,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 4940, y: -6.3244476}
+  m_AnchoredPosition: {x: 4940, y: -6.324463}
   m_SizeDelta: {x: -678, y: 89.009995}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &802630043
@@ -29615,7 +29615,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Sessions Logged: 1'
+  m_Text: 'Sessions Logged: 0'
 --- !u!222 &1793456105
 CanvasRenderer:
   m_ObjectHideFlags: 0

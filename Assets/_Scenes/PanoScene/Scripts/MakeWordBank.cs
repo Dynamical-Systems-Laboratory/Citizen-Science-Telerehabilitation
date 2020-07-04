@@ -1654,7 +1654,7 @@ public class UserInfo //not sure if : this() is necessary
     }
     public void logJoin()
     {
-        dateJoined = System.DateTime.Now.ToString();
+        dateJoined = System.DateTime.Now.ToString("MM/dd/yyyy");
     }
     public void logTime(float toAdd) //UserInfo.logTime(Time.deltaTime);
     {
