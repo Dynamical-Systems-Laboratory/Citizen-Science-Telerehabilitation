@@ -1614,6 +1614,7 @@ public class Tag
     }
 }
 
+//all data stored from user
 public class UserInfo //not sure if : this() is necessary
 {
     public UserInfo(string name = "Example", string datejoined = "mm/dd/yyyy")
@@ -1623,13 +1624,7 @@ public class UserInfo //not sure if : this() is necessary
 
         updateSettings();
     }
-
-    //general
-    private string userName;
-    private string dateJoined;
-    private float timeLogged = 0f;
-
-    //data
+    
     private struct TagInfo //all tag related info needed to reload and track progress
     {
         public TagInfo(string newName, Vector3 newLocation, int associatedImage) : this()
@@ -1643,6 +1638,7 @@ public class UserInfo //not sure if : this() is necessary
         public int image; //associated image index
     }
 
+    //data
     public void logData(List<GameObject> addTags, int addImage)
     {
         foreach(GameObject newTag in addTags)
@@ -1667,18 +1663,11 @@ public class UserInfo //not sure if : this() is necessary
     public void addSession() { ++sessionsLogged; }
 
     //progression
-    private List<int> imagesCompleted = new List<int>(); //list of images by index - last index'd image is most recent/present
-    private List<TagInfo> tags = new List<TagInfo>();
-    private int sessionsLogged = 0;
-
-    private bool startedPracticeLevel = false;
-    private bool finishedPracticeLevel = false;
-    public void setLevelProgress(bool started, bool finished = false)
+   public void setLevelProgress(bool started, bool finished = false)
     {
         startedPracticeLevel = started;
         finishedPracticeLevel = finished;
     }
-
     public float getProgress()//outputs a %/100 of progress based on user info 
     {
         //TODO: add joycon tracking
@@ -1686,10 +1675,6 @@ public class UserInfo //not sure if : this() is necessary
     }
 
     //user settings
-    private float cameraSpeed;
-    private float cursorSpeed;
-    private float cursorSize;
-
     public void updateSettings()
     {
         cameraSpeed = StateManager.camSpeed;
@@ -1721,10 +1706,38 @@ public class UserInfo //not sure if : this() is necessary
         return new bool[] { startedPracticeLevel, finishedPracticeLevel };
     }
 
+    //public TagInfo getTags(int image)
+    //{
+    //    foreach(TagInfo tag in tags)
+    //    {
+    //        if(tag.image == image)
+    //        {
+    //            yield tag;
+    //        }
+    //    }
+    //}
+
     //other
     public void show()
     {
         Debug.Log("*User: " + userName + ", Time: " + getTimeLogged() + ", Date Joined: " + dateJoined);
-        Debug.Log("*Ims: " + imagesCompleted.Count + ", Tags: " + tags.Count + ", Sessions: " + sessionsLogged);
+        Debug.Log("*Ims: " + imagesCompleted.Count + ", Tags: " + tags.Count + ", Sessions: " + sessionsLogged); //progress data
+        //Debug.Log("*Settings: " + getSettingData().ToString() + ", PractState: " + getPracticeLevelState().ToString());
     }
+
+    //(private) variables
+    private string userName;
+    private string dateJoined;
+    private float timeLogged = 0f;
+
+    private List<int> imagesCompleted = new List<int>(); //list of images by index - last index'd image is most recent/present
+    private List<TagInfo> tags = new List<TagInfo>();
+    private int sessionsLogged = 0;
+
+    private bool startedPracticeLevel = false;
+    private bool finishedPracticeLevel = false;
+
+    private float cameraSpeed;
+    private float cursorSpeed;
+    private float cursorSize;
 }
