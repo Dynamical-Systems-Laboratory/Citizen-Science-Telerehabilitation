@@ -472,14 +472,20 @@ public class MakeWordBank : MonoBehaviour {
                             state.user.setLevelProgress(true, true);
                         }
                         eventListener.OnPointerClick(nextButton);
+                        state.user.setNewImage(imageIndex);
+                        if (imageIndex >= imageMaterials.Length - 1)
+                        {
+                            Debug.Log("Out of images...");
+                            state.setState(1);
+                        }
                     }
                     else if (ClickAction.buttonClose(quitButton.transform.position))
                     {
                         eventListener.OnPointerClick(quitButton);
-                        homeCamera.SetActive(true);
-                        mainCamera.SetActive(false);
-                        UICamera.SetActive(false);
-                        videoCamera.SetActive(false);
+                        //homeCamera.SetActive(true);
+                        //mainCamera.SetActive(false);
+                        //UICamera.SetActive(false);
+                        //videoCamera.SetActive(false);
                         state.setState(1);
                     }
                     else
@@ -1439,7 +1445,9 @@ public class MakeWordBank : MonoBehaviour {
     { //Change to the next image, reset tags, clear bin
         if (imageIndex == imageMaterials.Length - 1)
         { //On last image, then quit:
-            QuitGameScript.quitGame();
+            //QuitGameScript.quitGame();
+            //state.setState(1);
+            return;
         }
         if (!inTutorial && inPracticeLevel && practiceMoveOn < 3)
         {
@@ -1648,6 +1656,7 @@ public class UserInfo //not sure if : this() is necessary
         }
         imagesCompleted.Add(addImage);
     }
+    public void setNewImage(int newImage) { lastImage = newImage; }
     public void logJoin()
     {
         dateJoined = System.DateTime.Now.ToString("MM/dd/yyyy");
@@ -1693,9 +1702,10 @@ public class UserInfo //not sure if : this() is necessary
         time += Mathf.Floor(timeLogged % 60) + "s";
         return time;
     }
+    public int getLastImage() { return lastImage; }
     public int[] getProgressData()
     {
-        return new int[] { imagesCompleted.Count, tags.Count, sessionsLogged };
+        return new int[] { lastImage, imagesCompleted.Count, tags.Count, sessionsLogged };
     }
     public float[] getSettingData()
     {
@@ -1706,22 +1716,27 @@ public class UserInfo //not sure if : this() is necessary
         return new bool[] { startedPracticeLevel, finishedPracticeLevel };
     }
 
-    //public TagInfo getTags(int image)
-    //{
-    //    foreach(TagInfo tag in tags)
-    //    {
-    //        if(tag.image == image)
-    //        {
-    //            yield tag;
-    //        }
-    //    }
-    //}
+    public IEnumerable<GameObject> getTags(int image)
+    {
+        foreach (TagInfo tagInform in tags)
+        {
+            if (tagInform.image == image)
+            {
+                GameObject tag = new GameObject(tagInform.name);
+                tag.transform.position = tagInform.location;
+                tag.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                //TODO: make it look like a normal tag
+                yield return tag;
+            }
+        }
+        //yield return null;
+    }
 
     //other
     public void show()
     {
         Debug.Log("*User: " + userName + ", Time: " + getTimeLogged() + ", Date Joined: " + dateJoined);
-        Debug.Log("*Ims: " + imagesCompleted.Count + ", Tags: " + tags.Count + ", Sessions: " + sessionsLogged); //progress data
+        Debug.Log("*Im: " + lastImage + ", Ims: " + imagesCompleted.Count + ", Tags: " + tags.Count + ", Sessions: " + sessionsLogged); //progress data
         //Debug.Log("*Settings: " + getSettingData().ToString() + ", PractState: " + getPracticeLevelState().ToString());
     }
 
@@ -1731,6 +1746,7 @@ public class UserInfo //not sure if : this() is necessary
     private float timeLogged = 0f;
 
     private List<int> imagesCompleted = new List<int>(); //list of images by index - last index'd image is most recent/present
+    private int lastImage = 0;
     private List<TagInfo> tags = new List<TagInfo>();
     private int sessionsLogged = 0;
 
