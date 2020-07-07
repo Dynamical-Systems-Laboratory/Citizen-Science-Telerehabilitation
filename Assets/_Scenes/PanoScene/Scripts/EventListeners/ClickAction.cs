@@ -486,6 +486,19 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		}
 		return true;
 	}
+	public static bool buttonClose3(Vector3 pos, float mod = 1) //for home screen ui
+	{ //nextButton.transform.position
+		Vector3 diff = (pos - UserProfile.stateModifier2) - (state.getCursorPosition() * StateManager.cursorPosMod * HomeScreen.scale); //2:3 scaling modifier																								 //}
+		if (diff.y > 11*mod || diff.y < -19.8*mod)
+		{
+			return false;
+		}
+		if (diff.x > 41*mod || diff.x < -42*mod)
+		{
+			return false;
+		}
+		return true;
+	}
 
 	public static void destroyTags()
     {

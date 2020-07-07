@@ -14,17 +14,19 @@ public class UserProfile : MonoBehaviour
     public PowerpointScript slides;
 
     //buttons
-    public static GameObject[] buttons = new GameObject[3];
-
     public static GameObject homeButton; //main buttons
     public static GameObject userName;
+    public static GameObject diffucultyMeter;
 
-    public static Text dateJoined; //other info
+    //info to be updated
+    public static Text dateJoined;
     public static Text imagesCompleted;
     public static Text tagsPlaced;
     public static Text timeCompleted;
     public static Text sessionsLogged;
-
+    public static Text progress;
+    public static Text difficulty;
+    public static GameObject progressBar;
 
     public static Vector3 stateModifier2 = new Vector3(-100.2f + 2.8f + 350f, 500f, 66.6f); //offset of button positions relative to makewordbank
     public static float scale = 1.72f;//3/2;
@@ -43,75 +45,57 @@ public class UserProfile : MonoBehaviour
         homeButton = GameObject.Find("HomeButton2");
         userName = GameObject.Find("UserName");
 
-        dateJoined = GameObject.Find("Title").GetComponent<Text>();
-        imagesCompleted = GameObject.Find("ImagesCompleted").GetComponent<Text>();
-        tagsPlaced = GameObject.Find("TagsPlaced").GetComponent<Text>();
-        timeCompleted = GameObject.Find("TimeCompleted").GetComponent<Text>();
-        sessionsLogged = GameObject.Find("SessionsLogged").GetComponent<Text>();
+        dateJoined = GameObject.Find("DateJoined").GetComponent<Text>() as Text as Text; ;
+        imagesCompleted = GameObject.Find("ImagesCompleted").GetComponent<Text>() as Text;
+        tagsPlaced = GameObject.Find("TagsPlaced").GetComponent<Text>() as Text;
+        timeCompleted = GameObject.Find("TimeCompleted").GetComponent<Text>() as Text;
+        sessionsLogged = GameObject.Find("SessionsLogged").GetComponent<Text>() as Text;
+        progress = GameObject.Find("Progress").GetComponent<Text>() as Text;
+        progressBar = GameObject.Find("ProgressBar");
 
-        buttons[0] = homeButton;
-        buttons[1] = userName;
-        //buttons[2] = progressBar;
+        difficulty = GameObject.Find("DifficultyNumber").GetComponent<Text>() as Text;
+        diffucultyMeter = GameObject.Find("DifficultySlider");
     }
-
-
+    //TODO: change userName from text box to editable text field
     void Update()
     {
         if (state.getState() == 3)
         {
             //Text replacement
             int[] textData = state.user.getProgressData();
+            //Debug.Log("TextData:" + textData[0] + "," + textData[1] + "," + textData[]);
+            userName.GetComponent<Text>().text = "User: " + state.user.getName();
             dateJoined.text = "Date Joined: " + state.user.getDateJoined();
-            imagesCompleted.text = "# Images Completed: " + textData[0];
-            tagsPlaced.text = "# Tags Placed: " + textData[1];
-            sessionsLogged.text = "Sessions Logged: " + textData[2];
+            imagesCompleted.text = "# Images Completed: " + textData[1];
+            tagsPlaced.text = "# Tags Placed: " + textData[2];
+            sessionsLogged.text = "Sessions Logged: " + textData[3];
             timeCompleted.text = "Time Logged: " + state.user.getTimeLogged();
+            progress.text = state.user.getProgress() + "%";
+            //TODO: figure out horizontal transformation that coorelateds to scaler (-11.2 = 50%?)
+            progressBar.transform.localScale = new Vector3(state.user.getProgress() / 100f, state.user.getProgress() / 100f, state.user.getProgress() / 100f);
+
+            //difficulty = diffucultyMeter.value;
 
             //Clicking Things (buttons)
-            float dist = 100000000; //find closest object
-            GameObject obj = buttons[0];
-            Vector3 newDist = new Vector3(0f,0f,0f);
-            foreach (GameObject button in buttons)
+            Debug.Log("Home: " + (homeButton.transform.position - UserProfile.stateModifier2) + ", -" +
+                (state.getCursorPosition() * StateManager.cursorPosMod * HomeScreen.scale));
+            if (Input.GetKeyDown(KeyCode.B)) //clicking
             {
-                if (button != null)
+                if (ClickAction.buttonClose3(homeButton.transform.position, 1f))
                 {
-                    newDist = (button.transform.position - stateModifier2) - (state.getCursorPosition() * StateManager.cursorPosMod * scale);
-                    if (newDist.magnitude < dist)
-                    {
-                        dist = newDist.magnitude;
-                        obj = button;
-                    }
+                    state.setState(1);
                 }
-            }
-            Debug.Log("Closest Button: " + obj.name + ", " + ClickAction.buttonClose2(obj.transform.position) + ", " + newDist);
-
-            if (ClickAction.buttonClose2(obj.transform.position)) //highlight color
-            {
-                obj.GetComponent<Image>().color = highlighted;
-            }
-            else
-            {
-                obj.GetComponent<Image>().color = unhighlighted;
-            }
-
-            if (Input.GetKey(KeyCode.B)) //clicking
-            {
-                if (ClickAction.buttonClose2(obj.transform.position))
+                else if (false)
                 {
-                    obj.GetComponent<Image>().color = unhighlighted;
-                    if (obj.name == userName.name)
-                    {
-                        //TODO: Implement editing of user profile and storing with user data
-                        Debug.Log("Editing User Profile Data...");
-                    }
-                    else if (obj.name == homeButton.name)
-                    {
-                        state.setState(1);
-                    }
-                    else
-                    {
-                        Debug.Log("Unknown Gameobject Button Found: " + obj.name);
-                    }
+                    //TODO: Difficulty
+                }
+                else if (ClickAction.buttonClose3(userName.transform.position, .75f))
+                {
+
+                }
+                else
+                {
+                    Debug.Log("~No Button To Press~");
                 }
             }
 

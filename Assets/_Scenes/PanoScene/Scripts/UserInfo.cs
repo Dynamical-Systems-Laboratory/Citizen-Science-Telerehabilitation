@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //all data stored from user
-public class UserInfo : MonoBehaviour //not sure if : this() is necessary
-{
+public class UserInfo //not sure if : this() is necessary
+{// no ": MonoBehaviour" to make the class consistently run 
     public UserInfo(string name = "Example", string datejoined = "mm/dd/yyyy")
     {
         this.userName = name;
@@ -60,7 +60,7 @@ public class UserInfo : MonoBehaviour //not sure if : this() is necessary
     public float getProgress()//outputs a %/100 of progress based on user info 
     {
         //TODO: add joycon tracking
-        return 0f;
+        return (imagesCompleted.Count / MakeWordBank.imageMaterials.Length)*100f + 10f;
     }
 
     //user settings
@@ -116,7 +116,8 @@ public class UserInfo : MonoBehaviour //not sure if : this() is necessary
     public void show()
     {
         Debug.Log("*User: " + userName + ", Time: " + getTimeLogged() + ", Date Joined: " + dateJoined);
-        Debug.Log("*Im: " + lastImage + ", Ims: " + imagesCompleted.Count + ", Tags: " + tags.Count + ", Sessions: " + sessionsLogged); //progress data
+        Debug.Log("*Im: " + lastImage + ", Ims: " + imagesCompleted.Count + ", Tags: " + tags.Count + ", Sessions: " + sessionsLogged +
+            ", SPract: " + startedPracticeLevel + ", Pract: " + finishedPracticeLevel); //progress data
         //Debug.Log("*Settings: " + getSettingData().ToString() + ", PractState: " + getPracticeLevelState().ToString());
     }
 
@@ -126,14 +127,14 @@ public class UserInfo : MonoBehaviour //not sure if : this() is necessary
     private float timeLogged = 0f;
 
     private List<int> imagesCompleted = new List<int>(); //list of images by index - last index'd image is most recent/present
-    private int lastImage = 0;
+    private int lastImage = 0; //current image the user is editing
     private List<TagInfo> tags = new List<TagInfo>();
     private int sessionsLogged = 0;
 
-    private bool startedPracticeLevel = false;
+    private bool startedPracticeLevel = false; //tracks basic progress
     private bool finishedPracticeLevel = false;
 
-    private float cameraSpeed;
+    private float cameraSpeed; //personalized settings 
     private float cursorSpeed;
     private float cursorSize;
 }

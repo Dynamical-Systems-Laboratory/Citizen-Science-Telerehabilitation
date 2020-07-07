@@ -90,7 +90,7 @@ public class HomeScreen : MonoBehaviour
                 obj.GetComponent<Image>().color = unhighlighted;
             }
 
-            if (Input.GetKey(KeyCode.B)) //clicking
+            if (Input.GetKeyDown(KeyCode.B)) //clicking
             {
                 if (ClickAction.buttonClose2(obj.transform.position))
                 {

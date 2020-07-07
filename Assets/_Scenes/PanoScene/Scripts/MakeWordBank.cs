@@ -386,7 +386,7 @@ public class MakeWordBank : MonoBehaviour {
 
         //Debug.Log("MainC: " + mainCamera.activeSelf + ", UIC: " + UICamera.activeSelf + ", HomeC: " + homeCamera.activeSelf +
         //    ", VidC: " + videoCamera.activeSelf + ", CursorC: " + cursorCamera.activeSelf);
-        
+
         /* Button MoveSets
          * * arrow keys = cursor movement
          * * b = cursor select
@@ -460,26 +460,33 @@ public class MakeWordBank : MonoBehaviour {
             }
             //CLICKING
             //V for button press
-            if (state.getState() == 2 || state.getState() == 7 || state.getState() == 5) //home or practice level or button tutorial
+            if (state.getState() == 2 || state.getState() == 7 || state.getState() == 5) //in-game or practice level or button tutorial
             {
-                if (Input.GetKey(KeyCode.B)) //select
+                if (Input.GetKeyDown(KeyCode.B)) //select
                 {
                     if (ClickAction.buttonClose(nextButton.transform.position))
                     {
-                        state.user.logData(state.tagsPlaced, imageIndex);
-                        if(state.getState() == 7)
-                        {
-                            state.user.setLevelProgress(true, true);
-                        }
-                        eventListener.OnPointerClick(nextButton);
-                        state.user.setNewImage(imageIndex);
                         if (imageIndex >= imageMaterials.Length - 1)
                         {
                             Debug.Log("Out of images...");
                             state.setState(1);
                         }
+                        else if(state.getState() == 7 && practiceMoveOn < 3)
+                        {
+                            eventListener.OnPointerClick(nextButton);
+                        }
+                        else
+                        {
+                            if (state.getState() == 7)
+                            {
+                                state.user.setLevelProgress(true, true); //set practice level trackers
+                            }
+                            state.user.logData(state.tagsPlaced, imageIndex); //store image data
+                            eventListener.OnPointerClick(nextButton); //click next
+                            state.user.setNewImage(imageIndex); //save new image
+                        }
                     }
-                    else if (ClickAction.buttonClose(quitButton.transform.position))
+                    else if (ClickAction.buttonClose(quitButton.transform.position)) //home
                     {
                         eventListener.OnPointerClick(quitButton);
                         //homeCamera.SetActive(true);
@@ -497,6 +504,10 @@ public class MakeWordBank : MonoBehaviour {
                 { // (.1f is the bounds of the screen where the cursor is on the image side)
                     if (state.getCursorPosition().x < .1f) //placing on image canvas
                     {
+                        if (state.getState() == 7 && state.getSelected() != null)
+                        {
+                            ++practiceMoveOn; //check
+                        }
                         eventListener.OnPointerClick();
                     }
                     else if (ClickAction.isByTrash(state.getCursorPosition())) //trashing
@@ -535,6 +546,14 @@ public class MakeWordBank : MonoBehaviour {
         {
             inTutorial = false;
         }
+        if (state.getState() == 7)
+        {
+            inPracticeLevel = true;
+        }
+        else
+        {
+            inPracticeLevel = false;
+        }
         if (state.getState() == 4)
         {
             SimpleTutorial.inSimpleTutorial = true;
@@ -551,7 +570,7 @@ public class MakeWordBank : MonoBehaviour {
         //Start of Runtime Stuff
         if (state.getState() == 2 || state.getState() == 7 || state.getState() == 5)
         {
-            //Debug.Log("Running ButtonTutorial & Co...");
+            Debug.Log("Running Buttons");
             if (!initialized)
             {
                 mainCamera.SetActive(true);
@@ -573,16 +592,16 @@ public class MakeWordBank : MonoBehaviour {
             timer3 += Time.deltaTime;
             //if (timer3 > 0.5f)
             //{
-                if (Input.GetKeyDown(KeyCode.Escape))
-                {
-                    focusor.SetActive(false);
-                    //mainCamera.SetActive(true);
-                    //UICamera.SetActive(true);
-                    //videoCamera.SetActive(false);
-                    step22proceed = true;
-                    stepOfTutorial = 22;
-                    state.setState(5);
-                }
+            if (Input.GetKeyDown(KeyCode.Escape) && state.getState() == 5)
+            {
+                focusor.SetActive(false);
+                //mainCamera.SetActive(true);
+                //UICamera.SetActive(true);
+                //videoCamera.SetActive(false);
+                step22proceed = true;
+                stepOfTutorial = 22;
+                state.setState(7);
+            }
             //}
 
             buttons = state.getButtons();
@@ -1441,78 +1460,84 @@ public class MakeWordBank : MonoBehaviour {
         toReplace.name = newName; //replace name of tagtag
     }
 
-    public static void nextImage()
+    public static bool nextImage()
     { //Change to the next image, reset tags, clear bin
-        if (imageIndex == imageMaterials.Length - 1)
+        if (imageIndex >= imageMaterials.Length - 1)
         { //On last image, then quit:
             //QuitGameScript.quitGame();
             //state.setState(1);
-            return;
+            return false;
         }
-        if (!inTutorial && inPracticeLevel && practiceMoveOn < 3)
+        else
         {
-            tutorialText.text = "Please place another " + (3-practiceMoveOn) + " tags to move on.";
+            if (!inTutorial && inPracticeLevel && practiceMoveOn < 3)
+            {
+                tutorialText.text = "Please place another " + (3 - practiceMoveOn) + " tags to continue.";
+                return false;
+            }
+            else if (!inTutorial)
+            {
+                //if (!inPracticeLevel)
+                //{ //Are we not in the practice level:
+                //    DataCollector.Flush();
+                //}
+                //if (!skipTaggingTutorialStep) //from old version of game with multiple people
+                //{ //Only set these if you're the tagger:
+                //    Transform lastTag = tagSphere.transform.GetChild(tagSphere.transform.childCount - 1);
+
+                //    positionLastTag = lastTag.localPosition;
+                //    rotationLastTag = lastTag.localRotation.eulerAngles;
+                //    scaleLastTag = lastTag.localScale;
+                //}
+
+                if (ClickAction.cursorTag != null) //cursor gameObject?
+                {
+                    Destroy(ClickAction.cursorTag);
+                    ClickAction.cursorTag = null;
+                    PlayerScript.holdingTag = "";
+                    PlayerScript.trashedTagText = "";
+                    ClickAction.state.setSelected(null);
+                }
+
+                foreach (Transform t in tagSphere.transform)
+                {
+                    Destroy(t.gameObject, 0.08f);
+                }
+
+                for (int i = 0; i < ClickAction.trashedTags.Count; i++) //take out trash
+                {
+                    Destroy(ClickAction.trashedTags[i]);
+                }
+                ClickAction.trashedTags.Clear();
+
+                imageIndex++;
+                tagSphere.GetComponent<Renderer>().material = imageMaterials[imageIndex]; //next image
+                sequenceIndex = 0;
+                for (int tagsIndex = 0; tagsIndex < tags.Length; tagsIndex++)
+                {
+                    tags[tagsIndex].setText(wordBank[SEQUENCE[imageIndex, sequenceIndex]]);
+                    tags[tagsIndex].text.color = Color.black;
+
+                    sequenceIndex++;
+                }
+                //save tag name, position, and image index
+                ClickAction.destroyTags();
+
+                if (inPracticeLevel)
+                {
+                    helpTextContainer.SetActive(false);
+                    practiceLevelText.SetActive(false);
+                    welcomeText.text = "You have completed the practice level.\nPush the rod forward to " +
+                        "begin data collection"; //not displayed?
+                    //welcomeScreen.SetActive(true);
+                    welcomeScreen.SetActive(false);
+                    inScreenBeforeExperiment = true;
+                    inPracticeLevel = false;
+                }
+                return true;
+            }
         }
-        else if (!inTutorial)
-        {
-            if (!inPracticeLevel)
-            { //Are we not in the practice level:
-                DataCollector.Flush();
-            }
-            //if (!skipTaggingTutorialStep) //from old version of game with multiple people
-            //{ //Only set these if you're the tagger:
-            //    Transform lastTag = tagSphere.transform.GetChild(tagSphere.transform.childCount - 1);
-
-            //    positionLastTag = lastTag.localPosition;
-            //    rotationLastTag = lastTag.localRotation.eulerAngles;
-            //    scaleLastTag = lastTag.localScale;
-            //}
-
-            if (ClickAction.cursorTag != null) //cursor gameObject?
-            {
-                Destroy(ClickAction.cursorTag);
-                ClickAction.cursorTag = null;
-                PlayerScript.holdingTag = "";
-                PlayerScript.trashedTagText = "";
-                ClickAction.state.setSelected(null);
-            }
-
-            foreach (Transform t in tagSphere.transform)
-            {
-                Destroy(t.gameObject, 0.08f);
-            }
-
-            for (int i = 0; i < ClickAction.trashedTags.Count; i++) //take out trash
-            {
-                Destroy(ClickAction.trashedTags[i]);
-            }
-            ClickAction.trashedTags.Clear();
-
-            imageIndex++; 
-            tagSphere.GetComponent<Renderer>().material = imageMaterials[imageIndex]; //next image
-            sequenceIndex = 0;
-            for (int tagsIndex = 0; tagsIndex < tags.Length; tagsIndex++)
-            {
-                tags[tagsIndex].setText(wordBank[SEQUENCE[imageIndex, sequenceIndex]]);
-                tags[tagsIndex].text.color = Color.black;
-
-                sequenceIndex++;
-            }
-            //save tag name, position, and image index
-            ClickAction.destroyTags();
-
-            if (inPracticeLevel)
-            {
-                helpTextContainer.SetActive(false);
-                practiceLevelText.SetActive(false);
-                welcomeText.text = "You have completed the practice level.\nPush the rod forward to " +
-                    "begin data collection"; //not displayed?
-                //welcomeScreen.SetActive(true);
-                welcomeScreen.SetActive(false);
-                inScreenBeforeExperiment = true;
-                inPracticeLevel = false;
-            }
-        }
+        return false;
     }
 
     //This method can be called from the EventListener script using the GameObject that was clicked on as input:
@@ -1591,8 +1616,6 @@ public class MakeWordBank : MonoBehaviour {
 
     
 }
-
-
 
 
 /*
