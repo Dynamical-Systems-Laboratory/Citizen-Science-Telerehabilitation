@@ -94,43 +94,7 @@ public class UserProfile : MonoBehaviour
                     //Debug.Log("Using Slider");
                     //[142.5 <--> -5] / 10 => 14.75*
                     float slideNum = Mathf.Floor((142.5f - sliderDist.x) / 14.75f);
-                    switch (slideNum)
-                    {
-                        case 0:
-                            difficultyMeter.value = 1;
-                            break;
-                        case 1:
-                            difficultyMeter.value = 2;
-                            break;
-                        case 2:
-                            difficultyMeter.value = 3;
-                            break;
-                        case 3:
-                            difficultyMeter.value = 4;
-                            break;
-                        case 4:
-                            difficultyMeter.value = 5;
-                            break;
-                        case 5:
-                            difficultyMeter.value = 6;
-                            break;
-                        case 6:
-                            difficultyMeter.value = 7;
-                            break;
-                        case 7:
-                            difficultyMeter.value = 8;
-                            break;
-                        case 8:
-                            difficultyMeter.value = 9;
-                            break;
-                        case 9:
-                            difficultyMeter.value = 10;
-                            break;
-                        default:
-                            difficultyMeter.value = 5;
-                            Debug.Log("Error on Slide...");
-                            break;
-                    }
+                    difficultyMeter.value = slideNum + 1;
                     difficulty.text = difficultyMeter.value.ToString(); //change text
                     state.user.updateDifficulty(difficultyMeter.value); //change user settings
                 }
