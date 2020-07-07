@@ -500,7 +500,7 @@ public class MakeWordBank : MonoBehaviour {
                         findObjClick();
                     }
                 }
-                else if (Input.GetKey(KeyCode.N) && state.getSelected() != null) //deselect
+                else if (Input.GetKeyDown(KeyCode.N) && state.getSelected() != null) //deselect
                 { // (.1f is the bounds of the screen where the cursor is on the image side)
                     if (state.getCursorPosition().x < .1f) //placing on image canvas
                     {
@@ -516,7 +516,7 @@ public class MakeWordBank : MonoBehaviour {
                         newTag(ClickAction.initTagPos);
                     }
                 }
-                else if (Input.GetKey(KeyCode.M) && state.getSelected() != null)
+                else if (Input.GetKeyDown(KeyCode.M) && state.getSelected() != null)
                 {
                     ClickAction.dropObject();
                     //alternative dropObject that lets you pick up and move a tag that has already been placed?
@@ -689,7 +689,7 @@ public class MakeWordBank : MonoBehaviour {
                     timer += Time.deltaTime;
                 }
 
-                if (Input.GetKey("space"))
+                if (Input.GetKeyDown("space"))
                 {
                     stepOfTutorial = 0;
                 }
@@ -725,7 +725,7 @@ public class MakeWordBank : MonoBehaviour {
             }
             else if (stepOfTutorial == 3)
             {
-                if (Input.GetKey("space"))
+                if (Input.GetKeyDown("space"))
                 {
                     stepOfTutorial = 0;
                     play1 = true;
@@ -792,7 +792,7 @@ public class MakeWordBank : MonoBehaviour {
             }
             else if (stepOfTutorial == 5)
             {
-                if (Input.GetKey("space"))
+                if (Input.GetKeyDown("space"))
                 {
                     stepOfTutorial = 3;
                 }
@@ -825,7 +825,7 @@ public class MakeWordBank : MonoBehaviour {
             }
             else if (stepOfTutorial == 6)
             {
-                if (Input.GetKey("space"))
+                if (Input.GetKeyDown("space"))
                 {
                     stepOfTutorial = 3;
                 }
@@ -884,7 +884,7 @@ public class MakeWordBank : MonoBehaviour {
             }
             else if (stepOfTutorial == 8)
             {
-                if (Input.GetKey("space"))
+                if (Input.GetKeyDown("space"))
                 {
                     stepOfTutorial = 6;
                 }
@@ -917,7 +917,7 @@ public class MakeWordBank : MonoBehaviour {
             }
             else if (stepOfTutorial == 9)
             {
-                if (Input.GetKey("space"))
+                if (Input.GetKeyDown("space"))
                 {
                     stepOfTutorial = 6;
                 }
@@ -981,7 +981,7 @@ public class MakeWordBank : MonoBehaviour {
             }
             else if (stepOfTutorial == 11)
             {
-                if (Input.GetKey("space"))
+                if (Input.GetKeyDown("space"))
                 {
                     stepOfTutorial = 9;
                 }
@@ -1014,7 +1014,7 @@ public class MakeWordBank : MonoBehaviour {
             }
             else if (stepOfTutorial == 12)
             {
-                if (Input.GetKey("space"))
+                if (Input.GetKeyDown("space"))
                 {
                     stepOfTutorial = 9;
                 }
@@ -1102,7 +1102,7 @@ public class MakeWordBank : MonoBehaviour {
             else if (stepOfTutorial == 15)
             {
                 /*
-                if (Input.GetKey("space"))
+                if (Input.GetKeyDown("space"))
                 {
                     stepOfTutorial = 12;
                 }
@@ -1120,7 +1120,7 @@ public class MakeWordBank : MonoBehaviour {
                 //pointerData.position = state.getCursorPosition();//Input.mousePosition;
                 //List<RaycastResult> results = new List<RaycastResult>();
                 //EventSystem.current.RaycastAll(pointerData, results);
-                
+
                 if (state.getSelected() != null)
                 { //User's holding a tag, go to the next step:
                     focusor.transform.localPosition = new Vector3(-100.7f, -450f, -271.39f);
@@ -1381,7 +1381,7 @@ public class MakeWordBank : MonoBehaviour {
 
     public static bool moveOn() //basically the catch-all method for continuing
     {
-        if (Input.GetKey(KeyCode.V))
+        if (Input.GetKeyDown(KeyCode.V))
         {
             return true;
         }
@@ -1407,7 +1407,7 @@ public class MakeWordBank : MonoBehaviour {
             }
         }
         Debug.Log("Closest Object" + toClick.name + ", Tag: " + toClick.tag + ", Distance: " + shortDist);
-        if (shortDist < 18.6f)// && Input.GetKey(KeyCode.G))
+        if (shortDist < 18.6f)// && Input.GetKeyDown(KeyCode.G))
         {
             if (state.getSelected() != null)
             {

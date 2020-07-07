@@ -60,7 +60,16 @@ public class UserInfo //not sure if : this() is necessary
     public float getProgress()//outputs a %/100 of progress based on user info 
     {
         //TODO: add joycon tracking
-        return (imagesCompleted.Count / MakeWordBank.imageMaterials.Length)*100f + 10f;
+        float progress = (imagesCompleted.Count / MakeWordBank.imageMaterials.Length)*85f;
+        if (startedPracticeLevel)
+        {
+            progress += 5;
+        }
+        if (finishedPracticeLevel)
+        {
+            progress += 10;
+        }
+        return progress;
     }
 
     //user settings

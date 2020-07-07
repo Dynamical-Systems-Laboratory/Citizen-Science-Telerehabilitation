@@ -27,7 +27,7 @@ public class HomeScreen : MonoBehaviour
     public static Text welcomeText;
     public static Text tutorialText;
 
-    public static Vector3 stateModifier = new Vector3(-100.2f + 2.8f, 500f, 66.6f); //offset of button positions relative to makewordbank
+    public static Vector3 stateModifier = new Vector3(-160f + 64f, 500f, 66.6f); //offset of button positions relative to makewordbank
     public static float scale = 1.72f;//3/2;
 
     //button colors
@@ -99,7 +99,7 @@ public class HomeScreen : MonoBehaviour
                     {
                         StateManager.makeCamReset = true;
                         //homeCamera.SetActive(false);
-                        if (state.hasPracticed)
+                        if (state.user.getPracticeLevelState()[1])
                         {
                             state.setState(2);
                         }

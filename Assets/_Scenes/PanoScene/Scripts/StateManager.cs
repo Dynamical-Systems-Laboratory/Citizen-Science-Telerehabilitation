@@ -105,8 +105,6 @@ public class StateManager : MonoBehaviour {
     public static float cursorSpeed = 3.5f; //factor that speeds up cursor's movement
     public static float cursorSize = -0.418f; //factor that makes cursor bigger or smaller
 
-    public bool hasPracticed = false; //has gone through practice level
-
     public List<GameObject> tagsPlaced;
     //public List<InvisTag> invisTags;
 
@@ -279,6 +277,17 @@ public class StateManager : MonoBehaviour {
         if (mainCamera == null)
         {
             mainCamera = MakeWordBank.mainCamera;
+        }
+
+        if (user.getPracticeLevelState()[0])
+        {
+            //setState(1); //start at home screen instead of game
+            userState = 1;
+        }
+        else
+        {
+            //setState(6);
+            userState = 6;
         }
     }
     private IEnumerator Start()
