@@ -16,7 +16,6 @@ public class UserProfile : MonoBehaviour
     //buttons
     public static GameObject homeButton; //main buttons
     public static GameObject userName;
-    public static GameObject difficultyMeter;
 
     //info to be updated
     public static Text dateJoined;
@@ -26,7 +25,10 @@ public class UserProfile : MonoBehaviour
     public static Text sessionsLogged;
     public static Text progress;
     public static Text difficulty;
+
+    //other
     public static Slider progressBar;
+    public static Slider difficultyMeter;
 
     public static Vector3 stateModifier2 = new Vector3(-100.2f + 2.8f + 380f, 500f, 66.6f); //offset of button positions relative to makewordbank
     public static float scale = 1.72f;//3/2;
@@ -54,7 +56,7 @@ public class UserProfile : MonoBehaviour
         progressBar = GameObject.Find("ProgressBar").GetComponent<Slider>() as Slider;
 
         difficulty = GameObject.Find("DifficultyNumber").GetComponent<Text>() as Text;
-        difficultyMeter = GameObject.Find("DifficultySlider");
+        difficultyMeter = GameObject.Find("DifficultySlider").GetComponent<Slider>() as Slider;
     }
     //TODO: change userName from text box to editable text field
     void Update()
@@ -73,26 +75,64 @@ public class UserProfile : MonoBehaviour
             progress.text = state.user.getProgress() + "%";
             progressBar.value = state.user.getProgress();
             //TODO: figure out horizontal transformation that coorelateds to scaler (-11.2 = 50%?)
+            difficultyMeter.value = state.user.getSettingData()[0];
+            difficulty.text = difficultyMeter.value.ToString();
 
             //difficulty = diffucultyMeter.value;
 
             //Clicking Things (buttons)
-            Debug.Log("Home: " + ((homeButton.transform.position - UserProfile.stateModifier2) - (state.getCursorPosition() * StateManager.cursorPosMod * HomeScreen.scale))
-                + ", " + ((homeButton.transform.position - UserProfile.stateModifier2) - (state.getCursorPosition() * StateManager.cursorPosMod * HomeScreen.scale)).magnitude);
-            Debug.Log("Slider: " + ((difficultyMeter.transform.position - UserProfile.stateModifier2) - (state.getCursorPosition() * StateManager.cursorPosMod * HomeScreen.scale))
-                + ", " + ((difficultyMeter.transform.position - UserProfile.stateModifier2) - (state.getCursorPosition() * StateManager.cursorPosMod * HomeScreen.scale)).magnitude);
-            if (Input.GetKeyDown(KeyCode.B)) //clicking
+            if (Input.GetKey(KeyCode.B)) //clicking
             {
                 Vector3 homeDist = ((homeButton.transform.position - UserProfile.stateModifier2) - (state.getCursorPosition() * StateManager.cursorPosMod * HomeScreen.scale));
                 Vector3 sliderDist = ((difficultyMeter.transform.position - UserProfile.stateModifier2) - (state.getCursorPosition() * StateManager.cursorPosMod * HomeScreen.scale));
                 if (homeDist.x <= 118 && homeDist.x >= 32 && homeDist.y <= 17.8 && homeDist.y >= -18.5)
                 {
-                    //state.setState(1);
-                    Debug.Log("Going Home");
+                    state.setState(1);
                 }
-                else if (sliderDist.x <= 142.5 && sliderDist.x >= -5 &&sliderDist.y <= 9 && sliderDist.y >= -12)
+                else if (sliderDist.x <= 142.5 && sliderDist.x > -5 &&sliderDist.y <= 9 && sliderDist.y >= -12)
                 {
-                    Debug.Log("Sliding into the dm's");
+                    //Debug.Log("Using Slider");
+                    //[142.5 <--> -5] / 10 => 14.75*
+                    float slideNum = Mathf.Floor((142.5f - sliderDist.x) / 14.75f);
+                    switch (slideNum)
+                    {
+                        case 0:
+                            difficultyMeter.value = 1;
+                            break;
+                        case 1:
+                            difficultyMeter.value = 2;
+                            break;
+                        case 2:
+                            difficultyMeter.value = 3;
+                            break;
+                        case 3:
+                            difficultyMeter.value = 4;
+                            break;
+                        case 4:
+                            difficultyMeter.value = 5;
+                            break;
+                        case 5:
+                            difficultyMeter.value = 6;
+                            break;
+                        case 6:
+                            difficultyMeter.value = 7;
+                            break;
+                        case 7:
+                            difficultyMeter.value = 8;
+                            break;
+                        case 8:
+                            difficultyMeter.value = 9;
+                            break;
+                        case 9:
+                            difficultyMeter.value = 10;
+                            break;
+                        default:
+                            difficultyMeter.value = 5;
+                            Debug.Log("Error on Slide...");
+                            break;
+                    }
+                    difficulty.text = difficultyMeter.value.ToString(); //change text
+                    state.user.updateDifficulty(difficultyMeter.value); //change user settings
                 }
                 else
                 {

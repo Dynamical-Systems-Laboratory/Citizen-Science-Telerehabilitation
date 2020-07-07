@@ -61,13 +61,13 @@ public class UserInfo //not sure if : this() is necessary
     {
         //TODO: add joycon tracking
         float progress = (imagesCompleted.Count / MakeWordBank.imageMaterials.Length)*85f;
-        if (startedPracticeLevel)
-        {
-            progress += 5;
-        }
-        if (finishedPracticeLevel)
+        if (startedPracticeLevel) //ppt + tutorial
         {
             progress += 10;
+        }
+        if (finishedPracticeLevel) // practice level
+        {
+            progress += 5;
         }
         return progress;
     }
@@ -78,6 +78,10 @@ public class UserInfo //not sure if : this() is necessary
         cameraSpeed = StateManager.camSpeed;
         cursorSpeed = StateManager.cursorSpeed;
         cursorSize = StateManager.cursorSize;
+    }
+    public void updateDifficulty(float newDiff)
+    {
+        difficulty = newDiff;
     }
 
     //accessors
@@ -98,7 +102,7 @@ public class UserInfo //not sure if : this() is necessary
     }
     public float[] getSettingData()
     {
-        return new float[] { cameraSpeed, cursorSpeed, cursorSize };
+        return new float[] { difficulty, cameraSpeed, cursorSpeed, cursorSize };
     }
     public bool[] getPracticeLevelState()
     {
@@ -146,4 +150,5 @@ public class UserInfo //not sure if : this() is necessary
     private float cameraSpeed; //personalized settings 
     private float cursorSpeed;
     private float cursorSize;
+    private float difficulty = 5;
 }

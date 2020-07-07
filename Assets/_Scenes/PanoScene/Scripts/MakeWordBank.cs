@@ -462,7 +462,7 @@ public class MakeWordBank : MonoBehaviour {
             //V for button press
             if (state.getState() == 2 || state.getState() == 7 || state.getState() == 5) //in-game or practice level or button tutorial
             {
-                if (Input.GetKeyDown(KeyCode.B)) //select
+                if (Input.GetKey(KeyCode.B)) //select
                 {
                     if (ClickAction.buttonClose(nextButton.transform.position))
                     {
