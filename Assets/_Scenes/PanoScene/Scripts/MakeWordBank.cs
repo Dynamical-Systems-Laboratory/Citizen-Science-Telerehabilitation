@@ -372,7 +372,11 @@ public class MakeWordBank : MonoBehaviour {
         homeCamera.SetActive(false); //precausion
         cursorCamera.SetActive(false);
 
-        state.user.logJoin(); //if no data read
+        //updating user info
+        if (state.user.hasJoined())
+        {
+            state.user.logJoin();
+        }
         state.user.addSession();
     }
     
@@ -382,7 +386,7 @@ public class MakeWordBank : MonoBehaviour {
     void Update(/*EventSystem eventSystem*/)
     {
         state.user.logTime(Time.deltaTime); //add time
-        state.user.show();
+        state.user.show(); //displaying data
 
         //Debug.Log("MainC: " + mainCamera.activeSelf + ", UIC: " + UICamera.activeSelf + ", HomeC: " + homeCamera.activeSelf +
         //    ", VidC: " + videoCamera.activeSelf + ", CursorC: " + cursorCamera.activeSelf);

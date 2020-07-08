@@ -15,8 +15,7 @@ public class UserProfile : MonoBehaviour
 
     //buttons
     public static GameObject homeButton; //main buttons
-    public static GameObject userName;
-
+   
     //info to be updated
     public static Text dateJoined;
     public static Text imagesCompleted;
@@ -27,6 +26,7 @@ public class UserProfile : MonoBehaviour
     public static Text difficulty;
 
     //other
+    public static InputField userName;
     public static Slider progressBar;
     public static Slider difficultyMeter;
 
@@ -38,6 +38,10 @@ public class UserProfile : MonoBehaviour
     public static Color unhighlighted = new Color(colorFactor, colorFactor, colorFactor, 1f);
     public static Color highlighted = new Color(1f, 1f, 1f, 1f);
 
+    private static string letters = "abcdefghijklmnopqrstuvwxyzACBDEFGHIJKLMNOPQRSTUVWXYZ";//allowed characters for username
+
+    bool isTyping = false;
+
     void Awake()
     {
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
@@ -45,9 +49,9 @@ public class UserProfile : MonoBehaviour
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
 
         homeButton = GameObject.Find("HomeButton2");
-        userName = GameObject.Find("UserName");
+        userName = GameObject.Find("UserName").GetComponent<InputField>() as InputField;
 
-        dateJoined = GameObject.Find("DateJoined").GetComponent<Text>() as Text as Text; ;
+        dateJoined = GameObject.Find("DateJoined").GetComponent<Text>() as Text;
         imagesCompleted = GameObject.Find("ImagesCompleted").GetComponent<Text>() as Text;
         tagsPlaced = GameObject.Find("TagsPlaced").GetComponent<Text>() as Text;
         timeCompleted = GameObject.Find("TimeCompleted").GetComponent<Text>() as Text;
@@ -65,8 +69,14 @@ public class UserProfile : MonoBehaviour
         {
             //Text replacement
             int[] textData = state.user.getProgressData();
-            //Debug.Log("TextData:" + textData[0] + "," + textData[1] + "," + textData[]);
-            userName.GetComponent<Text>().text = "User: " + state.user.getName();
+            if (state.user.hasName())
+            {
+                userName.text = state.user.getName();
+            }
+            else
+            {
+                userName.text = "";
+            }
             dateJoined.text = "Date Joined: " + state.user.getDateJoined();
             imagesCompleted.text = "# Images Completed: " + textData[1];
             tagsPlaced.text = "# Tags Placed: " + textData[2];
@@ -80,11 +90,35 @@ public class UserProfile : MonoBehaviour
 
             //difficulty = diffucultyMeter.value;
 
-            //Clicking Things (buttons)
-            if (Input.GetKey(KeyCode.B)) //clicking
+            if (isTyping)
             {
-                Vector3 homeDist = ((homeButton.transform.position - UserProfile.stateModifier2) - (state.getCursorPosition() * StateManager.cursorPosMod * HomeScreen.scale));
-                Vector3 sliderDist = ((difficultyMeter.transform.position - UserProfile.stateModifier2) - (state.getCursorPosition() * StateManager.cursorPosMod * HomeScreen.scale));
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    userName.DeactivateInputField();
+                    isTyping = false;
+                }
+                else if (Input.GetKeyDown(KeyCode.Delete) || Input.GetKeyDown(KeyCode.Backspace))
+                {
+                    state.user.popName();
+                }
+                else if (Input.anyKeyDown && letters.Contains(Input.inputString))
+                {
+                    if (!state.user.hasName())
+                    {
+                        state.user.setName("");
+                    }
+                    state.user.addName(Input.inputString);
+                }
+                
+                Debug.Log("Editing Username Mode...");
+            }
+            //Clicking Things (buttons)
+            else if (Input.GetKey(KeyCode.B)) //clicking
+            {
+                Vector3 homeDist = getScaledDist(homeButton.transform.position);
+                Vector3 sliderDist = getScaledDist(difficultyMeter.transform.position);
+                Vector3 nameDist = getScaledDist(userName.transform.position);
+                //Debug.Log("NameDist: " + nameDist + ", " + nameDist.magnitude);
                 if (homeDist.x <= 118 && homeDist.x >= 32 && homeDist.y <= 17.8 && homeDist.y >= -18.5)
                 {
                     state.setState(1);
@@ -98,13 +132,29 @@ public class UserProfile : MonoBehaviour
                     difficulty.text = difficultyMeter.value.ToString(); //change text
                     state.user.updateDifficulty(difficultyMeter.value); //change user settings
                 }
+                else if (nameDist.x <= 117.5 && nameDist.x >= 10.5 && nameDist.y <= 14.8 && nameDist.y >= -7.6)
+                {
+                    Debug.Log("Editing Name");
+                    userName.ActivateInputField();
+                    isTyping = true;
+                }
                 else
                 {
                     Debug.Log("~No Button To Press~");
+                    userName.DeactivateInputField();
                 }
+            }
+            else //if not clicking
+            {
+                userName.DeactivateInputField();
             }
 
         }
+    }
+
+    private Vector3 getScaledDist(Vector3 dist) //helper
+    {
+        return ((dist - UserProfile.stateModifier2) - (state.getCursorPosition() * StateManager.cursorPosMod * HomeScreen.scale));
     }
 
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 //all data stored from user
 public class UserInfo //not sure if : this() is necessary
 {// no ": MonoBehaviour" to make the class consistently run 
-    public UserInfo(string name = "Example", string datejoined = "mm/dd/yyyy")
+    public UserInfo(string name = "Example Name", string datejoined = "mm/dd/yyyy")
     {
         this.userName = name;
         this.dateJoined = datejoined;
@@ -45,9 +45,21 @@ public class UserInfo //not sure if : this() is necessary
     {
         timeLogged += toAdd;
     }
-    public void changeName(string newName)
+    public void setName(string newName)
     {
         userName = newName;
+    }
+    public void addName(string newName)
+    {
+        userName += newName;
+    }
+    public bool hasName()
+    {
+        return userName != "Example Name";
+    }
+    public void popName()
+    {
+        userName = userName.Remove(userName.Length-1);
     }
     public void addSession() { ++sessionsLogged; }
 
@@ -87,6 +99,7 @@ public class UserInfo //not sure if : this() is necessary
     //accessors
     public string getName() { return userName; }
     public string getDateJoined() { return dateJoined; }
+    public bool hasJoined() { return dateJoined != "mm/dd/yyyy"; }
     public string getTimeLogged()
     {
         string time = "";
