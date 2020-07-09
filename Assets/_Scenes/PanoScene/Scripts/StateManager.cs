@@ -139,6 +139,17 @@ public class StateManager : MonoBehaviour {
     {
         switch (userState)
         {
+            case 0:
+                MakeWordBank.mainCamera.SetActive(false);
+                MakeWordBank.homeCamera.SetActive(false);
+                MakeWordBank.profileCamera.SetActive(false);
+                MakeWordBank.UICamera.SetActive(false);
+                MakeWordBank.videoCamera.SetActive(false);
+                MakeWordBank.cursorCamera.SetActive(false);
+                user.updateSettings();
+                user.addDuration();
+                //TODO: write data
+                break;
             case 1:
                 //Debug.Log("State: Home");
                 MakeWordBank.mainCamera.SetActive(false);
@@ -316,6 +327,7 @@ public class StateManager : MonoBehaviour {
 
     private void Update()
     {
+        Debug.Log(System.DateTime.Now.TimeOfDay.ToString()); //test
         switch (userState)
         {
             case 0:

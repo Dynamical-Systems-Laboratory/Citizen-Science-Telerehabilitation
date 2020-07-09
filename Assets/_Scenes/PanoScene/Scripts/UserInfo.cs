@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,7 +28,7 @@ public class UserInfo //not sure if : this() is necessary
     }
 
     //data
-    public void logData(List<GameObject> addTags, int addImage)
+    public void logTagData(List<GameObject> addTags, int addImage)
     {
         foreach (GameObject newTag in addTags)
         {
@@ -61,7 +62,15 @@ public class UserInfo //not sure if : this() is necessary
     {
         userName = userName.Remove(userName.Length-1);
     }
-    public void addSession() { ++sessionsLogged; }
+    public void addSession()
+    {
+        sessionsLogged.Add(System.DateTime.Now.TimeOfDay.ToString());
+        startTime = timeLogged;
+    }
+    public void addDuration()
+    {
+        sessionDuration.Add(timeLogged - startTime);
+    }
 
     //progression
     public void setLevelProgress(bool started, bool finished = false)
@@ -111,7 +120,7 @@ public class UserInfo //not sure if : this() is necessary
     public int getLastImage() { return lastImage; }
     public int[] getProgressData()
     {
-        return new int[] { lastImage, imagesCompleted.Count, tags.Count, sessionsLogged };
+        return new int[] { lastImage, imagesCompleted.Count, tags.Count, sessionsLogged.Count };
     }
     public float[] getSettingData()
     {
@@ -147,13 +156,12 @@ public class UserInfo //not sure if : this() is necessary
         //Debug.Log("*Settings: " + getSettingData().ToString() + ", PractState: " + getPracticeLevelState().ToString());
     }
 
-    //data usage
+    //data usage (reading/writing)
     public IEnumerable<string> writeData()
     {
         yield return userName;
         yield return dateJoined;
         yield return timeLogged.ToString();
-        yield return sessionsLogged.ToString();
         yield return boolToString(startedPracticeLevel);
         yield return boolToString(finishedPracticeLevel);
         yield return difficulty.ToString();
@@ -171,7 +179,56 @@ public class UserInfo //not sure if : this() is necessary
             yield return tag.location.z.ToString();
             yield return tag.image.ToString();
         }
+        yield return "session";
+        for(int i = 0; i < sessionsLogged.Count; i++)
+        {
+            yield return sessionsLogged[i];
+            yield return sessionDuration[i].ToString();
+        }
         yield return "finish"; //end marker
+    }
+    public void readData(List<string> data)
+    {
+        if (data.Count < 10) //if no data then assume default vals
+        {
+            return;
+        }
+        userName = data[0];
+        dateJoined = data[1];
+        timeLogged = float.Parse(data[2]);
+        startedPracticeLevel = stringToBool(data[3]);
+        finishedPracticeLevel = stringToBool(data[4]);
+        difficulty = int.Parse(data[5]);
+        lastImage = int.Parse(data[6]);
+
+        int counter = 7;
+        imagesCompleted.Clear(); //saftey
+        while (data[counter] != "tag")
+        { //adding images
+            imagesCompleted.Add(int.Parse(data[counter]));
+            ++counter;
+        }
+        ++counter; //after "tag"
+
+        tags.Clear(); //saftey
+        while (data[counter] != "session")
+        { //adding tags
+            TagInfo tag = new TagInfo( data[counter],
+                new Vector3(float.Parse(data[counter + 1]), float.Parse(data[counter + 2]), float.Parse(data[counter + 3])),
+                int.Parse(data[counter + 4]));
+            tags.Add(tag);
+            counter += 5;
+        }
+        ++counter; //after "session"
+
+        sessionsLogged.Clear();
+        sessionDuration.Clear();
+        while (data[counter] != "finish")
+        { //adding sessions
+            sessionsLogged.Add(data[counter]);
+            sessionDuration.Add(float.Parse(data[counter + 1]));
+            counter += 2;
+        }
     }
 
     private string boolToString(bool b)
@@ -185,12 +242,26 @@ public class UserInfo //not sure if : this() is necessary
             return "0";
         }
     }
+    private bool stringToBool(string s)
+    {
+        if (s == "1")
+        {
+            return true;
+        }
+        else if (s == "0")
+        {
+            return false;
+        }
+        throw new Exception("String To Bool Input Error");
+    }
 
     //(private) variables
     private string userName;
     private string dateJoined;
-    private float timeLogged = 0f;
-    private int sessionsLogged = 0;
+    private float timeLogged = 0f; //time spent in interface
+    private List<string> sessionsLogged; //dates of sessions joined
+    private List<float> sessionDuration; //duration of each session
+    private float startTime = 0f; //helper ^
 
     private bool startedPracticeLevel = false; //tracks basic progress
     private bool finishedPracticeLevel = false;

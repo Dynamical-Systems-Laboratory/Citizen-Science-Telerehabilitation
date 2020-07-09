@@ -373,11 +373,13 @@ public class MakeWordBank : MonoBehaviour {
         cursorCamera.SetActive(false);
 
         //updating user info
-        if (state.user.hasJoined())
+        //TODO: read data
+        if (!state.user.hasJoined())
         {
             state.user.logJoin();
         }
         state.user.addSession();
+        //TODO: set settings to user settings;
     }
     
     public GameObject toClick = null; // obj for clicking
@@ -485,7 +487,7 @@ public class MakeWordBank : MonoBehaviour {
                             {
                                 state.user.setLevelProgress(true, true); //set practice level trackers
                             }
-                            state.user.logData(state.tagsPlaced, imageIndex); //store image data
+                            state.user.logTagData(state.tagsPlaced, imageIndex); //store image data
                             eventListener.OnPointerClick(nextButton); //click next
                             state.user.setNewImage(imageIndex); //save new image
                         }
