@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
+
+using System.IO;
+using System.Linq;
+
 /*
  StateManager is an object used for accessing and setting the state of the program 
  across the various scripts that manipulate the state.
@@ -21,6 +25,7 @@ public class StateManager : MonoBehaviour {
      */
 
     public UserInfo user = new UserInfo(); //main user to store info
+    private static ReadingWriting editData;
 
     private GameObject selected = null; // The current tag being selected
     private GameObject falconCursor; // The cursor being manipulated by the falcon
@@ -267,6 +272,16 @@ public class StateManager : MonoBehaviour {
 
     void Awake()
     {
+        //string userPath = dataPath + "User-" + userID + '/';
+        //Directory.CreateDirectory(userPath);
+        //string path = userPath + ".csv";
+        //new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Write).Close(); // Create the file, set to FileMode.Create so it overwrites each time
+        //StreamWriter streamWriter = new StreamWriter(path, true, Encoding.ASCII);         // Open the file
+        ////string path = "data/userData.txt";
+        //new FileStream();
+        //file.createText(path);
+        //editData.readData("", user);
+
         falconButtons = new bool[4] { false, false, false, false };
         speeds = new List<Tuple<float, float, float, float>>();
         mainCamera = GameObject.Find("Main Camera");

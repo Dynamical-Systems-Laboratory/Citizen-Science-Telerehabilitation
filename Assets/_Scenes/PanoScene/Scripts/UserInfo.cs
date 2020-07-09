@@ -147,18 +147,57 @@ public class UserInfo //not sure if : this() is necessary
         //Debug.Log("*Settings: " + getSettingData().ToString() + ", PractState: " + getPracticeLevelState().ToString());
     }
 
+    //data usage
+    public IEnumerable<string> writeData()
+    {
+        yield return userName;
+        yield return dateJoined;
+        yield return timeLogged.ToString();
+        yield return sessionsLogged.ToString();
+        yield return boolToString(startedPracticeLevel);
+        yield return boolToString(finishedPracticeLevel);
+        yield return difficulty.ToString();
+        yield return lastImage.ToString();
+        foreach (int image in imagesCompleted)
+        {
+            yield return image.ToString();
+        }
+        yield return "tag"; //marker to collect tag info
+        foreach (TagInfo tag in tags)
+        {
+            yield return tag.name;
+            yield return tag.location.x.ToString();
+            yield return tag.location.y.ToString();
+            yield return tag.location.z.ToString();
+            yield return tag.image.ToString();
+        }
+        yield return "finish"; //end marker
+    }
+
+    private string boolToString(bool b)
+    {
+        if (b)
+        {
+            return "1";
+        }
+        else
+        {
+            return "0";
+        }
+    }
+
     //(private) variables
     private string userName;
     private string dateJoined;
     private float timeLogged = 0f;
-
-    private List<int> imagesCompleted = new List<int>(); //list of images by index - last index'd image is most recent/present
-    private int lastImage = 0; //current image the user is editing
-    private List<TagInfo> tags = new List<TagInfo>();
     private int sessionsLogged = 0;
 
     private bool startedPracticeLevel = false; //tracks basic progress
     private bool finishedPracticeLevel = false;
+
+    private List<int> imagesCompleted = new List<int>(); //list of images by index - last index'd image is most recent/present
+    private int lastImage = 0; //current image the user is editing
+    private List<TagInfo> tags = new List<TagInfo>(); //in case the user wants to access their past tagged images we save all the tag infos
 
     private float cameraSpeed; //personalized settings 
     private float cursorSpeed;
