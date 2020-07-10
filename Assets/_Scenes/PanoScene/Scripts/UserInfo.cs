@@ -108,7 +108,7 @@ public class UserInfo //not sure if : this() is necessary
     public void updateDifficulty(float newDiff)
     {
         difficulty = newDiff;
-        newDiff = (7-newDiff) / 8;
+        newDiff = (7-newDiff) / 9;
         StateManager.camSpeed = 2.3f * (1 + newDiff);
         StateManager.cursorSpeed = 3.75f * (1 + newDiff);
         updateSettings();
@@ -289,7 +289,7 @@ public class UserInfo //not sure if : this() is necessary
     private float startTime = 0f; //helper ^
 
     private bool startedPracticeLevel = false; //tracks basic progress
-    public bool finishedPracticeLevel = false;
+    private bool finishedPracticeLevel = false;
 
     private List<int> imagesCompleted = new List<int>(); //list of images by index - last index'd image is most recent/present
     private int lastImage = 0; //current image the user is editing
