@@ -25,7 +25,6 @@ public class StateManager : MonoBehaviour {
      */
 
     public UserInfo user = new UserInfo(); //main user to store info
-    private static ReadingWriting editData;
 
     private GameObject selected = null; // The current tag being selected
     private GameObject falconCursor; // The cursor being manipulated by the falcon
@@ -106,8 +105,8 @@ public class StateManager : MonoBehaviour {
 
     public float xOffset = 25.9f; //factor that sets tags to dissapear after being a certain dist away from camera's center
 
-    public static float camSpeed = 2f; //factor that speeds up the camera's movement
-    public static float cursorSpeed = 3.5f; //factor that speeds up cursor's movement
+    public static float camSpeed = 2.3f; //factor that speeds up the camera's movement
+    public static float cursorSpeed = 3.75f; //factor that speeds up cursor's movement
     public static float cursorSize = -0.418f; //factor that makes cursor bigger or smaller
 
     public List<GameObject> tagsPlaced;
@@ -327,7 +326,6 @@ public class StateManager : MonoBehaviour {
 
     private void Update()
     {
-        Debug.Log(System.DateTime.Now.TimeOfDay.ToString()); //test
         switch (userState)
         {
             case 0:

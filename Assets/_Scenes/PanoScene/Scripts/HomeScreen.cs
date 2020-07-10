@@ -35,8 +35,6 @@ public class HomeScreen : MonoBehaviour
     public static Color unhighlighted = new Color(colorFactor, colorFactor, colorFactor, 1f);
     public static Color highlighted = new Color(1f, 1f, 1f, 1f);
 
-    public static ReadingWriting editData;
-
     void Awake()
     {
         state = GameObject.Find("Canvas").GetComponent<StateManager>();

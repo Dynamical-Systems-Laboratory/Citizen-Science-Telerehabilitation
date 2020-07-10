@@ -68,7 +68,7 @@ public class UserProfile : MonoBehaviour
         if (state.getState() == 3)
         {
             //Text replacement
-            int[] textData = state.user.getProgressData();
+            int[] textData = state.user.getCompletionData();
             if (state.user.hasName())
             {
                 userName.text = state.user.getName();
@@ -83,7 +83,14 @@ public class UserProfile : MonoBehaviour
             sessionsLogged.text = "Sessions Logged: " + textData[3];
             timeCompleted.text = "Time Logged: " + state.user.getTimeLogged();
             progress.text = state.user.getProgress() + "%";
-            progressBar.value = state.user.getProgress();
+            if (state.user.getProgress() > 100)
+            {
+                progressBar.value = 100;
+            }
+            else
+            {
+                progressBar.value = state.user.getProgress();
+            }
             //TODO: figure out horizontal transformation that coorelateds to scaler (-11.2 = 50%?)
             difficultyMeter.value = state.user.getSettingData()[0];
             difficulty.text = difficultyMeter.value.ToString();

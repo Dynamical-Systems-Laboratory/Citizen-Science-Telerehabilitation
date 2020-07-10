@@ -11,7 +11,7 @@ public class UserInfo //not sure if : this() is necessary
         this.userName = name;
         this.dateJoined = datejoined;
 
-        updateSettings();
+        updateDifficulty(difficulty);
     }
 
     private struct TagInfo //all tag related info needed to reload and track progress
@@ -38,6 +38,7 @@ public class UserInfo //not sure if : this() is necessary
         imagesCompleted.Add(addImage);
     }
     public void setNewImage(int newImage) { lastImage = newImage; }
+
     public void logJoin()
     {
         dateJoined = System.DateTime.Now.ToString("MM/dd/yyyy");
@@ -46,6 +47,16 @@ public class UserInfo //not sure if : this() is necessary
     {
         timeLogged += toAdd;
     }
+    public void addSession()
+    { //can be only time but atm, is date and time (tracking frequency of patient doing excercises)
+        sessionsLogged.Add(System.DateTime.Now.ToString());
+        startTime = timeLogged;
+    }
+    public void addDuration()
+    {
+        sessionDuration.Add(timeLogged - startTime);
+    }
+
     public void setName(string newName)
     {
         userName = newName;
@@ -62,15 +73,6 @@ public class UserInfo //not sure if : this() is necessary
     {
         userName = userName.Remove(userName.Length-1);
     }
-    public void addSession()
-    {
-        sessionsLogged.Add(System.DateTime.Now.TimeOfDay.ToString());
-        startTime = timeLogged;
-    }
-    public void addDuration()
-    {
-        sessionDuration.Add(timeLogged - startTime);
-    }
 
     //progression
     public void setLevelProgress(bool started, bool finished = false)
@@ -78,19 +80,22 @@ public class UserInfo //not sure if : this() is necessary
         startedPracticeLevel = started;
         finishedPracticeLevel = finished;
     }
-    public float getProgress()//outputs a %/100 of progress based on user info 
+    public int getProgress()//outputs a %/100 of progress based on user info 
     {
         //TODO: add joycon tracking
-        float progress = (imagesCompleted.Count / MakeWordBank.imageMaterials.Length)*85f;
+        float progress = ((imagesCompleted.Count*65) / MakeWordBank.imageMaterials.Length); //70% relies on image completion
+        //assuming 4ish tags are ideally placed per image
+        progress += ((tags.Count*25f) / (MakeWordBank.imageMaterials.Length * ((difficulty+4)/2))); //25% relies on number of tags placed
+        //10% relies on doing tutorials and practice lvl
         if (startedPracticeLevel) //ppt + tutorial
         {
-            progress += 10;
+            progress += 7;
         }
         if (finishedPracticeLevel) // practice level
         {
-            progress += 5;
+            progress += 3;
         }
-        return progress;
+        return (int)progress;
     }
 
     //user settings
@@ -103,6 +108,10 @@ public class UserInfo //not sure if : this() is necessary
     public void updateDifficulty(float newDiff)
     {
         difficulty = newDiff;
+        newDiff = (7-newDiff) / 8;
+        StateManager.camSpeed = 2.3f * (1 + newDiff);
+        StateManager.cursorSpeed = 3.75f * (1 + newDiff);
+        updateSettings();
     }
 
     //accessors
@@ -117,8 +126,24 @@ public class UserInfo //not sure if : this() is necessary
         time += Mathf.Floor(timeLogged % 60) + "s";
         return time;
     }
+    public int getAvgSessionDuration()
+    {
+        if (sessionDuration.Count == 0)
+        {
+            return 0;
+        }
+
+        float avg = 0;
+        foreach(float sess in sessionDuration)
+        {
+            avg += sess;
+        }
+        avg /= sessionDuration.Count;
+        return (int)avg;
+    }
     public int getLastImage() { return lastImage; }
-    public int[] getProgressData()
+
+    public int[] getCompletionData()
     {
         return new int[] { lastImage, imagesCompleted.Count, tags.Count, sessionsLogged.Count };
     }
@@ -151,9 +176,10 @@ public class UserInfo //not sure if : this() is necessary
     public void show()
     {
         Debug.Log("*User: " + userName + ", Time: " + getTimeLogged() + ", Date Joined: " + dateJoined);
-        Debug.Log("*Im: " + lastImage + ", Ims: " + imagesCompleted.Count + ", Tags: " + tags.Count + ", Sessions: " + sessionsLogged +
-            ", SPract: " + startedPracticeLevel + ", Pract: " + finishedPracticeLevel); //progress data
-        //Debug.Log("*Settings: " + getSettingData().ToString() + ", PractState: " + getPracticeLevelState().ToString());
+        Debug.Log("*LIm: " + lastImage + ", Ims: " + imagesCompleted.Count + ", Tags: " + tags.Count + ", Sessions: " + sessionsLogged.Count +
+            ", SPract: " + startedPracticeLevel + ", FPract: " + finishedPracticeLevel); //progress data
+        Debug.Log("*Settings: " + getSettingData()[0] + " " + getSettingData()[1] + " " + getSettingData()[2] + " " + getSettingData()[3] +
+            ", PractState: " + boolToString(getPracticeLevelState()[0]) + " " + boolToString(getPracticeLevelState()[1]) + ", AvgSess: " + getAvgSessionDuration());
     }
 
     //data usage (reading/writing)
@@ -213,9 +239,8 @@ public class UserInfo //not sure if : this() is necessary
         tags.Clear(); //saftey
         while (data[counter] != "session")
         { //adding tags
-            TagInfo tag = new TagInfo( data[counter],
-                new Vector3(float.Parse(data[counter + 1]), float.Parse(data[counter + 2]), float.Parse(data[counter + 3])),
-                int.Parse(data[counter + 4]));
+            TagInfo tag = new TagInfo( data[counter], new Vector3(float.Parse(data[counter + 1]),
+                float.Parse(data[counter + 2]), float.Parse(data[counter + 3])), int.Parse(data[counter + 4]));
             tags.Add(tag);
             counter += 5;
         }
@@ -259,12 +284,12 @@ public class UserInfo //not sure if : this() is necessary
     private string userName;
     private string dateJoined;
     private float timeLogged = 0f; //time spent in interface
-    private List<string> sessionsLogged; //dates of sessions joined
-    private List<float> sessionDuration; //duration of each session
+    private List<string> sessionsLogged = new List<string>(); //dates of sessions joined
+    private List<float> sessionDuration = new List<float>(); //duration of each session
     private float startTime = 0f; //helper ^
 
     private bool startedPracticeLevel = false; //tracks basic progress
-    private bool finishedPracticeLevel = false;
+    public bool finishedPracticeLevel = false;
 
     private List<int> imagesCompleted = new List<int>(); //list of images by index - last index'd image is most recent/present
     private int lastImage = 0; //current image the user is editing

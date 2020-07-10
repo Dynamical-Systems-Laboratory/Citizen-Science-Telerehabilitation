@@ -387,6 +387,7 @@ public class MakeWordBank : MonoBehaviour {
     // Update is called once per frame
     void Update(/*EventSystem eventSystem*/)
     {
+        Debug.Log("Time: " + System.DateTime.Now.ToString());
         state.user.logTime(Time.deltaTime); //add time
         state.user.show(); //displaying data
 
@@ -466,9 +467,10 @@ public class MakeWordBank : MonoBehaviour {
             }
             //CLICKING
             //V for button press
+            //Debug.Log("Practice Tags: " + practiceMoveOn + ", prog: " + state.user.getProgress());
             if (state.getState() == 2 || state.getState() == 7 || state.getState() == 5) //in-game or practice level or button tutorial
             {
-                if (Input.GetKey(KeyCode.B)) //select
+                if (Input.GetKeyDown(KeyCode.B)) //select
                 {
                     if (ClickAction.buttonClose(nextButton.transform.position))
                     {
@@ -485,6 +487,7 @@ public class MakeWordBank : MonoBehaviour {
                         {
                             if (state.getState() == 7)
                             {
+                                state.setState(2);
                                 state.user.setLevelProgress(true, true); //set practice level trackers
                             }
                             state.user.logTagData(state.tagsPlaced, imageIndex); //store image data
