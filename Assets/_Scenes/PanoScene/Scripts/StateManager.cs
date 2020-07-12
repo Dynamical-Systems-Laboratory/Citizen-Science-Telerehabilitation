@@ -112,6 +112,10 @@ public class StateManager : MonoBehaviour {
     public List<GameObject> tagsPlaced;
     //public List<InvisTag> invisTags;
 
+    public bool newUser = true; //used to bypass reading data if you want to create another save file and or find out whether or not data was read
+    private string path = Application.dataPath + "/UserData/user_data.csv";
+    public static string dataRead = "";
+
     private int userState = 6;
     /* 0 = Quit
      * 1 = Home
@@ -147,7 +151,18 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.cursorCamera.SetActive(false);
                 user.updateSettings();
                 user.addDuration();
-                //TODO: write data
+
+                StreamWriter writer = System.IO.File.CreateText(path);
+                foreach (string data in user.writeData())
+                {
+                    writer.Write(data + ","); //comma separated value file
+
+                }
+                writer.Flush();
+                writer.Close();
+
+                UnityEditor.EditorApplication.isPlaying = false;
+                Application.Quit();
                 break;
             case 1:
                 //Debug.Log("State: Home");
@@ -282,27 +297,23 @@ public class StateManager : MonoBehaviour {
 
     void Awake()
     {
-        //string userPath = dataPath + "User-" + userID + '/';
-        //Directory.CreateDirectory(userPath);
-        //string path = userPath + ".csv";
-        //new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.Write).Close(); // Create the file, set to FileMode.Create so it overwrites each time
-        //StreamWriter streamWriter = new StreamWriter(path, true, Encoding.ASCII);         // Open the file
-        ////string path = "data/userData.txt";
-        //new FileStream();
-        //file.createText(path);
-        //editData.readData("", user);
+        //for reading
+        StreamReader reader = new StreamReader(path);
+        dataRead = reader.ReadLine();
+        string[] inputData = reader.ReadLine().Split(',');
+        newUser = !user.readData(inputData);
 
         falconButtons = new bool[4] { false, false, false, false };
         speeds = new List<Tuple<float, float, float, float>>();
         mainCamera = GameObject.Find("Main Camera");
-        if (mainCamera == null)
-        {
-            mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-        }
-        if (mainCamera == null)
-        {
-            mainCamera = MakeWordBank.mainCamera;
-        }
+        //if (mainCamera == null)
+        //{
+        //    mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        //}
+        //if (mainCamera == null)
+        //{
+        //    mainCamera = MakeWordBank.mainCamera;
+        //}
 
         if (user.getPracticeLevelState()[0])
         {
@@ -326,6 +337,7 @@ public class StateManager : MonoBehaviour {
 
     private void Update()
     {
+        Debug.Log("isNewUser: " + newUser.ToString()); //+ ", dataRead: " + dataRead);
         switch (userState)
         {
             case 0:

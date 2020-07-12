@@ -387,7 +387,7 @@ public class MakeWordBank : MonoBehaviour {
     // Update is called once per frame
     void Update(/*EventSystem eventSystem*/)
     {
-        Debug.Log("Time: " + System.DateTime.Now.ToString());
+        //Debug.Log("Time: " + System.DateTime.Now.ToString());
         state.user.logTime(Time.deltaTime); //add time
         state.user.show(); //displaying data
 

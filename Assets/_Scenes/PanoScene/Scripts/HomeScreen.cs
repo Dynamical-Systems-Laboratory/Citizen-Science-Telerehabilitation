@@ -140,7 +140,7 @@ public class HomeScreen : MonoBehaviour
                     else if (obj.name == quitButton.name)
                     {
                         state.setState(0);
-                        QuitGameScript.TaskOnClick();
+                        //QuitGameScript.TaskOnClick();
                     }
                     else
                     {

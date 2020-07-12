@@ -6,7 +6,7 @@ using UnityEngine;
 //all data stored from user
 public class UserInfo //not sure if : this() is necessary
 {// no ": MonoBehaviour" to make the class consistently run 
-    public UserInfo(string name = "Example Name", string datejoined = "mm/dd/yyyy")
+    public UserInfo(string name = "ExampleName", string datejoined = "mm/dd/yyyy")
     {
         this.userName = name;
         this.dateJoined = datejoined;
@@ -67,7 +67,7 @@ public class UserInfo //not sure if : this() is necessary
     }
     public bool hasName()
     {
-        return userName != "Example Name";
+        return userName != "ExampleName";
     }
     public void popName()
     {
@@ -213,7 +213,7 @@ public class UserInfo //not sure if : this() is necessary
         }
         yield return "finish"; //end marker
     }
-    public void readData(List<string> data)
+    public void readData(List<string> data) //list version
     {
         if (data.Count < 10) //if no data then assume default vals
         {
@@ -254,6 +254,49 @@ public class UserInfo //not sure if : this() is necessary
             sessionDuration.Add(float.Parse(data[counter + 1]));
             counter += 2;
         }
+    }
+    public bool readData(string[] data) //array version
+    {
+        if (data.Length < 10) //if no data then assume default vals
+        {
+            return false;
+        }
+        userName = data[0];
+        dateJoined = data[1];
+        timeLogged = float.Parse(data[2]);
+        startedPracticeLevel = stringToBool(data[3]);
+        finishedPracticeLevel = stringToBool(data[4]);
+        difficulty = int.Parse(data[5]);
+        lastImage = int.Parse(data[6]);
+
+        int counter = 7;
+        imagesCompleted.Clear(); //saftey
+        while (data[counter] != "tag")
+        { //adding images
+            imagesCompleted.Add(int.Parse(data[counter]));
+            ++counter;
+        }
+        ++counter; //after "tag"
+
+        tags.Clear(); //saftey
+        while (data[counter] != "session")
+        { //adding tags
+            TagInfo tag = new TagInfo(data[counter], new Vector3(float.Parse(data[counter + 1]),
+                float.Parse(data[counter + 2]), float.Parse(data[counter + 3])), int.Parse(data[counter + 4]));
+            tags.Add(tag);
+            counter += 5;
+        }
+        ++counter; //after "session"
+
+        sessionsLogged.Clear();
+        sessionDuration.Clear();
+        while (data[counter] != "finish")
+        { //adding sessions
+            sessionsLogged.Add(data[counter]);
+            sessionDuration.Add(float.Parse(data[counter + 1]));
+            counter += 2;
+        }
+        return true;
     }
 
     private string boolToString(bool b)
