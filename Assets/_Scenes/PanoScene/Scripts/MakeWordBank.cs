@@ -134,7 +134,7 @@ public class MakeWordBank : MonoBehaviour {
     }; //15
     public static int tutorialWordsIndex = 0;
     public static int sequenceIndex = 0; //Indicates which element of predetermined sequence we're on, should reset to 0 every turnover
-    static int imageIndex = 0; //Index for which 360 Material to use as well as which predetermined random int sequence to use
+    public static int imageIndex = 0; //Index for which 360 Material to use as well as which predetermined random int sequence to use
 
     static int numTagsRemaining = 3;
 
@@ -246,6 +246,24 @@ public class MakeWordBank : MonoBehaviour {
     //GameObjects' names can be changed though with no problem
     public static Tag[] tags;
     public static int practiceMoveOn;
+
+    //TODO: randomize indexes and tags
+    //private static System.Random rng = new System.Random();
+
+    //public static void Shuffle<T>(this IList<T> list)
+    //{
+    //    int n = list.Count;
+    //    while (n > 1)
+    //    {
+    //        n--;
+    //        int k = rng.Next(n + 1);
+    //        T value = list[k];
+    //        list[k] = list[n];
+    //        list[n] = value;
+    //    }
+    //}
+    //Shuffle<string>(tutorialWords);
+    //Shuffle(imageMaterials);
 
     void Awake() {
         DataCollector.MakeFolder();
@@ -547,7 +565,13 @@ public class MakeWordBank : MonoBehaviour {
             
         }
 
-        if(state.getState() == 5) //edge cases with old booleans
+        if (state.reloading) //reloading tags
+        {
+            state.loadTags(state.user.getLastImage(), tagGameObjects);
+            state.reloading = false;
+        }
+
+        if (state.getState() == 5) //edge cases with old booleans
         {
             inTutorial = true;
         }
@@ -579,7 +603,7 @@ public class MakeWordBank : MonoBehaviour {
         //Start of Runtime Stuff
         if (state.getState() == 2 || state.getState() == 7 || state.getState() == 5)
         {
-            Debug.Log("Running Buttons");
+            //Debug.Log("Running Buttons");
             if (!initialized)
             {
                 mainCamera.SetActive(true);
@@ -1387,7 +1411,6 @@ public class MakeWordBank : MonoBehaviour {
         }
     }
 
-
     public static bool moveOn() //basically the catch-all method for continuing
     {
         if (Input.GetKeyDown(KeyCode.V))
@@ -1469,9 +1492,9 @@ public class MakeWordBank : MonoBehaviour {
         toReplace.name = newName; //replace name of tagtag
     }
 
-    public static bool nextImage()
+    public static bool nextImage(int img)
     { //Change to the next image, reset tags, clear bin
-        if (imageIndex >= imageMaterials.Length - 1)
+        if (img >= imageMaterials.Length - 1)
         { //On last image, then quit:
             //QuitGameScript.quitGame();
             //state.setState(1);
@@ -1519,12 +1542,11 @@ public class MakeWordBank : MonoBehaviour {
                 }
                 ClickAction.trashedTags.Clear();
 
-                imageIndex++;
-                tagSphere.GetComponent<Renderer>().material = imageMaterials[imageIndex]; //next image
+                tagSphere.GetComponent<Renderer>().material = imageMaterials[img]; //next image
                 sequenceIndex = 0;
                 for (int tagsIndex = 0; tagsIndex < tags.Length; tagsIndex++)
                 {
-                    tags[tagsIndex].setText(wordBank[SEQUENCE[imageIndex, sequenceIndex]]);
+                    tags[tagsIndex].setText(wordBank[SEQUENCE[img, sequenceIndex]]);
                     tags[tagsIndex].text.color = Color.black;
 
                     sequenceIndex++;
@@ -1616,7 +1638,8 @@ public class MakeWordBank : MonoBehaviour {
                 }
                 else
                 {
-                    nextImage();
+                    imageIndex++;
+                    nextImage(imageIndex);
                     //Debug.Log("Problem with next image call (replace tag)"); //check later**
                 }
             }

@@ -112,9 +112,13 @@ public class StateManager : MonoBehaviour {
     public List<GameObject> tagsPlaced;
     //public List<InvisTag> invisTags;
 
-    public bool newUser = true; //used to bypass reading data if you want to create another save file and or find out whether or not data was read
-    private string path = Application.dataPath + "/UserData/user_data.csv";
-    public static string dataRead = "";
+    public static bool newUser = true; // whether or not data was read
+    public static bool makeNewUser = false; // used to bypass reading data if you want to create another save file
+    private string path;
+    private static string dataName = "user_data";
+    public static string[] dataRead = new string[] { "uninitialized", "no data" };
+
+    public bool reloading = false; //covers edge case with reloading tags
 
     private int userState = 6;
     /* 0 = Quit
@@ -152,10 +156,20 @@ public class StateManager : MonoBehaviour {
                 user.updateSettings();
                 user.addDuration();
 
-                StreamWriter writer = System.IO.File.CreateText(path);
+                StreamWriter writer;
+                if (newUser) //if new user or no data detected
+                {
+                    writer = System.IO.File.CreateText(path); //create new user_data file
+                    //writer.WriteLine("UserName,DateJoined,TimeLogged,StartedPL,FinishedPL,Difficulty,LastImage,ImageData,,TagData,,SessionData,,finish");
+                }
+                else
+                {
+                    writer = new StreamWriter(path); //TODO: convert to try catch
+                }
+
                 foreach (string data in user.writeData())
                 {
-                    writer.Write(data + ","); //comma separated value file
+                    writer.Write(data + ","); //comma separated value file = csv
 
                 }
                 writer.Flush();
@@ -297,11 +311,14 @@ public class StateManager : MonoBehaviour {
 
     void Awake()
     {
+        path = Application.dataPath + "/UserData/" + dataName + ".csv";
         //for reading
-        StreamReader reader = new StreamReader(path);
-        dataRead = reader.ReadLine();
-        string[] inputData = reader.ReadLine().Split(',');
-        newUser = !user.readData(inputData);
+        if (System.IO.File.Exists(path) && !makeNewUser)
+        {
+            StreamReader reader = new StreamReader(path);
+            dataRead = reader.ReadLine().Split(',');
+            newUser = !user.readData(dataRead);
+        }
 
         falconButtons = new bool[4] { false, false, false, false };
         speeds = new List<Tuple<float, float, float, float>>();
@@ -314,15 +331,24 @@ public class StateManager : MonoBehaviour {
         //{
         //    mainCamera = MakeWordBank.mainCamera;
         //}
-
         if (user.getPracticeLevelState()[0])
-        {
-            //setState(1); //start at home screen instead of game
-            userState = 1;
+        {//necessary for camera stuff
+            //userState = 1;
+            setState(1);
+            //TODO: disable canvases (welcome screen, help text, and simple tutorial stuff)
+            //MakeWordBank.welcomeScreen.SetActive(false);
+            //MakeWordBank.helpTextPanel.SetActive(false);
+            GameObject.Find("SimpleTutorialCanvas").SetActive(false);
+            MakeWordBank.stepOfTutorial = 24;
+            MakeWordBank.welcomeScreen.SetActive(false);
+            //MakeWordBank.helpTextContainer.SetActive(false);
+            MakeWordBank.focusor.SetActive(false);
+            //MakeWordBank.practiceLevelText.SetActive(false);
+
+            //reload tags
         }
         else
         {
-            //setState(6);
             userState = 6;
         }
     }
@@ -337,7 +363,7 @@ public class StateManager : MonoBehaviour {
 
     private void Update()
     {
-        Debug.Log("isNewUser: " + newUser.ToString()); //+ ", dataRead: " + dataRead);
+        Debug.Log("isNewUser: " + newUser.ToString() + ", data: " + dataRead[0]);
         switch (userState)
         {
             case 0:
@@ -806,6 +832,18 @@ public class StateManager : MonoBehaviour {
         //Debug.Log("Update() exit - StateManager");
     }
 
+    public void loadTags(int images, List<GameObject> tagExample) //loadTags(user.getLastImage())
+    {
+        foreach (GameObject tag in user.getTags(images))
+        {
+            GameObject newTag = Instantiate(tagExample[0], ClickAction.canvas.transform);
+            newTag.GetComponentInChildren<Text>().color = Color.blue;
+            newTag.name = tag.name;
+            newTag.tag = tag.name;
+            newTag.transform.position = tag.transform.position;
+            tagsPlaced.Add(newTag);
+        }
+    }
 }
 
 //struct InvisTag

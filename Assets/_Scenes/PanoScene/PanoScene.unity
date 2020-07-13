@@ -29447,7 +29447,6 @@ MonoBehaviour:
   cameraMoving: 0
   xOffset: 25.9
   tagsPlaced: []
-  newUser: 0
 --- !u!114 &1766072909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31212,7 +31211,6 @@ MonoBehaviour:
   cameraMoving: 0
   xOffset: 25.9
   tagsPlaced: []
-  newUser: 0
 --- !u!114 &1878484556
 MonoBehaviour:
   m_ObjectHideFlags: 0

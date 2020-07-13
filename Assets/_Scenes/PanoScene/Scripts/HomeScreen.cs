@@ -105,9 +105,12 @@ public class HomeScreen : MonoBehaviour
                         }
                         else
                         {
+                            MakeWordBank.practiceLevelText.SetActive(true);
                             state.setState(7);
                         }
                         //TODO: reload last level & tags (read data stuff here)
+                        MakeWordBank.nextImage(state.user.getLastImage());
+                        state.reloading = true;
                     }
                     else if (obj.name == profileButton.name)
                     {
@@ -128,7 +131,6 @@ public class HomeScreen : MonoBehaviour
                         {
                             MakeWordBank.tags[i].setText(MakeWordBank.tutorialWords[MakeWordBank.tutorialWordsIndex]);
                             MakeWordBank.tutorialWordsIndex = (MakeWordBank.tutorialWordsIndex + 1) % 14;
-
                         }
 
                         state.setState(5);

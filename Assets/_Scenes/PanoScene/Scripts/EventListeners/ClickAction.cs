@@ -161,7 +161,8 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
         }
         else if (objectClicked.tag == "NextButton" && !MakeWordBank.inTutorial && !MakeWordBank.inPracticeLevel) // Next button clicked
         {
-            MakeWordBank.nextImage();
+			++MakeWordBank.imageIndex;
+			MakeWordBank.nextImage(MakeWordBank.imageIndex);
         }
         else if (objectClicked.tag == "Bin") // The bin was pressed, so we move the tag to the bin
         {
@@ -373,7 +374,8 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		}
 		else if (objectClicked.tag == "NextButton") // Next button clicked
 		{
-			MakeWordBank.nextImage();
+			++MakeWordBank.imageIndex;
+			MakeWordBank.nextImage(MakeWordBank.imageIndex);
 			//tagSphere.GetComponent<Renderer>().material = imageMaterials[imageIndex]
 		}
 

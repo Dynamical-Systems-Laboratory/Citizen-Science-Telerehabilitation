@@ -63,7 +63,7 @@ public class PowerpointScript : MonoBehaviour {
 					background.SetActive(false);
 				}
                 //gameObject.SetActive(false);
-                gameObject.transform.position = new Vector3(0f,0f, -500f);
+                //gameObject.transform.position = new Vector3(0f,0f, -500f);
 			}
 
             delay += Time.deltaTime;
@@ -101,10 +101,14 @@ public class PowerpointScript : MonoBehaviour {
 						}
 						slideIndex = 1;
 						//gameObject.SetActive(false);
-						gameObject.transform.position = new Vector3(0f, 0f, -1200f);
+						//gameObject.transform.position = new Vector3(0f, 0f, -500f);
 					}
 				}
 			}
         }
+        else
+        {
+			gameObject.transform.position = new Vector3(0f, 0f, -500f); //saftey
+		}
 	}
 }

@@ -165,7 +165,7 @@ public class UserInfo //not sure if : this() is necessary
                 GameObject tag = new GameObject(tagInform.name);
                 tag.transform.position = tagInform.location;
                 tag.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-                //TODO: make it look like a normal tag
+                //TODO: make it look like a normal tag (cleanup with MakeWordBank as well)
                 yield return tag;
             }
         }
@@ -178,8 +178,8 @@ public class UserInfo //not sure if : this() is necessary
         Debug.Log("*User: " + userName + ", Time: " + getTimeLogged() + ", Date Joined: " + dateJoined);
         Debug.Log("*LIm: " + lastImage + ", Ims: " + imagesCompleted.Count + ", Tags: " + tags.Count + ", Sessions: " + sessionsLogged.Count +
             ", SPract: " + startedPracticeLevel + ", FPract: " + finishedPracticeLevel); //progress data
-        Debug.Log("*Settings: " + getSettingData()[0] + " " + getSettingData()[1] + " " + getSettingData()[2] + " " + getSettingData()[3] +
-            ", PractState: " + boolToString(getPracticeLevelState()[0]) + " " + boolToString(getPracticeLevelState()[1]) + ", AvgSess: " + getAvgSessionDuration());
+        //Debug.Log("*Settings: " + getSettingData()[0] + " " + getSettingData()[1] + " " + getSettingData()[2] + " " + getSettingData()[3] +
+            //", PractState: " + boolToString(getPracticeLevelState()[0]) + " " + boolToString(getPracticeLevelState()[1]) + ", AvgSess: " + getAvgSessionDuration());
     }
 
     //data usage (reading/writing)
@@ -187,7 +187,7 @@ public class UserInfo //not sure if : this() is necessary
     {
         yield return userName;
         yield return dateJoined;
-        yield return timeLogged.ToString();
+        yield return ((int)timeLogged).ToString(); //TODO: check if this int yields error
         yield return boolToString(startedPracticeLevel);
         yield return boolToString(finishedPracticeLevel);
         yield return difficulty.ToString();
