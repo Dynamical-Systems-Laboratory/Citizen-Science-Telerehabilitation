@@ -25,6 +25,7 @@ public class StateManager : MonoBehaviour {
      */
 
     public UserInfo user = new UserInfo(); //main user to store info
+    public VRUser complexUser;
 
     private GameObject selected = null; // The current tag being selected
     private GameObject falconCursor; // The cursor being manipulated by the falcon
@@ -131,6 +132,7 @@ public class StateManager : MonoBehaviour {
      * 5 = Button Tutorial
      * 6 = About Project
      * 7 = Practice Level
+     * 8 = Practice VR State
      */
      //Mock order: 6,4,5,7,1,0,1,7,2,1,3,1,2,1,0
     public int getState()
@@ -155,6 +157,7 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.UICamera.SetActive(false);
                 MakeWordBank.videoCamera.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(false);
+                complexUser.VRPerson.SetActive(false);
                 user.updateSettings();
                 user.addDuration();
 
@@ -191,6 +194,7 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.UICamera.SetActive(false);
                 MakeWordBank.videoCamera.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(true);
+                complexUser.VRPerson.SetActive(false);
                 break;
             case 2:
                 //Debug.Log("State: Game");
@@ -200,6 +204,7 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.UICamera.SetActive(true);
                 MakeWordBank.videoCamera.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(true);
+                complexUser.VRPerson.SetActive(true);
                 break;
             case 3:
                 //Debug.Log("State: Profile");
@@ -210,6 +215,7 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.videoCamera.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(true);
                 //MakeWordBank.profileCamera
+                complexUser.VRPerson.SetActive(false);
                 break;
             case 4:
                 //Debug.Log("State: Calibrate");
@@ -220,6 +226,7 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.videoCamera.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(true);
                 //SimpleTutorial.canvas.SetActive(true);
+                complexUser.VRPerson.SetActive(true);
                 break;
             case 5:
                 //Debug.Log("State: Tutorial");
@@ -229,6 +236,7 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.UICamera.SetActive(true);
                 MakeWordBank.videoCamera.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(true);
+                complexUser.VRPerson.SetActive(true);
                 break;
             case 6:
                 //Debug.Log("State: About Project");
@@ -239,6 +247,7 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.videoCamera.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(false);
                 //GameObject.Find("Canvas").GetComponent<PowerpointScript>().enabled = true;
+                complexUser.VRPerson.SetActive(false);
                 break;
             case 7:
                 //Debug.Log("State: Practice");
@@ -248,6 +257,17 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.UICamera.SetActive(true);
                 MakeWordBank.videoCamera.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(true);
+                complexUser.VRPerson.SetActive(true);
+                break;
+            case 8:
+                //VR State
+                MakeWordBank.mainCamera.SetActive(false);
+                MakeWordBank.homeCamera.SetActive(false);
+                MakeWordBank.profileCamera.SetActive(false);
+                MakeWordBank.UICamera.SetActive(false);
+                MakeWordBank.videoCamera.SetActive(false);
+                MakeWordBank.cursorCamera.SetActive(false);
+                complexUser.VRPerson.SetActive(true);
                 break;
             default:
                 //Debug.Log("User State Issue: " + userState);
