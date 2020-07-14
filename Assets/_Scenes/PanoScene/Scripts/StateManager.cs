@@ -109,11 +109,13 @@ public class StateManager : MonoBehaviour {
     public static float cursorSpeed = 3.75f; //factor that speeds up cursor's movement
     public static float cursorSize = -0.418f; //factor that makes cursor bigger or smaller
 
+    //TODO: Make tag count update as game goes on rather than after image is completed
     public List<GameObject> tagsPlaced;
     //public List<InvisTag> invisTags;
 
     public static bool newUser = true; // whether or not data was read
-    public static bool makeNewUser = false; // used to bypass reading data if you want to create another save file
+    //TODO: makeNewUser = false; --> when ready to fix reading data issues
+    public static bool makeNewUser = true; // used to bypass reading data if you want to create another save file
     private string path;
     private static string dataName = "user_data";
     public static string[] dataRead = new string[] { "uninitialized", "no data" };
@@ -156,6 +158,8 @@ public class StateManager : MonoBehaviour {
                 user.updateSettings();
                 user.addDuration();
 
+                //WRITING DATA CODE
+                /*
                 StreamWriter writer;
                 if (newUser) //if new user or no data detected
                 {
@@ -174,7 +178,8 @@ public class StateManager : MonoBehaviour {
                 }
                 writer.Flush();
                 writer.Close();
-
+                */
+                //ClickAction.destroyTags();
                 UnityEditor.EditorApplication.isPlaying = false;
                 Application.Quit();
                 break;
@@ -312,7 +317,7 @@ public class StateManager : MonoBehaviour {
     void Awake()
     {
         path = Application.dataPath + "/UserData/" + dataName + ".csv";
-        //for reading
+        //READING DATA CODE
         if (System.IO.File.Exists(path) && !makeNewUser)
         {
             StreamReader reader = new StreamReader(path);
@@ -363,7 +368,7 @@ public class StateManager : MonoBehaviour {
 
     private void Update()
     {
-        Debug.Log("isNewUser: " + newUser.ToString() + ", data: " + dataRead[0]);
+        //Debug.Log("isNewUser: " + newUser.ToString() + ", data: " + dataRead[0]);
         switch (userState)
         {
             case 0:

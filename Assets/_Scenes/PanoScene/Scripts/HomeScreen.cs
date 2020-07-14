@@ -95,6 +95,7 @@ public class HomeScreen : MonoBehaviour
                 if (ClickAction.buttonClose2(obj.transform.position))
                 {
                     obj.GetComponent<Image>().color = unhighlighted;
+
                     if (obj.name == startGameButton.name)
                     {
                         StateManager.makeCamReset = true;
@@ -105,13 +106,13 @@ public class HomeScreen : MonoBehaviour
                         }
                         else
                         {
-                            //MakeWordBank.practiceLevelText.SetActive(true);
+                            MakeWordBank.practiceLevelText.SetActive(true);
                             MakeWordBank.helpTextContainer.SetActive(true);
                             state.setState(7);
                         }
                         //TODO: reload last level & tags (read data stuff here)
-                        MakeWordBank.nextImage(state.user.getLastImage());
-                        state.reloading = true;
+                        //MakeWordBank.nextImage(state.user.getLastImage());
+                        //state.reloading = true;
                     }
                     else if (obj.name == profileButton.name)
                     {

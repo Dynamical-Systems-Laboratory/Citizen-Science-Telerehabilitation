@@ -1494,7 +1494,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -6231, y: -6.324463}
+  m_AnchoredPosition: {x: -6231, y: -6.324341}
   m_SizeDelta: {x: -280, y: 89.01001}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &74824780
@@ -9771,7 +9771,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -177.79492, y: -8.675049}
+  m_AnchoredPosition: {x: -177.7948, y: -8.67511}
   m_SizeDelta: {x: -220.01, y: 98.25}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &600539635
@@ -12478,7 +12478,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 4940, y: -6.324463}
+  m_AnchoredPosition: {x: 4940, y: -6.324341}
   m_SizeDelta: {x: -678, y: 89.009995}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &802630043
@@ -29447,6 +29447,7 @@ MonoBehaviour:
   cameraMoving: 0
   xOffset: 25.9
   tagsPlaced: []
+  reloading: 0
 --- !u!114 &1766072909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31211,6 +31212,7 @@ MonoBehaviour:
   cameraMoving: 0
   xOffset: 25.9
   tagsPlaced: []
+  reloading: 0
 --- !u!114 &1878484556
 MonoBehaviour:
   m_ObjectHideFlags: 0

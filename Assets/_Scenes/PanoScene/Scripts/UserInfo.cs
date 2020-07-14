@@ -30,7 +30,7 @@ public class UserInfo //not sure if : this() is necessary
     //data
     public void logTagData(List<GameObject> addTags, int addImage, Vector3 camPos)
     {
-        //TODO use camera position minus 0campos to offset the current
+        //TODO check locational data - if bad, use (0,0,0) nextCamera offset to correct
         foreach (GameObject newTag in addTags)
         {
             TagInfo tempTag = new TagInfo(newTag.name, newTag.transform.position, addImage);

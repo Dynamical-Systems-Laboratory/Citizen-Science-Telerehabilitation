@@ -370,7 +370,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 
 		else if (objectClicked.tag == "QuitButton") // Quit button clicked
 		{
-			destroyTags();
+			//destroyTags();
 		}
 		else if (objectClicked.tag == "NextButton") // Next button clicked
 		{
