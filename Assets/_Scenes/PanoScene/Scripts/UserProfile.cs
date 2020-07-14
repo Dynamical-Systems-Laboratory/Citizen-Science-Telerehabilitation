@@ -120,17 +120,19 @@ public class UserProfile : MonoBehaviour
                 Debug.Log("Editing Username Mode...");
             }
             //Clicking Things (buttons)
-            else if (Input.GetKey(KeyCode.B)) //clicking
+            else if (Input.GetKeyDown(KeyCode.B))
             {
                 Vector3 homeDist = getScaledDist(homeButton.transform.position);
-                Vector3 sliderDist = getScaledDist(difficultyMeter.transform.position);
-                Vector3 nameDist = getScaledDist(userName.transform.position);
-                //Debug.Log("NameDist: " + nameDist + ", " + nameDist.magnitude);
-                if (homeDist.x <= 118 && homeDist.x >= 32 && homeDist.y <= 17.8 && homeDist.y >= -18.5)
+                if (homeDist.x <= 118 && homeDist.x >= 32.5 && homeDist.y <= 17.8 && homeDist.y >= -18.5)
                 {
                     state.setState(1);
                 }
-                else if (sliderDist.x <= 142.5 && sliderDist.x > -5 &&sliderDist.y <= 9 && sliderDist.y >= -12)
+            }
+            else if (Input.GetKey(KeyCode.B)) //clicking
+            {
+                Vector3 sliderDist = getScaledDist(difficultyMeter.transform.position);
+                Vector3 nameDist = getScaledDist(userName.transform.position);
+                if (sliderDist.x <= 142.5 && sliderDist.x > -5 &&sliderDist.y <= 9 && sliderDist.y >= -12)
                 {
                     //Debug.Log("Using Slider");
                     //[142.5 <--> -5] / 10 => 14.75*
