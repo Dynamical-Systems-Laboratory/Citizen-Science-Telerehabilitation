@@ -13,6 +13,7 @@ Before accessing this project, it was implemented for the Novint Falcon and subs
 ### Future Changes
 Enabling local and online multiplated functionality, creating a social media-like structure where progression/achievements can be shared amonst patients, Adding more secure accounts with passwords
 ### Coding Specifications
+Besides downloading the contents on github and opening them as a project through the Unity Hub, you must open the Assets/_Scenes/PanoScene/PanoScene (unity file) in order to properly run and edit the Unity Scene... Other notable files/locations include 
 Assets/Scenes/PanoScene/Scripts for the bulk of user-created/running code,
 Assets/_DS_Store for visual changes,
 Assets/UserData for data storage
