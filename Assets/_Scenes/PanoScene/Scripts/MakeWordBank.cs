@@ -508,7 +508,8 @@ public class MakeWordBank : MonoBehaviour {
                                 state.setState(2);
                                 state.user.setLevelProgress(true, true); //set practice level trackers
                             }
-                            state.user.logTagData(state.tagsPlaced, imageIndex); //store image data
+                            StateManager.makeCamReset = true;
+                            state.user.logTagData(state.tagsPlaced, imageIndex, state.getCameraPosition()); //store image data
                             eventListener.OnPointerClick(nextButton); //click next
                             state.user.setNewImage(imageIndex); //save new image
                         }
@@ -564,7 +565,7 @@ public class MakeWordBank : MonoBehaviour {
             }
             
         }
-
+        Debug.Log("IsReloading: " + state.reloading);
         if (state.reloading) //reloading tags
         {
             state.loadTags(state.user.getLastImage(), tagGameObjects);

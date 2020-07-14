@@ -649,41 +649,37 @@ public class StateManager : MonoBehaviour {
             absRotation = nextCameraPos;
             makeCamReset = false;
         }
-        else
+        nextCameraPos.y = getLowestAngle(nextCameraPos.y); //reset x pos if goes too far
+        if (cameraMoving)
         {
-            nextCameraPos.y = getLowestAngle(nextCameraPos.y); //reset x pos if goes too far
-            Debug.Log("Camera Info: (" + nextCameraPos.y + ", " + nextCameraPos.x + ", " + nextCameraPos.z + "), abs: " + absRotation + ", speed: " + camSpeed);
-            if (cameraMoving)
+            //quarterion rotations ***
+            Quaternion qRotation = Quaternion.Euler(nextCameraPos);// * Time.deltaTime);
+            mainCamera.transform.rotation = qRotation; //occassionally not instanced...?
+
+            //tags movement
+            Vector3 change = (nextCameraPos - cameraPos); //take the amount that the camera moves and displace all placed tags by it
+            foreach (GameObject obj in tagsPlaced)
             {
-                //quarterion rotations ***
-                Quaternion qRotation = Quaternion.Euler(nextCameraPos);// * Time.deltaTime);
-                mainCamera.transform.rotation = qRotation; //occassionally not instanced...?
+                obj.transform.position -= new Vector3(change.y * 1.815f, -change.x * 1.805f, 0f); //**
 
-                //tags movement
-                Vector3 change = (nextCameraPos - cameraPos); //take the amount that the camera moves and displace all placed tags by it
-                foreach (GameObject obj in tagsPlaced)
+                //float offset = (obj.transform.position.x - nextCameraPos.y);
+                //Debug.Log("Object " + obj.name + ": " + obj.transform.position + ", offset: " + (obj.transform.position - nextCameraPos) + ", " + offset);
+
+                Color newColor = obj.GetComponent<Image>().color;
+                if (obj.transform.position.x > 15 && obj.transform.position.x < 101)//offset > xOffset) disapear after a certain x (factoring for full rotations of 180 degrees)
                 {
-                    obj.transform.position -= new Vector3(change.y * 1.815f, -change.x * 1.805f, 0f); //**
-
-                    //float offset = (obj.transform.position.x - nextCameraPos.y);
-                    //Debug.Log("Object " + obj.name + ": " + obj.transform.position + ", offset: " + (obj.transform.position - nextCameraPos) + ", " + offset);
-
-                    Color newColor = obj.GetComponent<Image>().color;
-                    if (obj.transform.position.x > 15 && obj.transform.position.x < 101)//offset > xOffset) disapear after a certain x (factoring for full rotations of 180 degrees)
-                    {
-                        obj.GetComponentInChildren<Text>().color = Color.clear; //text color change
-                        newColor.a = 0;
-                    }
-                    else //reapear
-                    {
-                        obj.GetComponentInChildren<Text>().color = Color.blue;
-                        newColor.a = .391f; // (100/255) = (.39/1) - transfer to 0->1 scale
-                    }
-                    obj.GetComponent<Image>().color = newColor;
+                    obj.GetComponentInChildren<Text>().color = Color.clear; //text color change
+                    newColor.a = 0;
                 }
+                else //reapear
+                {
+                    obj.GetComponentInChildren<Text>().color = Color.blue;
+                    newColor.a = .391f; // (100/255) = (.39/1) - transfer to 0->1 scale
+                }
+                obj.GetComponent<Image>().color = newColor;
             }
         }
-
+        Debug.Log("Camera Info: (" + nextCameraPos.y + ", " + nextCameraPos.x + ", " + nextCameraPos.z + "), abs: " + absRotation + ", speed: " + camSpeed);
         cameraPos = nextCameraPos;
 
         //avgDistance_x = Mathf.Abs(((Kinect.LHandPos.x - Kinect.LShoulderPos.x) + (Kinect.RHandPos.x - Kinect.RShoulderPos.x)) / 2);
@@ -841,6 +837,7 @@ public class StateManager : MonoBehaviour {
             newTag.name = tag.name;
             newTag.tag = tag.name;
             newTag.transform.position = tag.transform.position;
+            newTag.layer = 4;
             tagsPlaced.Add(newTag);
         }
     }

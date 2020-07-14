@@ -105,7 +105,8 @@ public class HomeScreen : MonoBehaviour
                         }
                         else
                         {
-                            MakeWordBank.practiceLevelText.SetActive(true);
+                            //MakeWordBank.practiceLevelText.SetActive(true);
+                            MakeWordBank.helpTextContainer.SetActive(true);
                             state.setState(7);
                         }
                         //TODO: reload last level & tags (read data stuff here)
