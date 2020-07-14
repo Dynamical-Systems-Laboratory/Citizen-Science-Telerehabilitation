@@ -15,7 +15,8 @@ Enabling local and online multiplated functionality, creating a social media-lik
 ### Coding Specifications
 Assets/Scenes/PanoScene/Scripts for the bulk of user-created/running code,
 Assets/_DS_Store for visual changes,
-Assets/UserData for data storage
+Assets/UserData for data storage, 
+The main document for the game code is called MakeWordBank (the rest is named correctly)
 ### Contact Me
 khughes@nyu.edu, 
 https://www.linkedin.com/in/kora-hughes-80ba19188/
