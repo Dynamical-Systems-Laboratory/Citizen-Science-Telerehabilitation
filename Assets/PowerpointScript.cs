@@ -16,8 +16,12 @@ public class PowerpointScript : MonoBehaviour {
 	static float transitionTime = 1.0f;
 	public StateManager state;
 
+	public static bool isDisplaced = false;
+
 	//extra
 	private GameObject background;
+
+	private static GameObject mainObj; //gameObject refrence
 
 	void Awake()
 	{
@@ -36,9 +40,24 @@ public class PowerpointScript : MonoBehaviour {
 		gameObject.SetActive(true);
 
 		state = GameObject.Find("Canvas").GetComponent<StateManager>();
+		mainObj = GameObject.Find("Powerpoint");
 		background = MakeWordBank.welcomeScreen;
 	}
 	
+	public static void screenIsActive(bool isActive)
+    {
+		if (!isActive && !isDisplaced)
+        {
+			mainObj.transform.position += new Vector3(100f, 0f, 0f);
+			isDisplaced = true;
+		}
+		else if (isActive && isDisplaced)
+        {
+			mainObj.transform.position -= new Vector3(100f, 0f, 0f);
+			isDisplaced = false;
+        }
+    }
+
 	void Update () {
         if (state.getState() == 6) {
 			//gameObject.SetActive(true);

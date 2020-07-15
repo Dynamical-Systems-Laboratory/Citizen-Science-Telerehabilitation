@@ -122,6 +122,10 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     //public static bool calibrationEdgeCase = false;
     private static bool hasCompleted = false;
 
+    public static bool isDisplaced = false;
+    public static GameObject vert;
+    public static GameObject horiz;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -136,6 +140,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
         text = GameObject.FindGameObjectWithTag("SimpleTutorialText").GetComponent<Text>() as Text;
         canvas = GameObject.Find("SimpleTutorialCanvas");
         circle = GameObject.Find("Circle");
+        vert = GameObject.Find("Vertical"); //extra
+        horiz = GameObject.Find("Horizontal");
 
         VP1 = GameObject.Find("VPlayer1");
         VP2 = GameObject.Find("VPlayer2");
@@ -147,9 +153,32 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
         cameraUDVP = VP2.GetComponent<UnityEngine.Video.VideoPlayer>();
         cursorLRVP = VP3.GetComponent<UnityEngine.Video.VideoPlayer>();
         cursorUDVP = VP4.GetComponent<UnityEngine.Video.VideoPlayer>();
-        clickVP = VP5.GetComponent<UnityEngine.Video.VideoPlayer>();   
+        clickVP = VP5.GetComponent<UnityEngine.Video.VideoPlayer>();
+
+        
+
     }
-   
+
+    public static void screenIsActive(bool isActive)
+    {
+        if (!isActive && !isDisplaced)
+        {
+            textPanel.transform.position += new Vector3(100f, 0f, 0f);
+            circle.transform.position += new Vector3(100f, 0f, 0f);
+            vert.transform.position += new Vector3(100f, 0f, 0f);
+            horiz.transform.position += new Vector3(100f, 0f, 0f);
+            isDisplaced = true;
+        }
+        else if (isActive && isDisplaced)
+        {
+            textPanel.transform.position -= new Vector3(100f, 0f, 0f);
+            circle.transform.position -= new Vector3(100f, 0f, 0f);
+            vert.transform.position -= new Vector3(100f, 0f, 0f);
+            horiz.transform.position -= new Vector3(100f, 0f, 0f);
+            isDisplaced = false;
+        }
+    }
+
     // Update is called once per frame
     void Update()
     {

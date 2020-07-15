@@ -24,6 +24,7 @@ public class UserProfile : MonoBehaviour
     public static Text sessionsLogged;
     public static Text progress;
     public static Text difficulty;
+    public static List<Text> texts = new List<Text>();
 
     //other
     public static InputField userName;
@@ -41,6 +42,10 @@ public class UserProfile : MonoBehaviour
     private static string letters = "abcdefghijklmnopqrstuvwxyzACBDEFGHIJKLMNOPQRSTUVWXYZ";//allowed characters for username
 
     bool isTyping = false;
+
+    public static bool isDisplaced = false;
+
+    public static GameObject mainCanv;
 
     void Awake()
     {
@@ -61,8 +66,49 @@ public class UserProfile : MonoBehaviour
 
         difficulty = GameObject.Find("DifficultyNumber").GetComponent<Text>() as Text;
         difficultyMeter = GameObject.Find("DifficultySlider").GetComponent<Slider>() as Slider;
+
+        texts.Add(dateJoined);
+        texts.Add(imagesCompleted);
+        texts.Add(timeCompleted);
+        texts.Add(sessionsLogged);
+        texts.Add(progress);
+        texts.Add(difficulty);
+
+        mainCanv = GameObject.Find("ProfileCanvas");
     }
-    //TODO: change userName from text box to editable text field
+
+    public static void screenIsActive(bool isActive)
+    {
+        if (!isActive && !isDisplaced)
+        {
+            /*foreach (Text words in texts)
+            {
+                words.color = Color.clear;
+            }*/
+            GameObject.Find("UserInfoPanel").transform.position += new Vector3(100f, 0f, 0f);
+            GameObject.Find("ProgressPanel").transform.position += new Vector3(100f, 0f, 0f);
+            GameObject.Find("HomePanel2").transform.position += new Vector3(100f, 0f, 0f);
+            GameObject.Find("DifficultyPanel").transform.position += new Vector3(100f, 0f, 0f);
+            GameObject.Find("BackgroundPanel").transform.position += new Vector3(100f, 0f, 0f);
+            isDisplaced = true;
+        }
+        else if (isActive && isDisplaced)
+        {
+            /*foreach (Text words in texts)
+            {
+                words.color = HomeScreen.nyuPurple;
+            }*/
+            GameObject.Find("UserInfoPanel").transform.position -= new Vector3(100f, 0f, 0f);
+            GameObject.Find("ProgressPanel").transform.position -= new Vector3(100f, 0f, 0f);
+            GameObject.Find("HomePanel2").transform.position -= new Vector3(100f, 0f, 0f);
+            GameObject.Find("DifficultyPanel").transform.position -= new Vector3(100f, 0f, 0f);
+            GameObject.Find("BackgroundPanel").transform.position -= new Vector3(100f, 0f, 0f);
+            isDisplaced = false;
+        }
+        //else if (isActive &&)
+        //mainCanv.SetActive(isActive);
+    }
+
     void Update()
     {
         if (state.getState() == 3)

@@ -25,7 +25,7 @@ public class StateManager : MonoBehaviour {
      */
 
     public UserInfo user = new UserInfo(); //main user to store info
-    public VRUser complexUser;
+    public VRUser complexUser; //user's main body
 
     private GameObject selected = null; // The current tag being selected
     private GameObject falconCursor; // The cursor being manipulated by the falcon
@@ -123,6 +123,8 @@ public class StateManager : MonoBehaviour {
 
     public bool reloading = false; //covers edge case with reloading tags
 
+    Vector3 vrUIScaler = new Vector3();
+
     private int userState = 6;
     /* 0 = Quit
      * 1 = Home
@@ -148,15 +150,24 @@ public class StateManager : MonoBehaviour {
     }
     public void updateState()
     {
+        //defaults*
+        MakeWordBank.mainCamera.SetActive(false);
+        MakeWordBank.homeCamera.SetActive(false);
+        MakeWordBank.profileCamera.SetActive(false);
+        MakeWordBank.UICamera.SetActive(false);
+        MakeWordBank.videoCamera.SetActive(false);
+        MakeWordBank.cursorCamera.SetActive(false);
+
+        //complexUser.VRPerson.SetActive(true);
+        //unmove Profile, Home, About Project, and Video
+        HomeScreen.screenIsActive(false);
+        UserProfile.screenIsActive(false);
+        PowerpointScript.screenIsActive(false);
+        SimpleTutorial.screenIsActive(false);
+
         switch (userState)
         {
-            case 0:
-                MakeWordBank.mainCamera.SetActive(false);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.profileCamera.SetActive(false);
-                MakeWordBank.UICamera.SetActive(false);
-                MakeWordBank.videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(false);
+            case 0: //QUIT
                 complexUser.VRPerson.SetActive(false);
                 user.updateSettings();
                 user.addDuration();
@@ -186,97 +197,41 @@ public class StateManager : MonoBehaviour {
                 UnityEditor.EditorApplication.isPlaying = false;
                 Application.Quit();
                 break;
-            case 1:
-                //Debug.Log("State: Home");
-                MakeWordBank.mainCamera.SetActive(false);
-                MakeWordBank.homeCamera.SetActive(true);
-                MakeWordBank.profileCamera.SetActive(false);
-                MakeWordBank.UICamera.SetActive(false);
-                MakeWordBank.videoCamera.SetActive(false);
+
+            case 1: //HOME
+                HomeScreen.screenIsActive(true);
+                break;
+            case 2: //GAME
+                MakeWordBank.mainCamera.SetActive(true);
+                MakeWordBank.UICamera.SetActive(true); //ui selecting
                 MakeWordBank.cursorCamera.SetActive(true);
+                break;
+            case 3: //PROFILE
+                UserProfile.screenIsActive(true);
+                break;
+            case 4: //CALIBRATE (simpletutorial)
+                MakeWordBank.cursorCamera.SetActive(true);
+                SimpleTutorial.screenIsActive(true);
+                break;
+            case 5: //TUTORIAL
+                MakeWordBank.mainCamera.SetActive(true);
+                MakeWordBank.UICamera.SetActive(true); //ui selecting
+                MakeWordBank.cursorCamera.SetActive(true);
+                break;
+            case 6: //ABOUT PROJECT
+                //move project slides
+                PowerpointScript.screenIsActive(true);
+                break;
+            case 7: //PRACTICE LEVEL
+                MakeWordBank.mainCamera.SetActive(true);
+                MakeWordBank.UICamera.SetActive(true);
+                MakeWordBank.cursorCamera.SetActive(true);
+                break;
+            case 8: //VR State ~Testing Purposes
+                MakeWordBank.cursorCamera.SetActive(true);
+                break;
+            default: //STATE ERROR
                 complexUser.VRPerson.SetActive(false);
-                break;
-            case 2:
-                //Debug.Log("State: Game");
-                MakeWordBank.mainCamera.SetActive(true);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.profileCamera.SetActive(false);
-                MakeWordBank.UICamera.SetActive(true);
-                MakeWordBank.videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(true);
-                complexUser.VRPerson.SetActive(true);
-                break;
-            case 3:
-                //Debug.Log("State: Profile");
-                MakeWordBank.mainCamera.SetActive(false);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.profileCamera.SetActive(true);
-                MakeWordBank.UICamera.SetActive(false);
-                MakeWordBank.videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(true);
-                //MakeWordBank.profileCamera
-                complexUser.VRPerson.SetActive(false);
-                break;
-            case 4:
-                //Debug.Log("State: Calibrate");
-                MakeWordBank.mainCamera.SetActive(true);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.profileCamera.SetActive(false);
-                MakeWordBank.UICamera.SetActive(false);
-                MakeWordBank.videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(true);
-                //SimpleTutorial.canvas.SetActive(true);
-                complexUser.VRPerson.SetActive(true);
-                break;
-            case 5:
-                //Debug.Log("State: Tutorial");
-                MakeWordBank.mainCamera.SetActive(true);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.profileCamera.SetActive(false);
-                MakeWordBank.UICamera.SetActive(true);
-                MakeWordBank.videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(true);
-                complexUser.VRPerson.SetActive(true);
-                break;
-            case 6:
-                //Debug.Log("State: About Project");
-                MakeWordBank.mainCamera.SetActive(false);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.profileCamera.SetActive(false);
-                MakeWordBank.UICamera.SetActive(true);
-                MakeWordBank.videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(false);
-                //GameObject.Find("Canvas").GetComponent<PowerpointScript>().enabled = true;
-                complexUser.VRPerson.SetActive(false);
-                break;
-            case 7:
-                //Debug.Log("State: Practice");
-                MakeWordBank.mainCamera.SetActive(true);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.profileCamera.SetActive(false);
-                MakeWordBank.UICamera.SetActive(true);
-                MakeWordBank.videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(true);
-                complexUser.VRPerson.SetActive(true);
-                break;
-            case 8:
-                //VR State
-                MakeWordBank.mainCamera.SetActive(false);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.profileCamera.SetActive(false);
-                MakeWordBank.UICamera.SetActive(false);
-                MakeWordBank.videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(false);
-                complexUser.VRPerson.SetActive(true);
-                break;
-            default:
-                //Debug.Log("User State Issue: " + userState);
-                MakeWordBank.mainCamera.SetActive(false);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.profileCamera.SetActive(false);
-                MakeWordBank.UICamera.SetActive(false);
-                MakeWordBank.videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(false);
                 break;
         }
     }
@@ -388,6 +343,7 @@ public class StateManager : MonoBehaviour {
 
     private void Update()
     {
+        updateState(); //testing...**
         //Debug.Log("isNewUser: " + newUser.ToString() + ", data: " + dataRead[0]);
         switch (userState)
         {
@@ -557,116 +513,10 @@ public class StateManager : MonoBehaviour {
         //{ //Allow camera to rotate in SimpleTutorial
         //    falconButtons[0] = false ;
         //}
+        
+        //TODO: Set cameraPos to orientation of oculus
 
         nextCameraPos = cameraPos;
-
-        if (moveCameraL)
-        {
-            //if (Kinect.RHandPos.y > Kinect.LHandPos.y && Kinect_Angle(Kinect.RHandPos.x, Kinect.RHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2) > (SimpleTutorial.angleLeftAverage * 0.4f))
-            //{
-            //    nextCameraPos = new Vector3(cameraPos.x, (cameraPos.y - 0.5f), 0f);
-            //    falconButtons[0] = true;
-            //    cameraL = true;
-            //}
-            if (Input.GetKey(KeyCode.A))
-            {
-                nextCameraPos += new Vector3(0f, -20f * camSpeed * Time.deltaTime, 0f);
-                absRotation += new Vector3(0f, -20f * camSpeed * Time.deltaTime, 0f);
-                cameraL = true;
-            }
-        }
-
-        if (moveCameraR)
-        {
-            //if (Kinect.RHandPos.y < Kinect.LHandPos.y && Kinect_Angle(Kinect.LHandPos.x, Kinect.LHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2) < (SimpleTutorial.angleRightAverage * 2.5f)
-            //    && Kinect_Angle(Kinect.LHandPos.x, Kinect.LHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2) > 0)
-            //{
-            //    nextCameraPos = new Vector3(cameraPos.x, (cameraPos.y + 0.5f), 0f);
-            //    falconButtons[0] = true;
-            //    cameraR = true;
-            //}
-            if (Input.GetKey(KeyCode.D))
-            {
-                nextCameraPos += new Vector3(0f, 20f * camSpeed * Time.deltaTime, 0f);
-                absRotation += new Vector3(0f, 20f * camSpeed * Time.deltaTime, 0f);
-                cameraR = true;
-            }
-        }
-
-        if (moveCameraU)
-        {
-            //if (IMU.Gyro_Pitch > (SimpleTutorial.speedUpAverage * 0.4f) && cameraUpCoolDown > 1.5f)
-            //{
-            //    nextCameraPos = new Vector3((cameraPos.x - 2.5f), cameraPos.y, 0f);
-            //    falconButtons[0] = true;
-            //    cameraU = true;
-            //    cameraDownCoolDown = 0f;
-            //}
-            if (Input.GetKey(KeyCode.W))
-            {
-                nextCameraPos += new Vector3(-14f * camSpeed * Time.deltaTime, 0f, 0f);
-                absRotation += new Vector3(-14f * camSpeed * Time.deltaTime, 0f, 0f);
-                cameraU = true;
-            }
-        }
-
-        if (moveCameraD)
-        {
-            //if (IMU.Gyro_Pitch < (SimpleTutorial.speedDownAverage * 0.4f) && cameraDownCoolDown > 1.5f)
-            //{
-            //    nextCameraPos = new Vector3((cameraPos.x + 2.5f), cameraPos.y, 0f);
-            //    falconButtons[0] = true;
-            //    cameraD = true;
-            //    cameraUpCoolDown = 0f;
-            //    Debug.Log(IMU.Gyro_Pitch);
-            //}
-            if (Input.GetKey(KeyCode.S))
-            {
-                nextCameraPos += new Vector3(14f * camSpeed * Time.deltaTime, 0f, 0f);
-                absRotation += new Vector3(14f * camSpeed * Time.deltaTime, 0f, 0f);
-                cameraD = true;
-            }
-        }
-        
-        if (moveCameraL || moveCameraR || moveCameraU || moveCameraD || cameraAdd != new Vector3(0f, 0f, 0f))
-        {
-            nextCameraPos -= cameraAdd;
-        }
-        cameraAdd = new Vector3(0f, 0f, 0f);
-
-        // Enforce a boundary on rotating up/down
-        //if (nextCameraPos.x > 270f && nextCameraPos.x < 280f)
-        //{
-        //    nextCameraPos.x = 280f;
-        //}
-        //else if (nextCameraPos.x > 35f && nextCameraPos.x < 90f)
-        //{
-        //    nextCameraPos.x = 35f;
-        //}
-        //old boundaries [-16.8,17.4]
-
-        if (nextCameraPos.x < MakeWordBank.camBot) //[-90,90]
-        {
-            nextCameraPos.x = MakeWordBank.camBot;
-        }
-        else if (nextCameraPos.x > MakeWordBank.camTop)
-        {
-            nextCameraPos.x = MakeWordBank.camTop;
-        }
-
-        if (absRotation.x < MakeWordBank.camBot)
-        {
-            absRotation.x = MakeWordBank.camBot;
-        }
-        else if (absRotation.x > MakeWordBank.camTop)
-        {
-            absRotation.x = MakeWordBank.camTop;
-        }
-
-        //if (Input.GetKey(KeyCode.Y))
-        //{
-        //    camSpeed += .01f;
-        //}
 
         if (makeCamReset) //cam reset method
         {
@@ -677,19 +527,8 @@ public class StateManager : MonoBehaviour {
         nextCameraPos.y = getLowestAngle(nextCameraPos.y); //reset x pos if goes too far
         if (cameraMoving)
         {
-            //quarterion rotations ***
-            Quaternion qRotation = Quaternion.Euler(nextCameraPos);// * Time.deltaTime);
-            mainCamera.transform.rotation = qRotation; //occassionally not instanced...?
-
-            //tags movement
-            Vector3 change = (nextCameraPos - cameraPos); //take the amount that the camera moves and displace all placed tags by it
             foreach (GameObject obj in tagsPlaced)
             {
-                obj.transform.position -= new Vector3(change.y * 1.815f, -change.x * 1.805f, 0f); //**
-
-                //float offset = (obj.transform.position.x - nextCameraPos.y);
-                //Debug.Log("Object " + obj.name + ": " + obj.transform.position + ", offset: " + (obj.transform.position - nextCameraPos) + ", " + offset);
-
                 Color newColor = obj.GetComponent<Image>().color;
                 if (obj.transform.position.x > 15 && obj.transform.position.x < 101)//offset > xOffset) disapear after a certain x (factoring for full rotations of 180 degrees)
                 {
@@ -704,6 +543,7 @@ public class StateManager : MonoBehaviour {
                 obj.GetComponent<Image>().color = newColor;
             }
         }
+        //Debug.Log("Camera Info: " + OVRCameraRig.);
         Debug.Log("Camera Info: (" + nextCameraPos.y + ", " + nextCameraPos.x + ", " + nextCameraPos.z + "), abs: " + absRotation + ", speed: " + camSpeed);
         cameraPos = nextCameraPos;
 

@@ -22,6 +22,7 @@ public class HomeScreen : MonoBehaviour
     public static GameObject tutorialButton;
     public static GameObject aboutButton; //side buttons
     public static GameObject quitButton;
+    public static MeshRenderer background;
 
     //other
     public static Text welcomeText;
@@ -34,6 +35,10 @@ public class HomeScreen : MonoBehaviour
     public static float colorFactor = 183f / 255f;
     public static Color unhighlighted = new Color(colorFactor, colorFactor, colorFactor, 1f);
     public static Color highlighted = new Color(1f, 1f, 1f, 1f);
+    
+    public static Color nyuPurple = new Color(88f, 6f, 140f, 1f);
+
+    public static bool isDisplaced = false;
 
     void Awake()
     {
@@ -51,6 +56,7 @@ public class HomeScreen : MonoBehaviour
         tutorialButton = GameObject.Find("TutorialPanel");
         aboutButton = GameObject.Find("ProjectPanel");
         quitButton = GameObject.Find("QuitPanel");
+        background = GameObject.Find("BackgroundPanel").GetComponent<MeshRenderer>() as MeshRenderer;
 
         buttons[0] = startGameButton;
         buttons[1] = profileButton;
@@ -59,7 +65,33 @@ public class HomeScreen : MonoBehaviour
         buttons[4] = aboutButton;
         buttons[5] = quitButton;
     }
-    
+
+    public static void screenIsActive(bool isActive)
+    {
+        if (!isActive && !isDisplaced)
+        {
+            foreach (GameObject obj in buttons) //buttons dissapear
+            {
+                //obj.GetComponentInChildren<Text>().color = Color.clear;
+                //obj.GetComponent<Image>().color = Color.clear;
+                obj.transform.position += new Vector3(100f, 0f, 0f);
+            }
+            background.transform.position += new Vector3(100f, 0f, 0f);
+            isDisplaced = true;
+        }
+        else if (isActive && isDisplaced)
+        {
+            foreach (GameObject obj in buttons) //buttons dissapear
+            {
+                //obj.GetComponentInChildren<Text>().color = nyuPurple;
+                //obj.GetComponent<Image>().color = unhighlighted;
+                obj.transform.position -= new Vector3(100f, 0f, 0f);
+            }
+            background.transform.position -= new Vector3(100f, 0f, 0f);
+            //background.enabled = false;
+            isDisplaced = false;
+        }
+    }
 
     void Update()
     {
