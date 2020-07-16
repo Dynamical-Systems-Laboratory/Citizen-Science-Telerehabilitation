@@ -39,6 +39,7 @@ public class VRUser : MonoBehaviour
     { //Ctrl+K+C = comment (+K+U = uncomment)
         //player head and controllers set within Unity Scene (VRPerson's children)
         VRPerson = GameObject.Find("VRPerson");
+        state = GameObject.Find("Canvas").GetComponent<StateManager>();
     }
 
     // Update is called once per frame
@@ -49,29 +50,33 @@ public class VRUser : MonoBehaviour
 
         //Debug.Log("Vr Info: " + OVRInput.GetControllerPositionTracked(playerController));
         //Debug.Log("VRHead: " + playerHead.GetCameraPositionOrientation() + "EyePos?: " + playerHead.centerEyeAnchor.position);
-        Debug.Log("rightPos: " + OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) * 100f + ", leftPos: " + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand) * 100f);
-        Debug.Log("rightRot: " + OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles * 100f + ", leftRot: " + OVRInput.GetLocalControllerRotation(OVRInput.Controller.LHand).eulerAngles * 100f);
+        Debug.Log("rightPos: " + OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + ", leftPos: " + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand));
+        Debug.Log("rightRot: " + OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles + ", leftRot: " + OVRInput.GetLocalControllerRotation(OVRInput.Controller.LHand).eulerAngles);
         if (OVRInput.Get(OVRInput.Button.Any))
         {
             Debug.Log("VR Buttons: " + OVRInput.Button.Any);
         }
         // returns a float of the Hand Trigger’s current state on the Left Oculus Touch controller.
-        Debug.Log("LHandTrigger: " + OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) * 100f + ", RHandTrigger: " + OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch));
-        Debug.Log("LIndTrigger: " + OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) * 100f + ", RIndTrigger: " + OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch));
+        Debug.Log("LHandTrigger: " + OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) + ", RHandTrigger: " + OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch));
+        Debug.Log("LIndTrigger: " + OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) + ", RIndTrigger: " + OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch));
 
-        Debug.Log("LStick: " + OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch)*10f + ", RStick: " + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch)*10f);
+        Debug.Log("LStick: " + OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + ", RStick: " + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch)*10f);
 
-        ////if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch)){
-        ////    state.setState(1); //home
-        ////}
-        ////else if (OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch)){
-        ////    state.setState(2); //game
-        ////}
-        ////else if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch)){
-        ////    state.setState(3); //profile
-        ////}
-        ////else if (OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.LTouch)){
-        ////    state.setState(2); //game
-        ////}
+        if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch))
+        {
+            state.setState(1); //home
+        }
+        else if (OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch))
+        {
+            state.setState(2); //game
+        }
+        else if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch))
+        {
+            state.setState(3); //profile
+        }
+        else if (OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.LTouch))
+        {
+            state.setState(2); //game
+        }
     }
 }

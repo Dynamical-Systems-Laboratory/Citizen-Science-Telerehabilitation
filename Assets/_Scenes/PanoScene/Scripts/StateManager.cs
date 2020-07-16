@@ -202,7 +202,6 @@ public class StateManager : MonoBehaviour {
                 HomeScreen.screenIsActive(true);
                 break;
             case 2: //GAME
-                MakeWordBank.mainCamera.SetActive(true);
                 MakeWordBank.UICamera.SetActive(true); //ui selecting
                 MakeWordBank.cursorCamera.SetActive(true);
                 break;
@@ -210,11 +209,11 @@ public class StateManager : MonoBehaviour {
                 UserProfile.screenIsActive(true);
                 break;
             case 4: //CALIBRATE (simpletutorial)
+                MakeWordBank.mainCamera.SetActive(true);
                 MakeWordBank.cursorCamera.SetActive(true);
                 SimpleTutorial.screenIsActive(true);
                 break;
             case 5: //TUTORIAL
-                MakeWordBank.mainCamera.SetActive(true);
                 MakeWordBank.UICamera.SetActive(true); //ui selecting
                 MakeWordBank.cursorCamera.SetActive(true);
                 break;
@@ -223,7 +222,6 @@ public class StateManager : MonoBehaviour {
                 PowerpointScript.screenIsActive(true);
                 break;
             case 7: //PRACTICE LEVEL
-                MakeWordBank.mainCamera.SetActive(true);
                 MakeWordBank.UICamera.SetActive(true);
                 MakeWordBank.cursorCamera.SetActive(true);
                 break;

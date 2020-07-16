@@ -151,7 +151,7 @@ public class MakeWordBank : MonoBehaviour {
     public static GameObject quitButton;
 
     public static List<string> wordBank = new List<string>();
-    public static GameObject focusor;
+    //public static GameObject focusor;
     public static GameObject tutorialArrow;
     public static GameObject secondTutorialArrow; //Just for showing select buttons step (need 2 arrows)
     public static GameObject falconHelper; //So when the focus window goes to the button it doesn't depend on absolute coordinates
@@ -266,12 +266,27 @@ public class MakeWordBank : MonoBehaviour {
     //Shuffle(imageMaterials);
 
     void Awake() {
+        mainCamera = GameObject.Find("Main Camera");
+        UICamera = GameObject.Find("UICamera");
+        videoCamera = GameObject.Find("VideoCamera");
+        homeCamera = GameObject.Find("HomeCamera");
+        cursorCamera = GameObject.Find("CursorCamera");
+        profileCamera = GameObject.Find("ProfileCamera");
+
+        eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
+
+        nextButton = GameObject.Find("NextButton");
+        quitButton = GameObject.Find("HomeButton");
+
+        homeCamera.SetActive(false); //precausion
+        cursorCamera.SetActive(false);
+
         DataCollector.MakeFolder();
         tagSphere = GameObject.FindGameObjectWithTag("TagSphere");
         imageMaterials = new Material[imageMaterialsToDragIn.Length];
         tutorialImageMaterial = tutorialImageMaterialDragFromEditor;
-        focusor = GameObject.FindGameObjectWithTag("Focusor"); //Just used for step where user picks a tag
-        focusor.SetActive(false);
+        //focusor = GameObject.FindGameObjectWithTag("Focusor"); //Just used for step where user picks a tag
+        //focusor.SetActive(false);
 
         falconHelper = GameObject.FindGameObjectWithTag("FalconHelper");
         state = GameObject.Find("Canvas").GetComponent<StateManager>(); //state of game**
@@ -374,21 +389,6 @@ public class MakeWordBank : MonoBehaviour {
         VP4.SetActive(false);
         VP5.SetActive(false);
         */
-
-        mainCamera = GameObject.Find("Main Camera");
-        UICamera = GameObject.Find("UICamera");
-        videoCamera = GameObject.Find("VideoCamera");
-        homeCamera = GameObject.Find("HomeCamera");
-        cursorCamera = GameObject.Find("CursorCamera");
-        profileCamera = GameObject.Find("ProfileCamera");
-
-        eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
-
-        nextButton = GameObject.Find("NextButton");
-        quitButton = GameObject.Find("HomeButton");
-
-        homeCamera.SetActive(false); //precausion
-        cursorCamera.SetActive(false);
 
         //updating user info
         //TODO: read data
@@ -628,7 +628,7 @@ public class MakeWordBank : MonoBehaviour {
             //{
             if (Input.GetKeyDown(KeyCode.Escape) && state.getState() == 5)
             {
-                focusor.SetActive(false);
+                //focusor.SetActive(false);
                 //mainCamera.SetActive(true);
                 //UICamera.SetActive(true);
                 //videoCamera.SetActive(false);
@@ -647,7 +647,7 @@ public class MakeWordBank : MonoBehaviour {
                 { //Move to the next step (change for falcon):
                     welcomeScreen.SetActive(false);
                     helpTextContainer.SetActive(false);
-                    focusor.SetActive(true);
+                    //focusor.SetActive(true);
                     //focusor.transform.localPosition = new Vector3(-100.7f, -450f, -271.39f);
                     //focusor.transform.localScale = new Vector3(30.7f, 8.2f, 3f);
                     //play1 = true;
@@ -1104,8 +1104,8 @@ public class MakeWordBank : MonoBehaviour {
                     tag.transform.Translate(newPos * Time.deltaTime);
                 }
                 helpTextContainer.SetActive(true);
-                focusor.transform.localPosition = new Vector3(208.12f, -276.5f, -271.39f); //transforming black thing (literally making the user focus on something)
-                focusor.transform.localScale = new Vector3(10.8f, 4.62f, 3f);
+               //focusor.transform.localPosition = new Vector3(208.12f, -276.5f, -271.39f); //transforming black thing (literally making the user focus on something)
+                //focusor.transform.localScale = new Vector3(10.8f, 4.62f, 3f);
                 tutorialText.text = "This list of words may describe objects in the image" + "\n"
                     + "(Push the rod forward to continue)";
                 //helpTextPanel.GetComponent<RectTransform>().sizeDelta
@@ -1125,8 +1125,8 @@ public class MakeWordBank : MonoBehaviour {
                 {
                     if ((StateManager.falconButtons[1] == true && prevClick == false) || moveOn())
                     {
-                        focusor.transform.localPosition = new Vector3(208.12f, -187.6f, -271.39f);
-                        focusor.transform.localScale = new Vector3(10.8f, 1.1f, 3f);
+                       //focusor.transform.localPosition = new Vector3(208.12f, -187.6f, -271.39f);
+                       //focusor.transform.localScale = new Vector3(10.8f, 1.1f, 3f);
                         tutorialText.text = "Select the tag \"Building\" by pushing the rod";
                         timer = 0f;
                         stepOfTutorial++;
@@ -1157,8 +1157,8 @@ public class MakeWordBank : MonoBehaviour {
 
                 if (state.getSelected() != null)
                 { //User's holding a tag, go to the next step:
-                    focusor.transform.localPosition = new Vector3(-100.7f, -450f, -271.39f);
-                    focusor.transform.localScale = new Vector3(30.7f, 8.2f, 3f);
+                   // focusor.transform.localPosition = new Vector3(-100.7f, -450f, -271.39f);
+                   // focusor.transform.localScale = new Vector3(30.7f, 8.2f, 3f);
                     tutorialText.text = "Move the tag to a building in the image" + "\n" + "and push the rod again to place it";
                     //helpTextPanel.GetComponent<RectTransform>().sizeDelta
                     //= new Vector2(500, 60);
@@ -1196,8 +1196,8 @@ public class MakeWordBank : MonoBehaviour {
                     if (StateManager.falconButtons[1] == true && prevClick == false || moveOn())
                     {
                         timer = 0f;
-                        focusor.transform.localPosition = new Vector3(208.12f, -276.5f, -271.39f);
-                        focusor.transform.localScale = new Vector3(10.8f, 4.62f, 3f);
+                        //focusor.transform.localPosition = new Vector3(208.12f, -276.5f, -271.39f);
+                       // focusor.transform.localScale = new Vector3(10.8f, 4.62f, 3f);
                         tutorialText.text = "Select a tag you would like to discard from the wordbank";
                         //helpTextPanel.GetComponent<RectTransform>().sizeDelta
                         //= new Vector2(500, 60);
@@ -1214,8 +1214,8 @@ public class MakeWordBank : MonoBehaviour {
                 timeSpentOnStep8 += Time.deltaTime; //To prevent this step from instantly being gone over (this var is being checked in ClickAction.cs)
                 if (state.getSelected() != null)
                 { //User's holding a tag
-                    focusor.transform.localPosition = new Vector3(347.42f, -111.9f, -271.39f);
-                    focusor.transform.localScale = new Vector3(6.1f, 2.22f, 3f);
+                    //focusor.transform.localPosition = new Vector3(347.42f, -111.9f, -271.39f);
+                    //focusor.transform.localScale = new Vector3(6.1f, 2.22f, 3f);
                     tutorialText.text = "Place it in the bin, and a new word will appear in the wordbank";
                     //helpTextPanel.GetComponent<RectTransform>().sizeDelta
                     //= new Vector2(500, 60);
@@ -1230,8 +1230,8 @@ public class MakeWordBank : MonoBehaviour {
             {
                 if (state.getSelected() == null)
                 {
-                    focusor.transform.localPosition = new Vector3(208.12f, -276.5f, -271.39f);
-                    focusor.transform.localScale = new Vector3(10.8f, 4.62f, 3f);
+                   //focusor.transform.localPosition = new Vector3(208.12f, -276.5f, -271.39f);
+                    //focusor.transform.localScale = new Vector3(10.8f, 4.62f, 3f);
                     tutorialText.text = "The tag you trashed is replaced with a new one" + "\n"
                         + "(Push the rod forward to continue)"; ;
                     //helpTextPanel.GetComponent<RectTransform>().sizeDelta
@@ -1254,8 +1254,8 @@ public class MakeWordBank : MonoBehaviour {
                     {
                         tutorialText.text = "Press the next image button to go to the next image\n" +
                         "(Push the rod forward to continue)";
-                        focusor.transform.localPosition = new Vector3(332.5f, 141f, 0f); //edit focusor * (offset)
-                        focusor.transform.localScale = new Vector3(15f, 1.65f, 3f);
+                        //focusor.transform.localPosition = new Vector3(332.5f, 141f, 0f); //edit focusor * (offset)
+                        //focusor.transform.localScale = new Vector3(15f, 1.65f, 3f);
                         //helpTextPanel.GetComponent<RectTransform>().sizeDelta
                         //= new Vector2(500, 60);
                         //tutorialText.GetComponent<RectTransform>().sizeDelta
@@ -1276,8 +1276,8 @@ public class MakeWordBank : MonoBehaviour {
                 {
                     if (StateManager.falconButtons[1] == true && prevClick == false || moveOn())
                     {
-                        focusor.transform.localPosition = new Vector3(166.2f, 305f, -350f);
-                        focusor.transform.localScale = new Vector3(7.1f, 1.1f, 3f);
+                        //focusor.transform.localPosition = new Vector3(166.2f, 305f, -350f);
+                        //focusor.transform.localScale = new Vector3(7.1f, 1.1f, 3f);
                         tutorialText.text
                         = "You can quit any time you want by pressing the Quit button" + "\n" +
                         "(Push the rod forward to continue)";
@@ -1306,7 +1306,7 @@ public class MakeWordBank : MonoBehaviour {
                 if (step22proceed)
                 {
                     timer = 0f;
-                    focusor.SetActive(false);
+                   // focusor.SetActive(false);
                     helpTextContainer.SetActive(false);
                     welcomeScreen.SetActive(true);
                     mainCamera.SetActive(true);
