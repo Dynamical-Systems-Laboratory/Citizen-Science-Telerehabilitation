@@ -46,16 +46,16 @@ public class PowerpointScript : MonoBehaviour {
 	
 	public static void screenIsActive(bool isActive)
     {
-		if (!isActive && !isDisplaced)
-        {
-			mainObj.transform.position += new Vector3(100f, 0f, 0f);
-			isDisplaced = true;
-		}
-		else if (isActive && isDisplaced)
-        {
-			mainObj.transform.position -= new Vector3(100f, 0f, 0f);
-			isDisplaced = false;
-        }
+		//if (!isActive && !isDisplaced)
+  //      {
+		//	mainObj.transform.position += new Vector3(100f, 0f, 0f);
+		//	isDisplaced = true;
+		//}
+		//else if (isActive && isDisplaced)
+  //      {
+		//	mainObj.transform.position -= new Vector3(100f, 0f, 0f);
+		//	isDisplaced = false;
+  //      }
     }
 
 	void Update () {

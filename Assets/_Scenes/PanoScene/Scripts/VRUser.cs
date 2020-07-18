@@ -47,7 +47,7 @@ public class VRUser : MonoBehaviour
     {
         OVRInput.Update();
         OVRInput.FixedUpdate();
-
+        //pos & rotation = [0,1], triggers = [0,1], sticks = [0,10]
         //Debug.Log("Vr Info: " + OVRInput.GetControllerPositionTracked(playerController));
         //Debug.Log("VRHead: " + playerHead.GetCameraPositionOrientation() + "EyePos?: " + playerHead.centerEyeAnchor.position);
         Debug.Log("rightPos: " + OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + ", leftPos: " + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand));
@@ -70,13 +70,13 @@ public class VRUser : MonoBehaviour
         {
             state.setState(2); //game
         }
-        else if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch))
-        {
-            state.setState(3); //profile
-        }
-        else if (OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.LTouch))
-        {
-            state.setState(2); //game
-        }
+        //else if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch))
+        //{
+        //    state.setState(3); //profile
+        //}
+        //else if (OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.LTouch))
+        //{
+        //    state.setState(2); //game
+        //}
     }
 }

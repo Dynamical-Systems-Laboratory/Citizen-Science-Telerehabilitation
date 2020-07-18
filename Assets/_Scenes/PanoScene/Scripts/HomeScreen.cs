@@ -68,29 +68,29 @@ public class HomeScreen : MonoBehaviour
 
     public static void screenIsActive(bool isActive)
     {
-        if (!isActive && !isDisplaced)
-        {
-            foreach (GameObject obj in buttons) //buttons dissapear
-            {
-                //obj.GetComponentInChildren<Text>().color = Color.clear;
-                //obj.GetComponent<Image>().color = Color.clear;
-                obj.transform.position += new Vector3(100f, 0f, 0f);
-            }
-            background.transform.position += new Vector3(100f, 0f, 0f);
-            isDisplaced = true;
-        }
-        else if (isActive && isDisplaced)
-        {
-            foreach (GameObject obj in buttons) //buttons dissapear
-            {
-                //obj.GetComponentInChildren<Text>().color = nyuPurple;
-                //obj.GetComponent<Image>().color = unhighlighted;
-                obj.transform.position -= new Vector3(100f, 0f, 0f);
-            }
-            background.transform.position -= new Vector3(100f, 0f, 0f);
-            //background.enabled = false;
-            isDisplaced = false;
-        }
+        //if (!isActive && !isDisplaced)
+        //{
+        //    foreach (GameObject obj in buttons) //buttons dissapear
+        //    {
+        //        //obj.GetComponentInChildren<Text>().color = Color.clear;
+        //        //obj.GetComponent<Image>().color = Color.clear;
+        //        obj.transform.position += new Vector3(100f, 0f, 0f);
+        //    }
+        //    background.transform.position += new Vector3(100f, 0f, 0f);
+        //    isDisplaced = true;
+        //}
+        //else if (isActive && isDisplaced)
+        //{
+        //    foreach (GameObject obj in buttons) //buttons dissapear
+        //    {
+        //        //obj.GetComponentInChildren<Text>().color = nyuPurple;
+        //        //obj.GetComponent<Image>().color = unhighlighted;
+        //        obj.transform.position -= new Vector3(100f, 0f, 0f);
+        //    }
+        //    background.transform.position -= new Vector3(100f, 0f, 0f);
+        //    //background.enabled = false;
+        //    isDisplaced = false;
+        //}
     }
 
     void Update()
@@ -159,7 +159,7 @@ public class HomeScreen : MonoBehaviour
                     else if (obj.name == tutorialButton.name)
                     {
                         MakeWordBank.stepOfTutorial = 13;
-                        MakeWordBank.focusor.SetActive(true);
+                        //MakeWordBank.focusor.SetActive(true);
 
                         for (int i = 0; i < MakeWordBank.tags.Length; i++)
                         {

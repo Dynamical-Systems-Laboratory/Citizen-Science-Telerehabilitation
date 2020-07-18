@@ -152,18 +152,12 @@ public class StateManager : MonoBehaviour {
     {
         //defaults*
         MakeWordBank.mainCamera.SetActive(false);
-        MakeWordBank.homeCamera.SetActive(false);
-        MakeWordBank.profileCamera.SetActive(false);
         MakeWordBank.UICamera.SetActive(false);
         MakeWordBank.videoCamera.SetActive(false);
         MakeWordBank.cursorCamera.SetActive(false);
 
         //complexUser.VRPerson.SetActive(true);
         //unmove Profile, Home, About Project, and Video
-        HomeScreen.screenIsActive(false);
-        UserProfile.screenIsActive(false);
-        PowerpointScript.screenIsActive(false);
-        SimpleTutorial.screenIsActive(false);
 
         switch (userState)
         {
@@ -199,34 +193,34 @@ public class StateManager : MonoBehaviour {
                 break;
 
             case 1: //HOME
-                HomeScreen.screenIsActive(true);
+                complexUser.VRPerson.transform.position = new Vector3(10f, 0f, 0f);
                 break;
             case 2: //GAME
                 MakeWordBank.UICamera.SetActive(true); //ui selecting
                 MakeWordBank.cursorCamera.SetActive(true);
+                complexUser.VRPerson.transform.position = new Vector3(0f, 0f, 0f);
                 break;
             case 3: //PROFILE
-                UserProfile.screenIsActive(true);
+                complexUser.VRPerson.transform.position = new Vector3(-10f, 0f, 0f);
                 break;
             case 4: //CALIBRATE (simpletutorial)
                 MakeWordBank.mainCamera.SetActive(true);
                 MakeWordBank.cursorCamera.SetActive(true);
-                SimpleTutorial.screenIsActive(true);
+                complexUser.VRPerson.transform.position = new Vector3(0f, 0f, 0f);
                 break;
             case 5: //TUTORIAL
                 MakeWordBank.UICamera.SetActive(true); //ui selecting
                 MakeWordBank.cursorCamera.SetActive(true);
+                complexUser.VRPerson.transform.position = new Vector3(0f, 0f, 0f);
                 break;
             case 6: //ABOUT PROJECT
                 //move project slides
-                PowerpointScript.screenIsActive(true);
+                complexUser.VRPerson.transform.position = new Vector3(-20f, 0f, 0f);
                 break;
             case 7: //PRACTICE LEVEL
                 MakeWordBank.UICamera.SetActive(true);
                 MakeWordBank.cursorCamera.SetActive(true);
-                break;
-            case 8: //VR State ~Testing Purposes
-                MakeWordBank.cursorCamera.SetActive(true);
+                complexUser.VRPerson.transform.position = new Vector3(0f, 0f, 0f);
                 break;
             default: //STATE ERROR
                 complexUser.VRPerson.SetActive(false);
@@ -320,7 +314,7 @@ public class StateManager : MonoBehaviour {
             MakeWordBank.stepOfTutorial = 24;
             MakeWordBank.welcomeScreen.SetActive(false);
             //MakeWordBank.helpTextContainer.SetActive(false);
-            MakeWordBank.focusor.SetActive(false);
+           // MakeWordBank.focusor.SetActive(false);
             //MakeWordBank.practiceLevelText.SetActive(false);
 
             //reload tags
