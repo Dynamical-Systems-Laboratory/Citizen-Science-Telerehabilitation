@@ -145,7 +145,7 @@ public class UserProfile : MonoBehaviour
 
             if (isTyping)
             {
-                if (Input.GetKeyDown(KeyCode.Escape))
+                if (MakeWordBank.skip())
                 {
                     userName.DeactivateInputField();
                     isTyping = false;

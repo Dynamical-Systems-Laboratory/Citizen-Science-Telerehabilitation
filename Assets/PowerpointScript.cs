@@ -52,7 +52,7 @@ public class PowerpointScript : MonoBehaviour {
 				background.SetActive(true);
 			}
 			Debug.Log("Slide #: " + slideIndex);
-			if (Input.GetKeyDown(KeyCode.Escape))
+			if (MakeWordBank.skip())
             {
 				slideIndex = 1;
 				if (!hasBeenToTutorial)
@@ -83,7 +83,7 @@ public class PowerpointScript : MonoBehaviour {
 					}
                     else
                     { //Wait for keystroke
-						if (MakeWordBank.moveOn() && !Input.GetKeyDown(KeyCode.BackQuote) && !Input.GetKeyDown(KeyCode.Escape))
+						if (MakeWordBank.moveOn() && !Input.GetKeyDown(KeyCode.BackQuote) && !MakeWordBank.skip())
                         {
 							slideIndex++;
 							delay = 0f;

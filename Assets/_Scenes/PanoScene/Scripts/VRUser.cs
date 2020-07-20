@@ -47,6 +47,7 @@ public class VRUser : MonoBehaviour
     {
         OVRInput.Update();
         OVRInput.FixedUpdate();
+        StateManager.cursorAdd = (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch)) * Time.deltaTime * 0.5f;
         switch (state.getState()) //state camera control
         {
             case 0: //QUIT
@@ -98,11 +99,7 @@ public class VRUser : MonoBehaviour
         Debug.Log("LIndTrigger: " + OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) + ", RIndTrigger: " + OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch));
 
         Debug.Log("LStick: " + OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + ", RStick: " + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch)*10f);
-
-        if (OVRInput.Get(OVRInput.Button.Any))
-        {
-            Debug.Log("VR Buttons: " + OVRInput.Button.Any);
-        }
+        Debug.Log("LStickP: " + OVRInput.Get(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) + ", RStickP: " + OVRInput.Get(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch));
 
         //if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch))
         //{
@@ -120,5 +117,14 @@ public class VRUser : MonoBehaviour
         //{
         //    state.setState(2); //game
         //}
+    }
+
+    public static bool userContinue() //implemented for both hands
+    {
+        return OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch);
+    }
+    public static bool userSkip()
+    {
+        return OVRInput.GetDown(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) || OVRInput.GetDown(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch);
     }
 }

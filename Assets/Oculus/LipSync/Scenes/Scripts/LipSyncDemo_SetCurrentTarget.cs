@@ -78,7 +78,7 @@ public class LipSyncDemo_SetCurrentTarget : MonoBehaviour
         }
 
         // Close app
-        if(Input.GetKeyDown (KeyCode.Escape))
+        if(MakeWordBank.skip())
            Application.Quit();
     }
 

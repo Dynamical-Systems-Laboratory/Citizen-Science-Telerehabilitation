@@ -213,14 +213,14 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 step = 0;
             }
 
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (MakeWordBank.skip())
             {
                 step = 35;//changed from 35
             }
 
             if (step == 0)
             {
-                if (MakeWordBank.moveOn() && !Input.GetKeyDown(KeyCode.Escape))
+                if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
                     StateManager.makeCamReset = true;
                     StateManager.makeCursReset = true;
@@ -486,7 +486,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             {
                 text.text = "Now it's your turn to try all these movements" + "\n" + "(Press any key or click the mouse to continue)";
 
-                if (MakeWordBank.moveOn() && !Input.GetKeyDown(KeyCode.Escape))
+                if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
                     mainCamera.SetActive(false);
                     videoCamera.SetActive(true);

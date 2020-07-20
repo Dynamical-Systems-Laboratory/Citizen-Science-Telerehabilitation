@@ -196,24 +196,25 @@ public class StateManager : MonoBehaviour {
                 break;
             case 2: //GAME
                 MakeWordBank.UICamera.SetActive(true); //ui selecting
-                MakeWordBank.cursorCamera.SetActive(true);
+                MakeWordBank.cursorGroup.SetActive(true);
+                MakeWordBank.nextImage(MakeWordBank.imageIndex);
                 break;
             case 3: //PROFILE
                 break;
             case 4: //CALIBRATE (simpletutorial)
                 MakeWordBank.mainCamera.SetActive(true);
-                MakeWordBank.cursorCamera.SetActive(true);
+                MakeWordBank.cursorGroup.SetActive(true);
                 break;
             case 5: //TUTORIAL
                 MakeWordBank.UICamera.SetActive(true); //ui selecting
-                MakeWordBank.cursorCamera.SetActive(true);
+                MakeWordBank.cursorGroup.SetActive(true);
                 break;
             case 6: //ABOUT PROJECT
                 //move project slides
                 break;
             case 7: //PRACTICE LEVEL
                 MakeWordBank.UICamera.SetActive(true);
-                MakeWordBank.cursorCamera.SetActive(true);
+                MakeWordBank.cursorGroup.SetActive(true);
                 break;
             case 8: //Survey
                 break;

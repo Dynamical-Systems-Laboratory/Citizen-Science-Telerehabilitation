@@ -245,6 +245,8 @@ public class MakeWordBank : MonoBehaviour {
     public static Tag[] tags;
     public static int practiceMoveOn;
 
+    public static GameObject cursorGroup;
+
     //TODO: randomize indexes and tags
     //private static System.Random rng = new System.Random();
 
@@ -268,6 +270,7 @@ public class MakeWordBank : MonoBehaviour {
         UICamera = GameObject.Find("UICamera");
         videoCamera = GameObject.Find("VideoCamera");
         cursorCamera = GameObject.Find("CursorCamera");
+        cursorGroup = GameObject.Find("FalconCursor");
 
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
 
@@ -619,7 +622,7 @@ public class MakeWordBank : MonoBehaviour {
             timer3 += Time.deltaTime;
             //if (timer3 > 0.5f)
             //{
-            if (Input.GetKeyDown(KeyCode.Escape) && state.getState() == 5)
+            if (skip() && state.getState() == 5)
             {
                 //focusor.SetActive(false);
                 //mainCamera.SetActive(true);
@@ -636,7 +639,7 @@ public class MakeWordBank : MonoBehaviour {
             { //Welcome screen step:
                 //timeSpentAfterSurvey += Time.deltaTime;
                 //if (timeSpentAfterSurvey >= 2f)
-                if (moveOn() && !Input.GetKeyDown(KeyCode.Escape))
+                if (moveOn() && !skip())
                 { //Move to the next step (change for falcon):
                     welcomeScreen.SetActive(false);
                     helpTextContainer.SetActive(false);
@@ -1407,7 +1410,15 @@ public class MakeWordBank : MonoBehaviour {
 
     public static bool moveOn() //basically the catch-all method for continuing
     {
-        if (Input.GetKeyDown(KeyCode.V))
+        if (Input.GetKeyDown(KeyCode.V) || VRUser.userContinue())
+        {
+            return true;
+        }
+        return false;
+    }
+    public static bool skip()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) || VRUser.userSkip())
         {
             return true;
         }
