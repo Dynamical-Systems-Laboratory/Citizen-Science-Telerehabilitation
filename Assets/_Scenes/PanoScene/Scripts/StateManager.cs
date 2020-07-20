@@ -134,7 +134,7 @@ public class StateManager : MonoBehaviour {
      * 5 = Button Tutorial
      * 6 = About Project
      * 7 = Practice Level
-     * 8 = Practice VR State
+     * 8 = Survey
      */
      //Mock order: 6,4,5,7,1,0,1,7,2,1,3,1,2,1,0
     public int getState()
@@ -193,37 +193,32 @@ public class StateManager : MonoBehaviour {
                 break;
 
             case 1: //HOME
-                complexUser.VRPerson.transform.position = new Vector3(10f, 0f, 0f);
                 break;
             case 2: //GAME
                 MakeWordBank.UICamera.SetActive(true); //ui selecting
                 MakeWordBank.cursorCamera.SetActive(true);
-                complexUser.VRPerson.transform.position = new Vector3(0f, 0f, 0f);
                 break;
             case 3: //PROFILE
-                complexUser.VRPerson.transform.position = new Vector3(-10f, 0f, 0f);
                 break;
             case 4: //CALIBRATE (simpletutorial)
                 MakeWordBank.mainCamera.SetActive(true);
                 MakeWordBank.cursorCamera.SetActive(true);
-                complexUser.VRPerson.transform.position = new Vector3(0f, 0f, 0f);
                 break;
             case 5: //TUTORIAL
                 MakeWordBank.UICamera.SetActive(true); //ui selecting
                 MakeWordBank.cursorCamera.SetActive(true);
-                complexUser.VRPerson.transform.position = new Vector3(0f, 0f, 0f);
                 break;
             case 6: //ABOUT PROJECT
                 //move project slides
-                complexUser.VRPerson.transform.position = new Vector3(-20f, 0f, 0f);
                 break;
             case 7: //PRACTICE LEVEL
                 MakeWordBank.UICamera.SetActive(true);
                 MakeWordBank.cursorCamera.SetActive(true);
-                complexUser.VRPerson.transform.position = new Vector3(0f, 0f, 0f);
+                break;
+            case 8: //Survey
                 break;
             default: //STATE ERROR
-                complexUser.VRPerson.SetActive(false);
+                //complexUser.VRPerson.SetActive(false);
                 break;
         }
     }
@@ -362,6 +357,9 @@ public class StateManager : MonoBehaviour {
                 break;
             case 7:
                 Debug.Log("State: Practice Level");
+                break;
+            case 8: //Survey
+                Debug.Log("State: Survey");
                 break;
             default:
                 Debug.Log("State: Error " + userState);

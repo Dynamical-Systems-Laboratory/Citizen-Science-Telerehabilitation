@@ -43,25 +43,10 @@ public class PowerpointScript : MonoBehaviour {
 		mainObj = GameObject.Find("Powerpoint");
 		background = MakeWordBank.welcomeScreen;
 	}
-	
-	public static void screenIsActive(bool isActive)
-    {
-		//if (!isActive && !isDisplaced)
-  //      {
-		//	mainObj.transform.position += new Vector3(100f, 0f, 0f);
-		//	isDisplaced = true;
-		//}
-		//else if (isActive && isDisplaced)
-  //      {
-		//	mainObj.transform.position -= new Vector3(100f, 0f, 0f);
-		//	isDisplaced = false;
-  //      }
-    }
 
 	void Update () {
         if (state.getState() == 6) {
 			//gameObject.SetActive(true);
-			gameObject.transform.position = new Vector3(0f, 0f, 100f);
 			if (background != null)
 			{
 				background.SetActive(true);
@@ -107,6 +92,7 @@ public class PowerpointScript : MonoBehaviour {
 					}
 				} else { //Powerpoint over:
 					if (MakeWordBank.moveOn()) {
+						slideIndex = 1;
 						if (!hasBeenToTutorial)
 						{
 							//SimpleTutorial.inSimpleTutorial = true;
@@ -118,16 +104,9 @@ public class PowerpointScript : MonoBehaviour {
 							state.setState(1);
 							background.SetActive(false);
 						}
-						slideIndex = 1;
-						//gameObject.SetActive(false);
-						//gameObject.transform.position = new Vector3(0f, 0f, -500f);
 					}
 				}
 			}
         }
-        else
-        {
-			gameObject.transform.position = new Vector3(0f, 0f, -500f); //saftey
-		}
 	}
 }

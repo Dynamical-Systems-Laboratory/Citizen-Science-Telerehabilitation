@@ -47,29 +47,71 @@ public class VRUser : MonoBehaviour
     {
         OVRInput.Update();
         OVRInput.FixedUpdate();
+        switch (state.getState()) //state camera control
+        {
+            case 0: //QUIT
+                VRPerson.SetActive(false);
+                break;
+            case 1: //HOME
+                VRPerson.transform.position = new Vector3(10f, 0f, 0f);
+                break;
+            case 2: //IN-GAME
+                VRPerson.transform.position = new Vector3(0f, 0f, 0f);
+                break;
+            case 3: //PROFILE
+                VRPerson.transform.position = new Vector3(20f, 0f, 0f);
+                break;
+            case 4: //CALIBRATE
+                VRPerson.transform.position = new Vector3(0f, 10f, 0f);
+                break;
+            case 5: //TUTORIAL
+                VRPerson.transform.position = new Vector3(0f, 0f, 0f);
+                break;
+            case 6: //ABOUT PROJECT
+                VRPerson.transform.position = new Vector3(-10f, 0f, 0f);
+                break;
+            case 7: //PRACTICE LVL
+                VRPerson.transform.position = new Vector3(0f, 0f, 0f);
+                break;
+            case 8: //SURVEY
+                VRPerson.transform.position = new Vector3(-20f, 0f, 0f);
+                break;
+            default:
+                break;
+        }
+        /*if (Input.GetKey(KeyCode.K))
+        {
+            VRPerson.transform.position += new Vector3(.1f * Time.deltaTime, 0f, 0f);
+        }
+        else if (Input.GetKey(KeyCode.J))
+        {
+            VRPerson.transform.position -= new Vector3(.1f * Time.deltaTime, 0f, 0f);
+        }*/
+
         //pos & rotation = [0,1], triggers = [0,1], sticks = [0,10]
-        //Debug.Log("Vr Info: " + OVRInput.GetControllerPositionTracked(playerController));
         //Debug.Log("VRHead: " + playerHead.GetCameraPositionOrientation() + "EyePos?: " + playerHead.centerEyeAnchor.position);
         Debug.Log("rightPos: " + OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + ", leftPos: " + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand));
         Debug.Log("rightRot: " + OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles + ", leftRot: " + OVRInput.GetLocalControllerRotation(OVRInput.Controller.LHand).eulerAngles);
-        if (OVRInput.Get(OVRInput.Button.Any))
-        {
-            Debug.Log("VR Buttons: " + OVRInput.Button.Any);
-        }
+        
         // returns a float of the Hand Trigger’s current state on the Left Oculus Touch controller.
         Debug.Log("LHandTrigger: " + OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) + ", RHandTrigger: " + OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch));
         Debug.Log("LIndTrigger: " + OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) + ", RIndTrigger: " + OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch));
 
         Debug.Log("LStick: " + OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + ", RStick: " + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch)*10f);
 
-        if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch))
+        if (OVRInput.Get(OVRInput.Button.Any))
         {
-            state.setState(1); //home
+            Debug.Log("VR Buttons: " + OVRInput.Button.Any);
         }
-        else if (OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch))
-        {
-            state.setState(2); //game
-        }
+
+        //if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch))
+        //{
+        //    state.setState(1); //home
+        //}
+        //else if (OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch))
+        //{
+        //    state.setState(2); //game
+        //}
         //else if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch))
         //{
         //    state.setState(3); //profile
