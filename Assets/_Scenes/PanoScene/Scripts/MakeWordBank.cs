@@ -608,6 +608,8 @@ public class MakeWordBank : MonoBehaviour {
                 UICamera.SetActive(true);
                 videoCamera.SetActive(false);
 
+                nextImage(imageIndex); // changing brighter background
+
                 StateManager.moveCameraU = true;
                 StateManager.moveCameraD = true;
                 StateManager.moveCameraL = true;
