@@ -271,7 +271,7 @@ public class MakeWordBank : MonoBehaviour {
         videoCamera = GameObject.Find("VideoCamera");
         cursorCamera = GameObject.Find("CursorCamera");
         cursorGroup = GameObject.Find("FalconCursor");
-
+        
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
 
         nextButton = GameObject.Find("NextButton");
@@ -313,7 +313,7 @@ public class MakeWordBank : MonoBehaviour {
         tagsRemainingText = GameObject.FindGameObjectWithTag("TagsRemainingText").GetComponent<Text>(); // remaining tags**
 
         tagGameObjects = new List<GameObject>();
-        foreach (Transform child in transform)
+        foreach (Transform child in transform) //add all of children of this object as tags
         {
             if (child != transform) // The first child will be the parent transform, which should be excluded
             {

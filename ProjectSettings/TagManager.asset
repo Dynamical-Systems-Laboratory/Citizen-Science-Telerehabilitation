@@ -54,7 +54,7 @@ TagManager:
   - Tags
   - Bin
   - Cursor
-  - 
+  - Sphere
   - 
   - 
   - 
@@ -78,4 +78,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: UISorting
+    uniqueID: 2079279913
     locked: 0

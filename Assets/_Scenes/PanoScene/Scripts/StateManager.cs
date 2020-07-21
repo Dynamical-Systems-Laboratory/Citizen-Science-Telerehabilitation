@@ -123,9 +123,7 @@ public class StateManager : MonoBehaviour {
 
     public bool reloading = false; //covers edge case with reloading tags
 
-    Vector3 vrUIScaler = new Vector3();
-
-    private int userState = 6;
+    private int userState = 7;//6;
     /* 0 = Quit
      * 1 = Home
      * 2 = In-Game
@@ -204,6 +202,7 @@ public class StateManager : MonoBehaviour {
             case 4: //CALIBRATE (simpletutorial)
                 MakeWordBank.mainCamera.SetActive(true);
                 MakeWordBank.cursorGroup.SetActive(true);
+                //GameObject.Find("SimpleTutorialCanvas").SetActive(true);
                 break;
             case 5: //TUTORIAL
                 MakeWordBank.UICamera.SetActive(true); //ui selecting
@@ -315,10 +314,10 @@ public class StateManager : MonoBehaviour {
 
             //reload tags
         }
-        else
-        {
-            userState = 6;
-        }
+        //else
+        //{
+        //    userState = 6; //default
+        //}
     }
     private IEnumerator Start()
     {

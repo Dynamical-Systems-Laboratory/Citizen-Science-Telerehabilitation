@@ -4,6 +4,7 @@ using UnityEngine;
 
 using OVRTouchSample;
 using System;
+using UnityEngine.UI;
 
 public class VRUser : MonoBehaviour
 {
@@ -51,7 +52,14 @@ public class VRUser : MonoBehaviour
     {
         OVRInput.Update();
         OVRInput.FixedUpdate();
+
+        //if(OVRInput.Get(OVRInput.Touch.PrimaryThumbRest, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Touch.SecondaryThumbRest, OVRInput.Controller.Touch))
+        //{
+        //    state.setState(0);
+        //}
+
         StateManager.cursorAdd = (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch)) * Time.deltaTime * 0.5f;
+        
         switch (state.getState()) //state camera control
         {
             case 0: //QUIT
@@ -82,9 +90,9 @@ public class VRUser : MonoBehaviour
                 {
                     if (selectedUI != null) //if havent selected already
                     {
-                        selectedUI.transform.GetComponent<Renderer>().material.color = selectedColor;
+                        selectedUI.GetComponent<Image>().color = selectedColor;
                         //find new selection & swapSelect()
-                        if(selectedUI.name == "NextButtonPanel")
+                        if (selectedUI.name == "NextButtonPanel")
                         {
                             switch (selectedState)
                             {
@@ -185,7 +193,7 @@ public class VRUser : MonoBehaviour
                     else
                     {
                         selectedUI = GameObject.Find("NextButtonPanel");
-                        selectedColor = selectedUI.GetComponent<Renderer>().material.color;
+                        selectedColor = selectedUI.GetComponent<Image>().color;
                     }
                     
                 }
@@ -200,16 +208,18 @@ public class VRUser : MonoBehaviour
         //TODO: bring back welcome panel
         if (selectedUI != null)
         {
-            selectedUI.GetComponent<Renderer>().material.color = highlightColor;
+            selectedUI.GetComponent<Image>().color = highlightColor;
 
             if (OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RHand) || OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.LHand))
             { //selection*
-
+                //if button do thing
+                //if tag...
+                state.setSelected(selectedUI);
             }
         }
 
 
-        //pos & rotation = [0,1], triggers = [0,1], sticks = [0,10]
+        //pos & rotation = [0,1], triggers = [0,1], sticks = [-10,10]
         //Debug.Log("VRHead: " + playerHead.GetCameraPositionOrientation() + "EyePos?: " + playerHead.centerEyeAnchor.position);
         Debug.Log("rightPos: " + OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + ", leftPos: " + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand));
         Debug.Log("rightRot: " + OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles + ", leftRot: " + OVRInput.GetLocalControllerRotation(OVRInput.Controller.LHand).eulerAngles);
@@ -251,29 +261,30 @@ public class VRUser : MonoBehaviour
     public static int getStickState()
     {
         Vector2 stick = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch);
-        if (stick.y > .4 && stick.y < .95) //large range of stick vals but not fully pressed
+        if (stick.x > .25 && stick.x < .8) //large range of stick vals but not fully pressed
+        {
+            return 2; //left
+        }
+        else if (stick.x < -.25 && stick.x > -.8)
+        {
+            return -2; //right
+        }
+        else if (stick.y > .25 && stick.y < .8) //large range of stick vals but not fully pressed
         {
             return 1; //up
         }
-        else if (stick.y < -.4 && stick.y > -.95)
+        else if (stick.y < -.25 && stick.y > -.8)
         {
             return -1; //down
         }
-        else if (stick.x > .4 && stick.x < .95) //large range of stick vals but not fully pressed
-        {
-            return -2; //left
-        }
-        else if (stick.x < -.4 && stick.x > -.95)
-        {
-            return 2; //right
-        }
+        
         else { return 0; }
     }
 
     private static void swapSelect(GameObject newSelection)
     {
-        selectedColor = newSelection.GetComponent<Renderer>().material.color; //save color
-        newSelection.GetComponent<Renderer>().material.color = highlightColor; //highlight button
+        selectedColor = newSelection.GetComponent<Image>().color; //save color
+        newSelection.GetComponent<Image>().color = highlightColor; //highlight button
         selectedUI = newSelection; //save button
     }
 }
