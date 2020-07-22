@@ -58,8 +58,8 @@ public class VRUser : MonoBehaviour
         //    state.setState(0);
         //}
 
-        StateManager.cursorAdd = (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch)) * Time.deltaTime * 0.5f;
-        
+        //StateManager.cursorAdd = (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch)) * Time.deltaTime * 0.5f;
+        StateManager.cursorAdd = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand)) * 2 * Time.deltaTime;
         switch (state.getState()) //state camera control
         {
             case 0: //QUIT
