@@ -247,6 +247,8 @@ public class MakeWordBank : MonoBehaviour {
 
     public static GameObject cursorGroup;
 
+    public VRUser userMovement;
+
     //TODO: randomize indexes and tags
     //private static System.Random rng = new System.Random();
 
@@ -266,6 +268,8 @@ public class MakeWordBank : MonoBehaviour {
     //Shuffle(imageMaterials);
 
     void Awake() {
+        userMovement = GameObject.Find("VRPerson").GetComponent<VRUser>();
+
         mainCamera = GameObject.Find("Main Camera");
         UICamera = GameObject.Find("UICamera");
         videoCamera = GameObject.Find("VideoCamera");
@@ -485,9 +489,9 @@ public class MakeWordBank : MonoBehaviour {
             //Debug.Log("Practice Tags: " + practiceMoveOn + ", prog: " + state.user.getProgress());
             if (state.getState() == 2 || state.getState() == 7 || state.getState() == 5) //in-game or practice level or button tutorial
             {
-                if (Input.GetKeyDown(KeyCode.B)) //select
+                if (Input.GetKeyDown(KeyCode.B) || VRUser.userContinue()) //select
                 {
-                    if (ClickAction.buttonClose(nextButton.transform.position))
+                    if (ClickAction.buttonClose(nextButton.transform.position) || VRUser.selectedUI.name == "nextButtonPanel")
                     {
                         if (imageIndex >= imageMaterials.Length - 1)
                         {
@@ -511,7 +515,7 @@ public class MakeWordBank : MonoBehaviour {
                             state.user.setNewImage(imageIndex); //save new image
                         }
                     }
-                    else if (ClickAction.buttonClose(quitButton.transform.position)) //home
+                    else if (ClickAction.buttonClose(quitButton.transform.position) || VRUser.selectedUI.name == "HomeButtonPanel") //home
                     {
                         eventListener.OnPointerClick(quitButton);
                         //homeCamera.SetActive(true);

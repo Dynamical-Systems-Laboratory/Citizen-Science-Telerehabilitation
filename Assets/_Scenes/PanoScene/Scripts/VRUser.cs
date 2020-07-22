@@ -20,6 +20,8 @@ public class VRUser : MonoBehaviour
     public static Color selectedColor;
     public static Color highlightColor = new Color(1, 253/255, 126/255, 1);
 
+    public static GameObject cursorPos;
+
     /*  TODO!!
      * prefect tracking of headset and controllers
      * recreate cursor movement based on controller positions/rotations
@@ -45,6 +47,7 @@ public class VRUser : MonoBehaviour
         //player head and controllers set within Unity Scene (VRPerson's children)
         VRPerson = GameObject.Find("VRPerson");
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
+        cursorPos = GameObject.Find("CursorCanvas");
     }
 
     // Update is called once per frame
@@ -52,14 +55,21 @@ public class VRUser : MonoBehaviour
     {
         OVRInput.Update();
         OVRInput.FixedUpdate();
+        vrInfo();
 
+        //FORCE QUIT
         //if(OVRInput.Get(OVRInput.Touch.PrimaryThumbRest, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Touch.SecondaryThumbRest, OVRInput.Controller.Touch))
         //{
         //    state.setState(0);
         //}
 
-        //StateManager.cursorAdd = (OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch)) * Time.deltaTime * 0.5f;
-        StateManager.cursorAdd = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand)) * 2 * Time.deltaTime;
+        //CURSOR
+        Vector3 handPos = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;
+        //StateManager.cursorAdd = new Vector2(handPos.x, handPos.y) * 4f * Time.deltaTime;
+        cursorPos.transform.position = handPos;
+        Debug.Log("**HandPos: " + handPos);
+
+        //CAMERA CONTROL & CLICKING
         switch (state.getState()) //state camera control
         {
             case 0: //QUIT
@@ -213,24 +223,17 @@ public class VRUser : MonoBehaviour
             if (OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RHand) || OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.LHand))
             { //selection*
                 //if button do thing
+                selectedUI.GetComponent<Image>().color = selectedColor;
+                if (selectedUI.name == "nextButtonPanel")
+                {
+
+                }
                 //if tag...
                 state.setSelected(selectedUI);
             }
         }
 
-
-        //pos & rotation = [0,1], triggers = [0,1], sticks = [-10,10]
-        //Debug.Log("VRHead: " + playerHead.GetCameraPositionOrientation() + "EyePos?: " + playerHead.centerEyeAnchor.position);
-        Debug.Log("rightPos: " + OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + ", leftPos: " + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand));
-        Debug.Log("rightRot: " + OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles + ", leftRot: " + OVRInput.GetLocalControllerRotation(OVRInput.Controller.LHand).eulerAngles);
         
-        // returns a float of the Hand Trigger’s current state on the Left Oculus Touch controller.
-        Debug.Log("LHandTrigger: " + OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) + ", RHandTrigger: " + OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch));
-        Debug.Log("LIndTrigger: " + OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) + ", RIndTrigger: " + OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch));
-
-        Debug.Log("LStick: " + OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + ", RStick: " + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch));
-        Debug.Log("LStickP: " + OVRInput.Get(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) + ", RStickP: " + OVRInput.Get(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch));
-
         //if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch))
         //{
         //    state.setState(1); //home
@@ -249,6 +252,20 @@ public class VRUser : MonoBehaviour
         //}
     }
 
+    public static void vrInfo()
+    {
+        //pos & rotation = [0,1], triggers = [0,1], sticks = [-10,10]
+        //Debug.Log("VRHead: " + playerHead.GetCameraPositionOrientation() + "EyePos?: " + playerHead.centerEyeAnchor.position);
+        Debug.Log("rightPos: " + OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + ", leftPos: " + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand));
+        Debug.Log("rightRot: " + OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles + ", leftRot: " + OVRInput.GetLocalControllerRotation(OVRInput.Controller.LHand).eulerAngles);
+
+        // returns a float of the Hand Trigger’s current state on the Left Oculus Touch controller.
+        Debug.Log("LHandTrigger: " + OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) + ", RHandTrigger: " + OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch));
+        Debug.Log("LIndTrigger: " + OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) + ", RIndTrigger: " + OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch));
+
+        Debug.Log("LStick: " + OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + ", RStick: " + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch));
+        Debug.Log("LStickP: " + OVRInput.Get(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) + ", RStickP: " + OVRInput.Get(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch));
+    }
     public static bool userContinue() //implemented for both hands
     {
         return OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch);
