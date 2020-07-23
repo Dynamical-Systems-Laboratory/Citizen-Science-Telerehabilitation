@@ -491,7 +491,7 @@ public class MakeWordBank : MonoBehaviour {
             {
                 if (Input.GetKeyDown(KeyCode.B) || VRUser.userContinue()) //select
                 {
-                    if (ClickAction.buttonClose(nextButton.transform.position) || VRUser.selectedUI.name == "nextButtonPanel")
+                    if (ClickAction.buttonClose(nextButton.transform.position))
                     {
                         if (imageIndex >= imageMaterials.Length - 1)
                         {
@@ -515,7 +515,7 @@ public class MakeWordBank : MonoBehaviour {
                             state.user.setNewImage(imageIndex); //save new image
                         }
                     }
-                    else if (ClickAction.buttonClose(quitButton.transform.position) || VRUser.selectedUI.name == "HomeButtonPanel") //home
+                    else if (ClickAction.buttonClose(quitButton.transform.position) ) //home
                     {
                         eventListener.OnPointerClick(quitButton);
                         //homeCamera.SetActive(true);

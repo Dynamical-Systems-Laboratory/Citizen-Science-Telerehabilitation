@@ -16,11 +16,13 @@ public class VRUser : MonoBehaviour
     public OVRInput.Controller playerController;
     public OVRCameraRig playerHead;
 
-    public static GameObject selectedUI;
     public static Color selectedColor;
     public static Color highlightColor = new Color(1, 253/255, 126/255, 1);
 
     public static GameObject cursorPos;
+    public static Vector3 controllerOffset;
+
+    public static GameObject testCursor;
 
     /*  TODO!!
      * prefect tracking of headset and controllers
@@ -47,7 +49,8 @@ public class VRUser : MonoBehaviour
         //player head and controllers set within Unity Scene (VRPerson's children)
         VRPerson = GameObject.Find("VRPerson");
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
-        cursorPos = GameObject.Find("CursorCanvas");
+        cursorPos = GameObject.Find("CursorSphere");
+        testCursor = GameObject.Find("exampleCursor");
     }
 
     // Update is called once per frame
@@ -63,11 +66,24 @@ public class VRUser : MonoBehaviour
         //    state.setState(0);
         //}
 
-        //CURSOR
+        
         Vector3 handPos = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;
+
+        //INDEPENDENT CURSOR
         //StateManager.cursorAdd = new Vector2(handPos.x, handPos.y) * 4f * Time.deltaTime;
-        cursorPos.transform.position = handPos;
-        Debug.Log("**HandPos: " + handPos);
+        //cursorPos.transform.position = new Vector3(handPos.x, (handPos.y+.2f) * 2f, handPos.z);// * Time.deltaTime;
+        //cursorPos.transform.LookAt(GameObject.Find("VRPerson").transform, GameObject.Find("CenterEyeAnchor").transform.position);//VRPerson.transform);
+
+        if(OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) < .9)
+        {
+            controllerOffset = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand);
+        }
+        else if (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .9)
+        {
+            //testCursor.transform.position = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) - controllerOffset) / 4f;
+            testCursor.transform.position += new Vector3((OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) - controllerOffset).x, (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) - controllerOffset).y, 0f);
+        }
+
 
         //CAMERA CONTROL & CLICKING
         switch (state.getState()) //state camera control
@@ -95,118 +111,6 @@ public class VRUser : MonoBehaviour
                 break;
             case 7: //PRACTICE LVL
                 VRPerson.transform.position = new Vector3(0f, 0f, 0f);
-                int selectedState = getStickState();
-                if (selectedState != 0) // if moving selection
-                {
-                    if (selectedUI != null) //if havent selected already
-                    {
-                        selectedUI.GetComponent<Image>().color = selectedColor;
-                        //find new selection & swapSelect()
-                        if (selectedUI.name == "NextButtonPanel")
-                        {
-                            switch (selectedState)
-                            {
-                                case -1:
-                                    swapSelect(GameObject.FindGameObjectWithTag("Tag1"));
-                                    break;
-                                case 2:
-                                    swapSelect(GameObject.Find("Bin"));
-                                    break;
-                            }
-                        }
-                        else if (selectedUI.name == "HomeButtonPanel")
-                        {
-                            switch (selectedState)
-                            {
-                                case 1:
-                                    swapSelect(GameObject.FindGameObjectWithTag("Tag4"));
-                                    break;
-                                case 2:
-                                    swapSelect(GameObject.Find("Bin"));
-                                    break;
-                            }
-                        }
-                        else if (selectedUI.name == "Bin")
-                        {
-                            switch (selectedState)
-                            {
-                                case -2:
-                                    swapSelect(GameObject.Find("NextButtonPanel"));
-                                    break;
-                            }
-                        }
-                        else if (selectedUI.tag == "Tag1")
-                        {
-                            switch (selectedState)
-                            {
-                                case 1:
-                                    swapSelect(GameObject.Find("NextButtonPanel"));
-                                    break;
-                                case -1:
-                                    swapSelect(GameObject.FindGameObjectWithTag("Tag2"));
-                                    break;
-                                case 2:
-                                    swapSelect(GameObject.Find("Bin"));
-                                    break;
-                            }
-                        }
-                        else if (selectedUI.tag == "Tag2")
-                        {
-                            switch (selectedState)
-                            {
-                                case 1:
-                                    swapSelect(GameObject.FindGameObjectWithTag("Tag1"));
-                                    break;
-                                case -1:
-                                    swapSelect(GameObject.FindGameObjectWithTag("Tag3"));
-                                    break;
-                                case 2:
-                                    swapSelect(GameObject.Find("Bin"));
-                                    break;
-                            }
-                        }
-                        else if (selectedUI.tag == "Tag3")
-                        {
-                            switch (selectedState)
-                            {
-                                case 1:
-                                    swapSelect(GameObject.FindGameObjectWithTag("Tag2"));
-                                    break;
-                                case -1:
-                                    swapSelect(GameObject.FindGameObjectWithTag("Tag4"));
-                                    break;
-                                case 2:
-                                    swapSelect(GameObject.Find("Bin"));
-                                    break;
-                            }
-                        }
-                        else if (selectedUI.tag == "Tag4")
-                        {
-                            switch (selectedState)
-                            {
-                                case 1:
-                                    swapSelect(GameObject.FindGameObjectWithTag("Tag3"));
-                                    break;
-                                case -1:
-                                    swapSelect(GameObject.Find("HomeButtonPanel"));
-                                    break;
-                                case 2:
-                                    swapSelect(GameObject.Find("Bin"));
-                                    break;
-                            }
-                        }
-                        else
-                        {
-                            Debug.Log("Selected Not Found");
-                        }
-                    }
-                    else
-                    {
-                        selectedUI = GameObject.Find("NextButtonPanel");
-                        selectedColor = selectedUI.GetComponent<Image>().color;
-                    }
-                    
-                }
                 break;
             case 8: //SURVEY
                 VRPerson.transform.position = new Vector3(-20f, 0f, 0f);
@@ -216,23 +120,6 @@ public class VRUser : MonoBehaviour
                 break;
         }
         //TODO: bring back welcome panel
-        if (selectedUI != null)
-        {
-            selectedUI.GetComponent<Image>().color = highlightColor;
-
-            if (OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RHand) || OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.LHand))
-            { //selection*
-                //if button do thing
-                selectedUI.GetComponent<Image>().color = selectedColor;
-                if (selectedUI.name == "nextButtonPanel")
-                {
-
-                }
-                //if tag...
-                state.setSelected(selectedUI);
-            }
-        }
-
         
         //if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch))
         //{
@@ -251,6 +138,7 @@ public class VRUser : MonoBehaviour
         //    state.setState(2); //game
         //}
     }
+    
 
     public static void vrInfo()
     {
@@ -266,6 +154,7 @@ public class VRUser : MonoBehaviour
         Debug.Log("LStick: " + OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + ", RStick: " + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch));
         Debug.Log("LStickP: " + OVRInput.Get(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) + ", RStickP: " + OVRInput.Get(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch));
     }
+
     public static bool userContinue() //implemented for both hands
     {
         return OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch);
@@ -296,12 +185,5 @@ public class VRUser : MonoBehaviour
         }
         
         else { return 0; }
-    }
-
-    private static void swapSelect(GameObject newSelection)
-    {
-        selectedColor = newSelection.GetComponent<Image>().color; //save color
-        newSelection.GetComponent<Image>().color = highlightColor; //highlight button
-        selectedUI = newSelection; //save button
     }
 }

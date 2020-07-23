@@ -123,6 +123,8 @@ public class StateManager : MonoBehaviour {
 
     public bool reloading = false; //covers edge case with reloading tags
 
+    public bool vrControls = false;
+
     private int userState = 7;//6;
     /* 0 = Quit
      * 1 = Home
@@ -153,7 +155,7 @@ public class StateManager : MonoBehaviour {
         MakeWordBank.UICamera.SetActive(false);
         MakeWordBank.videoCamera.SetActive(false);
         MakeWordBank.cursorCamera.SetActive(false);
-
+        //GameObject.Find("SimpleTutorialCanvas").SetActive(false);
         //complexUser.VRPerson.SetActive(true);
         //unmove Profile, Home, About Project, and Video
 
@@ -194,26 +196,26 @@ public class StateManager : MonoBehaviour {
                 break;
             case 2: //GAME
                 MakeWordBank.UICamera.SetActive(true); //ui selecting
-                //MakeWordBank.cursorCamera.SetActive(true);
+                MakeWordBank.cursorCamera.SetActive(true);
                 MakeWordBank.nextImage(MakeWordBank.imageIndex);
                 break;
             case 3: //PROFILE
                 break;
             case 4: //CALIBRATE (simpletutorial)
                 MakeWordBank.mainCamera.SetActive(true);
-                //MakeWordBank.cursorCamera.SetActive(true);
+                MakeWordBank.cursorCamera.SetActive(true);
                 //GameObject.Find("SimpleTutorialCanvas").SetActive(true);
                 break;
             case 5: //TUTORIAL
                 MakeWordBank.UICamera.SetActive(true); //ui selecting
-                //MakeWordBank.cursorCamera.SetActive(true);
+                MakeWordBank.cursorCamera.SetActive(true);
                 break;
             case 6: //ABOUT PROJECT
                 //move project slides
                 break;
             case 7: //PRACTICE LEVEL
                 MakeWordBank.UICamera.SetActive(true);
-                //MakeWordBank.cursorCamera.SetActive(true);
+                MakeWordBank.cursorCamera.SetActive(true);
                 break;
             case 8: //Survey
                 break;
@@ -548,6 +550,12 @@ public class StateManager : MonoBehaviour {
         //float keyspeed = 0.07f * cursorSpeed; //x
         //float keyspeed2 = .00016f * cursorSpeed; //y
         nextCursorPos = cursorPos;
+
+        if (vrControls)
+        {
+
+        }
+
         if (moveCursorL)
         {
             //if ((Kinect.LHandPos.x - Kinect.LShoulderPos.x) < (SimpleTutorial.LHandLeftAverage * 0.4f) && (Kinect.RHandPos.x - Kinect.RShoulderPos.x) < (SimpleTutorial.RHandLeftAverage * 0.4f))
@@ -625,22 +633,22 @@ public class StateManager : MonoBehaviour {
         nextCursorPos.z = -cursorSize;
 
         //Cursor cannot move past screen borders (bondaries)
-        if (nextCursorPos.x > MakeWordBank.rightBound)
-        {
-            nextCursorPos.x = MakeWordBank.rightBound;
-        }
-        else if (nextCursorPos.x < MakeWordBank.leftBound)
-        {
-            nextCursorPos.x = MakeWordBank.leftBound;
-        }
-        else if (nextCursorPos.y > MakeWordBank.upperBound)
-        {
-            nextCursorPos.y = MakeWordBank.upperBound;
-        }
-        else if (nextCursorPos.y < MakeWordBank.lowerBound)
-        {
-            nextCursorPos.y = MakeWordBank.lowerBound;
-        }
+        //if (nextCursorPos.x > MakeWordBank.rightBound)
+        //{
+        //    nextCursorPos.x = MakeWordBank.rightBound;
+        //}
+        //else if (nextCursorPos.x < MakeWordBank.leftBound)
+        //{
+        //    nextCursorPos.x = MakeWordBank.leftBound;
+        //}
+        //else if (nextCursorPos.y > MakeWordBank.upperBound)
+        //{
+        //    nextCursorPos.y = MakeWordBank.upperBound;
+        //}
+        //else if (nextCursorPos.y < MakeWordBank.lowerBound)
+        //{
+        //    nextCursorPos.y = MakeWordBank.lowerBound;
+        //}
 
         //if (Input.GetKey(KeyCode.T))
         //{
