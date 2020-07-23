@@ -157,7 +157,6 @@ public class StateManager : MonoBehaviour {
         MakeWordBank.cursorCamera.SetActive(false);
         //GameObject.Find("SimpleTutorialCanvas").SetActive(false);
         //complexUser.VRPerson.SetActive(true);
-        //unmove Profile, Home, About Project, and Video
 
         switch (userState)
         {
@@ -292,14 +291,7 @@ public class StateManager : MonoBehaviour {
         falconButtons = new bool[4] { false, false, false, false };
         speeds = new List<Tuple<float, float, float, float>>();
         mainCamera = GameObject.Find("Main Camera");
-        //if (mainCamera == null)
-        //{
-        //    mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-        //}
-        //if (mainCamera == null)
-        //{
-        //    mainCamera = MakeWordBank.mainCamera;
-        //}
+
         if (user.getPracticeLevelState()[0])
         {//necessary for camera stuff
             //userState = 1;
@@ -316,10 +308,6 @@ public class StateManager : MonoBehaviour {
 
             //reload tags
         }
-        //else
-        //{
-        //    userState = 6; //default
-        //}
     }
     private IEnumerator Start()
     {
@@ -367,6 +355,7 @@ public class StateManager : MonoBehaviour {
                 Debug.Log("State: Error " + userState);
                 break;
         }
+
         /*if (allSystemsGo)
         {
             moveCursorL = true; // cursors
@@ -381,117 +370,13 @@ public class StateManager : MonoBehaviour {
             //makeCamReset = false;
         }*/
 
-        //if (Kinect.LHandPos.x != 0 || Kinect.LHandPos.y != 0 || Kinect.LHandPos.z != 0)
-        //{
-        //    kinectReady = true;
-        //}
         kinectReady = true;
-        /*
-        if (Math.Abs(Kinect.LHandPos.z - Kinect.LShoulderPos.z) < smallestLHdiff) {
-            smallestLHdiff = Math.Abs(Kinect.LHandPos.z - Kinect.LShoulderPos.z);
-        }
-        
-        if (Math.Abs(Kinect.RHandPos.z - Kinect.RShoulderPos.z) < smallestRHdiff) {
-            smallestRHdiff = Math.Abs(Kinect.RHandPos.z - Kinect.RShoulderPos.z);
-        }
-        
-        if (Math.Abs(Kinect.LElbowPos.y - Kinect.LShoulderPos.y) > largestLEdiff) {
-            largestLEdiff = Math.Abs(Kinect.LElbowPos.y - Kinect.LShoulderPos.y);
-        }
-        
-        if (Math.Abs(Kinect.RElbowPos.y - Kinect.RShoulderPos.y) > largestREdiff) {
-            largestREdiff = Math.Abs(Kinect.RElbowPos.y - Kinect.RShoulderPos.y);
-        }
-
-        if (Math.Abs(Kinect.LHandPos.z - Kinect.LShoulderPos.z) > (smallestLHdiff / 0.8f) 
-            && Math.Abs(Kinect.RHandPos.z - Kinect.RShoulderPos.z) > (smallestRHdiff / 0.8f)
-            && Math.Abs(Kinect.LElbowPos.y - Kinect.LShoulderPos.y) < (largestLEdiff * 0.6f)
-            && Math.Abs(Kinect.RElbowPos.y - Kinect.RShoulderPos.y) < (largestREdiff * 0.6f)) {
-            
-            falconButtons[1] = true;
-            
-            smallestLHdiff = 999f; 
-            smallestRHdiff = 999f;
-            largestLEdiff = 0f;
-            largestREdiff = 0f;
-            
-        }
-        else {
-            falconButtons[1] = false;
-        }
-        */
-
         falconButtons[1] = false;
         rodClicked = false;
-
-        //LHandSpeed = (Kinect.LHandPos.z - prevLHand_z) / Time.deltaTime;
-        //RHandSpeed = (Kinect.RHandPos.z - prevRHand_z) / Time.deltaTime;
-        //LElbowSpeed = (Kinect.LElbowPos.y - prevLElbow_y) / Time.deltaTime;
-        //RElbowSpeed = (Kinect.RElbowPos.y - prevRElbow_y) / Time.deltaTime;
-
-        // If the user push the rod and then pull the rod OR pull the rod and then push the rod at a certain speed within 3.5 seconds, register a click
-        //Change for calibration
-        //if (speedInitializeTime < 3.5f)
-        //{
-        //    speedInitializeTime += Time.deltaTime;
-        //    Tuple<float, float, float, float> speed = new Tuple<float, float, float, float>(LHandSpeed, RHandSpeed, LElbowSpeed, RElbowSpeed);
-        //    speeds.Add(speed);
-        //}
-        //else
-        //{
-        //    for (int i = 0; i < speeds.Count; i++)
-        //    {
-        //        if ((Kinect.LShoulderPos.y > Kinect.LElbowPos.y) && (Kinect.LElbowPos.y < Kinect.LHandPos.y) 
-        //            && (Kinect.RShoulderPos.y > Kinect.RElbowPos.y) && (Kinect.RElbowPos.y < Kinect.RHandPos.y)) 
-        //        {
-        //            if (speeds[i].Item1 > 0.45 && LHandSpeed < -0.45 && speeds[i].Item2 > 0.45 && RHandSpeed < -0.45
-        //            && speeds[i].Item3 < -0.09 && LElbowSpeed > 0.09 && speeds[i].Item4 < -0.09 && RElbowSpeed > 0.09)
-        //            {
-        //                falconButtons[1] = true;
-        //                rodClicked = true;
-        //            }
-        //            else if (speeds[i].Item1 < -0.45 && LHandSpeed > 0.45 && speeds[i].Item2 < -0.45 && RHandSpeed > 0.45
-        //                && speeds[i].Item3 > 0.09 && LElbowSpeed < -0.09 && speeds[i].Item4 > 0.09 && RElbowSpeed < -0.09)
-        //            {
-        //                falconButtons[1] = true;
-        //                rodClicked = true;
-        //            }
-        //        }
-        //    }
-
-        //    for (int i = 0; i < speeds.Count - 1; i++)
-        //    {
-        //        speeds[i] = speeds[i + 1];
-        //    }
-
-        //    Tuple<float, float, float, float> new_speed = new Tuple<float, float, float, float>(LHandSpeed, RHandSpeed, LElbowSpeed, RElbowSpeed);
-
-        //    speeds[speeds.Count - 1] = new_speed;
-        //}
         if (Input.GetKey(KeyCode.V)) //new update - forwards and backwards
         {
             rodClicked = true;
         }
-
-        /*
-        if (((Kinect.LHandPos.z - prevLHand_z) / Time.deltaTime) < -0.45 && ((Kinect.RHandPos.z - prevRHand_z) / Time.deltaTime) < -0.45 &&
-         ((Kinect.LElbowPos.y - prevLElbow_y) / Time.deltaTime) > 0.09 && ((Kinect.RElbowPos.y - prevRElbow_y) / Time.deltaTime) > 0.09 && pushCoolDown >= 1f)
-        {
-            falconButtons[1] = true;
-            pushCoolDown = 0f;
-        }
-        else
-        {
-            falconButtons[1] = false;
-        }
-
-        pushCoolDown += Time.deltaTime;
-        */
-
-        //prevLElbow_y = Kinect.LElbowPos.y;
-        //prevRElbow_y = Kinect.RElbowPos.y;
-        //prevLHand_z = Kinect.LHandPos.z;
-        //prevRHand_z = Kinect.RHandPos.z;
 
         cameraL = false;
         cameraR = false;
@@ -501,14 +386,9 @@ public class StateManager : MonoBehaviour {
         cameraUpCoolDown += Time.deltaTime;
         cameraDownCoolDown += Time.deltaTime;
 
-        //if (!SimpleTutorial.inSimpleTutorial)
-        //{ //Allow camera to rotate in SimpleTutorial
-        //    falconButtons[0] = false ;
-        //}
-        
         //TODO: Set cameraPos to orientation of oculus
-
         nextCameraPos = cameraPos;
+        nextCameraPos = GameObject.Find("CenterEyeAnchor").transform.position;
 
         if (makeCamReset) //cam reset method
         {
@@ -539,9 +419,6 @@ public class StateManager : MonoBehaviour {
         Debug.Log("Camera Info: (" + nextCameraPos.y + ", " + nextCameraPos.x + ", " + nextCameraPos.z + "), abs: " + absRotation + ", speed: " + camSpeed);
         cameraPos = nextCameraPos;
 
-        //avgDistance_x = Mathf.Abs(((Kinect.LHandPos.x - Kinect.LShoulderPos.x) + (Kinect.RHandPos.x - Kinect.RShoulderPos.x)) / 2);
-        //avgDistance_y = Mathf.Abs(((Kinect.LHandPos.y - Kinect.LShoulderPos.y) + (Kinect.RHandPos.y - Kinect.RShoulderPos.y)) / 2);
-
         cursorL = false;
         cursorR = false;
         cursorU = false;
@@ -558,12 +435,6 @@ public class StateManager : MonoBehaviour {
 
         if (moveCursorL)
         {
-            //if ((Kinect.LHandPos.x - Kinect.LShoulderPos.x) < (SimpleTutorial.LHandLeftAverage * 0.4f) && (Kinect.RHandPos.x - Kinect.RShoulderPos.x) < (SimpleTutorial.RHandLeftAverage * 0.4f))
-            //{
-            //    nextCursorPos = new Vector3((cursorPos.x - (0.0005f + 0.02f * avgDistance_x)), cursorPos.y, 0.418f);
-            //    cursorL = true;
-            //}
-
             //nextCursorPos = new Vector3(cursorPos.x + Input.GetAxis("Horizontal")* keyspeed, cursorPos.y, 0.418f);
             //cursorL = true;
             if (Input.GetKey(KeyCode.LeftArrow))
@@ -575,14 +446,6 @@ public class StateManager : MonoBehaviour {
 
         if (moveCursorR)
         {
-            //if ((Kinect.LHandPos.x - Kinect.LShoulderPos.x) > (SimpleTutorial.LHandRightAverage * 0.4f) && (Kinect.RHandPos.x - Kinect.RShoulderPos.x) > (SimpleTutorial.RHandRightAverage * 0.4f))
-            //{
-            //    nextCursorPos = new Vector3((cursorPos.x + (0.0005f + 0.02f * avgDistance_x)), cursorPos.y, 0.418f);
-            //    cursorR = true;
-            //}
-
-            //nextCursorPos = new Vector3(cursorPos.x + Input.GetAxis("Horizontal")* keyspeed, cursorPos.y, 0.418f);
-            //cursorR = true;
             if (Input.GetKey(KeyCode.RightArrow))
             {
                 nextCursorPos += new Vector3(.06f * cursorSpeed * Time.deltaTime, 0f, 0f);
@@ -592,14 +455,6 @@ public class StateManager : MonoBehaviour {
 
         if (moveCursorU)
         {
-            //if ((Kinect.LHandPos.y - Kinect.LShoulderPos.y) > (SimpleTutorial.LHandUpAverage * 0.4f) && (Kinect.RHandPos.y - Kinect.RShoulderPos.y) > (SimpleTutorial.RHandUpAverage * 0.4f))
-            //{
-            //    nextCursorPos = new Vector3(cursorPos.x, (cursorPos.y + (0.0005f + 0.02f * avgDistance_y)), 0.418f);
-            //    cursorU = true;
-            //}
-
-            //nextCursorPos = new Vector3(cursorPos.x, cursorPos.y + Input.GetAxis("Vertical") * keyspeed2, 0.418f);
-            //cursorU = true;
             if (Input.GetKey(KeyCode.UpArrow))
             {
                 nextCursorPos += new Vector3(0f, .048f * cursorSpeed * Time.deltaTime, 0f);
@@ -609,14 +464,6 @@ public class StateManager : MonoBehaviour {
 
         if (moveCursorD)
         {
-            //if ((Kinect.LHandPos.y - Kinect.LShoulderPos.y) < (SimpleTutorial.LHandDownAverage * 0.4f) && (Kinect.RHandPos.y - Kinect.RShoulderPos.y) < (SimpleTutorial.RHandDownAverage * 0.4f))
-            //{
-            //    nextCursorPos = new Vector3(cursorPos.x, (cursorPos.y - (0.0005f + 0.02f * avgDistance_y)), 0.418f);
-            //    cursorD = true;
-            //}
-
-            //nextCursorPos = new Vector3(cursorPos.x, cursorPos.y + Input.GetAxis("Vertical") * keyspeed2, 0.418f);
-            //cursorD = true;
             if (Input.GetKey(KeyCode.DownArrow))
             {
                 nextCursorPos += new Vector3(0f, -.048f * cursorSpeed * Time.deltaTime, 0f);
@@ -673,22 +520,6 @@ public class StateManager : MonoBehaviour {
 
         //Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
         //Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);
-
-        //buttons = 0;
-        //if (kinectReady)
-        //{
-        //    buttons |= falconButtons[0] ? 1 : 0; // middle button
-        //    buttons |= falconButtons[1] ? 2 : 0; // left button
-        //    buttons |= falconButtons[2] ? 4 : 0; // top button
-        //    buttons |= falconButtons[3] ? 2 : 0; // right button
-        //}
-        //else
-        //{
-        //    cursorPos = Input.mousePosition;
-        //    buttons |= Input.GetMouseButton(1) ? 1 : 0; // right mouse button
-        //    buttons |= Input.GetMouseButton(0) ? 2 : 0; // left mouse button
-        //}
-        //Debug.Log("Update() exit - StateManager");
     }
 
     public void loadTags(int images, List<GameObject> tagExample) //loadTags(user.getLastImage())
@@ -705,10 +536,3 @@ public class StateManager : MonoBehaviour {
         }
     }
 }
-
-//struct InvisTag
-//{
-//    string name;
-//    //color blue
-//    Vector3 location;
-//}

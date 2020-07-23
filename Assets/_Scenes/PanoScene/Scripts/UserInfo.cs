@@ -173,7 +173,6 @@ public class UserInfo //not sure if : this() is necessary
         //yield return null;
     }
 
-    //other
     public void show()
     {
         Debug.Log("*User: " + userName + ", Time: " + getTimeLogged() + ", Date Joined: " + dateJoined);

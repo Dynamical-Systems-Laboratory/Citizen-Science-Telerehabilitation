@@ -157,26 +157,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
     }
 
-    public static void screenIsActive(bool isActive)
-    {
-        //if (!isActive && !isDisplaced)
-        //{
-        //    textPanel.transform.position += new Vector3(100f, 0f, 0f);
-        //    circle.transform.position += new Vector3(100f, 0f, 0f);
-        //    vert.transform.position += new Vector3(100f, 0f, 0f);
-        //    horiz.transform.position += new Vector3(100f, 0f, 0f);
-        //    isDisplaced = true;
-        //}
-        //else if (isActive && isDisplaced)
-        //{
-        //    textPanel.transform.position -= new Vector3(100f, 0f, 0f);
-        //    circle.transform.position -= new Vector3(100f, 0f, 0f);
-        //    vert.transform.position -= new Vector3(100f, 0f, 0f);
-        //    horiz.transform.position -= new Vector3(100f, 0f, 0f);
-        //    isDisplaced = false;
-        //}
-    }
-
     // Update is called once per frame
     void Update()
     {

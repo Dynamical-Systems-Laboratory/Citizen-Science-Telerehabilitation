@@ -361,35 +361,6 @@ public class MakeWordBank : MonoBehaviour {
             tags[i].setText(tutorialWords[tutorialWordsIndex]);
             tutorialWordsIndex++;
         }
-        ////////
-        /// 
-        /// 
-        // **************** IMAGE 1: *******************************
-        /*for (int i = 0; i < tags.Length; i++) {
-			tags[i].setText(wordBank [ SEQUENCE[imageIndex, sequenceIndex] ]);
-			sequenceIndex++;
-		}
-		tagSphere.GetComponent<Renderer> ().material = imageMaterials [imageIndex];*/
-
-        /*
-        VP1 = GameObject.Find("VPlayer1");
-        VP2 = GameObject.Find("VPlayer2");
-        VP3 = GameObject.Find("VPlayer3");
-        VP4 = GameObject.Find("VPlayer4");
-        VP5 = GameObject.Find("VPlayer5");
-
-        cameraLRVP = VP1.GetComponent<UnityEngine.Video.VideoPlayer>();
-        cameraUDVP = VP2.GetComponent<UnityEngine.Video.VideoPlayer>();
-        cursorLRVP = VP3.GetComponent<UnityEngine.Video.VideoPlayer>();
-        cursorUDVP = VP4.GetComponent<UnityEngine.Video.VideoPlayer>();
-        clickVP = VP5.GetComponent<UnityEngine.Video.VideoPlayer>();
-
-        VP1.SetActive(false);
-        VP2.SetActive(false);
-        VP3.SetActive(false);
-        VP4.SetActive(false);
-        VP5.SetActive(false);
-        */
 
         //updating user info
         //TODO: read data
@@ -518,10 +489,6 @@ public class MakeWordBank : MonoBehaviour {
                     else if (ClickAction.buttonClose(quitButton.transform.position) ) //home
                     {
                         eventListener.OnPointerClick(quitButton);
-                        //homeCamera.SetActive(true);
-                        //mainCamera.SetActive(false);
-                        //UICamera.SetActive(false);
-                        //videoCamera.SetActive(false);
                         state.setState(1);
                     }
                     else
@@ -558,8 +525,6 @@ public class MakeWordBank : MonoBehaviour {
             state.cameraMoving = true;
             UICamera.SetActive(true);
             videoCamera.SetActive(false);
-            //VP1.SetActive(false);
-            //VP5.SetActive(false);
             if (state.getState() == 7) //inPracticeLevel
             {
                 practiceMoveOn = state.tagsPlaced.Count;
@@ -630,10 +595,6 @@ public class MakeWordBank : MonoBehaviour {
             //{
             if (skip() && state.getState() == 5)
             {
-                //focusor.SetActive(false);
-                //mainCamera.SetActive(true);
-                //UICamera.SetActive(true);
-                //videoCamera.SetActive(false);
                 step22proceed = true;
                 stepOfTutorial = 22;
                 state.setState(7);
@@ -649,23 +610,6 @@ public class MakeWordBank : MonoBehaviour {
                 { //Move to the next step (change for falcon):
                     welcomeScreen.SetActive(false);
                     helpTextContainer.SetActive(false);
-                    //focusor.SetActive(true);
-                    //focusor.transform.localPosition = new Vector3(-100.7f, -450f, -271.39f);
-                    //focusor.transform.localScale = new Vector3(30.7f, 8.2f, 3f);
-                    //play1 = true;
-                    /*
-                    helpTextContainer.SetActive(true);
-                    //Change the size of the box
-                    tutorialText.text = "Rotate the rod this way to pan the image to the left";
-                    //Width from 150->218
-                    //228,24
-                    helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                    = new Vector2(315, 25);
-                    tutorialText.GetComponent<RectTransform>().sizeDelta
-                    = new Vector2(310, 60);
-                    tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x + 2, -22);
-                    helpTextContainer.transform.localPosition = new Vector3(-220f, 200f, 0f);
-                    */
                     state.setState(5);
                     stepOfTutorial = 13; //All videos moved to pleTutorial, sSimtart with step 13
                 }
@@ -748,14 +692,6 @@ public class MakeWordBank : MonoBehaviour {
                         tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
                         helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                         stepOfTutorial++;
-                        /*
-                        helpTextContainer.SetActive(false);
-                        timer = 0f;
-                        VP2.SetActive(true);
-                        cameraRVP.Play();
-                        StateManager.moveCamera = false;
-                        stepOfTutorial++;
-                        */
                     }
                 }
             }
@@ -815,8 +751,7 @@ public class MakeWordBank : MonoBehaviour {
                     helpTextContainer.SetActive(true);
                     //Change the size of the box
                     tutorialText.text = "Pan the image upward" + "\n" + "(To replay the video, press the space bar on your keyboard)";
-                    //Width from 150->218
-                    //228,24
+                    //Width from 150->218   228,24
                     helpTextPanel.GetComponent<RectTransform>().sizeDelta
                     = new Vector2(500, 60);
                     tutorialText.GetComponent<RectTransform>().sizeDelta
@@ -1083,13 +1018,6 @@ public class MakeWordBank : MonoBehaviour {
             }
             else if (stepOfTutorial == 13)
             {
-                //if (clickVP.isPlaying)
-                //{
-                //    startedPlaying = true;
-                //}
-
-                //if (startedPlaying && (!clickVP.isPlaying))
-                //{
                 mainCamera.SetActive(true);
                 UICamera.SetActive(true);
                 videoCamera.SetActive(false);
@@ -1106,16 +1034,8 @@ public class MakeWordBank : MonoBehaviour {
                     tag.transform.Translate(newPos * Time.deltaTime);
                 }
                 helpTextContainer.SetActive(true);
-               //focusor.transform.localPosition = new Vector3(208.12f, -276.5f, -271.39f); //transforming black thing (literally making the user focus on something)
-                //focusor.transform.localScale = new Vector3(10.8f, 4.62f, 3f);
                 tutorialText.text = "This list of words may describe objects in the image" + "\n"
                     + "(Push the rod forward to continue)";
-                //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                //= new Vector2(500, 60);
-                //tutorialText.GetComponent<RectTransform>().sizeDelta
-                //= new Vector2(500, 65);
-                //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -10);
-                //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                 timer = 0f;
                 stepOfTutorial++;
                 //}
@@ -1127,8 +1047,6 @@ public class MakeWordBank : MonoBehaviour {
                 {
                     if ((StateManager.falconButtons[1] == true && prevClick == false) || moveOn())
                     {
-                       //focusor.transform.localPosition = new Vector3(208.12f, -187.6f, -271.39f);
-                       //focusor.transform.localScale = new Vector3(10.8f, 1.1f, 3f);
                         tutorialText.text = "Select the tag \"Building\" by pushing the rod";
                         timer = 0f;
                         stepOfTutorial++;
@@ -1137,37 +1055,9 @@ public class MakeWordBank : MonoBehaviour {
             }
             else if (stepOfTutorial == 15)
             {
-                /*
-                if (Input.GetKeyDown("space"))
-                {
-                    stepOfTutorial = 12;
-                }
-                */
-
-                //Debug.Log("Click: " + ClickAction.state.getSelected() + ", " + eventListener);
-                //Debug.Log("System: " + EventSystem.current + ", " + eventS);
-
-                //foreach (Tag newTag in tags)
-                //{
-                //    GameObject obj = GameObject.FindGameObjectsWithTag(newTag.getText()).transform.position;
-                //}
-
-                //PointerEventData pointerData = new PointerEventData(EventSystem.current);
-                //pointerData.position = state.getCursorPosition();//Input.mousePosition;
-                //List<RaycastResult> results = new List<RaycastResult>();
-                //EventSystem.current.RaycastAll(pointerData, results);
-
                 if (state.getSelected() != null)
-                { //User's holding a tag, go to the next step:
-                   // focusor.transform.localPosition = new Vector3(-100.7f, -450f, -271.39f);
-                   // focusor.transform.localScale = new Vector3(30.7f, 8.2f, 3f);
+                {
                     tutorialText.text = "Move the tag to a building in the image" + "\n" + "and push the rod again to place it";
-                    //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                    //= new Vector2(500, 60);
-                    //tutorialText.GetComponent<RectTransform>().sizeDelta
-                    //= new Vector2(500, 65);
-                    //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                    //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                     stepOfTutorial++;
                 }
             }
@@ -1176,12 +1066,6 @@ public class MakeWordBank : MonoBehaviour {
                 if (state.getSelected() == null)
                 {
                     tutorialText.text = "If none of the tags appear in the image, you can trash a tag " + "\n" + "(Push the rod forward to continue)";
-                    //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                    //= new Vector2(500, 60);
-                    //tutorialText.GetComponent<RectTransform>().sizeDelta
-                    //= new Vector2(500, 65);
-                    //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -5);
-                    //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                     stepOfTutorial++;
                 }
                 else
@@ -1198,15 +1082,7 @@ public class MakeWordBank : MonoBehaviour {
                     if (StateManager.falconButtons[1] == true && prevClick == false || moveOn())
                     {
                         timer = 0f;
-                        //focusor.transform.localPosition = new Vector3(208.12f, -276.5f, -271.39f);
-                       // focusor.transform.localScale = new Vector3(10.8f, 4.62f, 3f);
                         tutorialText.text = "Select a tag you would like to discard from the wordbank";
-                        //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                        //= new Vector2(500, 60);
-                        //tutorialText.GetComponent<RectTransform>().sizeDelta
-                        //= new Vector2(500, 65);
-                        //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                        //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                         stepOfTutorial++;
                     }
                 }
@@ -1216,15 +1092,7 @@ public class MakeWordBank : MonoBehaviour {
                 timeSpentOnStep8 += Time.deltaTime; //To prevent this step from instantly being gone over (this var is being checked in ClickAction.cs)
                 if (state.getSelected() != null)
                 { //User's holding a tag
-                    //focusor.transform.localPosition = new Vector3(347.42f, -111.9f, -271.39f);
-                    //focusor.transform.localScale = new Vector3(6.1f, 2.22f, 3f);
                     tutorialText.text = "Place it in the bin, and a new word will appear in the wordbank";
-                    //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                    //= new Vector2(500, 60);
-                    //tutorialText.GetComponent<RectTransform>().sizeDelta
-                    //= new Vector2(500, 65);
-                    //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                    //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                     stepOfTutorial++;
                 }
             }
@@ -1232,16 +1100,8 @@ public class MakeWordBank : MonoBehaviour {
             {
                 if (state.getSelected() == null)
                 {
-                   //focusor.transform.localPosition = new Vector3(208.12f, -276.5f, -271.39f);
-                    //focusor.transform.localScale = new Vector3(10.8f, 4.62f, 3f);
                     tutorialText.text = "The tag you trashed is replaced with a new one" + "\n"
                         + "(Push the rod forward to continue)"; ;
-                    //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                    //= new Vector2(500, 60);
-                    //tutorialText.GetComponent<RectTransform>().sizeDelta
-                    //= new Vector2(500, 65);
-                    //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                    //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                     stepOfTutorial++;
                 }
 
@@ -1256,14 +1116,6 @@ public class MakeWordBank : MonoBehaviour {
                     {
                         tutorialText.text = "Press the next image button to go to the next image\n" +
                         "(Push the rod forward to continue)";
-                        //focusor.transform.localPosition = new Vector3(332.5f, 141f, 0f); //edit focusor * (offset)
-                        //focusor.transform.localScale = new Vector3(15f, 1.65f, 3f);
-                        //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                        //= new Vector2(500, 60);
-                        //tutorialText.GetComponent<RectTransform>().sizeDelta
-                        //= new Vector2(500, 65);
-                        //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                        //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                         timer = 0f;
                         stepOfTutorial++;
                     }
@@ -1278,17 +1130,9 @@ public class MakeWordBank : MonoBehaviour {
                 {
                     if (StateManager.falconButtons[1] == true && prevClick == false || moveOn())
                     {
-                        //focusor.transform.localPosition = new Vector3(166.2f, 305f, -350f);
-                        //focusor.transform.localScale = new Vector3(7.1f, 1.1f, 3f);
                         tutorialText.text
                         = "You can quit any time you want by pressing the Quit button" + "\n" +
                         "(Push the rod forward to continue)";
-                        //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                        //= new Vector2(500, 60);
-                        //tutorialText.GetComponent<RectTransform>().sizeDelta
-                        //= new Vector2(500, 65);
-                        //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                        //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                         timer = 0f;
                         stepOfTutorial++;
                     }
@@ -1359,12 +1203,6 @@ public class MakeWordBank : MonoBehaviour {
 
                         helpTextContainer.SetActive(true);
                         tutorialText.text = "Place 3 tags and then move to the next image to begin data collection";
-                        //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                        //= new Vector2(500, 60);
-                        //tutorialText.GetComponent<RectTransform>().sizeDelta
-                        //= new Vector2(500, 65);
-                        //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                        //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
 
                         stepOfTutorial++; //End
                         //inPracticeLevel = true;
