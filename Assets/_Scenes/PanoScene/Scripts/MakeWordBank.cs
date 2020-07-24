@@ -458,7 +458,7 @@ public class MakeWordBank : MonoBehaviour {
             //CLICKING
             //V for button press
             //Debug.Log("Practice Tags: " + practiceMoveOn + ", prog: " + state.user.getProgress());
-            if (state.getState() == 2 || state.getState() == 7 || state.getState() == 5) //in-game or practice level or button tutorial
+            if (state.isGaming()) //in-game or practice level or button tutorial
             {
                 if (Input.GetKeyDown(KeyCode.B) || VRUser.userContinue()) //select
                 {

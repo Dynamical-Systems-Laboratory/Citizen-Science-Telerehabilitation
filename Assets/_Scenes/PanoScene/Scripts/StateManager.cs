@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 using System.IO;
 using System.Linq;
+using UnityEngine.SocialPlatforms;
 
 /*
  StateManager is an object used for accessing and setting the state of the program 
@@ -520,6 +521,11 @@ public class StateManager : MonoBehaviour {
 
         //Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
         //Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);
+    }
+
+    public bool isGaming()
+    {
+        return userState == 2 || userState == 5 || userState == 7;
     }
 
     public void loadTags(int images, List<GameObject> tagExample) //loadTags(user.getLastImage())

@@ -14,7 +14,8 @@ public class VRUser : MonoBehaviour
     //main controls
     public GameObject VRPerson;
     public OVRInput.Controller playerController;
-    public OVRCameraRig playerHead;
+    //public OVRCameraRig playerHead;
+    public GameObject playerHead;
 
     public static Color selectedColor;
     public static Color highlightColor = new Color(1, 253/255, 126/255, 1);
@@ -48,6 +49,7 @@ public class VRUser : MonoBehaviour
     { //Ctrl+K+C = comment (+K+U = uncomment)
         //player head and controllers set within Unity Scene (VRPerson's children)
         VRPerson = GameObject.Find("VRPerson");
+        playerHead = GameObject.Find("CenterEyeAnchor");
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
         cursorPos = GameObject.Find("CursorSphere");
         testCursor = GameObject.Find("exampleCursor");
@@ -66,23 +68,44 @@ public class VRUser : MonoBehaviour
         //    state.setState(0);
         //}
 
+        //RESETS
+        if (state.isGaming())
+        {
+            if (userSkip())
+            {
+                testCursor.transform.position = GameObject.Find("cursorCenter").transform.position;
+            }
+        }
+
         
         Vector3 handPos = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;
+        //vertical and horizontal offset for camera angle
+        float horizontalAxis = Input.GetAxis("Horizontal"); //reading the input:
+        float verticalAxis = Input.GetAxis("Vertical");
+        Vector3 ranchor = playerHead.transform.right;
+        Vector3 uanchor = playerHead.transform.up;
 
-        //INDEPENDENT CURSOR
-        //StateManager.cursorAdd = new Vector2(handPos.x, handPos.y) * 4f * Time.deltaTime;
-        //cursorPos.transform.position = new Vector3(handPos.x, (handPos.y+.2f) * 2f, handPos.z);// * Time.deltaTime;
-        //cursorPos.transform.LookAt(GameObject.Find("VRPerson").transform, GameObject.Find("CenterEyeAnchor").transform.position);//VRPerson.transform);
+        if ((OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) < .9)
+            || (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) >= .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) < .9))
+        {
+            controllerOffset = handPos;
+        }
+        else if (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .9 || OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) >= .9)
+        {
+            //testCursor.transform.position += handPos - controllerOffset;
+            Vector3 change = handPos - controllerOffset;
+            /*fanchor.y = 0f;
+            ranchor.y = 0f;
+            fanchor.Normalize();
+            ranchor.Normalize();
+            change = fanchor * verticalAxis + ranchor * horizontalAxis;
+            testCursor.transform.Translate(change * Time.deltaTime * StateManager.cursorSpeed);*/
+            testCursor.transform.position += playerHead.transform.right * change.x * Time.deltaTime * StateManager.cursorSpeed;
+            testCursor.transform.position += playerHead.transform.up * change.y * Time.deltaTime * StateManager.cursorSpeed;
+            //direction * amount * deltatime
 
-        if(OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) < .9)
-        {
-            controllerOffset = OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand);
         }
-        else if (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .9)
-        {
-            //testCursor.transform.position = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) - controllerOffset) / 4f;
-            testCursor.transform.position += new Vector3((OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) - controllerOffset).x, (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) - controllerOffset).y, 0f);
-        }
+        Debug.Log("*True Cursor Location: " + testCursor.transform.position);
 
 
         //CAMERA CONTROL & CLICKING
@@ -121,6 +144,8 @@ public class VRUser : MonoBehaviour
         }
         //TODO: bring back welcome panel
         
+        Debug.Log("Clicking: " + isClicking());
+
         //if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch))
         //{
         //    state.setState(1); //home
@@ -163,7 +188,20 @@ public class VRUser : MonoBehaviour
     {
         return OVRInput.GetDown(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) || OVRInput.GetDown(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch);
     }
-    
+    public static bool isClicking() //getbutton
+    {
+        return OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) >= .9 || OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) >= .9;
+    }
+    public static bool clickDown() //getbuttondown
+    {
+        if ((OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) < .9)
+            || (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) < .9))
+        {
+            return true;
+        }
+        return false;
+    }
+
     public static int getStickState()
     {
         Vector2 stick = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch);
