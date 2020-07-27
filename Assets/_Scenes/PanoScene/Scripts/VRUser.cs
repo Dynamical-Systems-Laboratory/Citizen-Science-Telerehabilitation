@@ -25,9 +25,12 @@ public class VRUser : MonoBehaviour
 
     public static GameObject testCursor;
 
-    public static GameObject centerer;
-    public static GameObject farUp;
+    public static GameObject centerer; //centering cursor
+    public static GameObject farUp; //suplimental coordinate system for controllers
     public static GameObject farRight;
+    public static GameObject farForward;
+
+    public static bool extraControls = true;
 
     /*  TODO!!
      * prefect tracking of headset and controllers
@@ -57,10 +60,11 @@ public class VRUser : MonoBehaviour
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
         cursorPos = GameObject.Find("CursorSphere");
         testCursor = GameObject.Find("exampleCursor");
-        centerer = GameObject.Find("cursorCenter");
 
+        centerer = GameObject.Find("cursorCenter");
         farUp = GameObject.Find("headsetUp");
         farRight = GameObject.Find("headsetRight");
+        farForward = GameObject.Find("headsetForward");
     }
 
     // Update is called once per frame
@@ -88,11 +92,14 @@ public class VRUser : MonoBehaviour
         //prevent cursor from moving z relative to user
         
         Vector3 handPos = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;
-        Vector3 xOffset = farRight.transform.position - handPos;
-        Vector3 yOffset = farUp.transform.position - handPos;
-        Vector3 movementVal = new Vector3(xOffset.magnitude, yOffset.magnitude, 0f);
+        Vector3 movementVal = new Vector3((farRight.transform.position - handPos).magnitude, (farUp.transform.position - handPos).magnitude, (farForward.transform.position - handPos).magnitude);
 
-        Vector2 sticks = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch);
+        //extra control
+        Vector2 cursorMove = new Vector2(0f, 0f);
+        if (extraControls)
+        {
+            cursorMove = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch);
+        }
 
         if ((OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) < .9)
             || (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) >= .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) < .9))
@@ -103,14 +110,16 @@ public class VRUser : MonoBehaviour
         else if (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .9 || OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) >= .9)
         {
             Vector3 change = controllerOffset - movementVal; // handPos - controllerOffset;
-            change *= Time.deltaTime * 16f * StateManager.cursorSpeed;
-            sticks += new Vector2(change.x, change.y);
+            change *= Time.deltaTime * 24f * StateManager.cursorSpeed;
+            cursorMove += new Vector2(change.x, change.y);
+            /*if (change.z > ...){
+                //ispushing
+            }*/
         }
         
-        testCursor.transform.position += (3 * Time.deltaTime * ((testCursor.transform.up * sticks.y) + (testCursor.transform.right * sticks.x)));
+        testCursor.transform.position += (3f * Time.deltaTime * ((testCursor.transform.up * cursorMove.y) + (testCursor.transform.right * cursorMove.x)));
 
         Debug.Log("*True Cursor Location: " + testCursor.transform.position);
-
 
 
         //CAMERA CONTROL & CLICKING

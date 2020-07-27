@@ -374,7 +374,7 @@ public class StateManager : MonoBehaviour {
         kinectReady = true;
         falconButtons[1] = false;
         rodClicked = false;
-        if (Input.GetKey(KeyCode.V)) //new update - forwards and backwards
+        if ((Input.GetKey(KeyCode.V) && VRUser.extraControls) || VRUser.isClicking()) //new update - forwards and backwards
         {
             rodClicked = true;
         }
@@ -398,7 +398,7 @@ public class StateManager : MonoBehaviour {
             makeCamReset = false;
         }
         nextCameraPos.y = getLowestAngle(nextCameraPos.y); //reset x pos if goes too far
-        if (cameraMoving)
+        /*if (cameraMoving)
         {
             foreach (GameObject obj in tagsPlaced)
             {
@@ -415,7 +415,7 @@ public class StateManager : MonoBehaviour {
                 }
                 obj.GetComponent<Image>().color = newColor;
             }
-        }
+        }*/
         //Debug.Log("Camera Info: " + OVRCameraRig.);
         Debug.Log("Camera Info: (" + nextCameraPos.y + ", " + nextCameraPos.x + ", " + nextCameraPos.z + "), abs: " + absRotation + ", speed: " + camSpeed);
         cameraPos = nextCameraPos;
@@ -429,16 +429,11 @@ public class StateManager : MonoBehaviour {
         //float keyspeed2 = .00016f * cursorSpeed; //y
         nextCursorPos = cursorPos;
 
-        if (vrControls)
-        {
-
-        }
-
         if (moveCursorL)
         {
             //nextCursorPos = new Vector3(cursorPos.x + Input.GetAxis("Horizontal")* keyspeed, cursorPos.y, 0.418f);
             //cursorL = true;
-            if (Input.GetKey(KeyCode.LeftArrow))
+            if (Input.GetKey(KeyCode.LeftArrow) && VRUser.extraControls)
             {
                 nextCursorPos += new Vector3(-.06f * cursorSpeed * Time.deltaTime, 0f, 0f);
                 cursorL = true;
@@ -447,7 +442,7 @@ public class StateManager : MonoBehaviour {
 
         if (moveCursorR)
         {
-            if (Input.GetKey(KeyCode.RightArrow))
+            if (Input.GetKey(KeyCode.RightArrow) && VRUser.extraControls)
             {
                 nextCursorPos += new Vector3(.06f * cursorSpeed * Time.deltaTime, 0f, 0f);
                 cursorR = true;
@@ -456,7 +451,7 @@ public class StateManager : MonoBehaviour {
 
         if (moveCursorU)
         {
-            if (Input.GetKey(KeyCode.UpArrow))
+            if (Input.GetKey(KeyCode.UpArrow) && VRUser.extraControls)
             {
                 nextCursorPos += new Vector3(0f, .048f * cursorSpeed * Time.deltaTime, 0f);
                 cursorU = true;
@@ -465,7 +460,7 @@ public class StateManager : MonoBehaviour {
 
         if (moveCursorD)
         {
-            if (Input.GetKey(KeyCode.DownArrow))
+            if (Input.GetKey(KeyCode.DownArrow) && VRUser.extraControls)
             {
                 nextCursorPos += new Vector3(0f, -.048f * cursorSpeed * Time.deltaTime, 0f);
                 cursorD = true;

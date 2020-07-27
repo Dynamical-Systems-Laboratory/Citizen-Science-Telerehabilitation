@@ -1254,7 +1254,7 @@ public class MakeWordBank : MonoBehaviour {
 
     public static bool moveOn() //basically the catch-all method for continuing
     {
-        if (Input.GetKeyDown(KeyCode.V) || VRUser.userContinue())
+        if ((Input.GetKeyDown(KeyCode.V) && VRUser.extraControls) || VRUser.userContinue())
         {
             return true;
         }
@@ -1262,7 +1262,7 @@ public class MakeWordBank : MonoBehaviour {
     }
     public static bool skip()
     {
-        if (Input.GetKeyDown(KeyCode.Escape) || VRUser.userSkip())
+        if ((Input.GetKeyDown(KeyCode.Escape) && VRUser.extraControls) || VRUser.userSkip())
         {
             return true;
         }
