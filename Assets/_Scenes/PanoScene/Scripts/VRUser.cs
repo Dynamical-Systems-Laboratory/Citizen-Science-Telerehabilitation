@@ -25,6 +25,10 @@ public class VRUser : MonoBehaviour
 
     public static GameObject testCursor;
 
+    public static GameObject centerer;
+    public static GameObject farUp;
+    public static GameObject farRight;
+
     /*  TODO!!
      * prefect tracking of headset and controllers
      * recreate cursor movement based on controller positions/rotations
@@ -53,6 +57,10 @@ public class VRUser : MonoBehaviour
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
         cursorPos = GameObject.Find("CursorSphere");
         testCursor = GameObject.Find("exampleCursor");
+        centerer = GameObject.Find("cursorCenter");
+
+        farUp = GameObject.Find("headsetUp");
+        farRight = GameObject.Find("headsetRight");
     }
 
     // Update is called once per frame
@@ -69,43 +77,40 @@ public class VRUser : MonoBehaviour
         //}
 
         //RESETS
-        if (state.isGaming())
+        if (state.isGaming() || StateManager.makeCursReset)
         {
             if (userSkip())
             {
-                testCursor.transform.position = GameObject.Find("cursorCenter").transform.position;
+                testCursor.transform.position = centerer.transform.position;
             }
         }
 
+        //prevent cursor from moving z relative to user
         
         Vector3 handPos = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;
-        //vertical and horizontal offset for camera angle
-        float horizontalAxis = Input.GetAxis("Horizontal"); //reading the input:
-        float verticalAxis = Input.GetAxis("Vertical");
-        Vector3 ranchor = playerHead.transform.right;
-        Vector3 uanchor = playerHead.transform.up;
+        Vector3 xOffset = farRight.transform.position - handPos;
+        Vector3 yOffset = farUp.transform.position - handPos;
+        Vector3 movementVal = new Vector3(xOffset.magnitude, yOffset.magnitude, 0f);
+
+        Vector2 sticks = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch);
 
         if ((OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) < .9)
             || (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) >= .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) < .9))
         {
-            controllerOffset = handPos;
+            //controllerOffset = handPos;
+            controllerOffset = movementVal;
         }
         else if (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .9 || OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) >= .9)
         {
-            //testCursor.transform.position += handPos - controllerOffset;
-            Vector3 change = handPos - controllerOffset;
-            /*fanchor.y = 0f;
-            ranchor.y = 0f;
-            fanchor.Normalize();
-            ranchor.Normalize();
-            change = fanchor * verticalAxis + ranchor * horizontalAxis;
-            testCursor.transform.Translate(change * Time.deltaTime * StateManager.cursorSpeed);*/
-            testCursor.transform.position += playerHead.transform.right * change.x * Time.deltaTime * StateManager.cursorSpeed;
-            testCursor.transform.position += playerHead.transform.up * change.y * Time.deltaTime * StateManager.cursorSpeed;
-            //direction * amount * deltatime
-
+            Vector3 change = controllerOffset - movementVal; // handPos - controllerOffset;
+            change *= Time.deltaTime * 16f * StateManager.cursorSpeed;
+            sticks += new Vector2(change.x, change.y);
         }
+        
+        testCursor.transform.position += (3 * Time.deltaTime * ((testCursor.transform.up * sticks.y) + (testCursor.transform.right * sticks.x)));
+
         Debug.Log("*True Cursor Location: " + testCursor.transform.position);
+
 
 
         //CAMERA CONTROL & CLICKING
