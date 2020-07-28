@@ -126,6 +126,9 @@ public class StateManager : MonoBehaviour {
 
     public bool vrControls = false;
 
+    public static GameObject trueCursor;
+    public static GameObject cursorOffset;
+
     private int userState = 7;//6;
     /* 0 = Quit
      * 1 = Home
@@ -237,7 +240,8 @@ public class StateManager : MonoBehaviour {
 
     public Vector3 getCursorPosition()
     {
-        return cursorPos;
+        //return cursorPos;
+        return trueCursor.transform.position - cursorOffset.transform.position;
     }
 
     public Vector3 getCameraPosition()
@@ -292,6 +296,8 @@ public class StateManager : MonoBehaviour {
         falconButtons = new bool[4] { false, false, false, false };
         speeds = new List<Tuple<float, float, float, float>>();
         mainCamera = GameObject.Find("Main Camera");
+        trueCursor = GameObject.Find("exampleCursor");
+        cursorOffset = GameObject.Find("cursorCenter");
 
         if (user.getPracticeLevelState()[0])
         {//necessary for camera stuff
@@ -309,6 +315,8 @@ public class StateManager : MonoBehaviour {
 
             //reload tags
         }
+
+        cursorPos = GameObject.Find("exampleCursor").transform.position;
     }
     private IEnumerator Start()
     {
@@ -388,16 +396,16 @@ public class StateManager : MonoBehaviour {
         cameraDownCoolDown += Time.deltaTime;
 
         //TODO: Set cameraPos to orientation of oculus
+        cameraPos = GameObject.Find("CenterEyeAnchor").transform.rotation.eulerAngles;
         nextCameraPos = cameraPos;
-        nextCameraPos = GameObject.Find("CenterEyeAnchor").transform.position;
-
+        
         if (makeCamReset) //cam reset method
         {
-            nextCameraPos = new Vector3(0f, 0f, 0f);
+            //nextCameraPos = new Vector3(0f, 0f, 0f);
             absRotation = nextCameraPos;
             makeCamReset = false;
         }
-        nextCameraPos.y = getLowestAngle(nextCameraPos.y); //reset x pos if goes too far
+        //nextCameraPos.y = getLowestAngle(nextCameraPos.y); //reset x pos if goes too far
         /*if (cameraMoving)
         {
             foreach (GameObject obj in tagsPlaced)
@@ -416,8 +424,7 @@ public class StateManager : MonoBehaviour {
                 obj.GetComponent<Image>().color = newColor;
             }
         }*/
-        //Debug.Log("Camera Info: " + OVRCameraRig.);
-        Debug.Log("Camera Info: (" + nextCameraPos.y + ", " + nextCameraPos.x + ", " + nextCameraPos.z + "), abs: " + absRotation + ", speed: " + camSpeed);
+        Debug.Log("Camera Info: " + getCameraPosition() + ", abs: " + absRotation + ", speed: " + camSpeed);
         cameraPos = nextCameraPos;
 
         cursorL = false;
@@ -473,7 +480,7 @@ public class StateManager : MonoBehaviour {
         }
         cursorAdd = new Vector3(0f,0f,0f);
 
-        nextCursorPos.z = -cursorSize;
+        //nextCursorPos.z = -cursorSize;
 
         //Cursor cannot move past screen borders (bondaries)
         //if (nextCursorPos.x > MakeWordBank.rightBound)
@@ -493,15 +500,6 @@ public class StateManager : MonoBehaviour {
         //    nextCursorPos.y = MakeWordBank.lowerBound;
         //}
 
-        //if (Input.GetKey(KeyCode.T))
-        //{
-        //    cursorSize += .0006f;
-        //}
-        //if (Input.GetKey(KeyCode.Y))
-        //{
-        //    cursorSize -= .0006f;
-        //}
-
         if (makeCursReset)
         {
             cursorPos = new Vector3(0f, 0f, -cursorSize);
@@ -512,7 +510,7 @@ public class StateManager : MonoBehaviour {
             cursorPos = nextCursorPos;
         }
         Vector3 outCursor = cursorPos * cursorPosMod; //modifier to match tag vals (was 180)
-        Debug.Log("Cursor Info: " + cursorPos + ", *Mod: " + outCursor + ", Size: " + -cursorSize);
+        Debug.Log("Cursor Info: " + getCursorPosition() + ", Mag: " + getCursorPosition().magnitude + ", Size: " + -cursorSize);
 
         //Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
         //Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);

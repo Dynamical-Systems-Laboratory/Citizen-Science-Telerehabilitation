@@ -38,10 +38,6 @@ TagManager:
   - ProgressBackground
   - ProgressPercent
   - UserInfo
-  - Tag1
-  - Tag2
-  - Tag3
-  - Tag4
   layers:
   - Default
   - TransparentFX

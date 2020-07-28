@@ -5,6 +5,7 @@ using UnityEngine;
 using OVRTouchSample;
 using System;
 using UnityEngine.UI;
+using UnityEditor.Build.Content;
 
 public class VRUser : MonoBehaviour
 {
@@ -17,11 +18,15 @@ public class VRUser : MonoBehaviour
     //public OVRCameraRig playerHead;
     public GameObject playerHead;
 
+    public static Color nothing = new Color(1, 1, 1, 0);
     public static Color selectedColor;
     public static Color highlightColor = new Color(1, 253/255, 126/255, 1);
 
     public static GameObject cursorPos;
     public static Vector3 controllerOffset;
+    public static Color cursorHighlight = Color.yellow;
+    public static Color cursorHighlight2 = Color.red;
+
 
     public static GameObject testCursor;
 
@@ -54,6 +59,8 @@ public class VRUser : MonoBehaviour
     }
     private void Awake()
     { //Ctrl+K+C = comment (+K+U = uncomment)
+        cursorHighlight.a = 115f / 255f;
+        cursorHighlight2.a = 100f / 255f;
         //player head and controllers set within Unity Scene (VRPerson's children)
         VRPerson = GameObject.Find("VRPerson");
         playerHead = GameObject.Find("CenterEyeAnchor");
@@ -72,7 +79,7 @@ public class VRUser : MonoBehaviour
     {
         OVRInput.Update();
         OVRInput.FixedUpdate();
-        vrInfo();
+        //vrInfo();
 
         //FORCE QUIT
         //if(OVRInput.Get(OVRInput.Touch.PrimaryThumbRest, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Touch.SecondaryThumbRest, OVRInput.Controller.Touch))
@@ -83,14 +90,14 @@ public class VRUser : MonoBehaviour
         //RESETS
         if (state.isGaming() || StateManager.makeCursReset)
         {
-            if (userSkip())
+            if (userSkip(true))
             {
                 testCursor.transform.position = centerer.transform.position;
             }
         }
 
         //prevent cursor from moving z relative to user
-        
+
         Vector3 handPos = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;
         Vector3 movementVal = new Vector3((farRight.transform.position - handPos).magnitude, (farUp.transform.position - handPos).magnitude, (farForward.transform.position - handPos).magnitude);
 
@@ -116,11 +123,22 @@ public class VRUser : MonoBehaviour
                 //ispushing
             }*/
         }
-        
+
         testCursor.transform.position += (3f * Time.deltaTime * ((testCursor.transform.up * cursorMove.y) + (testCursor.transform.right * cursorMove.x)));
+        Debug.Log("*True Cursor Location: " + testCursor.transform.position + ", Local: " + testCursor.transform.localPosition);
 
-        Debug.Log("*True Cursor Location: " + testCursor.transform.position);
-
+        if (isClicking())
+        {
+            GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight2;
+        }
+        else if (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .2 || OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .2)
+        {
+            GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight;
+        }
+        else
+        {
+            GameObject.Find("showClick").GetComponent<Image>().color = nothing;
+        }
 
         //CAMERA CONTROL & CLICKING
         switch (state.getState()) //state camera control
@@ -158,7 +176,7 @@ public class VRUser : MonoBehaviour
         }
         //TODO: bring back welcome panel
         
-        Debug.Log("Clicking: " + isClicking());
+        //Debug.Log("Clicking: " + isClicking());
 
         //if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch))
         //{
@@ -194,13 +212,27 @@ public class VRUser : MonoBehaviour
         Debug.Log("LStickP: " + OVRInput.Get(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) + ", RStickP: " + OVRInput.Get(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch));
     }
 
-    public static bool userContinue() //implemented for both hands
+    public static bool userContinue(bool isContinuous = false) //implemented for both hands
     {
-        return OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch);
-    }
-    public static bool userSkip()
+        if (!isContinuous) 
+        {
+            return OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch);
+        }
+        else
+        {
+            return OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch);
+        }
+     }
+    public static bool userSkip(bool isContinuous = false)
     {
-        return OVRInput.GetDown(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) || OVRInput.GetDown(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch);
+        if (!isContinuous)
+        {
+            return OVRInput.GetDown(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) || OVRInput.GetDown(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch);
+        }
+        else
+        {
+            return OVRInput.Get(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch);
+        }
     }
     public static bool isClicking() //getbutton
     {
@@ -238,4 +270,8 @@ public class VRUser : MonoBehaviour
         
         else { return 0; }
     }
+    //public static void getUILocation(Transform object, Transform userPOV = playerHead.transform) //transform - gets pos and rot
+    //{
+
+    //}
 }
