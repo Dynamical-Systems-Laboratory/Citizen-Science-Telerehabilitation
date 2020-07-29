@@ -317,13 +317,17 @@ public class MakeWordBank : MonoBehaviour {
         tagsRemainingText = GameObject.FindGameObjectWithTag("TagsRemainingText").GetComponent<Text>(); // remaining tags**
 
         tagGameObjects = new List<GameObject>();
-        foreach (Transform child in transform) //add all of children of this object as tags
+        /*foreach (Transform child in transform) //add all of children of this object as tags
         {
             if (child != transform) // The first child will be the parent transform, which should be excluded
             {
                 tagGameObjects.Add(child.gameObject);
             }
-        }
+        }*/
+        tagGameObjects.Add(GameObject.Find("Tag1"));
+        tagGameObjects.Add(GameObject.Find("Tag2"));
+        tagGameObjects.Add(GameObject.Find("Tag3"));
+        tagGameObjects.Add(GameObject.Find("Tag4"));
 
         tags = new Tag[tagGameObjects.Count];
         for (int i = 0; i < tags.Length; i++) {
@@ -462,7 +466,7 @@ public class MakeWordBank : MonoBehaviour {
             {
                 if (Input.GetKeyDown(KeyCode.B) || VRUser.userContinue()) //select
                 {
-                    if (ClickAction.buttonClose(nextButton.transform.position))
+                    if (ClickAction.uiButtonClose(nextButton.transform.position))
                     {
                         if (imageIndex >= imageMaterials.Length - 1)
                         {
@@ -486,7 +490,7 @@ public class MakeWordBank : MonoBehaviour {
                             state.user.setNewImage(imageIndex); //save new image
                         }
                     }
-                    else if (ClickAction.buttonClose(quitButton.transform.position) ) //home
+                    else if (ClickAction.uiButtonClose2(quitButton.transform.position) ) //home
                     {
                         eventListener.OnPointerClick(quitButton);
                         state.setState(1);
@@ -506,7 +510,7 @@ public class MakeWordBank : MonoBehaviour {
                         }
                         eventListener.OnPointerClick();
                     }
-                    else if (ClickAction.isByTrash(state.getCursorPosition())) //trashing
+                    else if (ClickAction.binClose(state.getCursorPosition())) //trashing
                     {
                         eventListener.OnPointerClick();
                         newTag(ClickAction.initTagPos);

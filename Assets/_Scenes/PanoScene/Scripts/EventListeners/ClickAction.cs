@@ -78,7 +78,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			state.getSelected().transform.position = new
               Vector3(state.getCursorPosition().x * StateManager.cursorPosMod, state.getCursorPosition().y * StateManager.cursorPosMod, initTagPos.z);
 		}
-        Debug.Log("Bin Distance: " + (trashy.transform.position - state.getCursorPosition()).magnitude + ", isBy? " + isByTrash(state.getCursorPosition()) + ", Count: " + trashedTags.Count);
+        Debug.Log("Bin Distance: " + (trashy.transform.position - state.getCursorPosition()).magnitude + ", isBy? " + binClose(state.getCursorPosition()) + ", Count: " + trashedTags.Count);
         Debug.Log("Next Button Distance: " + (nextButton.transform.position - state.getCursorPosition()).magnitude);
         Debug.Log("Quit Button Distance: " + (quitButton.transform.position - state.getCursorPosition()).magnitude);
     }
@@ -89,7 +89,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
         //    objectClicked = background;
         //}
 
-        if (objectClicked == null && isByTrash(state.getCursorPosition()) && state.getSelected() != null)
+        if (objectClicked == null && binClose(state.getCursorPosition()) && state.getSelected() != null)
 		{//if the cursor is over the trash, the obj we are looking at is the trash
 			objectClicked = trashy;
         }
@@ -231,27 +231,54 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		//tagCopy = null;
 	}
 
-	public static bool isByTrash(Vector3 pos) //helper method for finding trash can
-	{
-		pos *= StateManager.cursorPosMod;
-        if (pos.x > 57.8f && pos.x < 77.5f && pos.y > -9.8f && pos.y < 18.4f)
-        {
-            return true;
-        }
-        if ((pos - trashy.transform.position).magnitude < maxBinDist)
-        {
-			return true;
-        }
-		return false;
-	}
-	public static bool buttonClose(Vector3 pos) //tags
+	public static bool tagClose(Vector3 pos) //tags
 	{ //nextButton.transform.position
 		Vector3 diff = pos - state.getCursorPosition();
-		if (diff.y > 78 || diff.y < -100)//x:[-100,78] y:[-33,37]
+		// x:[99,-78], y:[32,-25]
+		if (diff.x > 96 || diff.x < -75)// old --> x:[-100,78] y:[-33,37]
 		{
 			return false;
 		}
-		if (diff.x > 37 || diff.x < -33)
+		if (diff.y > 24 || diff.y < -25)
+		{
+			return false;
+		}
+		return true;
+	}
+	public static bool binClose(Vector3 pos) //tags
+	{
+		Vector3 diff = pos - state.getCursorPosition();
+		if (diff.x > -65 || diff.x < -172)
+		{
+			return false;
+		}
+		if (diff.y > 282 || diff.y < -197)
+		{
+			return false;
+		}
+		return true;
+	}
+	public static bool uiButtonClose(Vector3 pos) //tags
+	{
+		Vector3 diff = pos - state.getCursorPosition();
+		if (diff.x > 82 || diff.x < -58)
+		{
+			return false;
+		}
+		if (diff.y > -68 || diff.y < -114)
+		{
+			return false;
+		}
+		return true;
+	}
+	public static bool uiButtonClose2(Vector3 pos) //tags
+	{
+		Vector3 diff = pos - state.getCursorPosition();
+		if (diff.x > 82 || diff.x < -58)
+		{
+			return false;
+		}
+		if (diff.y > 248 || diff.y < 211)
 		{
 			return false;
 		}
