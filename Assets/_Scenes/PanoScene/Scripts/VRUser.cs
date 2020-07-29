@@ -24,7 +24,7 @@ public class VRUser : MonoBehaviour
 
     public static GameObject cursorPos;
     public static Vector3 controllerOffset;
-    public static Color cursorHighlight = Color.yellow;
+    public static Color cursorHighlight = Color.green;
     public static Color cursorHighlight2 = Color.red;
 
 
@@ -36,6 +36,8 @@ public class VRUser : MonoBehaviour
     public static GameObject farForward;
 
     public static bool extraControls = true;
+
+    public static List<GameObject> interactables = new List<GameObject>();
 
     /*  TODO!!
      * prefect tracking of headset and controllers
@@ -59,8 +61,8 @@ public class VRUser : MonoBehaviour
     }
     private void Awake()
     { //Ctrl+K+C = comment (+K+U = uncomment)
-        cursorHighlight.a = 115f / 255f;
-        cursorHighlight2.a = 100f / 255f;
+        cursorHighlight.a = 105f / 255f;
+        cursorHighlight2.a = 75f / 255f;
         //player head and controllers set within Unity Scene (VRPerson's children)
         VRPerson = GameObject.Find("VRPerson");
         playerHead = GameObject.Find("CenterEyeAnchor");
@@ -72,6 +74,14 @@ public class VRUser : MonoBehaviour
         farUp = GameObject.Find("headsetUp");
         farRight = GameObject.Find("headsetRight");
         farForward = GameObject.Find("headsetForward");
+
+        interactables.Add(GameObject.Find("NextButtonPanel"));
+        interactables.Add(GameObject.Find("HomeButtonPanel"));
+        interactables.Add(GameObject.Find("Tag1"));
+        interactables.Add(GameObject.Find("Tag2"));
+        interactables.Add(GameObject.Find("Tag3"));
+        interactables.Add(GameObject.Find("Tag4"));
+        interactables.Add(GameObject.Find("Bin"));
     }
 
     // Update is called once per frame
@@ -88,15 +98,37 @@ public class VRUser : MonoBehaviour
         //}
 
         //RESETS
-        if (state.isGaming() || StateManager.makeCursReset)
+        if (state.isGaming())
         {
-            if (userSkip(true))
+            if (userSkip(true) || StateManager.makeCursReset)
             {
                 testCursor.transform.position = centerer.transform.position;
             }
-        }
 
-        //prevent cursor from moving z relative to user
+            foreach (GameObject obj in interactables)
+            {
+                Debug.Log(obj.name + ": " + (obj.transform.localPosition - testCursor.transform.localPosition));
+                if (ClickAction.buttonClose(obj.transform.localPosition))
+                {
+                    obj.GetComponent<Image>().color = highlightColor;
+                }
+                else
+                {
+                    if (obj.name == "Bin")
+                    {
+                        obj.GetComponent<Image>().color = new Color(134 / 255, 150 / 255, 167 / 255, 186 / 255);
+                    }
+                    else if (obj.name == "NextButtonPanel" || obj.name == "HomeButtonPanel")
+                    {
+                        obj.GetComponent<Image>().color = new Color(1, 1, 1, 1);
+                    }
+                    else
+                    {
+                        obj.GetComponent<Image>().color = new Color(1, 1, 1, 100 / 255);
+                    }
+                }
+            }
+        }
 
         Vector3 handPos = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;
         Vector3 movementVal = new Vector3((farRight.transform.position - handPos).magnitude, (farUp.transform.position - handPos).magnitude, (farForward.transform.position - handPos).magnitude);
@@ -125,13 +157,14 @@ public class VRUser : MonoBehaviour
         }
 
         testCursor.transform.position += (3f * Time.deltaTime * ((testCursor.transform.up * cursorMove.y) + (testCursor.transform.right * cursorMove.x)));
-        Debug.Log("*True Cursor Location: " + testCursor.transform.position + ", Local: " + testCursor.transform.localPosition);
+        Debug.Log("Cursor Location: " + testCursor.transform.localPosition + ", Tag1: " + GameObject.Find("Tag1").transform.localPosition);
+        Debug.Log("Difference: " + (testCursor.transform.localPosition - GameObject.Find("Tag1").transform.localPosition));
 
         if (isClicking())
         {
             GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight2;
         }
-        else if (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .2 || OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .2)
+        else if (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .2 || OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) >= .2)
         {
             GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight;
         }
@@ -236,7 +269,7 @@ public class VRUser : MonoBehaviour
     }
     public static bool isClicking() //getbutton
     {
-        return OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) >= .9 || OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) >= .9;
+        return OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) >= .8 || OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) >= .8;
     }
     public static bool clickDown() //getbuttondown
     {

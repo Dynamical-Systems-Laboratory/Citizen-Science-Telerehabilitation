@@ -244,14 +244,14 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
         }
 		return false;
 	}
-	public static bool buttonClose(Vector3 pos)
+	public static bool buttonClose(Vector3 pos) //tags
 	{ //nextButton.transform.position
 		Vector3 diff = pos - state.getCursorPosition();
-		if (diff.y > 5.5 || diff.y < -9.2)
+		if (diff.y > 78 || diff.y < -100)//x:[-100,78] y:[-33,37]
 		{
 			return false;
 		}
-		if (diff.x > 16 || diff.x < -14.5)
+		if (diff.x > 37 || diff.x < -33)
 		{
 			return false;
 		}

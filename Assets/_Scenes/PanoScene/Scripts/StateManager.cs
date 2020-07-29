@@ -241,7 +241,7 @@ public class StateManager : MonoBehaviour {
     public Vector3 getCursorPosition()
     {
         //return cursorPos;
-        return trueCursor.transform.position - cursorOffset.transform.position;
+        return trueCursor.transform.localPosition;
     }
 
     public Vector3 getCameraPosition()
