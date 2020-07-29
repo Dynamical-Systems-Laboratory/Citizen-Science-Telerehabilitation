@@ -40,7 +40,7 @@ public class VRUser : MonoBehaviour
 
     public static List<GameObject> interactables = new List<GameObject>();
 
-    public static Vector3 uiButtonOffset = new Vector3(0f, 30f, 0f);
+    public static Vector3 uiButtonOffset = new Vector3(0f, 31f, 0f); //offset needed for button accuracy with uiButton methods within clickaction
     /*  TODO!!
      * prefect tracking of headset and controllers
      * recreate cursor movement based on controller positions/rotations
@@ -110,7 +110,7 @@ public class VRUser : MonoBehaviour
             }
             foreach (GameObject obj in interactables)
             {
-                Debug.Log(obj.name + ": " + (obj.transform.localPosition - trueCursor.transform.localPosition) + ", Mag: " + (obj.transform.localPosition - trueCursor.transform.localPosition).magnitude);
+                //Debug.Log(obj.name + ": " + (obj.transform.localPosition - trueCursor.transform.localPosition) + ", Mag: " + (obj.transform.localPosition - trueCursor.transform.localPosition).magnitude);
                 if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition))
                 {
                     obj.GetComponent<Image>().color = highlightColor;
@@ -119,11 +119,11 @@ public class VRUser : MonoBehaviour
                 {
                     obj.GetComponent<Image>().color = highlightColor;
                 }
-                else if (obj.name == "NextButtonPanel" && ClickAction.uiButtonClose(obj.transform.position + uiButtonOffset))
+                else if (obj.name == "NextButtonPanel" && ClickAction.uiButtonClose(obj.transform.position))
                 {
                     obj.GetComponent<Image>().color = highlightColor;
                 }
-                else if (obj.name == "HomeButtonPanel" && ClickAction.uiButtonClose2(obj.transform.position + uiButtonOffset))
+                else if (obj.name == "HomeButtonPanel" && ClickAction.uiButtonClose2(obj.transform.position))
                 {
                     obj.GetComponent<Image>().color = highlightColor;
                 }

@@ -129,7 +129,7 @@ public class StateManager : MonoBehaviour {
     public static GameObject trueCursor;
     public static GameObject cursorOffset;
 
-    private int userState = 7;//6;
+    private int userState = 6;
     /* 0 = Quit
      * 1 = Home
      * 2 = In-Game
@@ -161,6 +161,7 @@ public class StateManager : MonoBehaviour {
         MakeWordBank.cursorCamera.SetActive(false);
         //GameObject.Find("SimpleTutorialCanvas").SetActive(false);
         //complexUser.VRPerson.SetActive(true);
+        GameObject.Find("Canvas").GetComponent<MakeWordBank>().enabled = true;
 
         switch (userState)
         {

@@ -6713,8 +6713,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 403826529}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.64435726, y: -36.241886, z: 198.11118}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 1.9, y: -33.7, z: 198.11118}
+  m_LocalScale: {x: 1.02, y: 1.02, z: 1.02}
   m_Children:
   - {fileID: 1782972184}
   - {fileID: 785418210}
@@ -13150,7 +13150,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 776967149}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 54e2b01a6259547c1b5c4d73a00cdf43, type: 3}
   m_Name: 
@@ -21423,6 +21423,7 @@ GameObject:
   - component: {fileID: 1217551826}
   - component: {fileID: 1217551828}
   - component: {fileID: 1217551831}
+  - component: {fileID: 1217551829}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Canvas
@@ -21544,6 +21545,25 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &1217551829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1217551822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54e2b01a6259547c1b5c4d73a00cdf43, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventS: {fileID: 0}
+  eventListener: {fileID: 0}
+  tagsText: {fileID: 0}
+  imageMaterialsToDragIn: []
+  tutorialImageMaterialDragFromEditor: {fileID: 0}
+  userMovement: {fileID: 0}
+  toClick: {fileID: 0}
 --- !u!114 &1217551831
 MonoBehaviour:
   m_ObjectHideFlags: 0

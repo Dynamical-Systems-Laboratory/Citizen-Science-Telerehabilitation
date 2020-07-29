@@ -37,7 +37,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		tagPrefab.name = "TagPrefab"; //So it can be destroyed
         tagPrefab.transform.localScale = Vector3.zero;
 
-        sphere = GameObject.Find("TagSphere");
+        sphere = GameObject.Find("gameSphere"); //TagSphere
 		canvas = GameObject.Find ("Canvas");
 
         cursorSphere = GameObject.Find("CursorSphere");
@@ -75,8 +75,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 
 		if (tagIsFollowing)
 		{
-			state.getSelected().transform.position = new
-              Vector3(state.getCursorPosition().x * StateManager.cursorPosMod, state.getCursorPosition().y * StateManager.cursorPosMod, initTagPos.z);
+			state.getSelected().transform.localPosition = state.getCursorPosition();
 		}
         Debug.Log("Bin Distance: " + (trashy.transform.position - state.getCursorPosition()).magnitude + ", isBy? " + binClose(state.getCursorPosition()) + ", Count: " + trashedTags.Count);
         Debug.Log("Next Button Distance: " + (nextButton.transform.position - state.getCursorPosition()).magnitude);
@@ -94,7 +93,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			objectClicked = trashy;
         }
 
-        if (objectClicked == null && state.getSelected() != null) // tag was placed  *******
+        if (objectClicked == null && state.getSelected() != null && state.getCursorPosition().x < -101f) // tag was placed  *******
         {
             state.getSelected().GetComponentInChildren<Text>().color = Color.blue; //instead of just GetComponent
 			state.getSelected().transform.localScale -= new Vector3(0.5f, 0.5f, 0f); //scale it down to 40% size (not thickness tho)
@@ -260,7 +259,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 	}
 	public static bool uiButtonClose(Vector3 pos) //tags
 	{
-		Vector3 diff = pos - state.getCursorPosition();
+		Vector3 diff = pos - state.getCursorPosition() + VRUser.uiButtonOffset;
 		if (diff.x > 82 || diff.x < -58)
 		{
 			return false;
@@ -273,7 +272,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 	}
 	public static bool uiButtonClose2(Vector3 pos) //tags
 	{
-		Vector3 diff = pos - state.getCursorPosition();
+		Vector3 diff = pos - state.getCursorPosition() + VRUser.uiButtonOffset;
 		if (diff.x > 82 || diff.x < -58)
 		{
 			return false;

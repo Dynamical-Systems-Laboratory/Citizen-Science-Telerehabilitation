@@ -381,6 +381,7 @@ public class MakeWordBank : MonoBehaviour {
     // Update is called once per frame
     void Update(/*EventSystem eventSystem*/)
     {
+        Debug.Log("IsUpdating??");
         //Debug.Log("Time: " + System.DateTime.Now.ToString());
         state.user.logTime(Time.deltaTime); //add time
         state.user.show(); //displaying data
@@ -464,8 +465,10 @@ public class MakeWordBank : MonoBehaviour {
             //Debug.Log("Practice Tags: " + practiceMoveOn + ", prog: " + state.user.getProgress());
             if (state.isGaming()) //in-game or practice level or button tutorial
             {
-                if (Input.GetKeyDown(KeyCode.B) || VRUser.userContinue()) //select
+                Debug.Log("IsGaming?");
+                if (Input.GetKeyDown(KeyCode.B) || VRUser.isClicking()) //select
                 {
+                    Debug.Log("IsClicking!");
                     if (ClickAction.uiButtonClose(nextButton.transform.position))
                     {
                         if (imageIndex >= imageMaterials.Length - 1)
@@ -1192,10 +1195,10 @@ public class MakeWordBank : MonoBehaviour {
                         }
                         tagSphere.GetComponent<Renderer>().material = imageMaterials[imageIndex]; //in first image
                         //imageIndex++;
-                        foreach (Transform t in ClickAction.sphere.transform)
+                        /*foreach (Transform t in ClickAction.sphere.transform)
                         {
                             Destroy(t.gameObject);
-                        }
+                        }*/
 
                         for (int i = 0; i < ClickAction.trashedTags.Count; i++)
                         {
@@ -1281,18 +1284,16 @@ public class MakeWordBank : MonoBehaviour {
         float shortDist = 1000000f;
         foreach (GameObject tag in tagGameObjects) //mathf.abs
         {
-            Vector3 cursMod = state.getCursorPosition() * StateManager.cursorPosMod; //added modifications to cursor
-            cursMod += new Vector3(0f, 2f, 0.1f);
-            float newMin = (cursMod - tag.transform.position).magnitude; //distancel (Vector3.Distance())
-                                                                         //newMin = Mathf.Abs(newMin); //absolute value
-            if (newMin < shortDist && cursMod.y > tag.transform.position.y)
+            float newMin = (state.getCursorPosition() - tag.transform.localPosition).magnitude;
+            //newMin = Mathf.Abs(newMin); //absolute value
+            if (newMin < shortDist)
             {
                 shortDist = newMin;
                 toClick = tag;
             }
         }
         Debug.Log("Closest Object" + toClick.name + ", Tag: " + toClick.tag + ", Distance: " + shortDist);
-        if (shortDist < 18.6f)// && Input.GetKeyDown(KeyCode.G))
+        if (ClickAction.tagClose(toClick.transform.localPosition))// && Input.GetKeyDown(KeyCode.G))
         {
             if (state.getSelected() != null)
             {
@@ -1384,10 +1385,10 @@ public class MakeWordBank : MonoBehaviour {
                     ClickAction.state.setSelected(null);
                 }
 
-                foreach (Transform t in tagSphere.transform)
+                /*foreach (Transform t in tagSphere.transform)
                 {
                     Destroy(t.gameObject, 0.08f);
-                }
+                }*/
 
                 for (int i = 0; i < ClickAction.trashedTags.Count; i++) //take out trash
                 {
