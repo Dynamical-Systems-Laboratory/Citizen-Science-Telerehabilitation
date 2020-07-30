@@ -152,9 +152,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
         cursorLRVP = VP3.GetComponent<UnityEngine.Video.VideoPlayer>();
         cursorUDVP = VP4.GetComponent<UnityEngine.Video.VideoPlayer>();
         clickVP = VP5.GetComponent<UnityEngine.Video.VideoPlayer>();
-
-        
-
     }
 
     // Update is called once per frame

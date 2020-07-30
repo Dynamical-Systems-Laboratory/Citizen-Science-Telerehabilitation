@@ -152,9 +152,9 @@ public class MakeWordBank : MonoBehaviour {
 
     public static List<string> wordBank = new List<string>();
     //public static GameObject focusor;
-    public static GameObject tutorialArrow;
-    public static GameObject secondTutorialArrow; //Just for showing select buttons step (need 2 arrows)
-    public static GameObject falconHelper; //So when the focus window goes to the button it doesn't depend on absolute coordinates
+    //public static GameObject tutorialArrow;
+    //public static GameObject secondTutorialArrow; //Just for showing select buttons step (need 2 arrows)
+   //public static GameObject falconHelper; //So when the focus window goes to the button it doesn't depend on absolute coordinates
     public static Text tutorialText;
     public static GameObject helpTextContainer;
     public static GameObject helpTextPanel;
@@ -245,8 +245,7 @@ public class MakeWordBank : MonoBehaviour {
     public static Tag[] tags;
     public static int practiceMoveOn;
 
-    public static GameObject cursorGroup;
-
+    //public static GameObject cursorGroup;
     public VRUser userMovement;
 
     //TODO: randomize indexes and tags
@@ -274,7 +273,7 @@ public class MakeWordBank : MonoBehaviour {
         UICamera = GameObject.Find("UICamera");
         videoCamera = GameObject.Find("VideoCamera");
         cursorCamera = GameObject.Find("CursorCamera");
-        cursorGroup = GameObject.Find("FalconCursor");
+        //cursorGroup = GameObject.Find("FalconCursor");
         
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
 
@@ -283,58 +282,58 @@ public class MakeWordBank : MonoBehaviour {
         cursorCamera.SetActive(false);
 
         DataCollector.MakeFolder();
-        tagSphere = GameObject.FindGameObjectWithTag("TagSphere");
+        tagSphere = GameObject.FindGameObjectWithTag("TagSphere"); //tag spheres
         imageMaterials = new Material[imageMaterialsToDragIn.Length];
         tutorialImageMaterial = tutorialImageMaterialDragFromEditor;
         //focusor = GameObject.FindGameObjectWithTag("Focusor"); //Just used for step where user picks a tag
         //focusor.SetActive(false);
 
-        falconHelper = GameObject.FindGameObjectWithTag("FalconHelper");
+        //falconHelper = GameObject.FindGameObjectWithTag("FalconHelper");
         state = GameObject.Find("Canvas").GetComponent<StateManager>(); //state of game**
-        tutorialArrow = GameObject.Find("TutorialArrow");
-        secondTutorialArrow = GameObject.Find("SecondTutorialArrow");
-        secondTutorialArrow.SetActive(false);
-        tutorialArrow.SetActive(false);
+        //tutorialArrow = GameObject.Find("TutorialArrow");
+        //secondTutorialArrow = GameObject.Find("SecondTutorialArrow");
+        //secondTutorialArrow.SetActive(false);
+        //tutorialArrow.SetActive(false);
         tutorialText = GameObject.FindGameObjectWithTag("TutorialText").GetComponent<Text>() as Text;
         tutorialText.text = ""; //Blank for now since welcome screen must come first
         helpTextContainer = GameObject.Find("HelpTextContainer");
         helpTextContainer.SetActive(false);
-        welcomeText = GameObject.FindGameObjectWithTag("WelcomeText").GetComponent<Text>() as Text;
-        welcomeScreen = GameObject.Find("WelcomeScreenPanel");
+        //welcomeText = GameObject.FindGameObjectWithTag("WelcomeText").GetComponent<Text>() as Text;
+        //welcomeScreen = GameObject.Find("WelcomeScreenPanel");
         practiceLevelText = GameObject.Find("PracticeLevelText");
         helpTextPanel = tutorialText.transform.parent.gameObject;
         practiceLevelText.SetActive(false);
 
-        taggerPanel = GameObject.FindGameObjectWithTag("TaggerPanel");
-        trasherPanel = GameObject.FindGameObjectWithTag("TrasherPanel");
+        //taggerPanel = GameObject.FindGameObjectWithTag("TaggerPanel");
+        //trasherPanel = GameObject.FindGameObjectWithTag("TrasherPanel");
 
-        taggerPanel.transform.Translate(new Vector3(0, 5000, 0)); //Moving it out of the way for tutorial
-        trasherPanel.transform.Translate(new Vector3(0, 5000, 0));
+        //taggerPanel.transform.Translate(new Vector3(0, 5000, 0)); //Moving it out of the way for tutorial
+        //trasherPanel.transform.Translate(new Vector3(0, 5000, 0));
 
         for (int i = 0; i < imageMaterials.Length; i++) {
             imageMaterials[i] = imageMaterialsToDragIn[i];
         }
         tagsRemainingText = GameObject.FindGameObjectWithTag("TagsRemainingText").GetComponent<Text>(); // remaining tags**
 
-        tagGameObjects = new List<GameObject>();
+        tagGameObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag("Tag"));
         /*foreach (Transform child in transform) //add all of children of this object as tags
         {
             if (child != transform) // The first child will be the parent transform, which should be excluded
             {
                 tagGameObjects.Add(child.gameObject);
             }
-        }*/
+        }
         tagGameObjects.Add(GameObject.Find("Tag1"));
         tagGameObjects.Add(GameObject.Find("Tag2"));
         tagGameObjects.Add(GameObject.Find("Tag3"));
-        tagGameObjects.Add(GameObject.Find("Tag4"));
+        tagGameObjects.Add(GameObject.Find("Tag4"));*/
 
         tags = new Tag[tagGameObjects.Count];
         for (int i = 0; i < tags.Length; i++) {
             tags[i] = new Tag(tagGameObjects[i], i);
         }
-        //Read CSV File:
 
+        //Read CSV File:
         using (StringReader sr = new StringReader(tagsText.text))
         {
             string line;
@@ -374,6 +373,7 @@ public class MakeWordBank : MonoBehaviour {
         }
         state.user.addSession();
         //TODO: set settings to user settings;
+        Debug.Log("**********************Awake**********************");
     }
     
     public GameObject toClick = null; // obj for clicking
@@ -381,8 +381,6 @@ public class MakeWordBank : MonoBehaviour {
     // Update is called once per frame
     void Update(/*EventSystem eventSystem*/)
     {
-        Debug.Log("IsUpdating??");
-        //Debug.Log("Time: " + System.DateTime.Now.ToString());
         state.user.logTime(Time.deltaTime); //add time
         state.user.show(); //displaying data
 
@@ -465,7 +463,6 @@ public class MakeWordBank : MonoBehaviour {
             //Debug.Log("Practice Tags: " + practiceMoveOn + ", prog: " + state.user.getProgress());
             if (state.isGaming()) //in-game or practice level or button tutorial
             {
-                Debug.Log("IsGaming?");
                 if (Input.GetKeyDown(KeyCode.B) || VRUser.isClicking()) //select
                 {
                     Debug.Log("IsClicking!");
@@ -538,12 +535,12 @@ public class MakeWordBank : MonoBehaviour {
             }
             
         }
-        Debug.Log("IsReloading: " + state.reloading);
+        /*Debug.Log("IsReloading: " + state.reloading);
         if (state.reloading) //reloading tags
         {
             state.loadTags(state.user.getLastImage(), tagGameObjects);
             state.reloading = false;
-        }
+        }*/
 
         if (state.getState() == 5) //edge cases with old booleans
         {
@@ -615,7 +612,7 @@ public class MakeWordBank : MonoBehaviour {
                 //if (timeSpentAfterSurvey >= 2f)
                 if (moveOn() && !skip())
                 { //Move to the next step (change for falcon):
-                    welcomeScreen.SetActive(false);
+                    //welcomeScreen.SetActive(false);
                     helpTextContainer.SetActive(false);
                     state.setState(5);
                     stepOfTutorial = 13; //All videos moved to pleTutorial, sSimtart with step 13
@@ -1161,14 +1158,13 @@ public class MakeWordBank : MonoBehaviour {
                     timer = 0f;
                    // focusor.SetActive(false);
                     helpTextContainer.SetActive(false);
-                    welcomeScreen.SetActive(true);
+                   //welcomeScreen.SetActive(true);
                     mainCamera.SetActive(true);
                     UICamera.SetActive(true);
                     videoCamera.SetActive(false);
                     //VP1.SetActive(false);
                     //VP5.SetActive(false);
-                    welcomeText.text = "Now let's do a practice level" + "\n" +
-                    "It will be just like a real level but data will not be collected" + "\n" + "(Push the rod forward to begin the practice level)";
+                    //welcomeText.text = "Now let's do a practice level" + "\n" + "It will be just like a real level but data will not be collected" + "\n" + "(Push the rod forward to begin the practice level)";
                     //StateManager.allSystemsGo = true;
                     stepOfTutorial++;
                     state.setState(7);
@@ -1185,7 +1181,7 @@ public class MakeWordBank : MonoBehaviour {
                         timer = 0f;
                         //inTutorial = false;
                         //dataCollector.SetActive (true); Don't collect data for practice level
-                        welcomeScreen.SetActive(false);
+                        //welcomeScreen.SetActive(false);
 
                         sequenceIndex = 0; //Reset tags
                         for (int i = 0; i < tags.Length; i++)
@@ -1228,9 +1224,9 @@ public class MakeWordBank : MonoBehaviour {
             {
                 //dataCollector.SetActive (true);
                 //welcomeScreen.SetActive (false);
-                welcomeText.text = "We are now waiting for the other player to finish the tutorial";
+               // welcomeText.text = "We are now waiting for the other player to finish the tutorial";
                 LoadingIconScript.active = true;
-                welcomeText.transform.localPosition = new Vector3(31.2f, -0.8f, 0f);
+                //welcomeText.transform.localPosition = new Vector3(31.2f, -0.8f, 0f);
                 inScreenBeforeExperiment = false;
                 waitingForOtherPlayer = true;
             }
@@ -1241,7 +1237,7 @@ public class MakeWordBank : MonoBehaviour {
             if (otherPlayerHasFinished)
             {
                 dataCollector.SetActive(true);
-                welcomeScreen.SetActive(false);
+                //welcomeScreen.SetActive(false);
                 waitingForOtherPlayer = false;
                 LoadingIconScript.active = false;
             }
@@ -1412,10 +1408,9 @@ public class MakeWordBank : MonoBehaviour {
                 {
                     helpTextContainer.SetActive(false);
                     practiceLevelText.SetActive(false);
-                    welcomeText.text = "You have completed the practice level.\nPush the rod forward to " +
-                        "begin data collection"; //not displayed?
+                    //welcomeText.text = "You have completed the practice level.\nPush the rod forward to " + "begin data collection"; //not displayed?
                     //welcomeScreen.SetActive(true);
-                    welcomeScreen.SetActive(false);
+                    //welcomeScreen.SetActive(false);
                     inScreenBeforeExperiment = true;
                     inPracticeLevel = false;
                 }

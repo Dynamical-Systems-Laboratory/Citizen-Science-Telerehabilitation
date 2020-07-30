@@ -120,16 +120,17 @@ public class StateManager : MonoBehaviour {
     public static bool makeNewUser = true; // used to bypass reading data if you want to create another save file
     private string path;
     private static string dataName = "user_data";
-    public static string[] dataRead = new string[] { "uninitialized", "no data" };
+    public static string[] dataRead = new string[] { "no data" };
 
     public bool reloading = false; //covers edge case with reloading tags
-
-    public bool vrControls = false;
 
     public static GameObject trueCursor;
     public static GameObject cursorOffset;
 
-    private int userState = 6;
+    private static int fullMask;
+    private static int cursorMask;
+
+    private int userState = 7;//6;
     /* 0 = Quit
      * 1 = Home
      * 2 = In-Game
@@ -158,10 +159,11 @@ public class StateManager : MonoBehaviour {
         MakeWordBank.mainCamera.SetActive(false);
         MakeWordBank.UICamera.SetActive(false);
         MakeWordBank.videoCamera.SetActive(false);
-        MakeWordBank.cursorCamera.SetActive(false);
+        //MakeWordBank.cursorCamera.SetActive(false);
+        MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = cursorMask;
+
         //GameObject.Find("SimpleTutorialCanvas").SetActive(false);
         //complexUser.VRPerson.SetActive(true);
-        GameObject.Find("Canvas").GetComponent<MakeWordBank>().enabled = true;
 
         switch (userState)
         {
@@ -200,26 +202,24 @@ public class StateManager : MonoBehaviour {
                 break;
             case 2: //GAME
                 MakeWordBank.UICamera.SetActive(true); //ui selecting
-                MakeWordBank.cursorCamera.SetActive(true);
+                MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = fullMask;
                 MakeWordBank.nextImage(MakeWordBank.imageIndex);
                 break;
             case 3: //PROFILE
                 break;
             case 4: //CALIBRATE (simpletutorial)
                 MakeWordBank.mainCamera.SetActive(true);
-                MakeWordBank.cursorCamera.SetActive(true);
-                //GameObject.Find("SimpleTutorialCanvas").SetActive(true);
+                GameObject.Find("SimpleTutorialCanvas").SetActive(true);
                 break;
             case 5: //TUTORIAL
                 MakeWordBank.UICamera.SetActive(true); //ui selecting
-                MakeWordBank.cursorCamera.SetActive(true);
+                MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = fullMask;
                 break;
             case 6: //ABOUT PROJECT
-                //move project slides
                 break;
             case 7: //PRACTICE LEVEL
                 MakeWordBank.UICamera.SetActive(true);
-                MakeWordBank.cursorCamera.SetActive(true);
+                MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = fullMask;
                 break;
             case 8: //Survey
                 break;
@@ -318,6 +318,9 @@ public class StateManager : MonoBehaviour {
         }
 
         cursorPos = GameObject.Find("exampleCursor").transform.position;
+
+        fullMask = GameObject.Find("UICamera").GetComponent<Camera>().cullingMask; //cursor + UI stuff
+        cursorMask = (1 << LayerMask.NameToLayer("Cursor")); //just cursor
     }
     private IEnumerator Start()
     {

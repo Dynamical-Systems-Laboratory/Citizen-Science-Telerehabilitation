@@ -41,6 +41,7 @@ public class VRUser : MonoBehaviour
     public static List<GameObject> interactables = new List<GameObject>();
 
     public static Vector3 uiButtonOffset = new Vector3(0f, 31f, 0f); //offset needed for button accuracy with uiButton methods within clickaction
+
     /*  TODO!!
      * prefect tracking of headset and controllers
      * recreate cursor movement based on controller positions/rotations
@@ -79,10 +80,10 @@ public class VRUser : MonoBehaviour
 
         interactables.Add(GameObject.Find("NextButtonPanel"));
         interactables.Add(GameObject.Find("HomeButtonPanel"));
-        interactables.Add(GameObject.Find("Tag1"));
-        interactables.Add(GameObject.Find("Tag2"));
-        interactables.Add(GameObject.Find("Tag3"));
-        interactables.Add(GameObject.Find("Tag4"));
+        foreach (GameObject tag in GameObject.FindGameObjectsWithTag("Tag"))
+        {
+            interactables.Add(tag);
+        }
         interactables.Add(GameObject.Find("Bin"));
         tagColor = interactables[2].GetComponent<Image>().color; //precausion
         binColor = interactables[6].GetComponent<Image>().color;
@@ -103,14 +104,14 @@ public class VRUser : MonoBehaviour
 
         //RESETS
         if (state.isGaming())
-        {
+        {/*
             if (userSkip(true) || StateManager.makeCursReset)
             {
                 trueCursor.transform.position = centerer.transform.position;
             }
             foreach (GameObject obj in interactables)
             {
-                //Debug.Log(obj.name + ": " + (obj.transform.localPosition - trueCursor.transform.localPosition) + ", Mag: " + (obj.transform.localPosition - trueCursor.transform.localPosition).magnitude);
+                Debug.Log(obj.name + ": " + (obj.transform.localPosition - trueCursor.transform.localPosition) + ", Mag: " + (obj.transform.localPosition - trueCursor.transform.localPosition).magnitude);
                 if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition))
                 {
                     obj.GetComponent<Image>().color = highlightColor;
@@ -146,7 +147,7 @@ public class VRUser : MonoBehaviour
                         Debug.Log("Interactables error: " + obj.name);
                     }
                 }
-            }
+            }*/
         }
 
         Vector3 handPos = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;
@@ -176,8 +177,6 @@ public class VRUser : MonoBehaviour
         }
 
         trueCursor.transform.position += (3f * Time.deltaTime * ((trueCursor.transform.up * cursorMove.y) + (trueCursor.transform.right * cursorMove.x)));
-        Debug.Log("Cursor Location: " + trueCursor.transform.localPosition + ", Tag1: " + GameObject.Find("Tag1").transform.localPosition);
-        Debug.Log("Difference: " + (trueCursor.transform.localPosition - GameObject.Find("Tag1").transform.localPosition));
 
         if (isClicking())
         {

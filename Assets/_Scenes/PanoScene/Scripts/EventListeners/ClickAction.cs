@@ -77,9 +77,6 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		{
 			state.getSelected().transform.localPosition = state.getCursorPosition();
 		}
-        Debug.Log("Bin Distance: " + (trashy.transform.position - state.getCursorPosition()).magnitude + ", isBy? " + binClose(state.getCursorPosition()) + ", Count: " + trashedTags.Count);
-        Debug.Log("Next Button Distance: " + (nextButton.transform.position - state.getCursorPosition()).magnitude);
-        Debug.Log("Quit Button Distance: " + (quitButton.transform.position - state.getCursorPosition()).magnitude);
     }
 	public void OnPointerClick(GameObject objectClicked = null) //same method but takes in game obj
 	{
