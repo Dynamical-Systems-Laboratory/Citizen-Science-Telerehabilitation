@@ -124,9 +124,9 @@ public class VRUser : MonoBehaviour
             {
                 if (obj.tag == "Tag")
                 {
-                    Debug.Log("Tag Close " + obj.name + ": " + ClickAction.tagClose(obj.transform.localPosition));
+                    //Debug.Log("Tag Close " + obj.name + ": " + ClickAction.tagClose(obj.transform.localPosition));
                 }
-                Debug.Log(obj.name + ": " + (obj.transform.localPosition - trueCursor.transform.localPosition) + ", Mag: " + (obj.transform.localPosition - trueCursor.transform.localPosition).magnitude);
+                //Debug.Log(obj.name + ": " + (obj.transform.localPosition - trueCursor.transform.localPosition) + ", Mag: " + (obj.transform.localPosition - trueCursor.transform.localPosition).magnitude);
                 if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) == 1 && obj.transform.localPosition == pos1)
                 {
                     obj.GetComponent<Image>().color = highlightColor;

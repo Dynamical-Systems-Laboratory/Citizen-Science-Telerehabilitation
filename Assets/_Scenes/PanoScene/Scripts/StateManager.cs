@@ -127,6 +127,9 @@ public class StateManager : MonoBehaviour {
     public static GameObject trueCursor;
     public static GameObject cursorOffset;
 
+    private static int gameCull;
+    private static int tutorialCull;
+
     private int userState = 7;//6;
     /* 0 = Quit
      * 1 = Home
@@ -158,7 +161,8 @@ public class StateManager : MonoBehaviour {
         MakeWordBank.videoCamera.SetActive(false);
         MakeWordBank.cursorCamera.SetActive(true);
 
-        //GameObject.Find("SimpleTutorialCanvas").SetActive(false);
+        MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = gameCull;
+        GameObject.Find("SimpleTutorialCanvas").SetActive(true);
         //complexUser.VRPerson.SetActive(true);
 
         switch (userState)
@@ -205,7 +209,8 @@ public class StateManager : MonoBehaviour {
                 break;
             case 4: //CALIBRATE (simpletutorial)
                 MakeWordBank.mainCamera.SetActive(true);
-                GameObject.Find("SimpleTutorialCanvas").SetActive(true);
+                //GameObject.Find("SimpleTutorialCanvas").SetActive(true);
+                MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = tutorialCull;
                 break;
             case 5: //TUTORIAL
                 MakeWordBank.UICamera.SetActive(true); //ui selecting
@@ -313,6 +318,8 @@ public class StateManager : MonoBehaviour {
         }
 
         cursorPos = GameObject.Find("exampleCursor").transform.position;
+        gameCull = MakeWordBank.UICamera.GetComponent<Camera>().cullingMask;
+        tutorialCull = (1 << LayerMask.NameToLayer("Tutorial"));
     }
     private IEnumerator Start()
     {
