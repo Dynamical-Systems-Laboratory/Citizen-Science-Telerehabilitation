@@ -127,9 +127,6 @@ public class StateManager : MonoBehaviour {
     public static GameObject trueCursor;
     public static GameObject cursorOffset;
 
-    private static int fullMask;
-    private static int cursorMask;
-
     private int userState = 7;//6;
     /* 0 = Quit
      * 1 = Home
@@ -159,8 +156,7 @@ public class StateManager : MonoBehaviour {
         MakeWordBank.mainCamera.SetActive(false);
         MakeWordBank.UICamera.SetActive(false);
         MakeWordBank.videoCamera.SetActive(false);
-        //MakeWordBank.cursorCamera.SetActive(false);
-        MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = cursorMask;
+        MakeWordBank.cursorCamera.SetActive(true);
 
         //GameObject.Find("SimpleTutorialCanvas").SetActive(false);
         //complexUser.VRPerson.SetActive(true);
@@ -169,6 +165,7 @@ public class StateManager : MonoBehaviour {
         {
             case 0: //QUIT
                 complexUser.VRPerson.SetActive(false);
+                MakeWordBank.cursorCamera.SetActive(false);
                 user.updateSettings();
                 user.addDuration();
 
@@ -202,7 +199,6 @@ public class StateManager : MonoBehaviour {
                 break;
             case 2: //GAME
                 MakeWordBank.UICamera.SetActive(true); //ui selecting
-                MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = fullMask;
                 MakeWordBank.nextImage(MakeWordBank.imageIndex);
                 break;
             case 3: //PROFILE
@@ -213,13 +209,12 @@ public class StateManager : MonoBehaviour {
                 break;
             case 5: //TUTORIAL
                 MakeWordBank.UICamera.SetActive(true); //ui selecting
-                MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = fullMask;
                 break;
             case 6: //ABOUT PROJECT
+                MakeWordBank.cursorCamera.SetActive(false);
                 break;
             case 7: //PRACTICE LEVEL
                 MakeWordBank.UICamera.SetActive(true);
-                MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = fullMask;
                 break;
             case 8: //Survey
                 break;
@@ -318,9 +313,6 @@ public class StateManager : MonoBehaviour {
         }
 
         cursorPos = GameObject.Find("exampleCursor").transform.position;
-
-        fullMask = GameObject.Find("UICamera").GetComponent<Camera>().cullingMask; //cursor + UI stuff
-        cursorMask = (1 << LayerMask.NameToLayer("Cursor")); //just cursor
     }
     private IEnumerator Start()
     {

@@ -227,54 +227,73 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		//tagCopy = null;
 	}
 
-	public static bool tagClose(Vector3 pos) //tags
+	public static int tagClose(Vector3 pos) //tags -- maybe try implicit operator to easily int->bool convert?
 	{ //nextButton.transform.position
 		Vector3 diff = pos - state.getCursorPosition();
-		// x:[99,-78], y:[32,-25]
-		if (diff.x > 96 || diff.x < -75)// old --> x:[-100,78] y:[-33,37]
+		if (diff.x > -25.9 || diff.x < -56.6)
 		{
-			return false;
+			return 0;
 		}
-		if (diff.y > 24 || diff.y < -25)
+		else if (diff.y > 55.9 && diff.y < 68.1)
 		{
-			return false;
+			return 1;
 		}
-		return true;
+		else if (diff.y > 5.3 && diff.y < 17.5)
+		{
+			return 2;
+		}
+		else if (diff.y > -44.8 && diff.y < -32.6)
+		{
+			return 3;
+		}
+		else if (diff.y > -93.8 && diff.y < -81.6)
+		{
+			return 4;
+		}
+		/*else if (diff.y < 16.7 && diff.y >) //-44.6, 16.7
+		{
+
+        }*/
+		return 0;
 	}
-	public static bool binClose(Vector3 pos) //tags
+	/*public static bool tagClose(Vector3 pos)
+    {
+		return tagClose(pos) != 0;
+    }*/
+	public static bool binClose(Vector3 pos) //bin
 	{
 		Vector3 diff = pos - state.getCursorPosition();
-		if (diff.x > -65 || diff.x < -172)
+		if (diff.x > -49 || diff.x < -66)
 		{
 			return false;
 		}
-		if (diff.y > 282 || diff.y < -197)
-		{
-			return false;
-		}
-		return true;
-	}
-	public static bool uiButtonClose(Vector3 pos) //tags
-	{
-		Vector3 diff = pos - state.getCursorPosition() + VRUser.uiButtonOffset;
-		if (diff.x > 82 || diff.x < -58)
-		{
-			return false;
-		}
-		if (diff.y > -68 || diff.y < -114)
+		if (diff.y > 63.7 || diff.y < 34.5)
 		{
 			return false;
 		}
 		return true;
 	}
-	public static bool uiButtonClose2(Vector3 pos) //tags
+	public static bool uiButtonClose(Vector3 pos) //next
 	{
 		Vector3 diff = pos - state.getCursorPosition() + VRUser.uiButtonOffset;
-		if (diff.x > 82 || diff.x < -58)
+		if (diff.x > -20.7 || diff.x < -49.8)
 		{
 			return false;
 		}
-		if (diff.y > 248 || diff.y < 211)
+		if (diff.y > 27.4 || diff.y < 16.5)
+		{
+			return false;
+		}
+		return true;
+	}
+	public static bool uiButtonClose2(Vector3 pos) //home
+	{
+		Vector3 diff = pos - state.getCursorPosition() + VRUser.uiButtonOffset;
+		if (diff.x > -20.7 || diff.x < -49.8)
+		{
+			return false;
+		}
+		if (diff.y > 100.9 || diff.y < 89.2)
 		{
 			return false;
 		}

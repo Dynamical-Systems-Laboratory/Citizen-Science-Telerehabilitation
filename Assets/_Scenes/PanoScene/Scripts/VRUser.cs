@@ -40,7 +40,13 @@ public class VRUser : MonoBehaviour
 
     public static List<GameObject> interactables = new List<GameObject>();
 
-    public static Vector3 uiButtonOffset = new Vector3(0f, 31f, 0f); //offset needed for button accuracy with uiButton methods within clickaction
+    public static Vector3 uiButtonOffset = new Vector3(0f, 28f, 0f); //offset needed for button accuracy with uiButton methods within clickaction
+
+    //tag sorting helpers
+    public static Vector3 pos1;
+    public static Vector3 pos2;
+    public static Vector3 pos3;
+    public static Vector3 pos4;
 
     /*  TODO!!
      * prefect tracking of headset and controllers
@@ -87,6 +93,11 @@ public class VRUser : MonoBehaviour
         interactables.Add(GameObject.Find("Bin"));
         tagColor = interactables[2].GetComponent<Image>().color; //precausion
         binColor = interactables[6].GetComponent<Image>().color;
+
+        pos1 = interactables[2].transform.localPosition;
+        pos2 = interactables[3].transform.localPosition;
+        pos3 = interactables[4].transform.localPosition;
+        pos4 = interactables[5].transform.localPosition;
     }
 
     // Update is called once per frame
@@ -101,24 +112,46 @@ public class VRUser : MonoBehaviour
         //{
         //    state.setState(0);
         //}
-
+        
         //RESETS
         if (state.isGaming())
-        {/*
+        {
             if (userSkip(true) || StateManager.makeCursReset)
             {
                 trueCursor.transform.position = centerer.transform.position;
             }
             foreach (GameObject obj in interactables)
             {
+                if (obj.tag == "Tag")
+                {
+                    Debug.Log("Tag Close " + obj.name + ": " + ClickAction.tagClose(obj.transform.localPosition));
+                }
                 Debug.Log(obj.name + ": " + (obj.transform.localPosition - trueCursor.transform.localPosition) + ", Mag: " + (obj.transform.localPosition - trueCursor.transform.localPosition).magnitude);
-                if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition))
+                if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) == 1 && obj.transform.localPosition == pos1)
                 {
                     obj.GetComponent<Image>().color = highlightColor;
                 }
+                else if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) == 2 && obj.transform.localPosition == pos2)
+                {
+                    obj.GetComponent<Image>().color = highlightColor;
+                }
+                else if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) == 3 && obj.transform.localPosition == pos3)
+                {
+                    obj.GetComponent<Image>().color = highlightColor;
+                }
+                else if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) == 4 && obj.transform.localPosition == pos4)
+                {
+                    obj.GetComponent<Image>().color = highlightColor;
+                }
+                /*if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) != 0)
+                {
+                    obj.GetComponent<Image>().color = highlightColor;
+                }*/
+
                 else if (obj.name == "Bin" && ClickAction.binClose(obj.transform.localPosition))
                 {
                     obj.GetComponent<Image>().color = highlightColor;
+                    //GameObject.Find("Trash image").GetComponent<Image>().color = highlightColor;
                 }
                 else if (obj.name == "NextButtonPanel" && ClickAction.uiButtonClose(obj.transform.position))
                 {
@@ -132,6 +165,7 @@ public class VRUser : MonoBehaviour
                 {
                     if (obj.name == "Bin")
                     {
+                        //GameObject.Find("Trash image").GetComponent<Image>().color = binColor;
                         obj.GetComponent<Image>().color = binColor;
                     }
                     else if (obj.name == "NextButtonPanel" || obj.name == "HomeButtonPanel")
@@ -147,7 +181,7 @@ public class VRUser : MonoBehaviour
                         Debug.Log("Interactables error: " + obj.name);
                     }
                 }
-            }*/
+            }
         }
 
         Vector3 handPos = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;

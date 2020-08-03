@@ -1289,7 +1289,7 @@ public class MakeWordBank : MonoBehaviour {
             }
         }
         Debug.Log("Closest Object" + toClick.name + ", Tag: " + toClick.tag + ", Distance: " + shortDist);
-        if (ClickAction.tagClose(toClick.transform.localPosition))// && Input.GetKeyDown(KeyCode.G))
+        if (ClickAction.tagClose(toClick.transform.localPosition) != 0)// && Input.GetKeyDown(KeyCode.G))
         {
             if (state.getSelected() != null)
             {
