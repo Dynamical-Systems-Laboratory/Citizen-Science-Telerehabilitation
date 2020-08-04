@@ -342,4 +342,6 @@ public class UserInfo //not sure if : this() is necessary
     private float cursorSpeed;
     private float cursorSize;
     private float difficulty = 5;
+
+    //TODO: movement data (position, orientation, compulsory or not, etc.)
 }

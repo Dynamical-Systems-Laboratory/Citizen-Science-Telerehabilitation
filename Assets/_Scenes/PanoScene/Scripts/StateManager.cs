@@ -129,6 +129,10 @@ public class StateManager : MonoBehaviour {
 
     private static int gameCull;
     private static int tutorialCull;
+    private static int homeCull;
+    private static int profileCull;
+
+    public bool userControlActive = false; //bool that controls the reset mechanic for the 
 
     private int userState = 7;//6;
     /* 0 = Quit
@@ -156,10 +160,10 @@ public class StateManager : MonoBehaviour {
     public void updateState()
     {
         //defaults*
-        MakeWordBank.mainCamera.SetActive(false);
-        MakeWordBank.UICamera.SetActive(false);
-        MakeWordBank.videoCamera.SetActive(false);
         MakeWordBank.cursorCamera.SetActive(true);
+        MakeWordBank.UICamera.SetActive(true);
+        MakeWordBank.videoCamera.SetActive(false);
+        MakeWordBank.mainCamera.SetActive(false);
 
         MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = gameCull;
         GameObject.Find("SimpleTutorialCanvas").SetActive(true);
@@ -170,12 +174,12 @@ public class StateManager : MonoBehaviour {
             case 0: //QUIT
                 complexUser.VRPerson.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(false);
+                MakeWordBank.UICamera.SetActive(false);
                 user.updateSettings();
                 user.addDuration();
 
                 //WRITING DATA CODE
-                /*
-                StreamWriter writer;
+                /*StreamWriter writer;
                 if (newUser) //if new user or no data detected
                 {
                     writer = System.IO.File.CreateText(path); //create new user_data file
@@ -192,34 +196,33 @@ public class StateManager : MonoBehaviour {
 
                 }
                 writer.Flush();
-                writer.Close();
-                */
+                writer.Close();*/
                 //ClickAction.destroyTags();
                 UnityEditor.EditorApplication.isPlaying = false;
                 Application.Quit();
                 break;
 
             case 1: //HOME
+                MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = homeCull;
                 break;
             case 2: //GAME
-                MakeWordBank.UICamera.SetActive(true); //ui selecting
                 MakeWordBank.nextImage(MakeWordBank.imageIndex);
                 break;
             case 3: //PROFILE
+                MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = profileCull;
                 break;
             case 4: //CALIBRATE (simpletutorial)
-                MakeWordBank.mainCamera.SetActive(true);
-                //GameObject.Find("SimpleTutorialCanvas").SetActive(true);
+                MakeWordBank.mainCamera.SetActive(true); //videos?
                 MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = tutorialCull;
                 break;
             case 5: //TUTORIAL
-                MakeWordBank.UICamera.SetActive(true); //ui selecting
+                //tutorial tags
                 break;
             case 6: //ABOUT PROJECT
                 MakeWordBank.cursorCamera.SetActive(false);
+                MakeWordBank.UICamera.SetActive(false);
                 break;
             case 7: //PRACTICE LEVEL
-                MakeWordBank.UICamera.SetActive(true);
                 break;
             case 8: //Survey
                 break;
@@ -318,8 +321,12 @@ public class StateManager : MonoBehaviour {
         }
 
         cursorPos = GameObject.Find("exampleCursor").transform.position;
+
+        //culling masks
         gameCull = MakeWordBank.UICamera.GetComponent<Camera>().cullingMask;
         tutorialCull = (1 << LayerMask.NameToLayer("Tutorial"));
+        homeCull = (1 << LayerMask.NameToLayer("Home"));
+        profileCull = (1 << LayerMask.NameToLayer("Profile"));
     }
     private IEnumerator Start()
     {
@@ -485,23 +492,24 @@ public class StateManager : MonoBehaviour {
 
         //nextCursorPos.z = -cursorSize;
 
-        //Cursor cannot move past screen borders (bondaries)
-        //if (nextCursorPos.x > MakeWordBank.rightBound)
-        //{
-        //    nextCursorPos.x = MakeWordBank.rightBound;
-        //}
-        //else if (nextCursorPos.x < MakeWordBank.leftBound)
-        //{
-        //    nextCursorPos.x = MakeWordBank.leftBound;
-        //}
-        //else if (nextCursorPos.y > MakeWordBank.upperBound)
-        //{
-        //    nextCursorPos.y = MakeWordBank.upperBound;
-        //}
-        //else if (nextCursorPos.y < MakeWordBank.lowerBound)
-        //{
-        //    nextCursorPos.y = MakeWordBank.lowerBound;
-        //}
+        //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-151,66], x[-90,88.4]
+        if (trueCursor.transform.position.x > 88.4)
+        {
+            trueCursor.transform.position = new Vector3(88.4f, trueCursor.transform.position.y, trueCursor.transform.position.z);
+        }
+        else if (trueCursor.transform.position.x < -90)
+        {
+            trueCursor.transform.position = new Vector3(-90f, trueCursor.transform.position.y, trueCursor.transform.position.z);
+        }
+        if (trueCursor.transform.position.y > 66)
+        {
+            trueCursor.transform.position = new Vector3(trueCursor.transform.position.x, 66f, trueCursor.transform.position.z);
+        }
+        else if (trueCursor.transform.position.x < -151)
+        {
+            trueCursor.transform.position = new Vector3(trueCursor.transform.position.x, -151, trueCursor.transform.position.z);
+        }
+
 
         if (makeCursReset)
         {

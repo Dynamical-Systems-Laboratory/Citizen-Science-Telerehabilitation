@@ -17,6 +17,8 @@ public class VRUser : MonoBehaviour
     public OVRInput.Controller playerController;
     //public OVRCameraRig playerHead;
     public GameObject playerHead;
+    public GameObject playerArms;
+    public UserBounds playerPos;
 
     public static Color nothing = new Color(1, 1, 1, 0);
     public static Color selectedColor;
@@ -78,6 +80,8 @@ public class VRUser : MonoBehaviour
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
         cursorPos = GameObject.Find("CursorSphere");
         trueCursor = GameObject.Find("exampleCursor");
+        playerArms = GameObject.Find("arms");
+        playerPos = new UserBounds(playerHead.transform.position - new Vector3(0f,3f,0f), playerHead.transform.position);
 
         centerer = GameObject.Find("cursorCenter");
         farUp = GameObject.Find("headsetUp");
@@ -120,6 +124,7 @@ public class VRUser : MonoBehaviour
             {
                 trueCursor.transform.position = centerer.transform.position;
             }
+            //ui highlighting
             foreach (GameObject obj in interactables)
             {
                 if (obj.tag == "Tag")
@@ -185,7 +190,36 @@ public class VRUser : MonoBehaviour
         }
 
         Vector3 handPos = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;
-        Vector3 movementVal = new Vector3((farRight.transform.position - handPos).magnitude, (farUp.transform.position - handPos).magnitude, (farForward.transform.position - handPos).magnitude);
+        Vector3 movementVal = new Vector3(0f,0f,0f);
+        /*  Reset Mechanic:
+         *  Cursor starts at the center (cursorCenter) position and cannot move until...
+         *  the user presses the isResetting() hand triggers and the user's head/hands pos is taken
+         *  the user then can move the cursor relative to the saved vals
+         *  the only exception is when the user changes states or the user presses the hand triggers
+         * */
+        Debug.Log("Player Pos: " + playerPos.arms + ", " + playerPos.head);
+        if (isResetting())
+        {
+            playerArms.transform.position = handPos;
+            playerPos.arms = new Vector3((farRight.transform.position - handPos).magnitude, (farUp.transform.position - handPos).magnitude, (farForward.transform.position - handPos).magnitude);
+            playerPos.head = playerHead.transform.position;
+            state.userControlActive = true;
+            trueCursor.transform.position = centerer.transform.position;
+        }
+
+        if (state.userControlActive)
+        {
+            if (!isResetting())
+            {
+                controllerOffset = playerPos.arms;
+                movementVal = new Vector3( (farRight.transform.position - handPos).magnitude, (farUp.transform.position - handPos).magnitude, (farForward.transform.position - handPos).magnitude );
+                //movementVal += playerHead.transform.position - playerPos.head;
+            }
+        }
+        else
+        {
+            controllerOffset = new Vector3(0f, 0f, 0f);
+        }
 
         //extra control
         Vector2 cursorMove = new Vector2(0f, 0f);
@@ -194,21 +228,9 @@ public class VRUser : MonoBehaviour
             cursorMove = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch);
         }
 
-        if ((OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) < .9)
-            || (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) >= .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) < .9))
-        {
-            //controllerOffset = handPos;
-            controllerOffset = movementVal;
-        }
-        else if (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .9 || OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) >= .9)
-        {
-            Vector3 change = controllerOffset - movementVal; // handPos - controllerOffset;
-            change *= Time.deltaTime * 24f * StateManager.cursorSpeed;
-            cursorMove += new Vector2(change.x, change.y);
-            /*if (change.z > ...){
-                //ispushing
-            }*/
-        }
+        Vector3 change = controllerOffset - movementVal; // handPos - controllerOffset;
+        change *= StateManager.cursorSpeed;
+        cursorMove += new Vector2(change.x, change.y);
 
         trueCursor.transform.position += (3f * Time.deltaTime * ((trueCursor.transform.up * cursorMove.y) + (trueCursor.transform.right * cursorMove.x)));
 
@@ -332,6 +354,11 @@ public class VRUser : MonoBehaviour
         }
         return false;
     }
+    public static bool isResetting()
+    {
+        return (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) < 1.9) && 
+            (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) < 1.9);
+    }
 
     public static int getStickState()
     {
@@ -359,4 +386,14 @@ public class VRUser : MonoBehaviour
     //{
 
     //}
+    public class UserBounds //used for later instances of compensatory motion tracking
+    {
+        public Vector3 head;
+        public Vector3 arms;
+        public UserBounds(Vector3 armsPos, Vector3 headPos)
+        {
+            head = headPos;
+            arms = armsPos;
+        }
+    }
 }
