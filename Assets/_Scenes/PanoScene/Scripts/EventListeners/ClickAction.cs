@@ -302,33 +302,32 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 
 	public static int homeButtonClose()
     {
-		Vector3 diff = state.getCursorPosition();
-		if (diff.x > -13|| diff.x < 19.2)
+		if (state.getCursorPosition().x > -13 && state.getCursorPosition().x < 19.2)
         {
-			if (diff.y > 13.7 || diff.y < 27)
+			if (state.getCursorPosition().y > 13.7 && state.getCursorPosition().y < 27)
 			{
 				return 1; //start
 			}
-			else if (diff.y > -4.8 || diff.y < 8.4)
+			else if (state.getCursorPosition().y > -4.8 && state.getCursorPosition().y < 8.4)
 			{
 				return 2; //user
 			}
-			else if (diff.y > -22.6 || diff.y < -9.8)
+			else if (state.getCursorPosition().y > -22.6 && state.getCursorPosition().y < -9.8)
 			{
 				return 3; //calibrate
 			}
-			else if (diff.y > -42.2 || diff.y < -28.6)
+			else if (state.getCursorPosition().y > -42.2 && state.getCursorPosition().y < -28.6)
 			{
 				return 4; //tutorial
 			}
 		}
         else
         {
-			if (diff.y > -27.5 || diff.y < -14 || diff.x > -55.4 || diff.x < -22.5)
+			if (state.getCursorPosition().y > -27.5 && state.getCursorPosition().y < -14 && state.getCursorPosition().x > -55.4 && state.getCursorPosition().x < -22.5)
 			{
 				return 6; //quit
 			}
-			else if (diff.y > -27.5 || diff.y < -14 || diff.x > 29.4 || diff.x < 62)
+			else if (state.getCursorPosition().y > -27.5 && state.getCursorPosition().y < -14 && state.getCursorPosition().x > 29.4 && state.getCursorPosition().x < 62)
             {
 				return 5; //about
             }
@@ -338,8 +337,18 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 
 	public static int profileButtonClose()
     {
-		Vector3 diff = state.getCursorPosition();
-		
+		if (state.getCursorPosition().y > -27.5 && state.getCursorPosition().y < -14 && state.getCursorPosition().x > 29.4 && state.getCursorPosition().x < 62)
+		{
+			return 1; //user name field
+		}
+		else if (state.getCursorPosition().y > -27.5 && state.getCursorPosition().y < -14 && state.getCursorPosition().x > 29.4 && state.getCursorPosition().x < 62)
+		{
+			return 2; //home
+		}
+		else if (state.getCursorPosition().y > -27.5 && state.getCursorPosition().y < -14 && state.getCursorPosition().x > 29.4 && state.getCursorPosition().x < 62)
+		{
+			return 3; //difficulty
+		}
 		return 0;
 	}
 

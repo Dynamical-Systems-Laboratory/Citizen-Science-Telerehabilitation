@@ -50,7 +50,6 @@ public class UserProfile : MonoBehaviour
     void Awake()
     {
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
-
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
 
         homeButton = GameObject.Find("HomeButton2");
@@ -75,38 +74,6 @@ public class UserProfile : MonoBehaviour
         texts.Add(difficulty);
 
         mainCanv = GameObject.Find("ProfileCanvas");
-    }
-
-    public static void screenIsActive(bool isActive)
-    {
-        //if (!isActive && !isDisplaced)
-        //{
-        //    /*foreach (Text words in texts)
-        //    {
-        //        words.color = Color.clear;
-        //    }*/
-        //    GameObject.Find("UserInfoPanel").transform.position += new Vector3(100f, 0f, 0f);
-        //    GameObject.Find("ProgressPanel").transform.position += new Vector3(100f, 0f, 0f);
-        //    GameObject.Find("HomePanel2").transform.position += new Vector3(100f, 0f, 0f);
-        //    GameObject.Find("DifficultyPanel").transform.position += new Vector3(100f, 0f, 0f);
-        //    GameObject.Find("BackgroundPanel").transform.position += new Vector3(100f, 0f, 0f);
-        //    isDisplaced = true;
-        //}
-        //else if (isActive && isDisplaced)
-        //{
-        //    /*foreach (Text words in texts)
-        //    {
-        //        words.color = HomeScreen.nyuPurple;
-        //    }*/
-        //    GameObject.Find("UserInfoPanel").transform.position -= new Vector3(100f, 0f, 0f);
-        //    GameObject.Find("ProgressPanel").transform.position -= new Vector3(100f, 0f, 0f);
-        //    GameObject.Find("HomePanel2").transform.position -= new Vector3(100f, 0f, 0f);
-        //    GameObject.Find("DifficultyPanel").transform.position -= new Vector3(100f, 0f, 0f);
-        //    GameObject.Find("BackgroundPanel").transform.position -= new Vector3(100f, 0f, 0f);
-        //    isDisplaced = false;
-        //}
-        ////else if (isActive &&)
-        ////mainCanv.SetActive(isActive);
     }
 
     void Update()
@@ -162,41 +129,51 @@ public class UserProfile : MonoBehaviour
                     }
                     state.user.addName(Input.inputString);
                 }
-                
                 Debug.Log("Editing Username Mode...");
             }
-            //Clicking Things (buttons)
-            else if (Input.GetKeyDown(KeyCode.B))
+
+            int buttonNum = ClickAction.profileButtonClose();
+            switch (buttonNum)
             {
-                Vector3 homeDist = getScaledDist(homeButton.transform.position);
-                if (homeDist.x <= 118 && homeDist.x >= 32.5 && homeDist.y <= 17.8 && homeDist.y >= -18.5)
-                {
-                    state.setState(1);
-                }
+                case 1: //user name
+                    GameObject.Find("Placeholder").GetComponent<Text>().color = VRUser.highlightColor;
+                    break;
+                case 2: //home
+                    homeButton.GetComponent<Image>().color = VRUser.highlightColor;
+                    break;
+                case 3: //difficulty meter
+                    GameObject.Find("Handle").GetComponent<Image>().color = VRUser.highlightColor;
+                    break;
+                default: //0
+                    GameObject.Find("Placeholder").GetComponent<Text>().color = new Color(50 / 255, 50 / 255, 50 / 255, 128 / 255);
+                    homeButton.GetComponent<Image>().color = unhighlighted;
+                    GameObject.Find("Handle").GetComponent<Image>().color = new Color(1,1,1,1);
+                    break;
             }
-            else if (Input.GetKey(KeyCode.B)) //clicking
+            //Clicking Things (buttons)
+            else if (Input.GetKeyDown(KeyCode.B) || VRUser.isClicking())
             {
-                Vector3 sliderDist = getScaledDist(difficultyMeter.transform.position);
-                Vector3 nameDist = getScaledDist(userName.transform.position);
-                if (sliderDist.x <= 142.5 && sliderDist.x > -5 &&sliderDist.y <= 9 && sliderDist.y >= -12)
+                switch (buttonNum)
                 {
-                    //Debug.Log("Using Slider");
-                    //[142.5 <--> -5] / 10 => 14.75*
-                    float slideNum = Mathf.Floor((142.5f - sliderDist.x) / 14.75f);
-                    difficultyMeter.value = slideNum + 1;
-                    difficulty.text = difficultyMeter.value.ToString(); //change text
-                    state.user.updateDifficulty(difficultyMeter.value); //change user settings
-                }
-                else if (nameDist.x <= 117.5 && nameDist.x >= 10.5 && nameDist.y <= 14.8 && nameDist.y >= -7.6)
-                {
-                    Debug.Log("Editing Name");
-                    userName.ActivateInputField();
-                    isTyping = true;
-                }
-                else
-                {
-                    Debug.Log("~No Button To Press~");
-                    userName.DeactivateInputField();
+                    case 1:
+                        Debug.Log("Editing Name");
+                        userName.ActivateInputField();
+                        isTyping = true;
+                        break;
+                    case 2:
+                        state.setState(1);
+                        break;
+                    case 3:
+                        //[142.5 <--> -5] / 10 => 14.75*
+                        float slideNum = 0;// Mathf.Floor((142.5f - sliderDist.x) / 14.75f);
+                        difficultyMeter.value = slideNum + 1;
+                        difficulty.text = difficultyMeter.value.ToString(); //change text
+                        state.user.updateDifficulty(difficultyMeter.value); //change user settings
+                        break;
+                    default:
+                        Debug.Log("~No Button To Press~");
+                        userName.DeactivateInputField();
+                        break;
                 }
             }
             else //if not clicking
@@ -206,10 +183,4 @@ public class UserProfile : MonoBehaviour
 
         }
     }
-
-    private Vector3 getScaledDist(Vector3 dist) //helper
-    {
-        return ((dist - UserProfile.stateModifier2) - (state.getCursorPosition() * StateManager.cursorPosMod * HomeScreen.scale));
-    }
-
 }

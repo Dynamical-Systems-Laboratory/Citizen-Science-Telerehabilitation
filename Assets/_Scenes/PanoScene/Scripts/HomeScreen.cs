@@ -73,6 +73,7 @@ public class HomeScreen : MonoBehaviour
             int buttonNum = ClickAction.homeButtonClose(); //representation of button if cursor hovers over
             if (buttonNum != 0)
             {
+                Debug.Log("Num: " + buttonNum + ", obj: " + buttons[buttonNum - 1].name);
                 GameObject obj = buttons[buttonNum - 1];
 
                 obj.GetComponent<Image>().color = VRUser.highlightColor; //highlighted;
@@ -84,7 +85,7 @@ public class HomeScreen : MonoBehaviour
                     }
                 }
 
-                if (Input.GetKey(KeyCode.B)) //clicking
+                if (Input.GetKeyDown(KeyCode.B) || VRUser.isClicking()) //clicking
                 {
                     obj.GetComponent<Image>().color = unhighlighted;
                     if (obj.name == startGameButton.name)
