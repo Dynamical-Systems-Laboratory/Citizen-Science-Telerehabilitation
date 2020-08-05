@@ -21559,7 +21559,7 @@ GameObject:
   - component: {fileID: 1177928692}
   - component: {fileID: 1177928691}
   m_Layer: 15
-  m_Name: practiceText
+  m_Name: calibrateText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -21615,7 +21615,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Practice Screen
+  m_Text: Calibrate Screen
 --- !u!222 &1177928692
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -25498,7 +25498,7 @@ GameObject:
   - component: {fileID: 1354595156}
   - component: {fileID: 1354595155}
   m_Layer: 15
-  m_Name: practiceLabelPanel
+  m_Name: calibrateLabelPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32492,7 +32492,7 @@ GameObject:
   - component: {fileID: 1738435040}
   - component: {fileID: 1738435039}
   m_Layer: 15
-  m_Name: practiceLabel
+  m_Name: calibrateLabel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -36043,7 +36043,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1946916777}
-  - component: {fileID: 1946916776}
   m_Layer: 0
   m_Name: gameGroup
   m_TagString: Untagged
@@ -36051,19 +36050,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1946916776
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1946916775}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c6c10ba2faa6254bbd0caf27fb7f4f5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  state: {fileID: 0}
 --- !u!4 &1946916777
 Transform:
   m_ObjectHideFlags: 0

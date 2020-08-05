@@ -29,7 +29,7 @@ public class HomeScreen : MonoBehaviour
     public static Text tutorialText;
 
     public static Vector3 stateModifier = new Vector3(-160f + 64f, 500f, 66.6f); //offset of button positions relative to makewordbank
-    public static float scale = 1.72f;//3/2;
+    public static float scale = 13;
 
     //button colors
     public static float colorFactor = 183f / 255f;
@@ -66,72 +66,30 @@ public class HomeScreen : MonoBehaviour
         buttons[5] = quitButton;
     }
 
-    public static void screenIsActive(bool isActive)
-    {
-        //if (!isActive && !isDisplaced)
-        //{
-        //    foreach (GameObject obj in buttons) //buttons dissapear
-        //    {
-        //        //obj.GetComponentInChildren<Text>().color = Color.clear;
-        //        //obj.GetComponent<Image>().color = Color.clear;
-        //        obj.transform.position += new Vector3(100f, 0f, 0f);
-        //    }
-        //    background.transform.position += new Vector3(100f, 0f, 0f);
-        //    isDisplaced = true;
-        //}
-        //else if (isActive && isDisplaced)
-        //{
-        //    foreach (GameObject obj in buttons) //buttons dissapear
-        //    {
-        //        //obj.GetComponentInChildren<Text>().color = nyuPurple;
-        //        //obj.GetComponent<Image>().color = unhighlighted;
-        //        obj.transform.position -= new Vector3(100f, 0f, 0f);
-        //    }
-        //    background.transform.position -= new Vector3(100f, 0f, 0f);
-        //    //background.enabled = false;
-        //    isDisplaced = false;
-        //}
-    }
-
     void Update()
     {
         if (state.getState() == 1)
         {
-            float dist = 100000000; //find closest object
-            GameObject obj = buttons[0];
-            foreach (GameObject button in buttons)
+            int buttonNum = ClickAction.homeButtonClose(); //representation of button if cursor hovers over
+            if (buttonNum != 0)
             {
-                if (button != null)
+                GameObject obj = buttons[buttonNum - 1];
+
+                obj.GetComponent<Image>().color = VRUser.highlightColor; //highlighted;
+                for (int i = 0; i < buttons.Length; i++)
                 {
-                    Vector3 newDist = (button.transform.position - stateModifier) - (state.getCursorPosition() * StateManager.cursorPosMod * scale);
-                    if (newDist.magnitude < dist)
+                    if (i != (buttonNum - 1))
                     {
-                        dist = newDist.magnitude;
-                        obj = button;
+                        buttons[i].GetComponent<Image>().color = unhighlighted;
                     }
                 }
-            }
-            //Debug.Log("Closest Button: " + obj.name + ", " + ClickAction.buttonClose2(obj.transform.position));
 
-            if (ClickAction.buttonClose2(obj.transform.position)) //highlight color
-            {
-                obj.GetComponent<Image>().color = highlighted;
-            }
-            else
-            {
-                obj.GetComponent<Image>().color = unhighlighted;
-            }
-
-            if (Input.GetKey(KeyCode.B)) //clicking
-            {
-                if (ClickAction.buttonClose2(obj.transform.position))
+                if (Input.GetKey(KeyCode.B)) //clicking
                 {
                     obj.GetComponent<Image>().color = unhighlighted;
-
                     if (obj.name == startGameButton.name)
                     {
                         StateManager.makeCamReset = true;
-                        //homeCamera.SetActive(false);
                         if (state.user.getPracticeLevelState()[1])
                         {
                             state.setState(2);
@@ -155,7 +113,7 @@ public class HomeScreen : MonoBehaviour
                         SimpleTutorial.initialized = false;
                         StateManager.makeCursReset = true;
                         state.setState(4);
-                    } 
+                    }
                     else if (obj.name == tutorialButton.name)
                     {
                         MakeWordBank.stepOfTutorial = 13;
@@ -184,7 +142,13 @@ public class HomeScreen : MonoBehaviour
                     }
                 }
             }
-
+            else
+            {
+                foreach (GameObject button in buttons)
+                {
+                    button.GetComponent<Image>().color = unhighlighted;
+                }
+            }
         }
     }
 

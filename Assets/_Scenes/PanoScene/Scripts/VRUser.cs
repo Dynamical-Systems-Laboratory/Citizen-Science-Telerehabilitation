@@ -42,7 +42,7 @@ public class VRUser : MonoBehaviour
 
     public static List<GameObject> interactables = new List<GameObject>();
 
-    public static Vector3 uiButtonOffset = new Vector3(0f, 28f, 0f); //offset needed for button accuracy with uiButton methods within clickaction
+    public static Vector3 uiButtonOffset = new Vector3(0f, 27f, 0f); //offset needed for button accuracy with uiButton methods within clickaction
 
     //tag sorting helpers
     public static Vector3 pos1;
@@ -116,14 +116,16 @@ public class VRUser : MonoBehaviour
         //{
         //    state.setState(0);
         //}
-        
+
         //RESETS
+        if (userSkip(true) || StateManager.makeCursReset)
+        {
+            trueCursor.transform.position = centerer.transform.position;
+            state.userControlActive = false;
+        }
+
         if (state.isGaming())
         {
-            if (userSkip(true) || StateManager.makeCursReset)
-            {
-                trueCursor.transform.position = centerer.transform.position;
-            }
             //ui highlighting
             foreach (GameObject obj in interactables)
             {
@@ -204,7 +206,7 @@ public class VRUser : MonoBehaviour
             playerPos.arms = new Vector3((farRight.transform.position - handPos).magnitude, (farUp.transform.position - handPos).magnitude, (farForward.transform.position - handPos).magnitude);
             playerPos.head = playerHead.transform.position;
             state.userControlActive = true;
-            trueCursor.transform.position = centerer.transform.position;
+            trueCursor.transform.position = centerer.transform.position; //center
         }
 
         if (state.userControlActive)

@@ -134,7 +134,7 @@ public class StateManager : MonoBehaviour {
 
     public bool userControlActive = false; //bool that controls the reset mechanic for the 
 
-    private int userState = 7;//6;
+    private int userState = 1;//6;
     /* 0 = Quit
      * 1 = Home
      * 2 = In-Game
@@ -207,6 +207,7 @@ public class StateManager : MonoBehaviour {
                 break;
             case 2: //GAME
                 MakeWordBank.nextImage(MakeWordBank.imageIndex);
+                GameObject.Find("gameText").GetComponent<Text>().text = "Game Screen";
                 break;
             case 3: //PROFILE
                 MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = profileCull;
@@ -223,6 +224,8 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.UICamera.SetActive(false);
                 break;
             case 7: //PRACTICE LEVEL
+                GameObject.Find("gameText").GetComponent<Text>().text = "Practice Screen";
+                //activate/deactivate practice level text & help text stuffgameText
                 break;
             case 8: //Survey
                 break;
@@ -323,7 +326,7 @@ public class StateManager : MonoBehaviour {
         cursorPos = GameObject.Find("exampleCursor").transform.position;
 
         //culling masks
-        gameCull = MakeWordBank.UICamera.GetComponent<Camera>().cullingMask;
+        gameCull = GameObject.Find("UICamera").GetComponent<Camera>().cullingMask;
         tutorialCull = (1 << LayerMask.NameToLayer("Tutorial"));
         homeCull = (1 << LayerMask.NameToLayer("Home"));
         profileCull = (1 << LayerMask.NameToLayer("Profile"));

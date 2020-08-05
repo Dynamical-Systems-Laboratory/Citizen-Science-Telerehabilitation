@@ -299,19 +299,50 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		}
 		return true;
 	}
-	public static bool buttonClose2(Vector3 pos) //for home screen ui
-	{ //nextButton.transform.position
-		Vector3 diff = (pos - HomeScreen.stateModifier) - (state.getCursorPosition() * StateManager.cursorPosMod * HomeScreen.scale); //2:3 scaling modifier																								 //}
-		if (diff.y > 11 || diff.y < -19.8)
-		{
-			return false;
+
+	public static int homeButtonClose()
+    {
+		Vector3 diff = state.getCursorPosition();
+		if (diff.x > -13|| diff.x < 19.2)
+        {
+			if (diff.y > 13.7 || diff.y < 27)
+			{
+				return 1; //start
+			}
+			else if (diff.y > -4.8 || diff.y < 8.4)
+			{
+				return 2; //user
+			}
+			else if (diff.y > -22.6 || diff.y < -9.8)
+			{
+				return 3; //calibrate
+			}
+			else if (diff.y > -42.2 || diff.y < -28.6)
+			{
+				return 4; //tutorial
+			}
 		}
-		if (diff.x > 41 || diff.x < -42)
-		{
-			return false;
+        else
+        {
+			if (diff.y > -27.5 || diff.y < -14 || diff.x > -55.4 || diff.x < -22.5)
+			{
+				return 6; //quit
+			}
+			else if (diff.y > -27.5 || diff.y < -14 || diff.x > 29.4 || diff.x < 62)
+            {
+				return 5; //about
+            }
 		}
-		return true;
+		return 0;
+    }
+
+	public static int profileButtonClose()
+    {
+		Vector3 diff = state.getCursorPosition();
+		
+		return 0;
 	}
+
 	public static void destroyTags()
     {
 		foreach (GameObject tag in state.tagsPlaced)
