@@ -16,24 +16,26 @@ public class UserInfo //not sure if : this() is necessary
 
     private struct TagInfo //all tag related info needed to reload and track progress
     {
-        public TagInfo(string newName, Vector3 newLocation, int associatedImage) : this()
+        public TagInfo(string newName, Vector3 newLocation, int associatedImage, Vector3 newHeadPos) : this()
         {
             this.name = newName;
             this.location = newLocation;
             this.image = associatedImage;
+            this.headPos = newHeadPos;
         }
         public string name;
         public Vector3 location;
         public int image; //associated image index
+        public Vector3 headPos;
     }
 
     //data
-    public void logTagData(List<GameObject> addTags, int addImage, Vector3 camPos)
+    public void logTagData(List<TagPlaced> addTags, int addImage, Vector3 camPos)
     {
         //TODO check locational data - if bad, use (0,0,0) nextCamera offset to correct
-        foreach (GameObject newTag in addTags)
+        foreach (TagPlaced newTag in addTags)
         {
-            TagInfo tempTag = new TagInfo(newTag.name, newTag.transform.position, addImage);
+            TagInfo tempTag = new TagInfo(newTag.tag.name, newTag.tag.transform.position, addImage, newTag.headPos);
             tags.Add(tempTag);
         }
         imagesCompleted.Add(addImage);
@@ -157,7 +159,7 @@ public class UserInfo //not sure if : this() is necessary
         return new bool[] { startedPracticeLevel, finishedPracticeLevel };
     }
 
-    public IEnumerable<GameObject> getTags(int image)
+    public IEnumerable<TagPlaced> getTags(int image)
     {
         foreach (TagInfo tagInform in tags)
         {
@@ -165,9 +167,10 @@ public class UserInfo //not sure if : this() is necessary
             {
                 GameObject tag = new GameObject(tagInform.name);
                 tag.transform.position = tagInform.location;
-                tag.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                //tag.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
                 //TODO: make it look like a normal tag (cleanup with MakeWordBank as well)
-                yield return tag;
+                TagPlaced newTag = new TagPlaced(tag, tagInform.headPos);
+                yield return newTag;
             }
         }
         //yield return null;
@@ -204,6 +207,9 @@ public class UserInfo //not sure if : this() is necessary
             yield return tag.location.y.ToString();
             yield return tag.location.z.ToString();
             yield return tag.image.ToString();
+            yield return tag.headPos.x.ToString();
+            yield return tag.headPos.y.ToString();
+            yield return tag.headPos.z.ToString();
         }
         yield return "session";
         for(int i = 0; i < sessionsLogged.Count; i++)
@@ -239,10 +245,14 @@ public class UserInfo //not sure if : this() is necessary
         tags.Clear(); //saftey
         while (data[counter] != "session")
         { //adding tags
-            TagInfo tag = new TagInfo( data[counter], new Vector3(float.Parse(data[counter + 1]),
-                float.Parse(data[counter + 2]), float.Parse(data[counter + 3])), int.Parse(data[counter + 4]));
+            TagInfo tag = new TagInfo(
+                data[counter], 
+                new Vector3(float.Parse(data[counter + 1]), float.Parse(data[counter + 2]), float.Parse(data[counter + 3])), 
+                int.Parse(data[counter + 4]), 
+                new Vector3(float.Parse(data[counter + 5]), float.Parse(data[counter + 6]), float.Parse(data[counter + 7]))
+                );
             tags.Add(tag);
-            counter += 5;
+            counter += 8;
         }
         ++counter; //after "session"
 
@@ -281,10 +291,12 @@ public class UserInfo //not sure if : this() is necessary
         tags.Clear(); //saftey
         while (data[counter] != "session")
         { //adding tags
-            TagInfo tag = new TagInfo(data[counter], new Vector3(float.Parse(data[counter + 1]),
-                float.Parse(data[counter + 2]), float.Parse(data[counter + 3])), int.Parse(data[counter + 4]));
+            TagInfo tag = new TagInfo(data[counter],
+                new Vector3(float.Parse(data[counter + 1]), float.Parse(data[counter + 2]), float.Parse(data[counter + 3])),
+                int.Parse(data[counter + 4]),
+                new Vector3(float.Parse(data[counter + 5]), float.Parse(data[counter + 6]), float.Parse(data[counter + 7])));
             tags.Add(tag);
-            counter += 5;
+            counter += 8;
         }
         ++counter; //after "session"
 

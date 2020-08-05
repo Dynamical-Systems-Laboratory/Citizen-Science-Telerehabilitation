@@ -540,16 +540,18 @@ public class StateManager : MonoBehaviour {
 
     public void loadTags(int images, List<TagPlaced> tagExample) //loadTags(user.getLastImage())
     {
-        foreach (GameObject tag in user.getTags(images))
+        foreach (TagPlaced tag in user.getTags(images))
         {
             GameObject newTag = Instantiate(tagExample[0].tag, ClickAction.canvas.transform);
             newTag.GetComponentInChildren<Text>().color = Color.blue;
-            newTag.name = tag.name;
-            newTag.tag = tag.name;
-            newTag.transform.position = tag.transform.position;
+            newTag.name = tag.tag.name;
+            newTag.tag = tag.tag.name;
+            newTag.transform.position = tag.tag.transform.position;
             newTag.transform.localScale -= new Vector3(0.5f, 0.5f, 0f);
             newTag.layer = 4;
-            //tagsPlaced.Add(newTag);
+
+            TagPlaced tagToAdd = new TagPlaced(newTag, tag.headPos);
+            tagsPlaced.Add(tagToAdd);
         }
     }
 }
