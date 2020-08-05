@@ -24,15 +24,13 @@ public class UserProfile : MonoBehaviour
     public static Text sessionsLogged;
     public static Text progress;
     public static Text difficulty;
-    public static List<Text> texts = new List<Text>();
+    public static List<Text> texts = new List<Text>(); //list of things to update
 
     //other
-    public static InputField userName;
     public static Slider progressBar;
-    public static Slider difficultyMeter;
-
-    public static Vector3 stateModifier2 = new Vector3(-100.2f + 2.8f + 380f, 500f, 66.6f); //offset of button positions relative to makewordbank
-    public static float scale = 1.72f;//3/2;
+    public static Slider difficultyMeter; //moveable slider
+    public static InputField userName; //interactable input
+    bool isTyping = false; //keeps track of state of input field
 
     //button colors
     public static float colorFactor = 183f / 255f;
@@ -40,10 +38,6 @@ public class UserProfile : MonoBehaviour
     public static Color highlighted = new Color(1f, 1f, 1f, 1f);
 
     private static string letters = "abcdefghijklmnopqrstuvwxyzACBDEFGHIJKLMNOPQRSTUVWXYZ";//allowed characters for username
-
-    bool isTyping = false;
-
-    public static bool isDisplaced = false;
 
     public static GameObject mainCanv;
 
@@ -130,53 +124,70 @@ public class UserProfile : MonoBehaviour
                 }
                 Debug.Log("Editing Username Mode...");
             }
-            int buttonNum = ClickAction.profileButtonClose();
-            switch (buttonNum)
+            else
             {
-                case 1: //user name
-                    GameObject.Find("Placeholder").GetComponent<Text>().color = VRUser.highlightColor;
-                    break;
-                case 2: //home
-                    homeButton.GetComponent<Image>().color = VRUser.highlightColor;
-                    break;
-                case 3: //difficulty meter
-                    GameObject.Find("Handle").GetComponent<Image>().color = VRUser.highlightColor;
-                    break;
-                default: //0
-                    GameObject.Find("Placeholder").GetComponent<Text>().color = new Color(50 / 255, 50 / 255, 50 / 255, 128 / 255);
-                    homeButton.GetComponent<Image>().color = unhighlighted;
-                    GameObject.Find("Handle").GetComponent<Image>().color = new Color(1, 1, 1, 1);
-                    break;
-            }
-            //Clicking Things (buttons)
-            if (Input.GetKeyDown(KeyCode.B) || VRUser.isClicking())
-            {
+                int buttonNum = ClickAction.profileButtonClose();
+                //Debug.Log("Profile Button: " + buttonNum);
                 switch (buttonNum)
                 {
-                    case 1:
-                        Debug.Log("Editing Name");
-                        userName.ActivateInputField();
-                        isTyping = true;
+                    case 1: //user name
+                        ColorBlock cb1 = userName.colors;
+                        cb1.normalColor = VRUser.highlightColor;
+                        userName.colors = cb1;
                         break;
-                    case 2:
-                        state.setState(1);
+                    case 2: //home
+                        homeButton.GetComponent<Image>().color = VRUser.highlightColor;
                         break;
-                    case 3:
+                    case 3: //difficulty meter
+                        ColorBlock cb2 = difficultyMeter.colors;
+                        cb2.normalColor = VRUser.highlightColor;
+                        difficultyMeter.colors = cb2;
+                        break;
+                    default: //0
+                        //GameObject.Find("Placeholder").GetComponent<Text>().color = new Color(50 / 255, 50 / 255, 50 / 255, 128 / 255);
+                        userName.colors = ColorBlock.defaultColorBlock;
+                        homeButton.GetComponent<Image>().color = unhighlighted;
+                        //GameObject.Find("Handle").GetComponent<Image>().color = new Color(1, 1, 1, 1);
+                        difficultyMeter.colors = ColorBlock.defaultColorBlock;
+                        break;
+                }
+                //Clicking Things (buttons)
+                if (Input.GetKeyDown(KeyCode.B) || VRUser.isClicking(true))
+                {
+                    switch (buttonNum)
+                    {
+                        case 1:
+                            Debug.Log("Editing Name");
+                            userName.ActivateInputField();
+                            isTyping = true;
+                            break;
+                        case 2:
+                            state.setState(1);
+                            break;
+                        case 3:
+                            //below
+                            break;
+                        default:
+                            Debug.Log("~No Button To Press~");
+                            userName.DeactivateInputField();
+                            break;
+                    }
+                }
+                else if (Input.GetKey(KeyCode.B) || VRUser.isClicking(false))
+                {
+                    if (buttonNum == 3)
+                    {
                         //[-12.5,33] -- 45.5 len - (4.55) interval
-                        int slideNum = (int) ((state.getCursorPosition().x - (12.5f)) / 45.5f * 10f); //percentage 10.0 = 100&
+                        int slideNum = (int)((state.getCursorPosition().x + 12.5f) / 45.5f * 10f); //percentage 10.0 = 100&
                         difficultyMeter.value = slideNum + 1;
                         difficulty.text = difficultyMeter.value.ToString(); //change text
                         state.user.updateDifficulty(difficultyMeter.value); //change user settings
-                        break;
-                    default:
-                        Debug.Log("~No Button To Press~");
-                        userName.DeactivateInputField();
-                        break;
+                    }
                 }
-            }
-            else //if not clicking
-            {
-                userName.DeactivateInputField();
+                else //if not clicking
+                {
+                    userName.DeactivateInputField();
+                }
             }
         }
     }

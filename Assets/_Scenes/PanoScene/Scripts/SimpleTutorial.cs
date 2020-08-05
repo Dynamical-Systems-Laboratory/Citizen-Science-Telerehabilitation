@@ -121,7 +121,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     //public static bool calibrationEdgeCase = false;
     private static bool hasCompleted = false;
 
-    public static bool isDisplaced = false;
     public static GameObject vert;
     public static GameObject horiz;
 

@@ -16,8 +16,6 @@ public class PowerpointScript : MonoBehaviour {
 	static float transitionTime = 1.0f;
 	public StateManager state;
 
-	public static bool isDisplaced = false;
-
 	//extra
 	private GameObject background;
 
