@@ -395,7 +395,7 @@ public class MakeWordBank : MonoBehaviour {
          * * v = progress
          * * m = drop object
          */
-        if (stepOfTutorial >= 12 && (SimpleTutorial.step > 34))
+        if (true)//stepOfTutorial >= 12 && (SimpleTutorial.step > 34))
         {
             //Debug.Log("in the movement loop...");
             //StateManager.allSystemsGo = true;
@@ -463,10 +463,12 @@ public class MakeWordBank : MonoBehaviour {
             //Debug.Log("Practice Tags: " + practiceMoveOn + ", prog: " + state.user.getProgress());
             if (state.isGaming()) //in-game or practice level or button tutorial
             {
-                if (Input.GetKeyDown(KeyCode.B) || VRUser.isClicking()) //select
+                Debug.Log("IsGaming");
+                if (Input.GetKeyDown(KeyCode.B) || VRUser.isClicking(true)) //select
                 {
+                    int buttonsConverted = VRUser.buttonConversion();
                     Debug.Log("IsClicking!");
-                    if (ClickAction.uiButtonClose(nextButton.transform.position))
+                    if (buttonsConverted == 1)
                     {
                         if (imageIndex >= imageMaterials.Length - 1)
                         {
@@ -476,6 +478,7 @@ public class MakeWordBank : MonoBehaviour {
                         else if(state.getState() == 7 && practiceMoveOn < 3)
                         {
                             eventListener.OnPointerClick(nextButton);
+                            StateManager.makeCursReset = true;
                         }
                         else
                         {
@@ -484,16 +487,21 @@ public class MakeWordBank : MonoBehaviour {
                                 state.setState(2);
                                 state.user.setLevelProgress(true, true); //set practice level trackers
                             }
-                            StateManager.makeCamReset = true;
-                            state.user.logTagData(state.tagsPlaced, imageIndex, state.getCameraPosition()); //store image data
+                            //StateManager.makeCamReset = true;
+                            //TODO*:  //state.user.logTagData(state.tagsPlaced, imageIndex, state.getCameraPosition()); //store image data
                             eventListener.OnPointerClick(nextButton); //click next
                             state.user.setNewImage(imageIndex); //save new image
+                            StateManager.makeCursReset = true;
                         }
                     }
-                    else if (ClickAction.uiButtonClose2(quitButton.transform.position) ) //home
+                    else if (buttonsConverted == 6) //home
                     {
                         eventListener.OnPointerClick(quitButton);
                         state.setState(1);
+                    }
+                    else if (buttonsConverted == 7)
+                    {
+                        eventListener.OnPointerClick();
                     }
                     else
                     {
@@ -1276,7 +1284,6 @@ public class MakeWordBank : MonoBehaviour {
 
         //if not holding an object and close to either the quit or the next image button do that
         //create get rid of object button
-
         float shortDist = 1000000f;
         foreach (GameObject tag in tagGameObjects) //mathf.abs
         {
@@ -1289,7 +1296,7 @@ public class MakeWordBank : MonoBehaviour {
             }
         }
         Debug.Log("Closest Object" + toClick.name + ", Tag: " + toClick.tag + ", Distance: " + shortDist);
-        if (ClickAction.tagClose(toClick.transform.localPosition) != 0)// && Input.GetKeyDown(KeyCode.G))
+        if (ClickAction.tagClose(toClick.transform.localPosition) != 0)// && Input.GetKeyDown(KeyCode.G)) - doublecheck
         {
             if (state.getSelected() != null)
             {

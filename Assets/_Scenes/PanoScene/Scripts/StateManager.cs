@@ -112,7 +112,7 @@ public class StateManager : MonoBehaviour {
     public static float cursorSize = -0.418f; //factor that makes cursor bigger or smaller
 
     //TODO: Make tag count update as game goes on rather than after image is completed
-    public List<GameObject> tagsPlaced;
+    public List<TagPlaced> tagsPlaced;
     //public List<InvisTag> invisTags;
 
     public static bool newUser = true; // whether or not data was read
@@ -134,7 +134,7 @@ public class StateManager : MonoBehaviour {
 
     public bool userControlActive = false; //bool that controls the reset mechanic for the 
 
-    private int userState = 3;//6;
+    private int userState = 2;//6;
     /* 0 = Quit
      * 1 = Home
      * 2 = In-Game
@@ -247,13 +247,12 @@ public class StateManager : MonoBehaviour {
 
     public Vector3 getCursorPosition()
     {
-        //return cursorPos;
-        return trueCursor.transform.localPosition;
+        return trueCursor.transform.localPosition; //return cursorPos;
     }
 
     public Vector3 getCameraPosition()
     {
-        return cameraPos;
+        return cameraPos; //GameObject.Find("CenterEyeAnchor").transform.rotation.eulerAngles;
     }
 
     public int getButtons()
@@ -418,26 +417,30 @@ public class StateManager : MonoBehaviour {
             absRotation = nextCameraPos;
             makeCamReset = false;
         }
-        //nextCameraPos.y = getLowestAngle(nextCameraPos.y); //reset x pos if goes too far
-        /*if (cameraMoving)
+        foreach (TagPlaced obj in tagsPlaced)
         {
-            foreach (GameObject obj in tagsPlaced)
+            obj.tag.transform.position -= (cameraPos - obj.headPos);
+        }
+        //nextCameraPos.y = getLowestAngle(nextCameraPos.y); //reset x pos if goes too far
+            /*if (cameraMoving)
             {
-                Color newColor = obj.GetComponent<Image>().color;
-                if (obj.transform.position.x > 15 && obj.transform.position.x < 101)//offset > xOffset) disapear after a certain x (factoring for full rotations of 180 degrees)
+                foreach (GameObject obj in tagsPlaced)
                 {
-                    obj.GetComponentInChildren<Text>().color = Color.clear; //text color change
-                    newColor.a = 0;
+                    Color newColor = obj.GetComponent<Image>().color;
+                    if (obj.transform.position.x > 15 && obj.transform.position.x < 101)//offset > xOffset) disapear after a certain x (factoring for full rotations of 180 degrees)
+                    {
+                        obj.GetComponentInChildren<Text>().color = Color.clear; //text color change
+                        newColor.a = 0;
+                    }
+                    else //reapear
+                    {
+                        obj.GetComponentInChildren<Text>().color = Color.blue;
+                        newColor.a = .391f; // (100/255) = (.39/1) - transfer to 0->1 scale
+                    }
+                    obj.GetComponent<Image>().color = newColor;
                 }
-                else //reapear
-                {
-                    obj.GetComponentInChildren<Text>().color = Color.blue;
-                    newColor.a = .391f; // (100/255) = (.39/1) - transfer to 0->1 scale
-                }
-                obj.GetComponent<Image>().color = newColor;
-            }
-        }*/
-        Debug.Log("Camera Info: " + getCameraPosition() + ", abs: " + absRotation + ", speed: " + camSpeed);
+            }*/
+            Debug.Log("Camera Info: " + getCameraPosition() + ", abs: " + absRotation + ", speed: " + camSpeed);
         cameraPos = nextCameraPos;
 
         cursorL = false;
@@ -535,17 +538,28 @@ public class StateManager : MonoBehaviour {
         return userState == 2 || userState == 5 || userState == 7;
     }
 
-    public void loadTags(int images, List<GameObject> tagExample) //loadTags(user.getLastImage())
+    public void loadTags(int images, List<TagPlaced> tagExample) //loadTags(user.getLastImage())
     {
         foreach (GameObject tag in user.getTags(images))
         {
-            GameObject newTag = Instantiate(tagExample[0], ClickAction.canvas.transform);
+            GameObject newTag = Instantiate(tagExample[0].tag, ClickAction.canvas.transform);
             newTag.GetComponentInChildren<Text>().color = Color.blue;
             newTag.name = tag.name;
             newTag.tag = tag.name;
             newTag.transform.position = tag.transform.position;
+            newTag.transform.localScale -= new Vector3(0.5f, 0.5f, 0f);
             newTag.layer = 4;
-            tagsPlaced.Add(newTag);
+            //tagsPlaced.Add(newTag);
         }
+    }
+}
+public struct TagPlaced
+{
+    public GameObject tag;
+    public Vector3 headPos;
+    public TagPlaced(GameObject obj, Vector3 pos)
+    {
+        tag = obj;
+        headPos = pos;
     }
 }

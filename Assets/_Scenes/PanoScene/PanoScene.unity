@@ -12087,7 +12087,6 @@ MonoBehaviour:
   complexUser: {fileID: 0}
   cameraMoving: 0
   xOffset: 25.9
-  tagsPlaced: []
   reloading: 0
   userControlActive: 0
 --- !u!114 &657037558
@@ -22871,7 +22870,6 @@ MonoBehaviour:
   complexUser: {fileID: 0}
   cameraMoving: 0
   xOffset: 25.9
-  tagsPlaced: []
   reloading: 0
   userControlActive: 0
 --- !u!114 &1217551827
@@ -35043,7 +35041,6 @@ MonoBehaviour:
   complexUser: {fileID: 0}
   cameraMoving: 0
   xOffset: 25.9
-  tagsPlaced: []
   reloading: 0
   userControlActive: 0
 --- !u!114 &1878484556

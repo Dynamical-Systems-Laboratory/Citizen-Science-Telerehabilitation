@@ -90,12 +90,12 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			objectClicked = trashy;
         }
 
-        if (objectClicked == null && state.getSelected() != null && state.getCursorPosition().x < -101f) // tag was placed  *******
+        if (objectClicked == null && state.getSelected() != null && state.getCursorPosition().x < 21f) // tag was placed  *******
         {
             state.getSelected().GetComponentInChildren<Text>().color = Color.blue; //instead of just GetComponent
 			state.getSelected().transform.localScale -= new Vector3(0.5f, 0.5f, 0f); //scale it down to 40% size (not thickness tho)
             tagIsFollowing = false;
-			state.tagsPlaced.Add(state.getSelected()); //adds to movement list
+			state.tagsPlaced.Add(new TagPlaced(state.getSelected(), state.getCameraPosition())); //adds to movement list
             state.setSelected(null);
         }
 
@@ -130,7 +130,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			state.setSelected(tagCopy); //clicked tag = copy of tag
 
 			tagCopy.GetComponentInChildren<Text>().color = Color.red; //changes clicked tag's text color to red
-			tagCopy.layer = 4; //UI Layer
+			//tagCopy.layer = 4; //UI Layer
 			//Image newImage = Instantiate(tagCopy.GetComponent<Image>()); //deep copy image
             //Destroy(tagCopy.GetComponent<Image>());
 			//tagCopy.AddComponent<Image>();
@@ -354,9 +354,9 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 
 	public static void destroyTags()
     {
-		foreach (GameObject tag in state.tagsPlaced)
+		foreach (TagPlaced tag in state.tagsPlaced)
 		{
-			Destroy(tag);
+			Destroy(tag.tag);
 		}
 		state.tagsPlaced.Clear();
 	}

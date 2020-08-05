@@ -122,6 +122,7 @@ public class VRUser : MonoBehaviour
         {
             trueCursor.transform.position = centerer.transform.position;
             state.userControlActive = false;
+            StateManager.makeCursReset = false;
         }
 
         if (state.isGaming())
@@ -199,7 +200,6 @@ public class VRUser : MonoBehaviour
          *  the user then can move the cursor relative to the saved vals
          *  the only exception is when the user changes states or the user presses the hand triggers
          * */
-        Debug.Log("Player Pos: " + playerPos.arms + ", " + playerPos.head);
         if (isResetting())
         {
             playerArms.transform.position = handPos;
@@ -286,30 +286,12 @@ public class VRUser : MonoBehaviour
         //TODO: bring back welcome panel
         
         //Debug.Log("Clicking: " + isClicking());
-
-        //if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch))
-        //{
-        //    state.setState(1); //home
-        //}
-        //else if (OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch))
-        //{
-        //    state.setState(2); //game
-        //}
-        //else if (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch))
-        //{
-        //    state.setState(3); //profile
-        //}
-        //else if (OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.LTouch))
-        //{
-        //    state.setState(2); //game
-        //}
     }
     
-
-    public static void vrInfo()
+    public void vrInfo()
     {
         //pos & rotation = [0,1], triggers = [0,1], sticks = [-10,10]
-        //Debug.Log("VRHead: " + playerHead.GetCameraPositionOrientation() + "EyePos?: " + playerHead.centerEyeAnchor.position);
+        Debug.Log("Player Pos: " + playerPos.arms + ", " + playerPos.head); ;
         Debug.Log("rightPos: " + OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + ", leftPos: " + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand));
         Debug.Log("rightRot: " + OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles + ", leftRot: " + OVRInput.GetLocalControllerRotation(OVRInput.Controller.LHand).eulerAngles);
 
@@ -395,10 +377,42 @@ public class VRUser : MonoBehaviour
         
         else { return 0; }
     }
-    //public static void getUILocation(Transform object, Transform userPOV = playerHead.transform) //transform - gets pos and rot
-    //{
 
-    //}
+    public static int buttonConversion() //for MakeWordBank
+    {
+        foreach (GameObject obj in interactables)
+        {
+            if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) == 1 && obj.transform.localPosition == pos1)
+            {
+                return 2;
+            }
+            else if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) == 2 && obj.transform.localPosition == pos2)
+            {
+                return 3;
+            }
+            else if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) == 3 && obj.transform.localPosition == pos3)
+            {
+                return 4;
+            }
+            else if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) == 4 && obj.transform.localPosition == pos4)
+            {
+                return 5;
+            }
+            else if (obj.name == "Bin" && ClickAction.binClose(obj.transform.localPosition))
+            {
+                return 7;
+            }
+            else if (obj.name == "NextButtonPanel" && ClickAction.uiButtonClose(obj.transform.position))
+            {
+                return 1;
+            }
+            else if (obj.name == "HomeButtonPanel" && ClickAction.uiButtonClose2(obj.transform.position))
+            {
+                return 6;
+            }
+        }
+        return 0;
+    }
     public class UserBounds //used for later instances of compensatory motion tracking
     {
         public Vector3 head;
