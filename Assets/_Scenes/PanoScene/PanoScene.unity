@@ -482,7 +482,7 @@ GameObject:
   - component: {fileID: 24369767}
   - component: {fileID: 24369769}
   - component: {fileID: 24369768}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: TimeCompleted
   m_TagString: UserInfo
   m_Icon: {fileID: 0}
@@ -632,7 +632,7 @@ GameObject:
   - component: {fileID: 34780572}
   - component: {fileID: 34780574}
   - component: {fileID: 34780573}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Handle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -817,7 +817,7 @@ GameObject:
   - component: {fileID: 35709489}
   - component: {fileID: 35709488}
   - component: {fileID: 35709487}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: UserText
   m_TagString: UserInfo
   m_Icon: {fileID: 0}
@@ -4325,7 +4325,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 240600808}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Handle Slide Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5407,7 +5407,7 @@ GameObject:
   - component: {fileID: 304442979}
   - component: {fileID: 304442981}
   - component: {fileID: 304442980}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: DateJoined
   m_TagString: UserInfo
   m_Icon: {fileID: 0}
@@ -6131,7 +6131,7 @@ GameObject:
   - component: {fileID: 338369237}
   - component: {fileID: 338369236}
   - component: {fileID: 338369235}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: ProgressPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6146,18 +6146,18 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 338369233}
   m_LocalRotation: {x: -0.017627513, y: -0, z: -0, w: 0.9998447}
-  m_LocalPosition: {x: 0, y: 0, z: 3.165635}
-  m_LocalScale: {x: 0.062669516, y: 0.022756875, z: 0.0054925987}
+  m_LocalPosition: {x: 0, y: 0, z: 3.17}
+  m_LocalScale: {x: 0.06423625, y: 0.022756875, z: 0.0054925987}
   m_Children:
-  - {fileID: 2008750158}
-  - {fileID: 1837983105}
   - {fileID: 1021271414}
+  - {fileID: 1837983105}
+  - {fileID: 2008750158}
   m_Father: {fileID: 1840084683}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: -2.02, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.11639966, y: -0.49615225}
+  m_AnchoredPosition: {x: -0.03408031, y: -0.48}
   m_SizeDelta: {x: 70.6, y: 23}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &338369235
@@ -6270,7 +6270,7 @@ GameObject:
   - component: {fileID: 348086726}
   - component: {fileID: 348086725}
   - component: {fileID: 348086724}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: UserInfoPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6286,7 +6286,7 @@ RectTransform:
   m_GameObject: {fileID: 348086722}
   m_LocalRotation: {x: -0.017627513, y: -0, z: -0, w: 0.9998447}
   m_LocalPosition: {x: 0, y: 0, z: 3.3004537}
-  m_LocalScale: {x: 0.06334728, y: 0.05717799, z: 0.0055612577}
+  m_LocalScale: {x: 0.06572281, y: 0.05717799, z: 0.0055612577}
   m_Children:
   - {fileID: 35709486}
   - {fileID: 1436908235}
@@ -6295,7 +6295,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: -2.02, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.11591985, y: 0.59662133}
+  m_AnchoredPosition: {x: -0.05, y: 0.59662133}
   m_SizeDelta: {x: 70.6, y: 23}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &348086724
@@ -11679,7 +11679,7 @@ GameObject:
   - component: {fileID: 639919146}
   - component: {fileID: 639919145}
   - component: {fileID: 639919144}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: BackgroundPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12808,7 +12808,7 @@ GameObject:
   - component: {fileID: 731271533}
   - component: {fileID: 731271535}
   - component: {fileID: 731271534}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: ImagesCompleted
   m_TagString: UserInfo
   m_Icon: {fileID: 0}
@@ -15956,7 +15956,7 @@ GameObject:
   - component: {fileID: 895150618}
   - component: {fileID: 895150617}
   - component: {fileID: 895150616}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: DifficultyPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15972,7 +15972,7 @@ RectTransform:
   m_GameObject: {fileID: 895150614}
   m_LocalRotation: {x: -0.017627513, y: -0, z: -0, w: 0.9998447}
   m_LocalPosition: {x: 0, y: 0, z: 3.08}
-  m_LocalScale: {x: 0.040174223, y: 0.027815823, z: 0.0054926425}
+  m_LocalScale: {x: 0.040676404, y: 0.027815823, z: 0.0054926425}
   m_Children:
   - {fileID: 956755219}
   - {fileID: 1896522702}
@@ -15982,7 +15982,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: -2.02, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.58342636, y: -1.1899999}
+  m_AnchoredPosition: {x: 0.7531619, y: -1.1899999}
   m_SizeDelta: {x: 70.6, y: 23}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &895150616
@@ -16965,7 +16965,7 @@ GameObject:
   - component: {fileID: 956755219}
   - component: {fileID: 956755221}
   - component: {fileID: 956755220}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Difficulty
   m_TagString: HomeButton
   m_Icon: {fileID: 0}
@@ -17265,7 +17265,7 @@ GameObject:
   - component: {fileID: 967284756}
   - component: {fileID: 967284758}
   - component: {fileID: 967284757}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: TagsPlaced
   m_TagString: UserInfo
   m_Icon: {fileID: 0}
@@ -17786,7 +17786,7 @@ GameObject:
   - component: {fileID: 1008502905}
   - component: {fileID: 1008502904}
   - component: {fileID: 1008502903}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: HomeButton2
   m_TagString: HomeButton
   m_Icon: {fileID: 0}
@@ -18041,7 +18041,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1016104408}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18078,7 +18078,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1021271414}
   - component: {fileID: 1021271415}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: ProgressBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18093,17 +18093,17 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1021271413}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 70}
-  m_LocalScale: {x: 0.3098884, y: 1.6548295, z: 2.3248403}
+  m_LocalPosition: {x: 0, y: 0, z: 70.00013}
+  m_LocalScale: {x: 0.30233017, y: 1.6548301, z: 2.3248405}
   m_Children:
   - {fileID: 1264545265}
   - {fileID: 1096884117}
   m_Father: {fileID: 338369234}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 42.4, y: -15.3}
+  m_AnchoredPosition: {x: 41.348793, y: -14.3}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1021271415
@@ -19743,7 +19743,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1096884117}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19887,7 +19887,7 @@ GameObject:
   - component: {fileID: 1111408664}
   - component: {fileID: 1111408666}
   - component: {fileID: 1111408665}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Placeholder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19910,7 +19910,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 549, y: -58}
+  m_AnchoredPosition: {x: 551, y: -58}
   m_SizeDelta: {x: -20, y: -13}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1111408665
@@ -23861,7 +23861,7 @@ GameObject:
   - component: {fileID: 1259210387}
   - component: {fileID: 1259210389}
   - component: {fileID: 1259210388}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23974,7 +23974,7 @@ GameObject:
   - component: {fileID: 1264545265}
   - component: {fileID: 1264545267}
   - component: {fileID: 1264545266}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25232,7 +25232,7 @@ GameObject:
   - component: {fileID: 1337729890}
   - component: {fileID: 1337729892}
   - component: {fileID: 1337729891}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: DifficultyNumber
   m_TagString: HomeButton
   m_Icon: {fileID: 0}
@@ -25801,7 +25801,7 @@ GameObject:
   - component: {fileID: 1368699208}
   - component: {fileID: 1368699207}
   - component: {fileID: 1368699206}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: HomePanel2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -25817,7 +25817,7 @@ RectTransform:
   m_GameObject: {fileID: 1368699204}
   m_LocalRotation: {x: -0.017627513, y: -0, z: -0, w: 0.9998447}
   m_LocalPosition: {x: 0, y: 0, z: 3.08}
-  m_LocalScale: {x: 0.018249182, y: 0.022756875, z: 0.0054925987}
+  m_LocalScale: {x: 0.0205098, y: 0.025260132, z: 0.0060967845}
   m_Children:
   - {fileID: 1008502902}
   m_Father: {fileID: 1840084683}
@@ -25825,7 +25825,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: -2.02, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.7138164, y: -1.19}
+  m_AnchoredPosition: {x: -1.5440804, y: -1.19}
   m_SizeDelta: {x: 70.6, y: 23}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1368699206
@@ -26451,7 +26451,7 @@ GameObject:
   - component: {fileID: 1397534477}
   - component: {fileID: 1397534479}
   - component: {fileID: 1397534478}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Home2
   m_TagString: HomeButton
   m_Icon: {fileID: 0}
@@ -27077,7 +27077,7 @@ GameObject:
   - component: {fileID: 1436908238}
   - component: {fileID: 1436908237}
   - component: {fileID: 1436908236}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: UserName
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -27093,7 +27093,7 @@ RectTransform:
   m_GameObject: {fileID: 1436908234}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -4}
-  m_LocalScale: {x: 0.14844649, y: 0.201469, z: 1.7370142}
+  m_LocalScale: {x: 0.15588365, y: 0.2103804, z: 1.7370142}
   m_Children:
   - {fileID: 1111408664}
   - {fileID: 1259210387}
@@ -27102,7 +27102,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -10.5, y: 6.7}
+  m_AnchoredPosition: {x: -10.1, y: 6.7}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1436908236
@@ -27494,7 +27494,7 @@ GameObject:
   - component: {fileID: 1445053998}
   - component: {fileID: 1445054000}
   - component: {fileID: 1445053999}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Progress
   m_TagString: ProgressBackground
   m_Icon: {fileID: 0}
@@ -29233,7 +29233,7 @@ GameObject:
   - component: {fileID: 1557933218}
   - component: {fileID: 1557933220}
   - component: {fileID: 1557933219}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -29976,7 +29976,7 @@ GameObject:
   - component: {fileID: 1589236826}
   - component: {fileID: 1589236828}
   - component: {fileID: 1589236827}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -32079,7 +32079,7 @@ GameObject:
   - component: {fileID: 1698044381}
   - component: {fileID: 1698044383}
   - component: {fileID: 1698044382}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -33543,7 +33543,7 @@ GameObject:
   - component: {fileID: 1793456103}
   - component: {fileID: 1793456105}
   - component: {fileID: 1793456104}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: SessionsLogged
   m_TagString: UserInfo
   m_Icon: {fileID: 0}
@@ -34598,7 +34598,7 @@ GameObject:
   - component: {fileID: 1837983105}
   - component: {fileID: 1837983107}
   - component: {fileID: 1837983106}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: ProgressPercent
   m_TagString: ProgressPercent
   m_Icon: {fileID: 0}
@@ -34614,14 +34614,14 @@ RectTransform:
   m_GameObject: {fileID: 1837983104}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 64}
-  m_LocalScale: {x: 1.739197, y: 5.018892, z: 5.0188932}
+  m_LocalScale: {x: 1.6967778, y: 5.018893, z: 5.018894}
   m_Children: []
   m_Father: {fileID: 338369234}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 34.9, y: -2.8999996}
+  m_AnchoredPosition: {x: 33.17072, y: -2.89999}
   m_SizeDelta: {x: 2, y: 2.5999985}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1837983106
@@ -34679,7 +34679,7 @@ GameObject:
   - component: {fileID: 1840084679}
   - component: {fileID: 1840084678}
   - component: {fileID: 1840084676}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: ProfileCanvas
   m_TagString: HomeCanvas
   m_Icon: {fileID: 0}
@@ -35377,7 +35377,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1896522702}
   - component: {fileID: 1896522703}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: DifficultySlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37058,7 +37058,7 @@ GameObject:
   - component: {fileID: 2006924009}
   - component: {fileID: 2006924011}
   - component: {fileID: 2006924010}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: User
   m_TagString: UserInfo
   m_Icon: {fileID: 0}
@@ -37138,7 +37138,7 @@ GameObject:
   - component: {fileID: 2008750161}
   - component: {fileID: 2008750160}
   - component: {fileID: 2008750159}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: ProgressBackground
   m_TagString: ProgressBackground
   m_Icon: {fileID: 0}
@@ -37153,16 +37153,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2008750157}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9331643, y: 0.9331643, z: 0.9331643}
+  m_LocalPosition: {x: 0, y: 0, z: 0.00008637802}
+  m_LocalScale: {x: 0.9104043, y: 0.93316466, z: 0.9331644}
   m_Children:
   - {fileID: 1445053998}
   m_Father: {fileID: 338369234}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -0.87800497, y: 0}
   m_SizeDelta: {x: 72.6, y: 25.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2008750159

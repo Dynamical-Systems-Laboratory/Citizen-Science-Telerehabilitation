@@ -52,7 +52,7 @@ public class UserProfile : MonoBehaviour
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
 
-        homeButton = GameObject.Find("HomeButton2");
+        homeButton = GameObject.Find("HomePanel2");
         userName = GameObject.Find("UserName").GetComponent<InputField>() as InputField;
 
         dateJoined = GameObject.Find("DateJoined").GetComponent<Text>() as Text;
@@ -107,7 +107,6 @@ public class UserProfile : MonoBehaviour
             //TODO: figure out horizontal transformation that coorelateds to scaler (-11.2 = 50%?)
             difficultyMeter.value = state.user.getSettingData()[0];
             difficulty.text = difficultyMeter.value.ToString();
-
             //difficulty = diffucultyMeter.value;
 
             if (isTyping)
@@ -131,7 +130,6 @@ public class UserProfile : MonoBehaviour
                 }
                 Debug.Log("Editing Username Mode...");
             }
-
             int buttonNum = ClickAction.profileButtonClose();
             switch (buttonNum)
             {
@@ -147,11 +145,11 @@ public class UserProfile : MonoBehaviour
                 default: //0
                     GameObject.Find("Placeholder").GetComponent<Text>().color = new Color(50 / 255, 50 / 255, 50 / 255, 128 / 255);
                     homeButton.GetComponent<Image>().color = unhighlighted;
-                    GameObject.Find("Handle").GetComponent<Image>().color = new Color(1,1,1,1);
+                    GameObject.Find("Handle").GetComponent<Image>().color = new Color(1, 1, 1, 1);
                     break;
             }
             //Clicking Things (buttons)
-            else if (Input.GetKeyDown(KeyCode.B) || VRUser.isClicking())
+            if (Input.GetKeyDown(KeyCode.B) || VRUser.isClicking())
             {
                 switch (buttonNum)
                 {
@@ -164,8 +162,8 @@ public class UserProfile : MonoBehaviour
                         state.setState(1);
                         break;
                     case 3:
-                        //[142.5 <--> -5] / 10 => 14.75*
-                        float slideNum = 0;// Mathf.Floor((142.5f - sliderDist.x) / 14.75f);
+                        //[-12.5,33] -- 45.5 len - (4.55) interval
+                        int slideNum = (int) ((state.getCursorPosition().x - (12.5f)) / 45.5f * 10f); //percentage 10.0 = 100&
                         difficultyMeter.value = slideNum + 1;
                         difficulty.text = difficultyMeter.value.ToString(); //change text
                         state.user.updateDifficulty(difficultyMeter.value); //change user settings
@@ -180,7 +178,6 @@ public class UserProfile : MonoBehaviour
             {
                 userName.DeactivateInputField();
             }
-
         }
     }
 }

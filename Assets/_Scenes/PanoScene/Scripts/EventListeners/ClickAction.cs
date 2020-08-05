@@ -336,16 +336,16 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
     }
 
 	public static int profileButtonClose()
-    {
-		if (state.getCursorPosition().y > -27.5 && state.getCursorPosition().y < -14 && state.getCursorPosition().x > 29.4 && state.getCursorPosition().x < 62)
+	{
+		if (state.getCursorPosition().y > 18.3 && state.getCursorPosition().y < 26.2 && state.getCursorPosition().x > -31.4 && state.getCursorPosition().x < 0.5)
 		{
 			return 1; //user name field
 		}
-		else if (state.getCursorPosition().y > -27.5 && state.getCursorPosition().y < -14 && state.getCursorPosition().x > 29.4 && state.getCursorPosition().x < 62)
+		else if (state.getCursorPosition().y > -28 && state.getCursorPosition().y < -15 && state.getCursorPosition().x > -48 && state.getCursorPosition().x < -18)
 		{
 			return 2; //home
 		}
-		else if (state.getCursorPosition().y > -27.5 && state.getCursorPosition().y < -14 && state.getCursorPosition().x > 29.4 && state.getCursorPosition().x < 62)
+		else if (state.getCursorPosition().y > -27.3 && state.getCursorPosition().y < -20 && state.getCursorPosition().x > -12.5 && state.getCursorPosition().x < 33)
 		{
 			return 3; //difficulty
 		}
