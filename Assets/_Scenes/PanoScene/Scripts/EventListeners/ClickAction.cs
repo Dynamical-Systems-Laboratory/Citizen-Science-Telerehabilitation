@@ -95,10 +95,14 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			state.getSelected().transform.localScale -= new Vector3(0.35f, 0.35f, 0f); //scale it down to 65% size (not thickness tho)
             tagIsFollowing = false;
 			state.tagsPlaced.Add(new TagPlaced(state.getSelected(), state.getCameraPosition())); //adds to movement list
+
 			state.getSelected().layer = 16; //VisibleTags layer
 			state.getSelected().transform.parent = GameObject.Find("tagCanvas").transform; //make child of other canvas to save pos
 			//move tag to position near sphere
+			state.getSelected().transform.position = (state.getSelected().transform.position - GameObject.Find("CenterEyeAnchor").transform.position) / 20;
+			//state.getSelected().transform.localScale -= new Vector3(0.5f, 0.5f, 0f);
 			//TODO: undo TagPlaced struct stuff
+
 			state.setSelected(null);
         }
 
