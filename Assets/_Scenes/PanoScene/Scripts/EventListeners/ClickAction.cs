@@ -75,7 +75,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 
 		if (tagIsFollowing)
 		{
-			state.getSelected().transform.localPosition = state.getCursorPosition();
+			state.getSelected().transform.position = state.getCursorPosition(false);
 		}
     }
 	public void OnPointerClick(GameObject objectClicked = null) //same method but takes in game obj
@@ -84,8 +84,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
         //{
         //    objectClicked = background;
         //}
-
-        if (objectClicked == null && binClose(state.getCursorPosition()) && state.getSelected() != null)
+        if (objectClicked == null && binClose(GameObject.Find("Bin").transform.localPosition))
 		{//if the cursor is over the trash, the obj we are looking at is the trash
 			objectClicked = trashy;
         }
@@ -93,13 +92,17 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
         if (objectClicked == null && state.getSelected() != null && state.getCursorPosition().x < 21f) // tag was placed  *******
         {
             state.getSelected().GetComponentInChildren<Text>().color = Color.blue; //instead of just GetComponent
-			state.getSelected().transform.localScale -= new Vector3(0.5f, 0.5f, 0f); //scale it down to 40% size (not thickness tho)
+			state.getSelected().transform.localScale -= new Vector3(0.35f, 0.35f, 0f); //scale it down to 65% size (not thickness tho)
             tagIsFollowing = false;
 			state.tagsPlaced.Add(new TagPlaced(state.getSelected(), state.getCameraPosition())); //adds to movement list
-            state.setSelected(null);
+			state.getSelected().layer = 16; //VisibleTags layer
+			state.getSelected().transform.parent = GameObject.Find("tagCanvas").transform; //make child of other canvas to save pos
+			//move tag to position near sphere
+			//TODO: undo TagPlaced struct stuff
+			state.setSelected(null);
         }
 
-		else if (objectClicked.tag == "Bin" && state.getSelected() != null) // The bin was pressed, so we move the tag to the bin
+		else if (objectClicked != null && objectClicked.tag == "Bin" && state.getSelected() != null) // The bin was pressed, so we move the tag to the bin
 		{
 			//if (!MakeWordBank.inPracticeLevel && !MakeWordBank.inTutorial)
 			//{
@@ -121,13 +124,13 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
             tagIsFollowing = false;
 		}
 
-		else if (objectClicked.tag == "Tag" && state.getSelected() == null) // A tag was pressed  *******
+		else if (objectClicked != null && objectClicked.tag == "Tag" && state.getSelected() == null) // A tag was pressed  *******
 		{//state.getCursorPosition().x < MakeWordBank.tagsRemainingText.transform.position.x
-		 //Debug.Log(objectClicked.name); // Name of the object
-
-			initTagPos = objectClicked.transform.position; //save position of tag
-			tagCopy = Instantiate(objectClicked, canvas.transform); //create copy of tag to click/drag
+			initTagPos = objectClicked.transform.localPosition; //save position of tag
+			tagCopy = Instantiate(objectClicked, objectClicked.transform); //create copy of tag to click/drag
 			state.setSelected(tagCopy); //clicked tag = copy of tag
+			state.getSelected().transform.localScale -= new Vector3(0.965f, 0.965f, 0.965f);
+			state.getSelected().GetComponent<Image>().color = VRUser.tagColor;
 
 			tagCopy.GetComponentInChildren<Text>().color = Color.red; //changes clicked tag's text color to red
 			//tagCopy.layer = 4; //UI Layer
@@ -146,11 +149,11 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			}
         }
 
-		else if (objectClicked.tag == "QuitButton") // Quit button clicked
+		else if (objectClicked != null && objectClicked.tag == "QuitButton") // Quit button clicked
 		{
 			//destroyTags();
 		}
-		else if (objectClicked.tag == "NextButton") // Next button clicked
+		else if (objectClicked != null && objectClicked.tag == "NextButton") // Next button clicked
 		{
 			++MakeWordBank.imageIndex;
 			MakeWordBank.nextImage(MakeWordBank.imageIndex);
@@ -352,11 +355,14 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		return 0;
 	}
 
-	public static void destroyTags()
+	public static void destroyTags() //error?
     {
 		foreach (TagPlaced tag in state.tagsPlaced)
 		{
-			Destroy(tag.tag);
+			if (tag.tag != null)
+			{
+				Destroy(tag.tag); //preventing memory leakage?
+			}
 		}
 		state.tagsPlaced.Clear();
 	}

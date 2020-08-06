@@ -112,7 +112,7 @@ public class StateManager : MonoBehaviour {
     public static float cursorSize = -0.418f; //factor that makes cursor bigger or smaller
 
     //TODO: Make tag count update as game goes on rather than after image is completed
-    public List<TagPlaced> tagsPlaced;
+    public List<TagPlaced> tagsPlaced = new List<TagPlaced>();
     //public List<InvisTag> invisTags;
 
     public static bool newUser = true; // whether or not data was read
@@ -207,6 +207,7 @@ public class StateManager : MonoBehaviour {
                 break;
             case 2: //GAME
                 MakeWordBank.nextImage(MakeWordBank.imageIndex);
+                //reload tags for image...?
                 GameObject.Find("gameText").GetComponent<Text>().text = "Game Screen";
                 break;
             case 3: //PROFILE
@@ -245,9 +246,17 @@ public class StateManager : MonoBehaviour {
         selected = g;
     }
 
-    public Vector3 getCursorPosition()
+    public Vector3 getCursorPosition(bool isLocal = true)
     {
-        return trueCursor.transform.localPosition; //return cursorPos;
+        if (isLocal)
+        {
+            return trueCursor.transform.localPosition; //return cursorPos;
+        }
+        else
+        {
+            return trueCursor.transform.position;
+        }
+        
     }
 
     public Vector3 getCameraPosition()
@@ -339,9 +348,15 @@ public class StateManager : MonoBehaviour {
         //mainCamera = MakeWordBank.mainCamera;
     }
 
+    private static bool stateInit = false;
     private void Update()
     {
-        updateState(); //testing...**
+        if (!stateInit)
+        {
+            updateState();
+            stateInit = true;
+        }
+        //updateState(); //testing...**
         //Debug.Log("isNewUser: " + newUser.ToString() + ", data: " + dataRead[0]);
         switch (userState)
         {
@@ -417,10 +432,12 @@ public class StateManager : MonoBehaviour {
             absRotation = nextCameraPos;
             makeCamReset = false;
         }
-        foreach (TagPlaced obj in tagsPlaced)
+
+        /*foreach (TagPlaced obj in tagsPlaced)
         {
             obj.tag.transform.position -= (cameraPos - obj.headPos);
-        }
+        }*/
+
         //nextCameraPos.y = getLowestAngle(nextCameraPos.y); //reset x pos if goes too far
             /*if (cameraMoving)
             {

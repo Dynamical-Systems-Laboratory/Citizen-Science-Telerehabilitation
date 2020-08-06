@@ -467,39 +467,38 @@ public class MakeWordBank : MonoBehaviour {
                 if (Input.GetKeyDown(KeyCode.B) || VRUser.isClicking(true)) //select
                 {
                     int buttonsConverted = VRUser.buttonConversion();
-                    Debug.Log("IsClicking!");
+                    Debug.Log("IsClicking! " + buttonsConverted);
                     if (buttonsConverted == 1)
                     {
-                        if (imageIndex >= imageMaterials.Length - 1)
+                        if (imageIndex >= imageMaterials.Length - 1) //out of images
                         {
                             Debug.Log("Out of images...");
                             state.setState(1);
                         }
-                        else if(state.getState() == 7 && practiceMoveOn < 3)
+                        else if(state.getState() == 7 && practiceMoveOn < 3) //havent placed required tags (practive lvl)
                         {
-                            eventListener.OnPointerClick(nextButton);
+                            eventListener.OnPointerClick(nextButton); //shows notif and prevents stuff
                             StateManager.makeCursReset = true;
                         }
                         else
                         {
                             if (state.getState() == 7)
                             {
-                                state.setState(2);
+                                state.setState(2); //set to game if in pract lvl
                                 state.user.setLevelProgress(true, true); //set practice level trackers
                             }
-                            //StateManager.makeCamReset = true;
-                            //TODO*:  //state.user.logTagData(state.tagsPlaced, imageIndex, state.getCameraPosition()); //store image data
+                            state.user.logTagData(state.tagsPlaced, imageIndex); //store image/tag data
                             eventListener.OnPointerClick(nextButton); //click next
-                            state.user.setNewImage(imageIndex); //save new image
-                            StateManager.makeCursReset = true;
+                            state.user.setNewImage(imageIndex); //set new image as current image
+                            StateManager.makeCursReset = true; //reset cursor to prevent many image skips?
                         }
                     }
                     else if (buttonsConverted == 6) //home
-                    {
+                    { //keep tags in place without them bveing a child of the tag class objects thing? new subclass?
                         eventListener.OnPointerClick(quitButton);
                         state.setState(1);
                     }
-                    else if (buttonsConverted == 7)
+                    else if (buttonsConverted == 7) //bin
                     {
                         eventListener.OnPointerClick();
                     }
@@ -508,7 +507,7 @@ public class MakeWordBank : MonoBehaviour {
                         findObjClick();
                     }
                 }
-                else if (Input.GetKeyDown(KeyCode.N) && state.getSelected() != null) //deselect
+                else if ((Input.GetKeyDown(KeyCode.N) || VRUser.userContinue()) && state.getSelected() != null) //deselect
                 { // (.1f is the bounds of the screen where the cursor is on the image side)
                     if (state.getCursorPosition().x < .1f) //placing on image canvas
                     {
@@ -589,7 +588,10 @@ public class MakeWordBank : MonoBehaviour {
                 UICamera.SetActive(true);
                 videoCamera.SetActive(false);
 
-                nextImage(imageIndex); // changing brighter background
+                if (state.getState() == 5) //start of button tutorial --> changes background to be brighter
+                {
+                    nextImage(imageIndex);
+                }
 
                 StateManager.moveCameraU = true;
                 StateManager.moveCameraD = true;
@@ -1284,30 +1286,35 @@ public class MakeWordBank : MonoBehaviour {
 
         //if not holding an object and close to either the quit or the next image button do that
         //create get rid of object button
-        float shortDist = 1000000f;
-        foreach (GameObject tag in tagGameObjects) //mathf.abs
+        if (VRUser.buttonConversion() != 0 && VRUser.buttonConversion() != 7)// && Input.GetKeyDown(KeyCode.G)) - doublecheck
         {
-            float newMin = (state.getCursorPosition() - tag.transform.localPosition).magnitude;
-            //newMin = Mathf.Abs(newMin); //absolute value
-            if (newMin < shortDist)
+            float shortDist = 1000000f;
+            /*foreach (GameObject tag in tagGameObjects) //mathf.abs
             {
-                shortDist = newMin;
-                toClick = tag;
-            }
-        }
-        Debug.Log("Closest Object" + toClick.name + ", Tag: " + toClick.tag + ", Distance: " + shortDist);
-        if (ClickAction.tagClose(toClick.transform.localPosition) != 0)// && Input.GetKeyDown(KeyCode.G)) - doublecheck
-        {
+                float newMin = (state.getCursorPosition() - tag.transform.localPosition).magnitude; //confirm tag
+                //newMin = Mathf.Abs(newMin); //absolute value
+                if (newMin < shortDist)
+                {
+                    shortDist = newMin;
+                    toClick = tag;
+                }
+            }*/
+            toClick = VRUser.interactables[VRUser.buttonConversion()];
+
+            Debug.Log("Closest Object" + toClick.name + ", Tag: " + toClick.tag + ", Distance: " + shortDist);
             if (state.getSelected() != null)
             {
                 Destroy(state.getSelected());
                 state.setSelected(null);
             }
-            //Debug.Log("Object Clicked: " + toClick.name);
             //state.setSelected(toClick);
             eventListener.OnPointerClick(toClick);
-            toClick = null;
         }
+        else
+        {
+            eventListener.OnPointerClick();
+        }
+        toClick = null;
     }
 
     public void newTag(Vector3 location) //takes in the location of the tag u need replacing
@@ -1359,7 +1366,8 @@ public class MakeWordBank : MonoBehaviour {
         }
         else
         {
-            if (!inTutorial && inPracticeLevel && practiceMoveOn < 3)
+            //intutorial & in pracitce level are used suplimentarily becuase of static method - can replace later
+            if (!inTutorial && inPracticeLevel && practiceMoveOn < 3) 
             {
                 tutorialText.text = "Please place another " + (3 - practiceMoveOn) + " tags to continue.";
                 return false;
@@ -1418,7 +1426,7 @@ public class MakeWordBank : MonoBehaviour {
                     //welcomeText.text = "You have completed the practice level.\nPush the rod forward to " + "begin data collection"; //not displayed?
                     //welcomeScreen.SetActive(true);
                     //welcomeScreen.SetActive(false);
-                    inScreenBeforeExperiment = true;
+                    //inScreenBeforeExperiment = true; //?
                     inPracticeLevel = false;
                 }
                 return true;

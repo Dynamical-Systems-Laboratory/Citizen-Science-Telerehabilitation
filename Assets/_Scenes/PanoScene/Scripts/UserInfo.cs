@@ -30,7 +30,7 @@ public class UserInfo //not sure if : this() is necessary
     }
 
     //data
-    public void logTagData(List<TagPlaced> addTags, int addImage, Vector3 camPos)
+    public void logTagData(List<TagPlaced> addTags, int addImage)
     {
         //TODO check locational data - if bad, use (0,0,0) nextCamera offset to correct
         foreach (TagPlaced newTag in addTags)
