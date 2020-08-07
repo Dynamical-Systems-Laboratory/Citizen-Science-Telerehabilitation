@@ -9,6 +9,8 @@ using UnityEngine.Video;
 
 public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be considered Calibrate.cs
 {
+    public MovementData UserMovement = new MovementData();
+
     public StateManager state;
     public static bool inSimpleTutorial = false;
     public static GameObject mainCamera;
@@ -16,6 +18,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     public static GameObject videoCamera;
     public static GameObject canvas;
     public static Camera cam;
+
+    public static GameObject lockPanel;
 
     public static GameObject crossUp;
     public static GameObject textPanel;
@@ -31,8 +35,9 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     public static bool cameraMove = true;
     public static bool addTimer = true;
     public static bool resetted = false;
-    public static float shortInterval = 2f;
-    public static float longInterval = 4f;
+    public static float shortInterval = 2.5f;
+    public static float longInterval = shortInterval * 2f;
+    public static float miniPause = 0.6f;
 
     public static float cursor_x = 0f;
     public static float cursor_y = 0f;
@@ -124,6 +129,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     public static GameObject vert;
     public static GameObject horiz;
 
+    public static Text lockText;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -139,6 +146,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
         circle = GameObject.Find("Circle");
         vert = GameObject.Find("Vertical"); //extra
         horiz = GameObject.Find("Horizontal");
+        lockPanel = GameObject.Find("lockPanel");
 
         VP1 = GameObject.Find("VPlayer1");
         VP2 = GameObject.Find("VPlayer2");
@@ -151,34 +159,31 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
         cursorLRVP = VP3.GetComponent<UnityEngine.Video.VideoPlayer>();
         cursorUDVP = VP4.GetComponent<UnityEngine.Video.VideoPlayer>();
         clickVP = VP5.GetComponent<UnityEngine.Video.VideoPlayer>();
+
+        lockText = GameObject.Find("lockText").GetComponent<Text>() as Text;
     }
+
+    /* Simple Tutorial aka Calibration Breakdown
+     * (1) lock/unluck cursor
+     * (2) move cursor
+     * 
+     * (4) User is moved to Button Tutorial
+     * (5) clicking, placing tags, trashing,
+     * (6) other ui (home/next image)
+     * 
+     */
 
     // Update is called once per frame
     void Update()
     {
         if (state.getState() == 4)
         {
-            canvas.SetActive(true);
-
+            //canvas.SetActive(true);
             if (!initialized)
             {
-                mainCamera.SetActive(true);
-                UICamera.SetActive(false);
-                videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(true);
                 circle.SetActive(false);
                 cam.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
-                StateManager.moveCameraU = false;
-                StateManager.moveCameraD = false;
-                StateManager.moveCameraL = false;
-                StateManager.moveCameraR = false;
-                StateManager.moveCursorU = false;
-                StateManager.moveCursorD = false;
-                StateManager.moveCursorL = false;
-                StateManager.moveCursorR = false;
-                StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
                 StateManager.kinectReady = true;
-                StateManager.makeCamReset = true;
                 StateManager.makeCursReset = true;
                 VP1.SetActive(false);
                 VP2.SetActive(false);
@@ -187,6 +192,10 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 VP5.SetActive(false);
                 initialized = true;
                 step = 0;
+
+                state.cursorXMove = false;
+                state.cursorYMove = false;
+                state.userControlActive = false;
             }
 
             if (MakeWordBank.skip())
@@ -194,20 +203,74 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 step = 35;//changed from 35
             }
 
-            if (step == 0)
+            //saftey for user seeing when cursor is locked or not
+            if (state.userControlActive && step > 0)
+            { //StateManager.makeCursReset = false;
+                lockPanel.GetComponent<Image>().color = new Color(1,1,1,220/255);
+                lockText.text = "The cursor is currently in locked mode,\n center your hands and squeeze the *hand triggers* to unlock the cursor";
+            }
+            else
+            {
+                lockText.text = "";
+                lockPanel.GetComponent<Image>().color = new Color(1, 1, 1, 0);
+            }
+
+            Debug.Log("isLocked: " + !state.userControlActive);
+
+            //start of steps
+            if (step == 0) //introduces calibration
             {
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
-                    StateManager.makeCamReset = true;
                     StateManager.makeCursReset = true;
+                    text.text = "Read the notification above then press *A* or *X* to continue to a video";
                     step++;
                 }
             }
             else if (step == 1)
+            {
+                //add video of someone centering their hands
+                
+                if (MakeWordBank.moveOn() && !MakeWordBank.skip())
+                {
+                    text.text = "watching video";
+                    step++;
+                }
+            }
+            else if (step == 2)
+            {
+                timer += Time.deltaTime;
+                if (timer > 2) //if video done
+                {
+                    text.text = "Now try unlocking the cursor yourself..";
+                    if (state.userControlActive)
+                    {
+                        StateManager.makeCursReset = true;
+                        state.userControlActive = false;
+                        text.text = "Good, unlock it one more time.";
+                        if (state.userControlActive)
+                        {
+                            lockPanel.transform.localScale -= new Vector3(0.3f, 0.3f, 0.3f);
+                            StateManager.makeCursReset = true;
+                            state.userControlActive = false;
+                            timer = 0;
+                            step++;
+                        }
+                    }
+                }
+            }
+            else if (step == 3) //cursor moves left
             { //Show user what movements can be done
-                text.text = "The cursor can be moved to the left and right";
-                cursor_x -= 0.004f;
-                //StateManager.nextCursorPos = new Vector3(cursor_x, 0f, 0.418f);
+                text.text = "Excellent! Now you'll start to move the cursor.\n Watch the on-screen and video examples then try it on your own..." +
+                    "\n When your ready to see the movements in action, press *A* or *X* to continue";
+                if (MakeWordBank.moveOn() && !MakeWordBank.skip())
+                {
+                    step++;
+                }
+            }
+            else if (step == 4)
+            {
+                text.text = "The cursor can be moved left and right...";
                 StateManager.cursorAdd = new Vector3(-.2f * Time.deltaTime, 0f, 0f);
                 timer += Time.deltaTime;
 
@@ -217,24 +280,17 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     step++;
                 }
             }
-            else if (step == 2)
+            else if (step == 5) //pause
             {
-                //StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
-                //cursor_x = 0f;
-
                 timer += Time.deltaTime;
-
-                if (timer > 1f)
+                if (timer > miniPause)
                 {
                     timer = 0f;
                     step++;
                 }
             }
-            else if (step == 3)
+            else if (step == 6) //cursor moves right
             {
-                //text.text = "The cursor can be moved to the right";
-                cursor_x += 0.004f;
-                //StateManager.nextCursorPos = new Vector3(cursor_x, 0f, 0.418f);
                 StateManager.cursorAdd = new Vector3(.2f * Time.deltaTime, 0f, 0f);
                 timer += Time.deltaTime;
 
@@ -244,24 +300,19 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     step++;
                 }
             }
-            else if (step == 4)
+            else if (step == 7) //pause
             {
                 timer += Time.deltaTime;
-
-                if (timer > 1f)
+                if (timer > miniPause)
                 {
-                    //StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
                     StateManager.makeCursReset = true;
-                    cursor_x = 0f;
                     timer = 0f;
                     step++;
                 }
             }
             else if (step == 5)
             {
-                text.text = "The cursor can be moved upward and downward";
-                cursor_y += 0.004f;
-                //StateManager.nextCursorPos = new Vector3(0f, cursor_y, 0.418f);
+                text.text = "The cursor can be moved upward and downward...";
                 StateManager.cursorAdd = new Vector3(0f, .15f * Time.deltaTime, 0f);
                 timer += Time.deltaTime;
 
@@ -273,11 +324,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
             else if (step == 6)
             {
-                //StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
-                //cursor_y = 0f;
                 timer += Time.deltaTime;
-
-                if (timer > 1f)
+                if (timer > miniPause)
                 {
                     timer = 0f;
                     step++;
@@ -285,10 +333,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
             else if (step == 7)
             {
-                //text.text = "The cursor can be moved downward";
-                cursor_y -= 0.004f;
                 StateManager.cursorAdd = new Vector3(0f, -.15f * Time.deltaTime, 0f);
-
                 timer += Time.deltaTime;
 
                 if (timer > longInterval)
@@ -300,167 +345,17 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             else if (step == 8)
             {
                 timer += Time.deltaTime;
-
-                if (timer > 1f)
+                if (timer > miniPause)
                 {
-                    //StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
                     StateManager.makeCursReset = true;
-                    cursor_y = 0f;
-                    timer = 0f;
-                    step++;
-                }
-            }
-            else if (step == 9)
-            {
-                text.text = "The image can be panned to the left and right";
-                camera_y -= 0.5f;
-                StateManager.falconButtons[0] = true;
-                StateManager.cameraAdd = new Vector3(0f, 40f * Time.deltaTime, 0f); //.418f z?
-
-                timer += Time.deltaTime;
-
-                if (timer > shortInterval)
-                {
-                    timer = 0f;
-                    step++;
-                }
-            }
-            else if (step == 10)
-            {
-                //StateManager.nextCameraPos = new Vector3(0f, 0f, 0f);
-                //camera_y = 0f;
-                timer += Time.deltaTime;
-
-                if (timer > 1f)
-                {
-                    timer = 0f;
-                    step++;
-                }
-            }
-            else if (step == 11)
-            {
-                //text.text = "The image can be panned to the right";
-                camera_y += 0.5f;
-                StateManager.falconButtons[0] = true;
-                StateManager.cameraAdd = new Vector3(0f, -40f * Time.deltaTime, 0f);
-
-                timer += Time.deltaTime;
-
-                if (timer > longInterval)
-                {
-                    timer = 0f;
-                    step++;
-                }
-            }
-            else if (step == 12)
-            {
-                timer += Time.deltaTime;
-
-                if (timer > 1f)
-                {
-                    StateManager.makeCamReset = true;
-                    camera_y = 0f;
-                    timer = 0f;
-                    step++;
-                }
-            }
-            else if (step == 13)
-            {
-                text.text = "The image can be panned upward and downward";
-                camera_x -= 0.4f;
-                StateManager.falconButtons[0] = true;
-
-                if (camera_x < -35f)
-                {
-                    camera_x = -35f;
-                }
-
-                //Create pauses to mimic the discreet rotations
-                cameraTimer += Time.deltaTime;
-
-                //if (cameraTimer > 0.5f)
-                //{
-                //    cameraMove = !cameraMove;
-                //    cameraTimer = 0f;
-                //}
-                cameraMove = true;
-                if (cameraMove)
-                {
-                    StateManager.cameraAdd = new Vector3(30f * Time.deltaTime, 0f, 0f);
-
-                }
-
-                timer += Time.deltaTime;
-
-                if (timer > shortInterval)
-                {
-                    timer = 0f;
-                    step++;
-                }
-            }
-            else if (step == 14)
-            {
-                //StateManager.nextCameraPos = new Vector3(0f, 0f, 0f);
-                //camera_x = 0f;
-                cameraTimer = 0f;
-                cameraMove = true;
-
-                timer += Time.deltaTime;
-
-                if (timer > 1f)
-                {
-                    timer = 0f;
-                    step++;
-                }
-            }
-            else if (step == 15)
-            {
-                //text.text = "The image can be panned downward";
-                camera_x += 0.4f;
-                StateManager.falconButtons[0] = true;
-
-                if (camera_x > 35f)
-                {
-                    camera_x = 35f;
-                }
-
-                cameraTimer += Time.deltaTime;
-
-
-                //if (cameraTimer > 0.5f)
-                //{
-                //    cameraMove = !cameraMove;
-                //    cameraTimer = 0f;
-                //}
-                cameraMove = true;
-                if (cameraMove)
-                {
-                    StateManager.cameraAdd = new Vector3(-30f * Time.deltaTime, 0f, 0f);
-                }
-
-                timer += Time.deltaTime;
-
-                if (timer > longInterval)
-                {
-                    timer = 0f;
-                    step++;
-                }
-            }
-            else if (step == 16)
-            {
-                timer += Time.deltaTime;
-
-                if (timer > 1f)
-                {
-                    StateManager.makeCamReset = true;
-                    camera_x = 0f;
                     timer = 0f;
                     step++;
                 }
             }
             else if (step == 17)
             {
-                text.text = "Now it's your turn to try all these movements" + "\n" + "(Press any key or click the mouse to continue)";
+                text.text = "Now it's your turn!\n In between each section you'll see a video of the motion\n" +
+                    "After each video, you will be prompted to try the exercises on your own.";
 
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
@@ -954,7 +849,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                             angleLeftTotal += maxAngle;
                             maxAngle = 0f;
                             timer = 0f;
-                            //StateManager.makeCamReset = true;
                             //prevCameraAngle = StateManager.nextCameraPos.y;
                             counter--;
                         }
@@ -994,7 +888,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                                 maxAngle = 0f;
                                 logged = false;
                                 resetted = false;
-                                //StateManager.makeCamReset = true;
                                 counter--;
                             }
                         }
@@ -1016,7 +909,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
             else if (step == 27)
             {
-                StateManager.makeCamReset = true;
                 prevCameraAngle = 0f;
                 step++;
             }
@@ -1046,7 +938,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                         angleRightTotal += maxAngle;
                         maxAngle = 0f;
                         timer = 0f;
-                        //StateManager.makeCamReset = true;
                         counter--;
                     }
                 }
@@ -1089,7 +980,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                             maxAngle = 0f;
                             logged = false;
                             resetted = false;
-                            //StateManager.makeCamReset = true;
                             counter--;
                         }
                     }
@@ -1115,7 +1005,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 VP2.SetActive(true);
                 cameraUDVP.Play();
                 StateManager.moveCameraR = false;
-                StateManager.makeCamReset = true;
                 StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
                 prevCameraAngle = 0f;
                 step++;
@@ -1162,7 +1051,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                                     moved = false;
                                     counter--;
                                 }
-                                //StateManager.makeCamReset = true;
                             }
                         }
                     }
@@ -1180,7 +1068,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                         }
                         if (StateManager.nextCameraPos.x >= MakeWordBank.camTop) //if goes over bounds than reset
                         {
-                            StateManager.makeCamReset = true;
                         }
                         if (StateManager.cameraU)
                         {
@@ -1203,7 +1090,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                                     moved = false;
                                     counter--;
                                 }
-                                //StateManager.makeCamReset = true;
                             }
                         }
                     }
@@ -1220,7 +1106,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
             else if (step == 31)
             {
-                StateManager.makeCamReset = true;
                 prevCameraAngle = 0f;// StateManager.cameraPos.x;
                 step++;
             }
@@ -1255,7 +1140,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                                 moved = false;
                                 counter--;
                             }
-                            //StateManager.makeCamReset = true;
                         }
                     }
 
@@ -1274,7 +1158,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     }
                     if (StateManager.nextCameraPos.x <= MakeWordBank.camBot) //if goes over bounds than reset
                     {
-                        StateManager.makeCamReset = true;
+                        //cam reset?
                     }
                     if (StateManager.cameraD)
                     {
@@ -1295,7 +1179,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                             {
                                 speedDownTotal += maxSpeed;
                                 moved = false;
-                                //StateManager.makeCamReset = true;
                                 counter--;
                             }
                         }
@@ -1317,7 +1200,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 VP5.SetActive(true);
                 clickVP.Play();
                 StateManager.moveCameraD = false; //cam's false too now
-                StateManager.makeCamReset = true;
                 step++;
             }
             else if (step == 34)
@@ -1571,6 +1453,10 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 inSimpleTutorial = false; //stops simple tutorial
                 initialized = false;
 
+                //import movement data into UserInfo;
+
+                lockPanel.SetActive(false);
+
                 if (hasCompleted)
                 {
                     state.setState(1);
@@ -1587,5 +1473,16 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     float Kinect_Angle(float x1, float y1, float standard_x, float standard_y)
     { //Calculate rod rotation about the z axis
         return (Mathf.Atan2((y1 - standard_y), (x1 - standard_x))) * (180 / Mathf.PI);
+    }
+}
+public class MovementData
+{
+    public float[] rangeOfMotion; //-x, x, -y, y bounds for user
+    public float[] timeOfMotion; //the time it takes for the user to achieve max motion for each range
+
+    public MovementData()
+    {
+        rangeOfMotion = new float[4];
+        timeOfMotion = new float[4];
     }
 }

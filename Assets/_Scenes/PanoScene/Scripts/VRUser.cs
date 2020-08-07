@@ -232,9 +232,33 @@ public class VRUser : MonoBehaviour
 
         Vector3 change = controllerOffset - movementVal; // handPos - controllerOffset;
         change *= StateManager.cursorSpeed;
-        cursorMove += new Vector2(change.x, change.y);
-
+        if (state.cursorXMove)
+        {
+            cursorMove += new Vector2(change.x, 0);
+        }
+        if (state.cursorYMove)
+        {
+            cursorMove += new Vector2(0, change.y);
+        }
         trueCursor.transform.position += (3f * Time.deltaTime * ((trueCursor.transform.up * cursorMove.y) + (trueCursor.transform.right * cursorMove.x)));
+
+        //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-151,66], x[-90,88.4]
+        if (trueCursor.transform.localPosition.x > 88.4)
+        {
+            trueCursor.transform.localPosition = new Vector3(88.4f, trueCursor.transform.localPosition.y, trueCursor.transform.localPosition.z);
+        }
+        else if (trueCursor.transform.localPosition.x < -90)
+        {
+            trueCursor.transform.localPosition = new Vector3(-90f, trueCursor.transform.localPosition.y, trueCursor.transform.localPosition.z);
+        }
+        if (trueCursor.transform.localPosition.y > 66)
+        {
+            trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, 66f, trueCursor.transform.localPosition.z);
+        }
+        else if (trueCursor.transform.localPosition.x < -151)
+        {
+            trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, -151, trueCursor.transform.localPosition.z);
+        }
 
         if (isClicking())
         {

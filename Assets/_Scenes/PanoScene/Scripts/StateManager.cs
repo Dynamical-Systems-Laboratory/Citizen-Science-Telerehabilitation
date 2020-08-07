@@ -111,6 +111,10 @@ public class StateManager : MonoBehaviour {
     public static float cursorSpeed = 3.75f; //factor that speeds up cursor's movement
     public static float cursorSize = -0.418f; //factor that makes cursor bigger or smaller
 
+    //reimplementation of cursor movement controlling for VR
+    public bool cursorXMove = true;
+    public bool cursorYMove = true;
+
     //TODO: Make tag count update as game goes on rather than after image is completed
     public List<GameObject> tagsPlaced = new List<GameObject>();
     //public List<InvisTag> invisTags;
@@ -168,6 +172,13 @@ public class StateManager : MonoBehaviour {
         MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = gameCull;
         GameObject.Find("SimpleTutorialCanvas").SetActive(true);
         //complexUser.VRPerson.SetActive(true);
+
+        userControlActive = false;
+
+        if (isGaming()) //failsafe for seeing tags?
+        {
+            GameObject.Find("tagCanvas").GetComponent<Canvas>().overrideSorting = true;
+        }
 
         switch (userState)
         {
@@ -514,26 +525,7 @@ public class StateManager : MonoBehaviour {
         cursorAdd = new Vector3(0f,0f,0f);
 
         //nextCursorPos.z = -cursorSize;
-
-        //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-151,66], x[-90,88.4]
-        if (trueCursor.transform.position.x > 88.4)
-        {
-            trueCursor.transform.position = new Vector3(88.4f, trueCursor.transform.position.y, trueCursor.transform.position.z);
-        }
-        else if (trueCursor.transform.position.x < -90)
-        {
-            trueCursor.transform.position = new Vector3(-90f, trueCursor.transform.position.y, trueCursor.transform.position.z);
-        }
-        if (trueCursor.transform.position.y > 66)
-        {
-            trueCursor.transform.position = new Vector3(trueCursor.transform.position.x, 66f, trueCursor.transform.position.z);
-        }
-        else if (trueCursor.transform.position.x < -151)
-        {
-            trueCursor.transform.position = new Vector3(trueCursor.transform.position.x, -151, trueCursor.transform.position.z);
-        }
-
-
+        //originally where cursor bounds were... - migrated to VRUser
         if (makeCursReset)
         {
             cursorPos = new Vector3(0f, 0f, -cursorSize);
