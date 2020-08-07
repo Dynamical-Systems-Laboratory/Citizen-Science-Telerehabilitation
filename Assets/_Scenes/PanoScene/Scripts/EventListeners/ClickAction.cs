@@ -100,13 +100,13 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			//Tfor each obj already a child of the tag canvas, put somewhere else, transform canvas back up to original size, put new obj in, transform back to small scale, add old objs back
 			if (state.tagsPlaced.Count > 0)
             {
-				foreach (TagPlaced tag in state.tagsPlaced)
+				foreach (GameObject tag in state.tagsPlaced)
 				{
-					tag.tag.transform.parent = canvas.transform;
+					tag.transform.parent = canvas.transform;
 				}
 				tagCanvas.transform.localScale += new Vector3(.87f, .87f, .87f);
 			}
-			state.tagsPlaced.Add(new TagPlaced(state.getSelected(), state.getCameraPosition())); //adds to movement list
+			state.tagsPlaced.Add(state.getSelected()); //adds to movement list
 			state.getSelected().layer = 16; //VisibleTags layer
 			state.getSelected().transform.parent = tagCanvas.transform; //make child of other canvas to save pos
 			tagCanvas.transform.localScale -= new Vector3(.87f, .87f, .87f);
@@ -114,9 +114,9 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			state.getSelected().transform.position += GameObject.Find("CenterEyeAnchor").transform.position; //bring tag closer
 			if (state.tagsPlaced.Count > 1)
             {
-				foreach (TagPlaced tag in state.tagsPlaced)
+				foreach (GameObject tag in state.tagsPlaced)
 				{
-					tag.tag.transform.parent = tagCanvas.transform;
+					tag.transform.parent = tagCanvas.transform;
 				}
 			}
 				//TODO: undo TagPlaced struct stuff
@@ -379,11 +379,11 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 
 	public static void destroyTags() //error?
     {
-		foreach (TagPlaced tag in state.tagsPlaced)
+		foreach (GameObject tag in state.tagsPlaced)
 		{
-			if (tag.tag != null)
+			if (tag != null)
 			{
-				Destroy(tag.tag); //preventing memory leakage?
+				Destroy(tag); //preventing memory leakage?
 			}
 		}
 		state.tagsPlaced.Clear();

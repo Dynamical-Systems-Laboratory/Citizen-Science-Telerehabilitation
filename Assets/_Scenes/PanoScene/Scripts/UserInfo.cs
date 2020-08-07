@@ -16,26 +16,25 @@ public class UserInfo //not sure if : this() is necessary
 
     private struct TagInfo //all tag related info needed to reload and track progress
     {
-        public TagInfo(string newName, Vector3 newLocation, int associatedImage, Vector3 newHeadPos) : this()
+        public TagInfo(string newName, Vector3 newLocation, int associatedImage) : this()
         {
             this.name = newName;
             this.location = newLocation;
             this.image = associatedImage;
-            this.headPos = newHeadPos;
         }
         public string name;
         public Vector3 location;
         public int image; //associated image index
-        public Vector3 headPos;
+        //public Vector3 headPos;
     }
 
     //data
-    public void logTagData(List<TagPlaced> addTags, int addImage)
+    public void logTagData(List<GameObject> addTags, int addImage)
     {
         //TODO check locational data - if bad, use (0,0,0) nextCamera offset to correct
-        foreach (TagPlaced newTag in addTags)
+        foreach (GameObject newTag in addTags)
         {
-            TagInfo tempTag = new TagInfo(newTag.tag.name, newTag.tag.transform.position, addImage, newTag.headPos);
+            TagInfo tempTag = new TagInfo(newTag.name, newTag.transform.position, addImage);
             tags.Add(tempTag);
         }
         imagesCompleted.Add(addImage);
@@ -159,7 +158,7 @@ public class UserInfo //not sure if : this() is necessary
         return new bool[] { startedPracticeLevel, finishedPracticeLevel };
     }
 
-    public IEnumerable<TagPlaced> getTags(int image)
+    public IEnumerable<GameObject> getTags(int image)
     {
         foreach (TagInfo tagInform in tags)
         {
@@ -169,8 +168,7 @@ public class UserInfo //not sure if : this() is necessary
                 tag.transform.position = tagInform.location;
                 //tag.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
                 //TODO: make it look like a normal tag (cleanup with MakeWordBank as well)
-                TagPlaced newTag = new TagPlaced(tag, tagInform.headPos);
-                yield return newTag;
+                yield return tag;
             }
         }
         //yield return null;
@@ -207,9 +205,6 @@ public class UserInfo //not sure if : this() is necessary
             yield return tag.location.y.ToString();
             yield return tag.location.z.ToString();
             yield return tag.image.ToString();
-            yield return tag.headPos.x.ToString();
-            yield return tag.headPos.y.ToString();
-            yield return tag.headPos.z.ToString();
         }
         yield return "session";
         for(int i = 0; i < sessionsLogged.Count; i++)
@@ -248,11 +243,9 @@ public class UserInfo //not sure if : this() is necessary
             TagInfo tag = new TagInfo(
                 data[counter], 
                 new Vector3(float.Parse(data[counter + 1]), float.Parse(data[counter + 2]), float.Parse(data[counter + 3])), 
-                int.Parse(data[counter + 4]), 
-                new Vector3(float.Parse(data[counter + 5]), float.Parse(data[counter + 6]), float.Parse(data[counter + 7]))
-                );
+                int.Parse(data[counter + 4]));
             tags.Add(tag);
-            counter += 8;
+            counter += 5;
         }
         ++counter; //after "session"
 
@@ -293,10 +286,9 @@ public class UserInfo //not sure if : this() is necessary
         { //adding tags
             TagInfo tag = new TagInfo(data[counter],
                 new Vector3(float.Parse(data[counter + 1]), float.Parse(data[counter + 2]), float.Parse(data[counter + 3])),
-                int.Parse(data[counter + 4]),
-                new Vector3(float.Parse(data[counter + 5]), float.Parse(data[counter + 6]), float.Parse(data[counter + 7])));
+                int.Parse(data[counter + 4]));
             tags.Add(tag);
-            counter += 8;
+            counter += 5;
         }
         ++counter; //after "session"
 

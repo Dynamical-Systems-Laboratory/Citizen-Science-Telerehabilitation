@@ -112,7 +112,7 @@ public class StateManager : MonoBehaviour {
     public static float cursorSize = -0.418f; //factor that makes cursor bigger or smaller
 
     //TODO: Make tag count update as game goes on rather than after image is completed
-    public List<TagPlaced> tagsPlaced = new List<TagPlaced>();
+    public List<GameObject> tagsPlaced = new List<GameObject>();
     //public List<InvisTag> invisTags;
 
     public static bool newUser = true; // whether or not data was read
@@ -555,24 +555,22 @@ public class StateManager : MonoBehaviour {
         return userState == 2 || userState == 5 || userState == 7;
     }
 
-    public void loadTags(int images, List<TagPlaced> tagExample) //loadTags(user.getLastImage())
+    public void loadTags(int images, List<GameObject> tagExample) //loadTags(user.getLastImage())
     {
-        foreach (TagPlaced tag in user.getTags(images))
+        foreach (GameObject tag in user.getTags(images))
         {
-            GameObject newTag = Instantiate(tagExample[0].tag, ClickAction.canvas.transform);
+            GameObject newTag = Instantiate(tagExample[0], ClickAction.canvas.transform);
             newTag.GetComponentInChildren<Text>().color = Color.blue;
-            newTag.name = tag.tag.name;
-            newTag.tag = tag.tag.name;
-            newTag.transform.position = tag.tag.transform.position;
+            newTag.name = tag.name;
+            newTag.tag = tag.name;
+            newTag.transform.position = tag.transform.position;
             newTag.transform.localScale -= new Vector3(0.5f, 0.5f, 0f);
             newTag.layer = 4;
-
-            TagPlaced tagToAdd = new TagPlaced(newTag, tag.headPos);
-            tagsPlaced.Add(tagToAdd);
+            tagsPlaced.Add(newTag);
         }
     }
 }
-public struct TagPlaced
+/*public struct TagPlaced
 {
     public GameObject tag;
     public Vector3 headPos;
@@ -581,4 +579,4 @@ public struct TagPlaced
         tag = obj;
         headPos = pos;
     }
-}
+}*/
