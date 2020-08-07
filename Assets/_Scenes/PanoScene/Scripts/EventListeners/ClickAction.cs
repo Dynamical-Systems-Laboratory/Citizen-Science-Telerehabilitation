@@ -12,6 +12,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 	public static GameObject tagPrefab;
 	public static GameObject sphere;
 	public static GameObject canvas;
+	public static GameObject tagCanvas;
 
 	public static GameObject cursorTag; //Tag that follows cursor
 	public static GameObject cursorSphere; // Falcon cursor
@@ -39,6 +40,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 
         sphere = GameObject.Find("gameSphere"); //TagSphere
 		canvas = GameObject.Find ("Canvas");
+		tagCanvas = GameObject.Find("tagCanvas");
 
         cursorSphere = GameObject.Find("CursorSphere");
 		trashedTags = new List<GameObject> ();
@@ -94,16 +96,32 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
             state.getSelected().GetComponentInChildren<Text>().color = Color.blue; //instead of just GetComponent
 			state.getSelected().transform.localScale -= new Vector3(0.35f, 0.35f, 0f); //scale it down to 65% size (not thickness tho)
             tagIsFollowing = false;
+
+			//Tfor each obj already a child of the tag canvas, put somewhere else, transform canvas back up to original size, put new obj in, transform back to small scale, add old objs back
+			if (state.tagsPlaced.Count > 0)
+            {
+				foreach (TagPlaced tag in state.tagsPlaced)
+				{
+					tag.tag.transform.parent = canvas.transform;
+				}
+				tagCanvas.transform.localScale += new Vector3(.87f, .87f, .87f);
+			}
 			state.tagsPlaced.Add(new TagPlaced(state.getSelected(), state.getCameraPosition())); //adds to movement list
-
 			state.getSelected().layer = 16; //VisibleTags layer
-			state.getSelected().transform.parent = GameObject.Find("tagCanvas").transform; //make child of other canvas to save pos
-			//move tag to position near sphere
-			state.getSelected().transform.position = (state.getSelected().transform.position - GameObject.Find("CenterEyeAnchor").transform.position) / 20;
-			//state.getSelected().transform.localScale -= new Vector3(0.5f, 0.5f, 0f);
-			//TODO: undo TagPlaced struct stuff
+			state.getSelected().transform.parent = tagCanvas.transform; //make child of other canvas to save pos
+			tagCanvas.transform.localScale -= new Vector3(.87f, .87f, .87f);
+			state.getSelected().transform.position = (state.getSelected().transform.position - GameObject.Find("CenterEyeAnchor").transform.position) / 2.15f;
+			state.getSelected().transform.position += GameObject.Find("CenterEyeAnchor").transform.position; //bring tag closer
+			if (state.tagsPlaced.Count > 1)
+            {
+				foreach (TagPlaced tag in state.tagsPlaced)
+				{
+					tag.tag.transform.parent = tagCanvas.transform;
+				}
+			}
+				//TODO: undo TagPlaced struct stuff
 
-			state.setSelected(null);
+				state.setSelected(null);
         }
 
 		else if (objectClicked != null && objectClicked.tag == "Bin" && state.getSelected() != null) // The bin was pressed, so we move the tag to the bin
@@ -218,7 +236,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
         else
         {
 			Debug.Log("OnPointerClicked is not doing the things...");
-			Debug.Log("Obj: " + objectClicked.name + ", tag: " + objectClicked.tag);
+			//Debug.Log("Obj: " + objectClicked.name + ", tag: " + objectClicked.tag);
         }
 	}
 	internal static void OnPointerClick(EventSystem current)

@@ -139,7 +139,7 @@ public class MakeWordBank : MonoBehaviour {
     static int numTagsRemaining = 3;
 
 
-    public static GameObject tagSphere;
+    public static GameObject[] tagSphere = new GameObject[] {};
     public Material[] imageMaterialsToDragIn;
     public Material tutorialImageMaterialDragFromEditor;
     public static Material tutorialImageMaterial;
@@ -282,7 +282,7 @@ public class MakeWordBank : MonoBehaviour {
         cursorCamera.SetActive(false);
 
         DataCollector.MakeFolder();
-        tagSphere = GameObject.FindGameObjectWithTag("TagSphere"); //tag spheres
+        tagSphere = GameObject.FindGameObjectsWithTag("TagSphere"); //tag spheres
         imageMaterials = new Material[imageMaterialsToDragIn.Length];
         tutorialImageMaterial = tutorialImageMaterialDragFromEditor;
         //focusor = GameObject.FindGameObjectWithTag("Focusor"); //Just used for step where user picks a tag
@@ -357,7 +357,8 @@ public class MakeWordBank : MonoBehaviour {
         dataCollector = GameObject.FindGameObjectWithTag("DataCollector"); //Turn off data collection for tutorial
         dataCollector.SetActive(false);
 
-        tagSphere.GetComponent<Renderer>().material = tutorialImageMaterial;
+        renderBackground(0, tutorialImageMaterial); //renders background, img # doesnt matter
+
         //Word bank isn't applicable for the tutorial level:
         for (int i = 0; i < tags.Length; i++)
         {
@@ -1199,7 +1200,7 @@ public class MakeWordBank : MonoBehaviour {
                             tags[i].setText(wordBank[SEQUENCE[imageIndex, sequenceIndex]]);
                             sequenceIndex++;
                         }
-                        tagSphere.GetComponent<Renderer>().material = imageMaterials[imageIndex]; //in first image
+                        renderBackground(imageIndex);
                         //imageIndex++;
                         /*foreach (Transform t in ClickAction.sphere.transform)
                         {
@@ -1407,7 +1408,7 @@ public class MakeWordBank : MonoBehaviour {
                 }
                 ClickAction.trashedTags.Clear();
 
-                tagSphere.GetComponent<Renderer>().material = imageMaterials[img]; //next image
+                renderBackground(img);
                 sequenceIndex = 0;
                 for (int tagsIndex = 0; tagsIndex < tags.Length; tagsIndex++)
                 {
@@ -1434,7 +1435,21 @@ public class MakeWordBank : MonoBehaviour {
         }
         return false;
     }
-
+    public static void renderBackground(int img, Material obj = null)
+    {
+        foreach (GameObject sphere in tagSphere)
+        {
+            if (obj == null)
+            {
+                sphere.GetComponent<Renderer>().material = imageMaterials[img]; //next image
+            }
+            else
+            {
+                sphere.GetComponent<Renderer>().material = obj;
+            }
+            
+        }
+    }
     //This method can be called from the EventListener script using the GameObject that was clicked on as input:
     public static void replaceTag(GameObject obj, bool clickedImage)
     {
