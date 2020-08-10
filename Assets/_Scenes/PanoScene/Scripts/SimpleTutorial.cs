@@ -341,7 +341,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (counter == 0)
                 {
                     text.text = "(2)We'll start with the *right* direction.\n Unlock the cursor and move your hands/arms to the right as far as you can stretch without moving your body\n" +
-                    "it is important to stretch at this point as it will determin your exercise progress later on";
+                    "it is important to stretch at this point without moving your shoulders as it will determine your exercise progress later on";
                 }
                 else if (counter > 0 && counter < 5)
                 {
@@ -380,7 +380,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (counter == 0)
                 {
                     text.text = "(3)Now we'll try the *left* direction.\n Unlock the cursor and move your hands/arms to the left as far as you can stretch without moving your body\n" +
-                    "it is important to stretch at this point as it will determin your exercise progress later on";
+                    "it is important to stretch at this point without moving your shoulders as it will determine your exercise progress later on";
                 }
                 else if (counter > 0 && counter < 5)
                 {
@@ -434,7 +434,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     if (counter == 0)
                     {
                         text.text = "(4)Now we'll try the *up* direction.\n Unlock the cursor and move your hands/arms to the left as far as you can stretch without moving your body\n" +
-                        "it is important to stretch at this point as it will determin your exercise progress later on";
+                        "it is important to stretch at this point without moving your shoulders as it will determine your exercise progress later on";
                     }
                     else if (counter > 0 && counter < 5)
                     {
@@ -475,7 +475,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (counter == 0)
                 {
                     text.text = "(5)Now we'll try the *down* direction.\n Unlock the cursor and move your hands/arms to the left as far as you can stretch without moving your body\n" +
-                    "it is important to stretch at this point as it will determin your exercise progress later on";
+                    "it is important to stretch at this point without moving your shoulders as it will determine your exercise progress later on";
                 }
                 else if (counter > 0 && counter < 5)
                 {
@@ -493,7 +493,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     timer = 0;
                 }
 
-                if (state.getCursorPosition().y <= -110f && state.userControlActive)
+                if (state.getCursorPosition().y <= -89f && state.userControlActive)
                 {
                     movementAvg[counter] = (VRUser.handTracking() - handPos1).y;
                     timerAvg[counter] = timer;
@@ -518,7 +518,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (timer > longInterval && MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
                     timer = 0f;
-                    step++;
+                    step = 35;
                 }
             }
             else if (step == 35)
