@@ -59,6 +59,45 @@ public class UserInfo //not sure if : this() is necessary
         sessionDuration.Add(timeLogged - startTime);
     }
 
+    public void addMovementBounds(MovementBounds userMove)
+    {
+        for (int i = 0; i <= 4; i++)
+        {
+            movementBounds[i] = userMove.rangeOfMotion[i];
+            movementTime[i] = userMove.timeOfMotion[i];
+        }
+    }
+    public void addMovement(Transform head, Vector3 rightHandp, Vector3 rightHandr, Vector3 leftHandp, Vector3 leftHandr)
+    {
+        MovementData moves = new MovementData(head.position, head.rotation.eulerAngles,
+            rightHandp, rightHandr, leftHandp, leftHandr);
+        movements.Add(moves);
+    }
+    private struct MovementData
+    {
+        public struct UserPositions
+        {
+            Vector3 position;
+            Vector3 rotation;
+            public UserPositions(Vector3 p = new Vector3(), Vector3 r = new Vector3())
+            {
+                position = p;
+                rotation = r;
+            }
+        }
+        UserPositions head;
+        UserPositions leftHand;
+        UserPositions rightHand;
+        public MovementData( Vector3 p1 = new Vector3(), Vector3 r1 = new Vector3(),
+                      Vector3 p2 = new Vector3(), Vector3 r2 = new Vector3(),
+                      Vector3 p3 = new Vector3(), Vector3 r3 = new Vector3() )
+        {
+            head = new UserPositions(p1, r1);
+            rightHand = new UserPositions(p2, r2);
+            leftHand = new UserPositions(p3, r3);
+        }
+    }
+
     public void setName(string newName)
     {
         userName = newName;
@@ -142,6 +181,19 @@ public class UserInfo //not sure if : this() is necessary
         }
         avg /= sessionDuration.Count;
         return (int)avg;
+    }
+    public float[] getMovementBounds()
+    {
+        float[] vals = new float[8];
+        vals[0] = movementBounds[0];
+        vals[1] = movementBounds[1];
+        vals[2] = movementBounds[2];
+        vals[3] = movementBounds[3];
+        vals[4] = movementTime[0];
+        vals[5] = movementTime[1];
+        vals[6] = movementTime[2];
+        vals[7] = movementTime[3];
+        return vals;
     }
     public int getLastImage() { return lastImage; }
 
@@ -346,6 +398,10 @@ public class UserInfo //not sure if : this() is necessary
     private float cursorSpeed;
     private float cursorSize;
     private float difficulty = 5;
+
+    private float[] movementBounds = new float[4]; //-x,x,-y,y
+    private float[] movementTime = new float [4];
+    private List<MovementData> movements = new List<MovementData>();
 
     //TODO: movement data (position, orientation, compulsory or not, etc.)
 }

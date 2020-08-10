@@ -9,7 +9,7 @@ using UnityEngine.Video;
 
 public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be considered Calibrate.cs
 {
-    public MovementData UserMovement = new MovementData();
+    public MovementBounds userMovement = new MovementBounds();
 
     public StateManager state;
     public static bool inSimpleTutorial = false;
@@ -188,7 +188,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
      * (4) User is moved to Button Tutorial
      * (5) clicking, placing tags, trashing,
      * (6) other ui (home/next image)
-     * 
      */
 
     // Update is called once per frame
@@ -352,9 +351,9 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 else if (counter == 5)
                 {
                     float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
-                    UserMovement.rangeOfMotion[1] = avg / 5;
+                    userMovement.rangeOfMotion[1] = avg / 5;
                     avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
-                    UserMovement.timeOfMotion[1] = avg / 5;
+                    userMovement.timeOfMotion[1] = avg / 5;
                     step++;
                     counter = 0;
                     timer = 0;
@@ -391,9 +390,9 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 else if (counter == 5)
                 {
                     float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
-                    UserMovement.rangeOfMotion[0] = avg / 5;
+                    userMovement.rangeOfMotion[0] = avg / 5;
                     avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
-                    UserMovement.timeOfMotion[0] = avg / 5;
+                    userMovement.timeOfMotion[0] = avg / 5;
                     step++;
                     counter = 0;
                     timer = 0;
@@ -445,9 +444,9 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     else if (counter == 5)
                     {
                         float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
-                        UserMovement.rangeOfMotion[3] = avg / 5;
+                        userMovement.rangeOfMotion[3] = avg / 5;
                         avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
-                        UserMovement.timeOfMotion[3] = avg / 5;
+                        userMovement.timeOfMotion[3] = avg / 5;
                         step++;
                         startedPlaying = false;
                         counter = 0;
@@ -486,9 +485,9 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 else if (counter == 5)
                 {
                     float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
-                    UserMovement.rangeOfMotion[2] = avg / 5;
+                    userMovement.rangeOfMotion[2] = avg / 5;
                     avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
-                    UserMovement.timeOfMotion[2] = avg / 5;
+                    userMovement.timeOfMotion[2] = avg / 5;
                     step++;
                     counter = 0;
                     timer = 0;
@@ -509,773 +508,26 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     timer = 0;
                 }
             }
-            else if (step == 7) //cursor moves right
+            else if (step == 9) //cursor moves right
             {
                 //state.cursorAdd = new Vector3(.2f * Time.deltaTime, 0f, 0f);
                 cursor.transform.localPosition -= (cursor.transform.right * Time.deltaTime);
                 timer += Time.deltaTime;
-                text.text = "right cursor movement finished :)";
-                if (timer > longInterval)
+                text.text = "Finished Tutorial... Here's your data:\n (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" +
+                    string.Join(", ", userMovement.timeOfMotion) + ")\n " + continueText + " to the next section of the tutorial...";
+                if (timer > longInterval && MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
                     timer = 0f;
                     step++;
                 }
-            }
-            else if (step == 8)
-            {
-                text.text = "The cursor can be moved upward and downward...";
-                //state.cursorAdd = new Vector3(0f, .15f * Time.deltaTime, 0f);
-                cursor.transform.localPosition += (cursor.transform.up * Time.deltaTime);
-                timer += Time.deltaTime;
-
-                if (timer > shortInterval)
-                {
-                    timer = 0f;
-                    step++;
-                }
-            }
-            else if (step == 9)
-            {
-                timer += Time.deltaTime;
-                if (timer > miniPause)
-                {
-                    timer = 0f;
-                    step++;
-                }
-            }
-            else if (step == 10)
-            {
-                //state.cursorAdd = new Vector3(0f, -.15f * Time.deltaTime, 0f);
-                cursor.transform.localPosition -= (cursor.transform.up * Time.deltaTime);
-                timer += Time.deltaTime;
-
-                if (timer > longInterval)
-                {
-                    timer = 0f;
-                    step++;
-                }
-            }
-            else if (step == 11)
-            {
-                timer += Time.deltaTime;
-                if (timer > miniPause)
-                {
-                    StateManager.makeCursReset = true;
-                    timer = 0f;
-                    step = 17; //edited for changes
-                }
-            }
-            else if (step == 17)
-            {
-                text.text = "Now it's your turn!\n In between each section you'll see a video of the motion\n" +
-                    "After each video, you will be prompted to try the exercises on your own.\n" + continueText;
-
-                if (MakeWordBank.moveOn() && !MakeWordBank.skip())
-                {
-                    mainCamera.SetActive(false);
-                    videoCamera.SetActive(true);
-                    MakeWordBank.cursorCamera.SetActive(false);
-                    VP3.SetActive(true);
-                    VPA3.Play();
-                    step++;
-                }
-            }
-            else if (step == 18)
-            {
-                if (VPA3.isPlaying)
-                {
-                    startedPlaying = true;
-                }
-
-                if (startedPlaying && (!VPA3.isPlaying))
-                {
-                    mainCamera.SetActive(true);
-                    videoCamera.SetActive(false);
-                    MakeWordBank.cursorCamera.SetActive(true);
-                    VP3.SetActive(false);
-                    StateManager.moveCursorL = true;
-
-                    if (counter == 5)
-                    {
-                        text.text = "Move the cursor to the left by moving the rod" + "\n"
-                            + "with both your hands to the left as far as you can" + "\n"
-                            + "Keep your shoulders and torso in place, and the rod parallel to the ground";
-
-                        if ((Kinect.LHandPos.x - Kinect.LShoulderPos.x) < maxLDistance)
-                        {
-                            maxLDistance = Kinect.LHandPos.x - Kinect.LShoulderPos.x;
-                        }
-
-                        if ((Kinect.RHandPos.x - Kinect.RShoulderPos.x) < maxRDistance)
-                        {
-                            maxRDistance = Kinect.RHandPos.x - Kinect.RShoulderPos.x;
-                        }
-
-                        if (StateManager.nextCursorPos.x <= MakeWordBank.leftBound) //original = -0.425f
-                        { //Cursor moved to the border of the screen
-                            LHandLeftTotal += maxLDistance;
-                            RHandLeftTotal += maxRDistance;
-                            maxLDistance = 0f;
-                            maxRDistance = 0f;
-                            StateManager.makeCursReset = true;
-                            counter--;
-                        }
-                    }
-                    else if (counter > 0)
-                    {
-                        if (counter > 1)
-                        {
-                            text.text = "Good job! Now return to the neutral position" + "\n"
-                                + "And repeat this movement for " + counter.ToString() + " more times" + "\n"
-                                + "Move your hands as far as you can every time";
-                        }
-                        else
-                        {
-                            text.text = "Good job! Now return to the neutral position" + "\n"
-                                + "And repeat this movement for 1 more time" + "\n"
-                                + "Move your hands as far as you can every time";
-                        }
-
-                        if (addTimer)
-                        {
-                            timer += Time.deltaTime;
-                        }
-
-                        if (timer > 1f) //&& !StateManager.cursorL
-                        { //Proceed if user returns to the neutural position
-                            //StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
-                            timer = 0f;
-                            addTimer = false;
-                            resetted = true;
-                        }
-
-                        if (resetted)
-                        {
-                            if ((Kinect.LHandPos.x - Kinect.LShoulderPos.x) < maxLDistance)
-                            {
-                                maxLDistance = Kinect.LHandPos.x - Kinect.LShoulderPos.x;
-                            }
-
-                            if ((Kinect.RHandPos.x - Kinect.RShoulderPos.x) < maxRDistance)
-                            {
-                                maxRDistance = Kinect.RHandPos.x - Kinect.RShoulderPos.x;
-                            }
-
-                            if (StateManager.nextCursorPos.x <= MakeWordBank.leftBound)
-                            {
-                                LHandLeftTotal += maxLDistance;
-                                RHandLeftTotal += maxRDistance;
-                                maxLDistance = 0f;
-                                maxRDistance = 0f;
-                                addTimer = true;
-                                resetted = false;
-                                StateManager.makeCursReset = true;
-                                counter--;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        text.text = "Good job!" + "\n"
-                                   + "Now return to the neutral position";
-                        if (true)//(!StateManager.cursorL)
-                        {
-                            LHandLeftAverage = LHandLeftTotal / 5;
-                            RHandLeftAverage = RHandLeftTotal / 5;
-                            maxLDistance = 0f;
-                            maxRDistance = 0f;
-                            counter = 5;
-                            startedPlaying = false;
-                            step++;
-                        }
-                    }
-                }
-            }
-            else if (step == 19)
-            {
-                StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
-                step++;
-            }
-            else if (step == 20)
-            {
-                StateManager.moveCursorL = false;
-                StateManager.moveCursorR = true;
-
-                if (counter == 5)
-                {
-                    text.text = "Move the cursor to the right by moving the rod" + "\n"
-                        + "with both your hands to the right as far as you can" + "\n"
-                        + "Keep your shoulders and torso in place, and the rod parallel to the ground";
-
-                    if ((Kinect.LHandPos.x - Kinect.LShoulderPos.x) > maxLDistance)
-                    {
-                        maxLDistance = Kinect.LHandPos.x - Kinect.LShoulderPos.x;
-                    }
-
-                    if ((Kinect.RHandPos.x - Kinect.RShoulderPos.x) > maxRDistance)
-                    {
-                        maxRDistance = Kinect.RHandPos.x - Kinect.RShoulderPos.x;
-                    }
-
-                    if (StateManager.nextCursorPos.x >= MakeWordBank.rightBound) //.415f?
-                    {
-                        LHandRightTotal += maxLDistance;
-                        RHandRightTotal += maxRDistance;
-                        maxLDistance = 0f;
-                        maxRDistance = 0f;
-                        StateManager.makeCursReset = true;
-                        counter--;
-                    }
-                }
-                else if (counter > 0)
-                {
-                    if (counter > 1)
-                    {
-                        text.text = "Good job! Now return to the neutral position" + "\n"
-                            + "And repeat this movement for " + counter.ToString() + " more times" + "\n"
-                            + "Move your hands as far as you can every time";
-                    }
-                    else
-                    {
-                        text.text = "Good job! Now return to the neutral position" + "\n"
-                            + "And repeat this movement for 1 more time" + "\n"
-                            + "Move your hands as far as you can every time";
-                    }
-
-                    if (addTimer)
-                    {
-                        timer += Time.deltaTime;
-                    }
-
-                    if (timer > 1f)// && !StateManager.cursorR)
-                    {
-                        //StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
-                        timer = 0f;
-                        addTimer = false;
-                        resetted = true;
-                    }
-
-                    if (resetted)
-                    {
-                        if ((Kinect.LHandPos.x - Kinect.LShoulderPos.x) > maxLDistance)
-                        {
-                            maxLDistance = Kinect.LHandPos.x - Kinect.LShoulderPos.x;
-                        }
-
-                        if ((Kinect.RHandPos.x - Kinect.RShoulderPos.x) > maxRDistance)
-                        {
-                            maxRDistance = Kinect.RHandPos.x - Kinect.RShoulderPos.x;
-                        }
-
-                        if (StateManager.nextCursorPos.x >= MakeWordBank.rightBound)
-                        {
-                            LHandRightTotal += maxLDistance;
-                            RHandRightTotal += maxRDistance;
-                            maxLDistance = 0f;
-                            maxRDistance = 0f;
-                            addTimer = true;
-                            resetted = false;
-                            StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
-                            StateManager.makeCursReset = true;
-                            counter--;
-                        }
-                    }
-                }
-                else
-                {
-                    text.text = "Good job!" + "\n"
-                                + "Now return to the neutral position";
-                    if (true)//!StateManager.cursorR)
-                    {
-                        LHandRightAverage = LHandRightTotal / 5;
-                        RHandRightAverage = RHandRightTotal / 5;
-                        maxLDistance = 0f;
-                        maxRDistance = 0f;
-                        counter = 5;
-                        step++;
-                    }
-                }            
-            }
-            else if (step == 21)
-            {
-                mainCamera.SetActive(false);
-                videoCamera.SetActive(true);
-                MakeWordBank.cursorCamera.SetActive(false);
-                VP4.SetActive(true);
-                VPA4.Play();
-                //StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
-                StateManager.makeCursReset = true;
-                step++;
-            }
-            else if (step == 22)
-            {
-                if (VPA4.isPlaying)
-                {
-                    startedPlaying = true;
-                }
-
-                if (startedPlaying && (!VPA4.isPlaying))
-                {
-                    mainCamera.SetActive(true);
-                    videoCamera.SetActive(false);
-                    MakeWordBank.cursorCamera.SetActive(true);
-                    VP4.SetActive(false);
-                    StateManager.moveCursorR = false;
-                    StateManager.moveCursorU = true;
-
-                    if (counter == 5)
-                    {
-                        text.text = "Move the cursor upward by lifting the rod vertically as far as you can" + "\n"
-                            + "Keep your hands at the same height and keep the rod parallel to the ground";
-
-                        if ((Kinect.LHandPos.y - Kinect.LShoulderPos.y) > maxLDistance)
-                        {
-                            maxLDistance = Kinect.LHandPos.y - Kinect.LShoulderPos.y;
-                        }
-
-                        if ((Kinect.RHandPos.y - Kinect.RShoulderPos.y) > maxRDistance)
-                        {
-                            maxRDistance = Kinect.RHandPos.y - Kinect.RShoulderPos.y;
-                        }
-
-                        if (StateManager.nextCursorPos.y >= MakeWordBank.upperBound)
-                        {
-                            LHandUpTotal += maxLDistance;
-                            RHandUpTotal += maxRDistance;
-                            maxLDistance = 0f;
-                            maxRDistance = 0f;
-                            StateManager.makeCursReset = true;
-                            counter--;
-                        }
-                    }
-                    else if (counter > 0)
-                    {
-                        if (counter > 1)
-                        {
-                            text.text = "Good job! Now return to the neutral position" + "\n"
-                                + "And repeat this movement for " + counter.ToString() + " more times" + "\n"
-                                + "Move your hands as far as you can every time";
-                        }
-                        else
-                        {
-                            text.text = "Good job! Now return to the neutral position" + "\n"
-                                + "And repeat this movement for 1 more time" + "\n"
-                                + "Move your hands as far as you can every time";
-                        }
-
-                        if (addTimer)
-                        {
-                            timer += Time.deltaTime;
-                        }
-
-                        if (timer > 1f)//&& !StateManager.cursorU)
-                        {
-                            //StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
-                            timer = 0f;
-                            addTimer = false;
-                            resetted = true;
-                        }
-
-                        if (resetted)
-                        {
-                            if ((Kinect.LHandPos.y - Kinect.LShoulderPos.y) > maxLDistance)
-                            {
-                                maxLDistance = Kinect.LHandPos.y - Kinect.LShoulderPos.y;
-                            }
-
-                            if ((Kinect.RHandPos.y - Kinect.RShoulderPos.y) > maxRDistance)
-                            {
-                                maxRDistance = Kinect.RHandPos.y - Kinect.RShoulderPos.y;
-                            }
-
-                            if (StateManager.nextCursorPos.y >= MakeWordBank.upperBound) // 0.238f
-                            {
-                                LHandUpTotal += maxLDistance;
-                                RHandUpTotal += maxRDistance;
-                                maxLDistance = 0f;
-                                maxRDistance = 0f;
-                                addTimer = true;
-                                resetted = false;
-                                StateManager.makeCursReset = true;
-                                counter--;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        text.text = "Good job!" + "\n"
-                                   + "Now return to the neutral position";
-                        if (true)//!StateManager.cursorU)
-                        {
-                            LHandUpAverage = LHandUpTotal / 5;
-                            RHandUpAverage = RHandUpTotal / 5;
-                            maxLDistance = 0f;
-                            maxRDistance = 0f;
-                            counter = 5;
-                            startedPlaying = false;
-                            step++;
-                        }
-                    }
-                }
-            }
-            else if (step == 23)
-            {
-                StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
-                step++;
-            }
-            else if (step == 24)
-            {
-                StateManager.moveCursorU = false;
-                StateManager.moveCursorD = true;
-
-                if (counter == 5)
-                {
-                    text.text = "Move the cursor downward by lowering the rod vertically as far as you can" + "\n"
-                        + "Keep your hands at the same height and keep the rod parallel to the ground";
-
-                    if ((Kinect.LHandPos.y - Kinect.LShoulderPos.y) < maxLDistance)
-                    {
-                        maxLDistance = Kinect.LHandPos.y - Kinect.LShoulderPos.y;
-                    }
-
-                    if ((Kinect.RHandPos.y - Kinect.RShoulderPos.y) < maxRDistance)
-                    {
-                        maxRDistance = Kinect.RHandPos.y - Kinect.RShoulderPos.y;
-                    }
-
-                    if (StateManager.nextCursorPos.y <= MakeWordBank.lowerBound) //-.215
-                    {
-                        LHandDownTotal += maxLDistance;
-                        RHandDownTotal += maxRDistance;
-                        maxLDistance = 0f;
-                        maxRDistance = 0f;
-                        StateManager.makeCursReset = true;
-                        counter--;
-                    }
-
-                }
-                else if (counter > 0)
-                {
-                    if (counter > 1)
-                    {
-                        text.text = "Good job! Now return to the neutral position" + "\n"
-                            + "And repeat this movement for " + counter.ToString() + " more times" + "\n"
-                            + "Move your hands as far as you can every time";
-                    }
-                    else
-                    {
-                        text.text = "Good job! Now return to the neutral position" + "\n"
-                            + "And repeat this movement for 1 more time" + "\n"
-                            + "Move your hands as far as you can every time";
-                    }
-
-                    if (addTimer)
-                    {
-                        timer += Time.deltaTime;
-                    }
-
-                    if (timer > 1f)// && !StateManager.cursorD)
-                    {
-                        //StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
-                        timer = 0f;
-                        addTimer = false;
-                        resetted = true;
-                    }
-
-                    if (resetted)
-                    {
-                        if ((Kinect.LHandPos.y - Kinect.LShoulderPos.y) < maxLDistance)
-                        {
-                            maxLDistance = Kinect.LHandPos.y - Kinect.LShoulderPos.y;
-                        }
-
-                        if ((Kinect.RHandPos.y - Kinect.RShoulderPos.y) < maxRDistance)
-                        {
-                            maxRDistance = Kinect.RHandPos.y - Kinect.RShoulderPos.y;
-                        }
-
-                        if (StateManager.nextCursorPos.y <= MakeWordBank.lowerBound)
-                        {
-                            LHandDownTotal += maxLDistance;
-                            RHandDownTotal += maxRDistance;
-                            maxLDistance = 0f;
-                            maxRDistance = 0f;
-                            addTimer = true;
-                            resetted = false;
-                            StateManager.makeCursReset = true;
-                            counter--;
-                        }
-                    }
-                }
-                else
-                {
-                    text.text = "Good job!" + "\n"
-                           + "Now return to the neutral position";
-                    if (true)//!StateManager.cursorD)
-                    {
-                        LHandDownAverage = LHandDownTotal / 5;
-                        RHandDownAverage = RHandDownTotal / 5;
-                        maxLDistance = 0f;
-                        maxRDistance = 0f;
-                        counter = 5;
-                        step++;
-                    }
-                }
-            }
-            else if (step == 25)
-            {
-                VP1.SetActive(true);
-                VPA1.Play();
-                StateManager.moveCursorD = false; //all cursor movement disabled by this pt.
-                mainCamera.SetActive(false);
-                videoCamera.SetActive(true);
-                MakeWordBank.cursorCamera.SetActive(false);
-                StateManager.makeCursReset = true;
-                step = 33; //edited for image skip
-            }
-            else if (step == 33)
-            {
-                mainCamera.SetActive(false);
-                videoCamera.SetActive(true);
-                MakeWordBank.cursorCamera.SetActive(false);
-                VP5.SetActive(true);
-                VPA5.Play();
-                StateManager.moveCameraD = false; //cam's false too now
-                step++;
-            }
-            else if (step == 34)
-            {
-                if (VPA5.isPlaying)
-                {
-                    startedPlaying = true;
-                }
-
-                if (startedPlaying && (!VPA5.isPlaying))
-                {
-                    mainCamera.SetActive(true);
-                    videoCamera.SetActive(false);
-                    MakeWordBank.cursorCamera.SetActive(true);
-                    VP5.SetActive(false);
-                    circle.SetActive(true);
-
-                    float LHandSpeed = StateManager.LHandSpeed;
-                    float RHandSpeed = StateManager.RHandSpeed;
-                    float LElbowSpeed = StateManager.LElbowSpeed;
-                    float RElbowSpeed = StateManager.RElbowSpeed;
-
-                    if (counter == 5)
-                    {
-                        text.text = "To select an object, push the rod forward with both your hands as fast as you can" + "\n"
-                            + "and then pull the rod backward as fast as you can";
-
-                        if (LHandSpeed < LHSmin)
-                        {
-                            LHSmin = LHandSpeed;
-                        }
-
-                        if (LHandSpeed > LHSmax)
-                        {
-                            LHSmax = LHandSpeed;
-                        }
-
-                        if (RHandSpeed < RHSmin)
-                        {
-                            RHSmin = RHandSpeed;
-                        }
-
-                        if (RHandSpeed > RHSmax)
-                        {
-                            RHSmax = RHandSpeed;
-                        }
-
-                        if (LElbowSpeed < LESmin)
-                        {
-                            LESmin = LElbowSpeed;
-                        }
-
-                        if (LElbowSpeed > LESmax)
-                        {
-                            LESmax = LElbowSpeed;
-                        }
-
-                        if (RElbowSpeed < RESmin)
-                        {
-                            RESmin = RElbowSpeed;
-                        }
-
-                        if (RElbowSpeed > RESmax)
-                        {
-                            RESmax = RElbowSpeed;
-                        }
-
-                        if (!prevClicked && StateManager.rodClicked)
-                        {
-                            LHandSpeedForwardTotal += LHSmin;
-                            LHandSpeedBackwardTotal += LHSmax;
-                            RHandSpeedForwardTotal += RHSmin;
-                            RHandSpeedBackwardTotal += RHSmax;
-                            LElbowSpeedForwardTotal += LESmin;
-                            LElbowSpeedBackwardTotal += LESmax;
-                            RElbowSpeedForwardTotal += RESmin;
-                            RElbowSpeedBackwardTotal += RESmax;
-
-                            LHSmax = 0f;
-                            LHSmin = 0f;
-                            RHSmax = 0f;
-                            RHSmin = 0f;
-                            LESmax = 0f;
-                            LESmin = 0f;
-                            RESmax = 0f;
-                            RESmin = 0f;
-
-                            if (circleWhite)
-                            {
-                                circle.GetComponent<Image>().color = new Color32(200, 200, 200, 255);
-                                circleWhite = false;
-                            }
-                            else
-                            {
-                                circle.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-                                circleWhite = true;
-                            }
-
-                            counter--;
-                            timer = 2f;
-                        }
-                    }
-                    else if (counter > 0)
-                    {
-                        if (counter > 1)
-                        {
-                            text.text = "Good job! Now repeat this movement for " + counter.ToString() + " more times" + "\n"
-                                  + "Move your hands as fast as you can every time";
-                        }
-                        else
-                        {
-                            text.text = "Good job! Now repeat this movement for 1 more time" + "\n"
-                                 + "Move your hands as fast as you can every time";
-                        }
-
-                        if (LHandSpeed < LHSmin) //sets left/right's hand/elbow's max and min's to update
-                        {
-                            LHSmin = LHandSpeed;
-                        }
-
-                        if (LHandSpeed > LHSmax)
-                        {
-                            LHSmax = LHandSpeed;
-                        }
-
-                        if (RHandSpeed < RHSmin)
-                        {
-                            RHSmin = RHandSpeed;
-                        }
-
-                        if (RHandSpeed > RHSmax)
-                        {
-                            RHSmax = RHandSpeed;
-                        }
-
-                        if (LElbowSpeed < LESmin)
-                        {
-                            LESmin = LElbowSpeed;
-                        }
-
-                        if (LElbowSpeed > LESmax)
-                        {
-                            LESmax = LElbowSpeed;
-                        }
-
-                        if (RElbowSpeed < RESmin)
-                        {
-                            RESmin = RElbowSpeed;
-                        }
-
-                        if (RElbowSpeed > RESmax)
-                        {
-                            RESmax = RElbowSpeed;
-                        }
-
-                        timer += Time.deltaTime;
-
-                        if (timer > 1f)
-                        {
-                            if (!prevClicked && StateManager.rodClicked) //there is a click in the rod?
-                            {
-                                LHandSpeedForwardTotal += LHSmin;
-                                LHandSpeedBackwardTotal += LHSmax;
-                                RHandSpeedForwardTotal += RHSmin;
-                                RHandSpeedBackwardTotal += RHSmax;
-                                LElbowSpeedForwardTotal += LESmin;
-                                LElbowSpeedBackwardTotal += LESmax;
-                                RElbowSpeedForwardTotal += RESmin;
-                                RElbowSpeedBackwardTotal += RESmax;
-
-                                LHSmax = 0f;
-                                LHSmin = 0f;
-                                RHSmax = 0f;
-                                RHSmin = 0f;
-                                LESmax = 0f;
-                                LESmin = 0f;
-                                RESmax = 0f;
-                                RESmin = 0f;
-
-                                if (circleWhite)
-                                {
-                                    circle.GetComponent<Image>().color = new Color32(200, 200, 200, 255);
-                                    circleWhite = false;
-                                }
-                                else
-                                {
-                                    circle.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
-                                    circleWhite = true;
-                                }
-
-                                counter--;
-                                timer = 0f;
-                            }
-                            //if (Input.GetKey(KeyCode.Space)) //visualization of method for keyboard in statemanager class
-                            //{
-                            //    counter--;
-                            //    timer = 2f;
-                            //}
-                        }
-                    }
-                    else
-                    {
-                        LHandSpeedForwardAverage = LHandSpeedForwardTotal / 5;
-                        LHandSpeedBackwardAverage = LHandSpeedBackwardTotal / 5;
-                        RHandSpeedForwardAverage = RHandSpeedForwardTotal / 5;
-                        RHandSpeedBackwardAverage = RHandSpeedBackwardTotal / 5;
-                        LElbowSpeedForwardAverage = LElbowSpeedForwardTotal / 5;
-                        LElbowSpeedBackwardAverage = LElbowSpeedBackwardTotal / 5;
-                        RElbowSpeedForwardAverage = RElbowSpeedForwardTotal / 5;
-                        RElbowSpeedBackwardAverage = RElbowSpeedBackwardTotal / 5;
-
-                        LHSmax = 0f;
-                        LHSmin = 0f;
-                        RHSmax = 0f;
-                        RHSmin = 0f;
-                        LESmax = 0f;
-                        LESmin = 0f;
-                        RESmax = 0f;
-                        RESmin = 0f;
-
-                        counter = 5;
-                        startedPlaying = false;
-                        step++;
-                    }
-                }
-
-                prevClicked = StateManager.rodClicked;
             }
             else if (step == 35)
             {
-                canvas.SetActive(false);
-                mainCamera.SetActive(true);
-                UICamera.SetActive(true);
-                videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(true);
+                //canvas.SetActive(false);
+                //mainCamera.SetActive(true);
+                //UICamera.SetActive(true);
+                //videoCamera.SetActive(false);
+                //MakeWordBank.cursorCamera.SetActive(true);
                 cam.rect = new Rect(0.0f, 0.0f, 0.622f, 1.0f);
 
                 StateManager.moveCameraU = true;
@@ -1297,9 +549,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 initialized = false;
 
                 //import movement data into UserInfo;
-
-                lockPanel.SetActive(false);
-
+                state.user.addMovementBounds(userMovement);
+                //lockPanel.SetActive(false);
                 if (hasCompleted)
                 {
                     state.setState(1);
@@ -1318,12 +569,12 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
         return (Mathf.Atan2((y1 - standard_y), (x1 - standard_x))) * (180 / Mathf.PI);
     }
 }
-public class MovementData
+public class MovementBounds
 {
     public float[] rangeOfMotion; //-x, x, -y, y bounds for user
     public float[] timeOfMotion; //the time it takes for the user to achieve max motion for each range
 
-    public MovementData()
+    public MovementBounds()
     {
         rangeOfMotion = new float[4];
         timeOfMotion = new float[4];
