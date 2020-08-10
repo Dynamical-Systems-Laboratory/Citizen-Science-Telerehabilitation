@@ -521,6 +521,10 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     step = 35;
                 }
             }
+            else if (step == 35) //for testing purposes
+            {
+                text.text = "The calibration is now over. :)\n Please let me know if you encountered any errors or have any suggestions";
+            }
             else if (step == 35)
             {
                 //canvas.SetActive(false);
