@@ -135,6 +135,7 @@ public class StateManager : MonoBehaviour {
     private static int tutorialCull;
     private static int homeCull;
     private static int profileCull;
+    //public static int cursorCull;
 
     public bool userControlActive = false; //bool that controls the reset mechanic for the 
 
@@ -170,7 +171,7 @@ public class StateManager : MonoBehaviour {
         MakeWordBank.mainCamera.SetActive(false);
 
         MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = gameCull;
-        GameObject.Find("SimpleTutorialCanvas").SetActive(true);
+        //GameObject.Find("SimpleTutorialCanvas").SetActive(true);
         //complexUser.VRPerson.SetActive(true);
 
         userControlActive = false;
@@ -346,10 +347,11 @@ public class StateManager : MonoBehaviour {
         cursorPos = GameObject.Find("exampleCursor").transform.position;
 
         //culling masks
-        gameCull = GameObject.Find("UICamera").GetComponent<Camera>().cullingMask;
+        gameCull = GameObject.Find("UICamera").GetComponent<Camera>().cullingMask; //present culling mask with tag/trash/ui/bin/visibleTags
         tutorialCull = (1 << LayerMask.NameToLayer("Tutorial"));
         homeCull = (1 << LayerMask.NameToLayer("Home"));
         profileCull = (1 << LayerMask.NameToLayer("Profile"));
+        //cursorCull = GameObject.Find("CursorCamera").GetComponent<Camera>().cullingMask;
     }
     private IEnumerator Start()
     {
