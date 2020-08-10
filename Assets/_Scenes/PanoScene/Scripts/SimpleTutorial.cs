@@ -508,28 +508,34 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     timer = 0;
                 }
             }
-            else if (step == 9) //cursor moves right
+            else if (step == 9)
+            {
+                text.text = "Nice job! If you want to lock the cursor again without needing to hold the hand triggers, press either *A and B* on your right hand or *X and Y* on your left hand.\n" +
+                    "This will prevent the cursor from moving until you unlock it again.\n" +
+                    "As a final step, please lock the cursor once.";
+                if (VRUser.cursorRelock())
+                {
+                    text.text = "Tutorial Completed";
+                    step++;
+                }
+            }
+            else if (step == 10) //cursor moves right
             {
                 //state.cursorAdd = new Vector3(.2f * Time.deltaTime, 0f, 0f);
                 cursor.transform.localPosition -= (cursor.transform.right * Time.deltaTime);
                 timer += Time.deltaTime;
                 text.text = "Finished Tutorial... Here's your data:\n (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" +
                     string.Join(", ", userMovement.timeOfMotion) + ")\n " + continueText + " to the next section of the tutorial...";
-                if (timer > longInterval && MakeWordBank.moveOn() && !MakeWordBank.skip())
+                if (timer > longInterval || MakeWordBank.moveOn())
                 {
                     timer = 0f;
                     step = 35;
                 }
             }
-            else if (step == 35)
+            
+            else if (step == 35) //end
             {
-                //canvas.SetActive(false);
-                //mainCamera.SetActive(true);
-                //UICamera.SetActive(true);
-                //videoCamera.SetActive(false);
-                //MakeWordBank.cursorCamera.SetActive(true);
                 cam.rect = new Rect(0.0f, 0.0f, 0.622f, 1.0f);
-
                 StateManager.moveCameraU = true;
                 StateManager.moveCameraD = true;
                 StateManager.moveCameraL = true;
