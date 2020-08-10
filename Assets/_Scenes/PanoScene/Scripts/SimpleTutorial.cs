@@ -128,8 +128,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
     public static GameObject vert;
     public static GameObject horiz;
-
-    public static Text lockText;
+    //public static Text lockText;
 
     private static string continueText = "press* A* or *X* to continue";
 
@@ -179,7 +178,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
         VPA5 = VP5.GetComponent<UnityEngine.Video.VideoPlayer>();
         // to play a video, activate the associated player and call activator.Play(), then ask compiler activator.isPlaying?, deactivate if not playing
 
-        lockText = GameObject.Find("lockText").GetComponent<Text>() as Text;
+        //lockText = GameObject.Find("lockText").GetComponent<Text>() as Text;
     }
 
     /* Simple Tutorial aka Calibration Breakdown
@@ -273,17 +272,17 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 {
                     VP1.SetActive(false);
                     //cursorCam.GetComponent<Camera>().cullingMask = beginngingCull;
-                    text.text = "Now try unlocking the cursor yourself...\n Remeber the unlock buttons are the two hand triggers";
+                    text.text = "(1)Now try unlocking the cursor yourself...\n Remeber the unlock buttons are the two hand triggers";
                     Debug.Log("Step 2 Counter: " + counter);
                     if (counter == 0 && VRUser.isResetting()) //just skips cuz of getdown problems but solve later...
                     {
                         counter = 1;
                         StateManager.makeCursReset = true;
                         state.userControlActive = false;
-                        text.text = "Great! Try to unlock the cursor one more time...";
                     }
                     if (counter == 1 && VRUser.isNotResetting())
                     {
+                        text.text = "Great! Try to unlock the cursor one more time...";
                         counter = 2;
                         state.userControlActive = false;
                     }
@@ -332,6 +331,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                         startedPlaying = false;
                         counter = 0;
                         state.cursorXMove = true; //unlock x axis movement
+                        StateManager.makeCursReset = true;
+                        state.userControlActive = false;
                     }
                 }
             }
@@ -340,12 +341,12 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 timer += Time.deltaTime;
                 if (counter == 0)
                 {
-                    text.text = "We'll start with the *right* direction.\n Unlock the cursor and move your hands/arms to the right as far as you can stretch without moving your body\n" +
+                    text.text = "(2)We'll start with the *right* direction.\n Unlock the cursor and move your hands/arms to the right as far as you can stretch without moving your body\n" +
                     "it is important to stretch at this point as it will determin your exercise progress later on";
                 }
                 else if (counter > 0 && counter < 5)
                 {
-                    text.text = "Great! Now unlock the cursor and repeat that right movement " + (5 - counter) + " more times.\n" +
+                    text.text = "Great! Now unlock the cursor and repeat that *right* movement " + (5 - counter) + " more times.\n" +
                         "Remember to stretch as far as you can. :)";
                 }
                 else if (counter == 5)
@@ -359,11 +360,11 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     timer = 0;
                 }
 
-                if (state.getCursorPosition().x >= 87f)
+                if (state.getCursorPosition().x >= 87f && state.userControlActive)
                 {
                     movementAvg[counter] = (VRUser.handTracking() - handPos1).x;
                     timerAvg[counter] = timer;
-                    counter++;
+                    counter += 1;
                     StateManager.makeCursReset = true;
                     state.userControlActive = false;
                 }
@@ -379,12 +380,12 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 timer += Time.deltaTime;
                 if (counter == 0)
                 {
-                    text.text = "Now we'll try the *left* direction.\n Unlock the cursor and move your hands/arms to the left as far as you can stretch without moving your body\n" +
+                    text.text = "(3)Now we'll try the *left* direction.\n Unlock the cursor and move your hands/arms to the left as far as you can stretch without moving your body\n" +
                     "it is important to stretch at this point as it will determin your exercise progress later on";
                 }
                 else if (counter > 0 && counter < 5)
                 {
-                    text.text = "Great! Now unlock the cursor and repeat that left movement " + (5 - counter) + " more times.\n" +
+                    text.text = "Great! Now unlock the cursor and repeat that *left* movement " + (5 - counter) + " more times.\n" +
                         "Remember to stretch as far as you can. :)";
                 }
                 else if (counter == 5)
@@ -398,15 +399,15 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     timer = 0;
                     state.cursorXMove = false;
                     state.cursorYMove = true;
-                    //VP3.SetActive(true);
-                    //VPA3.Play();
+                    VP3.SetActive(true);
+                    VPA3.Play();
                 }
 
-                if (state.getCursorPosition().x >= -89f)
+                if (state.getCursorPosition().x <= -89f && state.userControlActive)
                 {
                     movementAvg[counter] = (VRUser.handTracking() - handPos1).x;
                     timerAvg[counter] = timer;
-                    counter++;
+                    counter += 1;
                     StateManager.makeCursReset = true;
                     state.userControlActive = false;
                 }
@@ -417,7 +418,97 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     timer = 0;
                 }
             }
+            else if (step == 7)
+            {
+                if (VPA3.isPlaying)
+                {
+                    text.text = "The cursor can be moved upward and downward...";
+                    startedPlaying = true;
+                }
+                if (startedPlaying == true)
+                {
+                    timer += Time.deltaTime;
+                }
+                if (!VPA3.isPlaying && startedPlaying)
+                {
+                    VP3.SetActive(false);
+                    if (counter == 0)
+                    {
+                        text.text = "(4)Now we'll try the *up* direction.\n Unlock the cursor and move your hands/arms to the left as far as you can stretch without moving your body\n" +
+                        "it is important to stretch at this point as it will determin your exercise progress later on";
+                    }
+                    else if (counter > 0 && counter < 5)
+                    {
+                        text.text = "Great! Now unlock the cursor and repeat that *up* movement " + (5 - counter) + " more times.\n" +
+                            "Remember to stretch as far as you can. :)";
+                    }
+                    else if (counter == 5)
+                    {
+                        float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
+                        UserMovement.rangeOfMotion[3] = avg / 5;
+                        avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
+                        UserMovement.timeOfMotion[3] = avg / 5;
+                        step++;
+                        startedPlaying = false;
+                        counter = 0;
+                        timer = 0;
+                    }
 
+                    if (state.getCursorPosition().y >= 65f && state.userControlActive)
+                    {
+                        movementAvg[counter] = (VRUser.handTracking() - handPos1).y;
+                        timerAvg[counter] = timer;
+                        counter += 1;
+                        StateManager.makeCursReset = true;
+                        state.userControlActive = false;
+                    }
+
+                    if (!state.userControlActive && VRUser.isResetting())
+                    {
+                        handPos1 = VRUser.handTracking();
+                        timer = 0;
+                    }
+                }
+            }
+            else if (step == 8)
+            {
+                timer += Time.deltaTime;
+                if (counter == 0)
+                {
+                    text.text = "(5)Now we'll try the *down* direction.\n Unlock the cursor and move your hands/arms to the left as far as you can stretch without moving your body\n" +
+                    "it is important to stretch at this point as it will determin your exercise progress later on";
+                }
+                else if (counter > 0 && counter < 5)
+                {
+                    text.text = "Great! Now unlock the cursor and repeat that *down* movement " + (5 - counter) + " more times.\n" +
+                        "Remember to stretch as far as you can. :)";
+                }
+                else if (counter == 5)
+                {
+                    float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
+                    UserMovement.rangeOfMotion[2] = avg / 5;
+                    avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
+                    UserMovement.timeOfMotion[2] = avg / 5;
+                    step++;
+                    counter = 0;
+                    timer = 0;
+                }
+
+                if (state.getCursorPosition().y <= -110f && state.userControlActive)
+                {
+                    movementAvg[counter] = (VRUser.handTracking() - handPos1).y;
+                    timerAvg[counter] = timer;
+                    counter += 1;
+                    StateManager.makeCursReset = true;
+                    state.userControlActive = false;
+                }
+
+                if (!state.userControlActive && VRUser.isResetting())
+                {
+                    handPos1 = VRUser.handTracking();
+                    timer = 0;
+                }
+            }
             else if (step == 7) //cursor moves right
             {
                 //state.cursorAdd = new Vector3(.2f * Time.deltaTime, 0f, 0f);
@@ -426,16 +517,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 text.text = "right cursor movement finished :)";
                 if (timer > longInterval)
                 {
-                    timer = 0f;
-                    step++;
-                }
-            }
-            else if (step == 7) //pause
-            {
-                timer += Time.deltaTime;
-                if (timer > miniPause)
-                {
-                    StateManager.makeCursReset = true;
                     timer = 0f;
                     step++;
                 }

@@ -259,7 +259,7 @@ public class VRUser : MonoBehaviour
         {
             trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, 66f, trueCursor.transform.localPosition.z);
         }
-        else if (trueCursor.transform.localPosition.y < -150)
+        else if (trueCursor.transform.localPosition.y < -115)
         {
             trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, -150, trueCursor.transform.localPosition.z);
         }
