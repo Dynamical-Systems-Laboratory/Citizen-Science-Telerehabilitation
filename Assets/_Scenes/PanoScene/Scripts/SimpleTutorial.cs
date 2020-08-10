@@ -35,7 +35,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     public static bool cameraMove = true;
     public static bool addTimer = true;
     public static bool resetted = false;
-    public static float shortInterval = 2.5f;
+    public static float shortInterval = 3.5f;
     public static float longInterval = shortInterval * 2f;
     public static float miniPause = 0.6f;
 
@@ -116,11 +116,11 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     public static GameObject VP4;
     public static GameObject VP5;
 
-    public static UnityEngine.Video.VideoPlayer cameraLRVP;
-    public static UnityEngine.Video.VideoPlayer cameraUDVP;
-    public static UnityEngine.Video.VideoPlayer cursorLRVP;
-    public static UnityEngine.Video.VideoPlayer cursorUDVP;
-    public static UnityEngine.Video.VideoPlayer clickVP;
+    public static UnityEngine.Video.VideoPlayer VPA1;
+    public static UnityEngine.Video.VideoPlayer VPA2;
+    public static UnityEngine.Video.VideoPlayer VPA3;
+    public static UnityEngine.Video.VideoPlayer VPA4;
+    public static UnityEngine.Video.VideoPlayer VPA5;
 
     public static bool startedPlaying = false;
     //public static bool calibrationEdgeCase = false;
@@ -130,6 +130,15 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     public static GameObject horiz;
 
     public static Text lockText;
+
+    private static string continueText = "press* A* or *X* to continue";
+
+    public static GameObject cursor;
+
+    public static Vector3 handPos1; //helper vars for hand tracking
+    public static Vector3 handPos2;
+    public static float[] movementAvg = new float[5];
+    public static float[] timerAvg = new float[5];
 
     // Start is called before the first frame update
     void Start()
@@ -147,18 +156,21 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
         vert = GameObject.Find("Vertical"); //extra
         horiz = GameObject.Find("Horizontal");
         lockPanel = GameObject.Find("lockPanel");
+        cursor = GameObject.Find("CursorCanvas");
 
-        VP1 = GameObject.Find("VPlayer1");
-        VP2 = GameObject.Find("VPlayer2");
-        VP3 = GameObject.Find("VPlayer3");
+        //video players
+        VP1 = GameObject.Find("VPlayer1"); //cursor unlocking
+        VP2 = GameObject.Find("VPlayer2"); //cursor moving left/right
+        VP3 = GameObject.Find("VPlayer3"); //cursor moving up/down
         VP4 = GameObject.Find("VPlayer4");
         VP5 = GameObject.Find("VPlayer5");
-
-        cameraLRVP = VP1.GetComponent<UnityEngine.Video.VideoPlayer>();
-        cameraUDVP = VP2.GetComponent<UnityEngine.Video.VideoPlayer>();
-        cursorLRVP = VP3.GetComponent<UnityEngine.Video.VideoPlayer>();
-        cursorUDVP = VP4.GetComponent<UnityEngine.Video.VideoPlayer>();
-        clickVP = VP5.GetComponent<UnityEngine.Video.VideoPlayer>();
+        //video player activators
+        VPA1 = VP1.GetComponent<UnityEngine.Video.VideoPlayer>();
+        VPA2 = VP2.GetComponent<UnityEngine.Video.VideoPlayer>();
+        VPA3 = VP3.GetComponent<UnityEngine.Video.VideoPlayer>();
+        VPA4 = VP4.GetComponent<UnityEngine.Video.VideoPlayer>();
+        VPA5 = VP5.GetComponent<UnityEngine.Video.VideoPlayer>();
+        // to play a video, activate the associated player and call activator.Play(), then ask compiler activator.isPlaying?, deactivate if not playing
 
         lockText = GameObject.Find("lockText").GetComponent<Text>() as Text;
     }
@@ -178,6 +190,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     {
         if (state.getState() == 4)
         {
+            Debug.Log("Step: " + step);
             //canvas.SetActive(true);
             if (!initialized)
             {
@@ -204,7 +217,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
 
             //saftey for user seeing when cursor is locked or not
-            if (state.userControlActive && step > 0)
+            /*if (state.userControlActive && step > 0 && step < 3)
             { //StateManager.makeCursReset = false;
                 lockPanel.GetComponent<Image>().color = new Color(1,1,1,220/255);
                 lockText.text = "The cursor is currently in locked mode,\n center your hands and squeeze the *hand triggers* to unlock the cursor";
@@ -213,9 +226,9 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             {
                 lockText.text = "";
                 lockPanel.GetComponent<Image>().color = new Color(1, 1, 1, 0);
-            }
+            }*/
+            //Debug.Log("isLocked: " + !state.userControlActive);
 
-            Debug.Log("isLocked: " + !state.userControlActive);
 
             //start of steps
             if (step == 0) //introduces calibration
@@ -223,77 +236,138 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
                     StateManager.makeCursReset = true;
-                    text.text = "Read the notification above then press *A* or *X* to continue to a video";
+                    text.text = "The cursor is currently in locked mode,\n center your hands and squeeze the *hand triggers* to unlock the cursor\n"
+                        + "To see a demonstration of this, " + continueText + " to a video";
                     step++;
                 }
             }
             else if (step == 1)
             {
-                //add video of someone centering their hands
-                
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
-                    text.text = "watching video";
+                    text.text = "watching video:\n Model centering their hands and unlocking the cursor";
+                    counter = 0;
                     step++;
+                    //add video of someone centering their hands
+                    VP1.SetActive(true);
+                    VPA1.Play();
                 }
             }
             else if (step == 2)
             {
-                timer += Time.deltaTime;
-                if (timer > 2) //if video done
+                if (VPA1.isPlaying)
                 {
-                    text.text = "Now try unlocking the cursor yourself..";
-                    if (state.userControlActive)
+                    startedPlaying = true;
+                }
+                //timer += Time.deltaTime;
+                if (!VPA1.isPlaying && startedPlaying) //if video done
+                {
+                    VP1.SetActive(false);
+                    text.text = "Now try unlocking the cursor yourself...\n Remeber the unlock buttons are the two hand triggers";
+                    if (counter == 0 && VRUser.isResetting()) //just skips cuz of getdown problems but solve later...
                     {
+                        counter = 1;
                         StateManager.makeCursReset = true;
                         state.userControlActive = false;
-                        text.text = "Good, unlock it one more time.";
-                        if (state.userControlActive)
-                        {
-                            lockPanel.transform.localScale -= new Vector3(0.3f, 0.3f, 0.3f);
-                            StateManager.makeCursReset = true;
-                            state.userControlActive = false;
-                            timer = 0;
-                            step++;
-                        }
+                        text.text = "Great! Try to unlock the cursor one more time...";
+                    }
+                    if (counter == 1 && VRUser.isNotResetting())
+                    {
+                        counter = 2;
+                        state.userControlActive = false;
+                    }
+                    if (counter == 2 && state.userControlActive)
+                    {
+                        //lockPanel.transform.localScale -= new Vector3(0.2f, 0.2f, 0.2f);
+                        //lockPanel.GetComponentInChildren<Text>().fontSize -= 1;
+                        StateManager.makeCursReset = true;
+                        state.userControlActive = false;
+                        timer = 0;
+                        counter = 5; //default?
+                        step++;
+                        startedPlaying = false;
                     }
                 }
             }
             else if (step == 3) //cursor moves left
             { //Show user what movements can be done
-                text.text = "Excellent! Now you'll start to move the cursor.\n Watch the on-screen and video examples then try it on your own..." +
-                    "\n When your ready to see the movements in action, press *A* or *X* to continue";
+                text.text = "Excellent! Now you'll start to move the cursor.\n Watch the video examples then try it on your own..." +
+                    "\n When your ready to see the movements in action, " + continueText;
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
+                    text.text = "The cursor can be moved left and right...";
+                    VP2.SetActive(true);
+                    VPA2.Play();
                     step++;
                 }
             }
-            else if (step == 4)
+            else if (step == 4) //play left/right video
             {
-                text.text = "The cursor can be moved left and right...";
-                StateManager.cursorAdd = new Vector3(-.2f * Time.deltaTime, 0f, 0f);
+                if (VPA2.isPlaying)
+                {
+                    startedPlaying = true;
+                }
+                if (!VPA2.isPlaying && startedPlaying)
+                {
+                    VP2.SetActive(false);
+                    timer += Time.deltaTime;
+                    if (timer > miniPause)
+                    {
+                        timer = 0f;
+                        step++;
+                        startedPlaying = false;
+                        counter = 0;
+                        state.cursorXMove = true;
+                    }
+                }
+            }
+            else if (step == 5)
+            {
                 timer += Time.deltaTime;
+                if (counter == 0)
+                {
+                    text.text = "We'll start with the right direction.\n Unlock the cursor and move your hands to the right as far as you can stretch\n" +
+                    "it is important to stretch at this point as it will determin your exercise progress later on";
+                }
+                else if (counter > 0 && counter < 5)
+                {
+                    text.text = "Great! Now unlock the cursor and repeat that right movement " + (5 - counter) + "more times.";
+                }
+                else if (counter == 5)
+                {
+                    float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
+                    UserMovement.rangeOfMotion[1] = avg / 5;
+                    avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
+                    UserMovement.timeOfMotion[1] = avg / 5;
+                    step++;
+                    counter = 0;
+                    timer = 0;
+                    state.cursorXMove = false;
+                    state.cursorYMove = true;
+                }
 
-                if (timer > shortInterval)
+                if (cursor.transform.localPosition.x > 87f)
                 {
-                    timer = 0f;
-                    step++;
+                    movementAvg[counter] = (VRUser.handTracking() - handPos1).x;
+                    timerAvg[counter] = timer;
+                    counter++;
+                    StateManager.makeCursReset = true;
+                    state.userControlActive = false;
+                }
+
+                if (!state.userControlActive && VRUser.isResetting())
+                {
+                    handPos1 = VRUser.handTracking();
+                    timer = 0;
                 }
             }
-            else if (step == 5) //pause
-            {
-                timer += Time.deltaTime;
-                if (timer > miniPause)
-                {
-                    timer = 0f;
-                    step++;
-                }
-            }
+
             else if (step == 6) //cursor moves right
             {
-                StateManager.cursorAdd = new Vector3(.2f * Time.deltaTime, 0f, 0f);
+                //state.cursorAdd = new Vector3(.2f * Time.deltaTime, 0f, 0f);
+                cursor.transform.localPosition -= (cursor.transform.right * Time.deltaTime);
                 timer += Time.deltaTime;
-
+                text.text = "right cursor movement finished :)";
                 if (timer > longInterval)
                 {
                     timer = 0f;
@@ -310,10 +384,11 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     step++;
                 }
             }
-            else if (step == 5)
+            else if (step == 8)
             {
                 text.text = "The cursor can be moved upward and downward...";
-                StateManager.cursorAdd = new Vector3(0f, .15f * Time.deltaTime, 0f);
+                //state.cursorAdd = new Vector3(0f, .15f * Time.deltaTime, 0f);
+                cursor.transform.localPosition += (cursor.transform.up * Time.deltaTime);
                 timer += Time.deltaTime;
 
                 if (timer > shortInterval)
@@ -322,7 +397,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     step++;
                 }
             }
-            else if (step == 6)
+            else if (step == 9)
             {
                 timer += Time.deltaTime;
                 if (timer > miniPause)
@@ -331,9 +406,10 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     step++;
                 }
             }
-            else if (step == 7)
+            else if (step == 10)
             {
-                StateManager.cursorAdd = new Vector3(0f, -.15f * Time.deltaTime, 0f);
+                //state.cursorAdd = new Vector3(0f, -.15f * Time.deltaTime, 0f);
+                cursor.transform.localPosition -= (cursor.transform.up * Time.deltaTime);
                 timer += Time.deltaTime;
 
                 if (timer > longInterval)
@@ -342,20 +418,20 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     step++;
                 }
             }
-            else if (step == 8)
+            else if (step == 11)
             {
                 timer += Time.deltaTime;
                 if (timer > miniPause)
                 {
                     StateManager.makeCursReset = true;
                     timer = 0f;
-                    step++;
+                    step = 17; //edited for changes
                 }
             }
             else if (step == 17)
             {
                 text.text = "Now it's your turn!\n In between each section you'll see a video of the motion\n" +
-                    "After each video, you will be prompted to try the exercises on your own.";
+                    "After each video, you will be prompted to try the exercises on your own.\n" + continueText;
 
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
@@ -363,18 +439,18 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     videoCamera.SetActive(true);
                     MakeWordBank.cursorCamera.SetActive(false);
                     VP3.SetActive(true);
-                    cursorLRVP.Play();
+                    VPA3.Play();
                     step++;
                 }
             }
             else if (step == 18)
             {
-                if (cursorLRVP.isPlaying)
+                if (VPA3.isPlaying)
                 {
                     startedPlaying = true;
                 }
 
-                if (startedPlaying && (!cursorLRVP.isPlaying))
+                if (startedPlaying && (!VPA3.isPlaying))
                 {
                     mainCamera.SetActive(true);
                     videoCamera.SetActive(false);
@@ -589,19 +665,19 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 videoCamera.SetActive(true);
                 MakeWordBank.cursorCamera.SetActive(false);
                 VP4.SetActive(true);
-                cursorUDVP.Play();
+                VPA4.Play();
                 //StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
                 StateManager.makeCursReset = true;
                 step++;
             }
             else if (step == 22)
             {
-                if (cursorUDVP.isPlaying)
+                if (VPA4.isPlaying)
                 {
                     startedPlaying = true;
                 }
 
-                if (startedPlaying && (!cursorUDVP.isPlaying))
+                if (startedPlaying && (!VPA4.isPlaying))
                 {
                     mainCamera.SetActive(true);
                     videoCamera.SetActive(false);
@@ -812,385 +888,13 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             else if (step == 25)
             {
                 VP1.SetActive(true);
-                cameraLRVP.Play();
+                VPA1.Play();
                 StateManager.moveCursorD = false; //all cursor movement disabled by this pt.
                 mainCamera.SetActive(false);
                 videoCamera.SetActive(true);
                 MakeWordBank.cursorCamera.SetActive(false);
                 StateManager.makeCursReset = true;
-                step++;
-            }
-            else if (step == 26)
-            {
-                if (cameraLRVP.isPlaying)
-                {
-                    startedPlaying = true;
-                }
-                if (startedPlaying && (!cameraLRVP.isPlaying))
-                {
-                    mainCamera.SetActive(true);
-                    videoCamera.SetActive(false);
-                    MakeWordBank.cursorCamera.SetActive(true);
-                    VP1.SetActive(false);     
-                    StateManager.moveCameraL = true;
-
-                    if (counter == 5)
-                    {
-                        text.text = "Pan the image to the left by rotating the rod counter-clockwise" + "\n"
-                            + "with your right hand moving upward and your left hand moving downward";
-
-                        //if (Kinect_Angle(Kinect.RHandPos.x, Kinect.RHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2) > maxAngle)
-                        //{
-                        //    maxAngle = Kinect_Angle(Kinect.RHandPos.x, Kinect.RHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2);
-                        //}
-
-                        if (StateManager.absRotation.y <= MakeWordBank.camHorizontalBound) //originally -16f
-                        {
-                            angleLeftTotal += maxAngle;
-                            maxAngle = 0f;
-                            timer = 0f;
-                            //prevCameraAngle = StateManager.nextCameraPos.y;
-                            counter--;
-                        }
-                    }
-                    else if (counter > 0)
-                    {
-                        if (counter > 1)
-                        {
-                            text.text = "Good job!" + "\n"
-                                + "Now return to the neutral position" + "\n"
-                                + "And repeat this movement for " + counter.ToString() + " more times";
-                        }
-                        else
-                        {
-                            text.text = "Good job!" + "\n"
-                                + "Now return to the neutral position" + "\n"
-                                + "And repeat this movement for 1 more time";
-                        }
-
-                        if (!logged && !StateManager.cameraL)
-                        {
-                            prevCameraAngle = StateManager.absRotation.y; //cameraPos?
-                            resetted = true;
-                            logged = true;
-                        }
-
-                        if (resetted)
-                        {
-                            if (Kinect_Angle(Kinect.RHandPos.x, Kinect.RHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2) > maxAngle)
-                            {
-                                maxAngle = Kinect_Angle(Kinect.RHandPos.x, Kinect.RHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2);
-                            }
-
-                            if (StateManager.absRotation.y <= (prevCameraAngle + MakeWordBank.camHorizontalBound)) //originally -16f
-                            { //The image can be panned around indefinitely so change in position is used
-                                angleLeftTotal += maxAngle;
-                                maxAngle = 0f;
-                                logged = false;
-                                resetted = false;
-                                counter--;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        text.text = "Good job!" + "\n"
-                               + "Now return to the neutral position";
-                        if (!StateManager.cameraL)
-                        {
-                            angleLeftAverage = angleLeftTotal / 5;
-                            maxAngle = 1000f;
-                            counter = 5;
-                            startedPlaying = false;
-                            step++;
-                        }
-                    }
-                }
-            }
-            else if (step == 27)
-            {
-                prevCameraAngle = 0f;
-                step++;
-            }
-            else if (step == 28)
-            {
-                StateManager.moveCameraL = false;
-                StateManager.moveCameraR = true;
-
-                //Debug.Log(Kinect_Angle(Kinect.LHandPos.x, Kinect.LHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2));
-
-                if (counter == 5)
-                {
-                    text.text = "Pan the image to the right by rotating the rod clockwise" + "\n"
-                        + "with your right hand moving downward and your left hand moving upward";
-
-                    if (Kinect_Angle(Kinect.LHandPos.x, Kinect.LHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2) < maxAngle)
-                    {
-                        maxAngle = Kinect_Angle(Kinect.LHandPos.x, Kinect.LHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2);
-                        if (maxAngle < 0)
-                        {
-                            maxAngle = 1;
-                        }
-                    }
-
-                    if (StateManager.absRotation.y >= -MakeWordBank.camHorizontalBound) //originally 16f
-                    {
-                        angleRightTotal += maxAngle;
-                        maxAngle = 0f;
-                        timer = 0f;
-                        counter--;
-                    }
-                }
-                else if (counter > 0)
-                {
-                    if (counter > 1)
-                    {
-                        text.text = "Good job!" + "\n"
-                            + "Now return to the neutral position" + "\n"
-                            + "And repeat this movement for " + counter.ToString() + " more times";
-                    }
-                    else
-                    {
-                        text.text = "Good job!" + "\n"
-                            + "Now return to the neutral position" + "\n"
-                            + "And repeat this movement for 1 more time";
-                    }
-
-                    if (!logged && !StateManager.cameraR)
-                    {
-                        prevCameraAngle = StateManager.absRotation.y;
-                        resetted = true;
-                        logged = true;
-                    }
-
-                    if (resetted)
-                    {
-                        if (Kinect_Angle(Kinect.LHandPos.x, Kinect.LHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2) < maxAngle)
-                        {
-                            maxAngle = Kinect_Angle(Kinect.LHandPos.x, Kinect.LHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2);
-                            if (maxAngle < 0)
-                            {
-                                maxAngle = 1;
-                            }
-                        }
-
-                        if (StateManager.absRotation.y >= (prevCameraAngle - MakeWordBank.camHorizontalBound)) //originally -20f
-                        {
-                            angleRightTotal += maxAngle;
-                            maxAngle = 0f;
-                            logged = false;
-                            resetted = false;
-                            counter--;
-                        }
-                    }
-                }
-                else
-                {
-                    text.text = "Good job!" + "\n"
-                           + "Now return to the neutral position";
-                    if (!StateManager.cameraR)
-                    {
-                        //angleRightAverage = angleRightTotal / 5;
-                        maxAngle = 0f;
-                        counter = 5;
-                        step++;
-                    }
-                }
-            }
-            else if (step == 29)
-            {
-                mainCamera.SetActive(false);
-                videoCamera.SetActive(true);
-                MakeWordBank.cursorCamera.SetActive(false);
-                VP2.SetActive(true);
-                cameraUDVP.Play();
-                StateManager.moveCameraR = false;
-                StateManager.nextCursorPos = new Vector3(0f, 0f, 0.418f);
-                prevCameraAngle = 0f;
-                step++;
-            }
-            else if (step == 30)
-            {
-                if (cameraUDVP.isPlaying)
-                {
-                    startedPlaying = true;
-                    Console.WriteLine(startedPlaying); //debug line
-                }
-
-                if (startedPlaying && (!cameraUDVP.isPlaying))
-                {
-                    mainCamera.SetActive(true);
-                    videoCamera.SetActive(false);
-                    MakeWordBank.cursorCamera.SetActive(true);
-                    VP2.SetActive(false);       
-                    StateManager.moveCameraU = true;
-
-                    if (counter == 5)
-                    {
-                        text.text = "Pan the image upward by rotating both your wrists up" + "\n"
-                            + "and then back to level as fast as you can";
-
-                        if (StateManager.cameraU)
-                        {
-                            moved = true;
-                        }
-                        if (moved)
-                        {
-                            if (IMU.Gyro_Pitch > maxSpeed)
-                            {
-                                maxSpeed = IMU.Gyro_Pitch;
-                            }
-
-                            if (!StateManager.cameraU)
-                            {
-                                timer += Time.deltaTime;
-                                if (timer > 0.5f)
-                                {
-                                    speedUpTotal += maxSpeed;
-                                    maxSpeed = 0f;
-                                    moved = false;
-                                    counter--;
-                                }
-                            }
-                        }
-                    }
-                    else if (counter > 0)
-                    {
-                        if (counter > 1)
-                        {
-                            text.text = "Good job! Now repeat this movement for " + counter.ToString() + " more times" + "\n"
-                                 + "Move your hands as fast as you can every time";
-                        }
-                        else
-                        {
-                            text.text = "Good job! Now repeat this movement for 1 more time" + "\n"
-                                 + "Move your hands as fast as you can every time";
-                        }
-                        if (StateManager.nextCameraPos.x >= MakeWordBank.camTop) //if goes over bounds than reset
-                        {
-                        }
-                        if (StateManager.cameraU)
-                        {
-                            moved = true;
-                        }
-                        if (moved)
-                        {
-                            if (IMU.Gyro_Pitch > maxSpeed)
-                            {
-                                maxSpeed = IMU.Gyro_Pitch;
-                            }
-
-                            if (!StateManager.cameraU)
-                            {
-                                timer += Time.deltaTime;
-
-                                if (timer > 0.5f)
-                                {
-                                    speedUpTotal += maxSpeed;
-                                    moved = false;
-                                    counter--;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        speedUpAverage = speedUpTotal / 5;
-                        maxSpeed = 0f;
-                        counter = 5;
-                        startedPlaying = false;
-                        step++;
-
-                    }
-                }
-            }
-            else if (step == 31)
-            {
-                prevCameraAngle = 0f;// StateManager.cameraPos.x;
-                step++;
-            }
-            else if (step == 32)
-            {
-                StateManager.moveCameraU = false;
-                StateManager.moveCameraD = true;
-
-                if (counter == 5)
-                {
-                    text.text = "Pan the image downward by rotating both your wrists down" + "\n"
-                        + "and then back to level as fast as you can";
-                    if (StateManager.cameraD)
-                    {
-                        moved = true;
-                    }
-                    if (moved)
-                    {
-                        if (IMU.Gyro_Pitch < maxSpeed)
-                        {
-                            maxSpeed = IMU.Gyro_Pitch;
-                        }
-
-                        if (!StateManager.cameraD)
-                        {
-                            timer += Time.deltaTime;
-
-                            if (timer > 0.5f)
-                            {
-                                speedDownTotal += maxSpeed;
-                                maxSpeed = 0f;
-                                moved = false;
-                                counter--;
-                            }
-                        }
-                    }
-
-                }
-                else if (counter > 0)
-                {
-                    if (counter > 1)
-                    {
-                        text.text = "Good job! Now repeat this movement for " + counter.ToString() + " more times" + "\n"
-                              + "Move your hands as fast as you can every time";
-                    }
-                    else
-                    {
-                        text.text = "Good job! Now repeat this movement for 1 more time" + "\n"
-                             + "Move your hands as fast as you can every time";
-                    }
-                    if (StateManager.nextCameraPos.x <= MakeWordBank.camBot) //if goes over bounds than reset
-                    {
-                        //cam reset?
-                    }
-                    if (StateManager.cameraD)
-                    {
-                        moved = true;
-                    }
-                    if (moved)
-                    {
-                        if (IMU.Gyro_Pitch < maxSpeed)
-                        {
-                            maxSpeed = IMU.Gyro_Pitch;
-                        }
-
-                        if (!StateManager.cameraD)
-                        {
-                            timer += Time.deltaTime;
-
-                            if (timer > 0.5f)
-                            {
-                                speedDownTotal += maxSpeed;
-                                moved = false;
-                                counter--;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    speedDownAverage = speedDownTotal / 5;
-                    maxSpeed = 0f;
-                    counter = 5;
-                    step++;
-                }
+                step = 33; //edited for image skip
             }
             else if (step == 33)
             {
@@ -1198,18 +902,18 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 videoCamera.SetActive(true);
                 MakeWordBank.cursorCamera.SetActive(false);
                 VP5.SetActive(true);
-                clickVP.Play();
+                VPA5.Play();
                 StateManager.moveCameraD = false; //cam's false too now
                 step++;
             }
             else if (step == 34)
             {
-                if (clickVP.isPlaying)
+                if (VPA5.isPlaying)
                 {
                     startedPlaying = true;
                 }
 
-                if (startedPlaying && (!clickVP.isPlaying))
+                if (startedPlaying && (!VPA5.isPlaying))
                 {
                     mainCamera.SetActive(true);
                     videoCamera.SetActive(false);
@@ -1448,6 +1152,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 StateManager.moveCursorR = true;
 
                 StateManager.makeCursReset = true;
+                state.cursorXMove = true;
+                state.cursorYMove = true;
 
                 //MakeWordBank.inTutorial = true;
                 inSimpleTutorial = false; //stops simple tutorial

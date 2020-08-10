@@ -118,7 +118,7 @@ public class VRUser : MonoBehaviour
         //}
 
         //RESETS
-        if (userSkip(true) || StateManager.makeCursReset)
+        if (cursorRelock() || StateManager.makeCursReset)
         {
             trueCursor.transform.position = centerer.transform.position;
             state.userControlActive = false;
@@ -192,7 +192,7 @@ public class VRUser : MonoBehaviour
             }
         }
 
-        Vector3 handPos = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;
+        Vector3 handPos = handTracking();
         Vector3 movementVal = new Vector3(0f,0f,0f);
         /*  Reset Mechanic:
          *  Cursor starts at the center (cursorCenter) position and cannot move until...
@@ -240,12 +240,16 @@ public class VRUser : MonoBehaviour
         {
             cursorMove += new Vector2(0, change.y);
         }
+        Debug.Log("VRUser CursorAdd: " + state.cursorAdd);
+        cursorMove += new Vector2(state.cursorAdd.x, state.cursorAdd.y);
+        state.cursorAdd = new Vector3(0f, 0f, 0f); //resetting additive property
+
         trueCursor.transform.position += (3f * Time.deltaTime * ((trueCursor.transform.up * cursorMove.y) + (trueCursor.transform.right * cursorMove.x)));
 
         //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-151,66], x[-90,88.4]
-        if (trueCursor.transform.localPosition.x > 88.4)
+        if (trueCursor.transform.localPosition.x > 88)
         {
-            trueCursor.transform.localPosition = new Vector3(88.4f, trueCursor.transform.localPosition.y, trueCursor.transform.localPosition.z);
+            trueCursor.transform.localPosition = new Vector3(88f, trueCursor.transform.localPosition.y, trueCursor.transform.localPosition.z);
         }
         else if (trueCursor.transform.localPosition.x < -90)
         {
@@ -255,9 +259,9 @@ public class VRUser : MonoBehaviour
         {
             trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, 66f, trueCursor.transform.localPosition.z);
         }
-        else if (trueCursor.transform.localPosition.x < -151)
+        else if (trueCursor.transform.localPosition.y < -150)
         {
-            trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, -151, trueCursor.transform.localPosition.z);
+            trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, -150, trueCursor.transform.localPosition.z);
         }
 
         if (isClicking())
@@ -329,13 +333,18 @@ public class VRUser : MonoBehaviour
 
     public static bool userContinue(bool isContinuous = false) //implemented for both hands
     {
+        if (OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.RTouch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.LTouch))
+        {
+            return false;
+        }
+
         if (!isContinuous) 
         {
             return OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch);
         }
         else
         {
-            return OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch);
+            return OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.LTouch);
         }
      }
     public static bool userSkip(bool isContinuous = false)
@@ -348,6 +357,18 @@ public class VRUser : MonoBehaviour
         {
             return OVRInput.Get(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch);
         }
+    }
+    public static bool cursorRelock()
+    {
+        if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch) && OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.RTouch))
+        {
+            return true;
+        }
+        else if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.LTouch) && OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.LTouch))
+        {
+            return true;
+        }
+        return false;
     }
     public static bool isClicking(bool isContinuous = false) //getbutton
     {
@@ -373,10 +394,27 @@ public class VRUser : MonoBehaviour
         }
         return false;
     }
-    public static bool isResetting()
+    public static bool isResetting(bool isContinuous = false)
     {
-        return (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) < 1.9) && 
+        if (!isContinuous)
+        {
+            return (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) < 1.9) &&
             (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) < 1.9);
+        }
+        else
+        {
+            return (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) > 1.9) &&
+            (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) > 1.9);
+        }
+    }
+    public static bool isNotResetting()
+    {
+        return (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) == 0 && OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) == 0);
+    }
+    
+    public static Vector3 handTracking()
+    {
+        return (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;
     }
 
     public static int getStickState()

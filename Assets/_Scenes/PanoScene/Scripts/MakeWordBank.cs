@@ -464,7 +464,7 @@ public class MakeWordBank : MonoBehaviour {
             //Debug.Log("Practice Tags: " + practiceMoveOn + ", prog: " + state.user.getProgress());
             if (state.isGaming()) //in-game or practice level or button tutorial
             {
-                Debug.Log("IsGaming");
+                //Debug.Log("IsGaming");
                 if (Input.GetKeyDown(KeyCode.B) || VRUser.isClicking(true)) //select
                 {
                     int buttonsConverted = VRUser.buttonConversion();

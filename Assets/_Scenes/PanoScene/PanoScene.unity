@@ -2378,7 +2378,7 @@ GameObject:
   m_Component:
   - component: {fileID: 129406373}
   - component: {fileID: 129406375}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: VPlayer3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2393,7 +2393,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 129406372}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 90, y: 83, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2121931614}
@@ -2410,7 +2410,7 @@ VideoPlayer:
   m_VideoClip: {fileID: 32900000, guid: 2b4f7745172130a43bd2947e2286bfb7, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
-  m_TargetCamera: {fileID: 990957164}
+  m_TargetCamera: {fileID: 1690643027}
   m_TargetTexture: {fileID: 0}
   m_TimeReference: 0
   m_TargetMaterialRenderer: {fileID: 0}
@@ -12085,6 +12085,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   complexUser: {fileID: 0}
+  cursorAdd: {x: 0, y: 0, z: 0}
   cameraMoving: 0
   xOffset: 25.9
   cursorXMove: 1
@@ -14035,7 +14036,7 @@ GameObject:
   m_Component:
   - component: {fileID: 772979752}
   - component: {fileID: 772979753}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: VPlayer5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -14050,7 +14051,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 772979751}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 90, y: 83, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2121931614}
@@ -14067,7 +14068,7 @@ VideoPlayer:
   m_VideoClip: {fileID: 32900000, guid: 7968538e3913dc746a160578eb8bf2b3, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
-  m_TargetCamera: {fileID: 990957164}
+  m_TargetCamera: {fileID: 1690643027}
   m_TargetTexture: {fileID: 0}
   m_TimeReference: 0
   m_TargetMaterialRenderer: {fileID: 0}
@@ -17587,7 +17588,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 32
+    m_Bits: 4096
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -18633,15 +18634,15 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1043681311}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0.000017378608}
-  m_LocalScale: {x: 3.054153, y: 1.5347451, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.000042778112}
+  m_LocalScale: {x: 2.6613393, y: 1.5347452, z: 1}
   m_Children: []
   m_Father: {fileID: 2088888665}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00021362305, y: 0.000091552734}
+  m_AnchoredPosition: {x: 0.00021362305, y: 0.000045776367}
   m_SizeDelta: {x: 1444, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1043681313
@@ -22577,7 +22578,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1202123861}
   - component: {fileID: 1202123863}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: VPlayer4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -22592,7 +22593,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1202123860}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 90, y: 83, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2121931614}
@@ -22609,7 +22610,7 @@ VideoPlayer:
   m_VideoClip: {fileID: 32900000, guid: 196698fe5ffd386428388794cce2149b, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
-  m_TargetCamera: {fileID: 990957164}
+  m_TargetCamera: {fileID: 1690643027}
   m_TargetTexture: {fileID: 0}
   m_TimeReference: 0
   m_TargetMaterialRenderer: {fileID: 0}
@@ -22950,6 +22951,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   complexUser: {fileID: 0}
+  cursorAdd: {x: 0, y: 0, z: 0}
   cameraMoving: 0
   xOffset: 25.9
   cursorXMove: 1
@@ -26224,7 +26226,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1384358255}
   - component: {fileID: 1384358256}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: VPlayer1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -26239,7 +26241,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1384358254}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 90, y: 1015, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2121931614}
@@ -26256,7 +26258,7 @@ VideoPlayer:
   m_VideoClip: {fileID: 32900000, guid: 19adfbe287f1342428e95bf635b55182, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
-  m_TargetCamera: {fileID: 990957164}
+  m_TargetCamera: {fileID: 1690643027}
   m_TargetTexture: {fileID: 8400000, guid: 29dbe52eb06fda34395316fdced753bb, type: 2}
   m_TimeReference: 0
   m_TargetMaterialRenderer: {fileID: 0}
@@ -31458,7 +31460,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1666371790}
   - component: {fileID: 1666371792}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: VPlayer2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -31473,7 +31475,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1666371789}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 90, y: 83, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2121931614}
@@ -31490,7 +31492,7 @@ VideoPlayer:
   m_VideoClip: {fileID: 32900000, guid: 26cd85147e62bea42b169ba0af61097d, type: 3}
   m_TargetCameraAlpha: 1
   m_TargetCamera3DLayout: 0
-  m_TargetCamera: {fileID: 990957164}
+  m_TargetCamera: {fileID: 1690643027}
   m_TargetTexture: {fileID: 0}
   m_TimeReference: 0
   m_TargetMaterialRenderer: {fileID: 0}
@@ -35300,6 +35302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   complexUser: {fileID: 0}
+  cursorAdd: {x: 0, y: 0, z: 0}
   cameraMoving: 0
   xOffset: 25.9
   cursorXMove: 1
@@ -38536,7 +38539,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2088888665
 RectTransform:
   m_ObjectHideFlags: 0
@@ -38546,7 +38549,7 @@ RectTransform:
   m_GameObject: {fileID: 2088888664}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 142}
-  m_LocalScale: {x: 0.23358117, y: 0.46482792, z: 0.7133923}
+  m_LocalScale: {x: 0.26805776, y: 0.46482792, z: 0.7133923}
   m_Children:
   - {fileID: 1043681312}
   m_Father: {fileID: 1878484559}
@@ -39029,7 +39032,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2121931614}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: VideoPlayers
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39044,7 +39047,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2121931613}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: -10.05, z: 33.426}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1384358255}

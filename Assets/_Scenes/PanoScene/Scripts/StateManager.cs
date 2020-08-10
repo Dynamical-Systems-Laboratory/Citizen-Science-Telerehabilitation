@@ -96,8 +96,8 @@ public class StateManager : MonoBehaviour {
     public static bool makeCursReset = false; // resets the position of the cursor to the middle of the screen
     public static bool makeCamReset = false; // resets the position of the camera to the middle of the image/starting pt.
     public static bool allSystemsGo = false; // variable that enables all movement functionality for camera and cursor upon update()
-    public static Vector3 cursorAdd = new Vector3(0f, 0f, 0f);
-    public static Vector3 cameraAdd = new Vector3(0f, 0f, 0f);
+    public Vector3 cursorAdd = new Vector3(0f, 0f, 0f);
+    //public static Vector3 cameraAdd = new Vector3(0f, 0f, 0f);
 
     public static float cursorPosMod = 239.36f; //modifier for sphere to ui translation
 
@@ -138,7 +138,7 @@ public class StateManager : MonoBehaviour {
 
     public bool userControlActive = false; //bool that controls the reset mechanic for the 
 
-    private int userState = 2;//6;
+    private int userState = 4;//6;
     /* 0 = Quit
      * 1 = Home
      * 2 = In-Game
@@ -174,6 +174,7 @@ public class StateManager : MonoBehaviour {
         //complexUser.VRPerson.SetActive(true);
 
         userControlActive = false;
+        makeCursReset = true;
 
         if (isGaming()) //failsafe for seeing tags?
         {
@@ -518,11 +519,11 @@ public class StateManager : MonoBehaviour {
             }
         }
         
-        if (moveCursorL || moveCursorR || moveCursorU || moveCursorD || cursorAdd != new Vector3(0f, 0f, 0f))
+        /*if (moveCursorL || moveCursorR || moveCursorU || moveCursorD || cursorAdd != new Vector3(0f, 0f, 0f))
         {
             nextCursorPos += cursorAdd;
         }
-        cursorAdd = new Vector3(0f,0f,0f);
+        cursorAdd = new Vector3(0f,0f,0f);*/
 
         //nextCursorPos.z = -cursorSize;
         //originally where cursor bounds were... - migrated to VRUser
