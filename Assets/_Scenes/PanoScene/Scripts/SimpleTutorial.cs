@@ -283,7 +283,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     {
                         text.text = "Great! Try to unlock the cursor one more time...";
                         counter = 2;
-                        state.userControlActive = false;
+                        //state.userControlActive = false;
                     }
                     if (counter == 2 && state.userControlActive)
                     {
