@@ -317,9 +317,14 @@ public class StateManager : MonoBehaviour {
         if (System.IO.File.Exists(path) && !makeNewUser)
         {
             StreamReader reader = new StreamReader(path);
-            dataRead = reader.ReadLine().Split(',');
+            dataRead = reader.ReadLine().Split(','); //array
             newUser = !user.readData(dataRead);
         }
+
+        /* List <--> Array conversions
+         * List<string> list = new List<string>(arr);
+         * string[] arr = list.ToArray()
+         */
 
         falconButtons = new bool[4] { false, false, false, false };
         speeds = new List<Tuple<float, float, float, float>>();

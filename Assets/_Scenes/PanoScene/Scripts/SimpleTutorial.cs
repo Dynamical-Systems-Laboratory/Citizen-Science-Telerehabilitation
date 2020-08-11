@@ -346,7 +346,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 else if (counter > 0 && counter < 5)
                 {
                     text.text = "Great! Now unlock the cursor and repeat that *right* movement " + (5 - counter) + " more times.\n" +
-                        "Remember to stretch as far as you can. :)";
+                        "Remember to stretch as far as you can.";
                 }
                 else if (counter == 5)
                 {
@@ -385,7 +385,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 else if (counter > 0 && counter < 5)
                 {
                     text.text = "Great! Now unlock the cursor and repeat that *left* movement " + (5 - counter) + " more times.\n" +
-                        "Remember to stretch as far as you can. :)";
+                        "Remember to stretch as far as you can.";
                 }
                 else if (counter == 5)
                 {
@@ -439,7 +439,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     else if (counter > 0 && counter < 5)
                     {
                         text.text = "Great! Now unlock the cursor and repeat that *up* movement " + (5 - counter) + " more times.\n" +
-                            "Remember to stretch as far as you can. :)";
+                            "Remember to stretch as far as you can. ";
                     }
                     else if (counter == 5)
                     {
@@ -480,7 +480,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 else if (counter > 0 && counter < 5)
                 {
                     text.text = "Great! Now unlock the cursor and repeat that *down* movement " + (5 - counter) + " more times.\n" +
-                        "Remember to stretch as far as you can. :)";
+                        "Remember to stretch as far as you can.";
                 }
                 else if (counter == 5)
                 {
