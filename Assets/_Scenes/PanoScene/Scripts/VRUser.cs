@@ -280,6 +280,14 @@ public class VRUser : MonoBehaviour
             GameObject.Find("showClick").GetComponent<Image>().color = nothing;
         }
 
+        //HAPTICS
+        float scaledVal = Math.Abs(OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch).y + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch).y +
+                                   OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch).x + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch).x) / 4f;
+        Debug.Log("scaled val: " + scaledVal);
+        OVRInput.SetControllerVibration(scaledVal, scaledVal, OVRInput.Controller.RTouch);
+        OVRInput.SetControllerVibration(scaledVal, scaledVal, OVRInput.Controller.LTouch);
+        //idea: after 15% of range of motion the cursor moves -15% and after 90% haptics signify closeness/surpassing limits
+
         //CAMERA CONTROL & CLICKING
         switch (state.getState()) //state camera control
         {
