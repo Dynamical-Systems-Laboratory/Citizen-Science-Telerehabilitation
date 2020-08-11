@@ -19,6 +19,8 @@ public class PowerpointScript : MonoBehaviour {
 	//extra
 	private GameObject background;
 
+	private static GameObject mainObj; //gameObject refrence
+
 	void Awake()
 	{
 		colorBegin = new Color (1f, 1f, 1f, 0f);
@@ -36,19 +38,19 @@ public class PowerpointScript : MonoBehaviour {
 		gameObject.SetActive(true);
 
 		state = GameObject.Find("Canvas").GetComponent<StateManager>();
+		mainObj = GameObject.Find("Powerpoint");
 		background = MakeWordBank.welcomeScreen;
 	}
-	
+
 	void Update () {
         if (state.getState() == 6) {
 			//gameObject.SetActive(true);
-			gameObject.transform.position = new Vector3(0f, 0f, 100f);
 			if (background != null)
 			{
 				background.SetActive(true);
 			}
 			Debug.Log("Slide #: " + slideIndex);
-			if (Input.GetKeyDown(KeyCode.Escape))
+			if (MakeWordBank.skip())
             {
 				slideIndex = 1;
 				if (!hasBeenToTutorial)
@@ -79,7 +81,7 @@ public class PowerpointScript : MonoBehaviour {
 					}
                     else
                     { //Wait for keystroke
-						if (MakeWordBank.moveOn() && !Input.GetKeyDown(KeyCode.BackQuote) && !Input.GetKeyDown(KeyCode.Escape))
+						if (MakeWordBank.moveOn() && !Input.GetKeyDown(KeyCode.BackQuote) && !MakeWordBank.skip())
                         {
 							slideIndex++;
 							delay = 0f;
@@ -88,6 +90,7 @@ public class PowerpointScript : MonoBehaviour {
 					}
 				} else { //Powerpoint over:
 					if (MakeWordBank.moveOn()) {
+						slideIndex = 1;
 						if (!hasBeenToTutorial)
 						{
 							//SimpleTutorial.inSimpleTutorial = true;
@@ -99,16 +102,9 @@ public class PowerpointScript : MonoBehaviour {
 							state.setState(1);
 							background.SetActive(false);
 						}
-						slideIndex = 1;
-						//gameObject.SetActive(false);
-						//gameObject.transform.position = new Vector3(0f, 0f, -500f);
 					}
 				}
 			}
         }
-        else
-        {
-			gameObject.transform.position = new Vector3(0f, 0f, -500f); //saftey
-		}
 	}
 }

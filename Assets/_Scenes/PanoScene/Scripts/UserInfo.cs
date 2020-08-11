@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 //all data stored from user
@@ -25,10 +26,11 @@ public class UserInfo //not sure if : this() is necessary
         public string name;
         public Vector3 location;
         public int image; //associated image index
+        //public Vector3 headPos;
     }
 
     //data
-    public void logTagData(List<GameObject> addTags, int addImage, Vector3 camPos)
+    public void logTagData(List<GameObject> addTags, int addImage)
     {
         //TODO check locational data - if bad, use (0,0,0) nextCamera offset to correct
         foreach (GameObject newTag in addTags)
@@ -56,6 +58,70 @@ public class UserInfo //not sure if : this() is necessary
     public void addDuration()
     {
         sessionDuration.Add(timeLogged - startTime);
+    }
+
+    public void addMovementBounds(MovementBounds userMove)
+    {
+        for (int i = 0; i <= 4; i++)
+        {
+            movementBounds[i] = userMove.rangeOfMotion[i];
+            movementTime[i] = userMove.timeOfMotion[i];
+        }
+    }
+    public void addMovement(Transform head, Vector3 rightHandp, Vector3 rightHandr, Vector3 leftHandp, Vector3 leftHandr)
+    {
+        MovementData moves = new MovementData(head.position, head.rotation.eulerAngles,
+            rightHandp, rightHandr, leftHandp, leftHandr);
+        movements.Add(moves);
+    }
+    private class MovementData
+    {
+        public struct UserPositions
+        {
+            Vector3 position;
+            Vector3 rotation;
+            public UserPositions(Vector3 p = new Vector3(), Vector3 r = new Vector3())
+            {
+                position = p;
+                rotation = r;
+            }
+            public IEnumerable<String> write()
+            {
+                yield return position.x.ToString();
+                yield return position.y.ToString();
+                yield return position.z.ToString();
+                yield return rotation.x.ToString();
+                yield return rotation.y.ToString();
+                yield return rotation.z.ToString();
+            }
+        }
+        UserPositions head;
+        UserPositions leftHand;
+        UserPositions rightHand;
+        public MovementData( Vector3 p1 = new Vector3(), Vector3 r1 = new Vector3(),
+                      Vector3 p2 = new Vector3(), Vector3 r2 = new Vector3(),
+                      Vector3 p3 = new Vector3(), Vector3 r3 = new Vector3() )
+        {
+            head = new UserPositions(p1, r1);
+            rightHand = new UserPositions(p2, r2);
+            leftHand = new UserPositions(p3, r3);
+        }
+        public IEnumerable<String> write()
+        {
+            //yield return head.write().SelectMany(x => string);
+            foreach (String word in head.write())
+            {
+                yield return word;
+            }
+            foreach (String word in rightHand.write())
+            {
+                yield return word;
+            }
+            foreach (String word in leftHand.write())
+            {
+                yield return word;
+            }
+        }
     }
 
     public void setName(string newName)
@@ -142,6 +208,19 @@ public class UserInfo //not sure if : this() is necessary
         avg /= sessionDuration.Count;
         return (int)avg;
     }
+    public float[] getMovementBounds()
+    {
+        float[] vals = new float[8];
+        vals[0] = movementBounds[0];
+        vals[1] = movementBounds[1];
+        vals[2] = movementBounds[2];
+        vals[3] = movementBounds[3];
+        vals[4] = movementTime[0];
+        vals[5] = movementTime[1];
+        vals[6] = movementTime[2];
+        vals[7] = movementTime[3];
+        return vals;
+    }
     public int getLastImage() { return lastImage; }
 
     public int[] getCompletionData()
@@ -165,7 +244,7 @@ public class UserInfo //not sure if : this() is necessary
             {
                 GameObject tag = new GameObject(tagInform.name);
                 tag.transform.position = tagInform.location;
-                tag.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                //tag.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
                 //TODO: make it look like a normal tag (cleanup with MakeWordBank as well)
                 yield return tag;
             }
@@ -173,7 +252,6 @@ public class UserInfo //not sure if : this() is necessary
         //yield return null;
     }
 
-    //other
     public void show()
     {
         Debug.Log("*User: " + userName + ", Time: " + getTimeLogged() + ", Date Joined: " + dateJoined);
@@ -212,49 +290,20 @@ public class UserInfo //not sure if : this() is necessary
             yield return sessionsLogged[i];
             yield return sessionDuration[i].ToString();
         }
-        yield return "finish"; //end marker
-    }
-    public void readData(List<string> data) //list version
-    {
-        if (data.Count < 10) //if no data then assume default vals
+        yield return "movement";
+        for(int i = 0; i < 4; i++) //always 8 entries
         {
-            return;
+            yield return movementBounds[i].ToString();
+            yield return movementTime[i].ToString();
         }
-        userName = data[0];
-        dateJoined = data[1];
-        timeLogged = float.Parse(data[2]);
-        startedPracticeLevel = stringToBool(data[3]);
-        finishedPracticeLevel = stringToBool(data[4]);
-        difficulty = int.Parse(data[5]);
-        lastImage = int.Parse(data[6]);
-
-        int counter = 7;
-        imagesCompleted.Clear(); //saftey
-        while (data[counter] != "tag")
-        { //adding images
-            imagesCompleted.Add(int.Parse(data[counter]));
-            ++counter;
+        foreach (MovementData move in movements)
+        {
+            foreach (String moveData in move.write()) //9
+            {
+                yield return moveData;
+            }
         }
-        ++counter; //after "tag"
-
-        tags.Clear(); //saftey
-        while (data[counter] != "session")
-        { //adding tags
-            TagInfo tag = new TagInfo( data[counter], new Vector3(float.Parse(data[counter + 1]),
-                float.Parse(data[counter + 2]), float.Parse(data[counter + 3])), int.Parse(data[counter + 4]));
-            tags.Add(tag);
-            counter += 5;
-        }
-        ++counter; //after "session"
-
-        sessionsLogged.Clear();
-        sessionDuration.Clear();
-        while (data[counter] != "finish")
-        { //adding sessions
-            sessionsLogged.Add(data[counter]);
-            sessionDuration.Add(float.Parse(data[counter + 1]));
-            counter += 2;
-        }
+        yield return "finish"; //end marker
     }
     public bool readData(string[] data) //array version
     {
@@ -262,6 +311,7 @@ public class UserInfo //not sure if : this() is necessary
         {
             return false;
         }
+        //general info
         userName = data[0];
         dateJoined = data[1];
         timeLogged = float.Parse(data[2]);
@@ -281,22 +331,48 @@ public class UserInfo //not sure if : this() is necessary
 
         tags.Clear(); //saftey
         while (data[counter] != "session")
-        { //adding tags
-            TagInfo tag = new TagInfo(data[counter], new Vector3(float.Parse(data[counter + 1]),
-                float.Parse(data[counter + 2]), float.Parse(data[counter + 3])), int.Parse(data[counter + 4]));
+        {                                //tag data
+            TagInfo tag = new TagInfo(
+                data[counter],
+                new Vector3(float.Parse(data[counter + 1]), float.Parse(data[counter + 2]), float.Parse(data[counter + 3])),
+                int.Parse(data[counter + 4]));
             tags.Add(tag);
             counter += 5;
         }
         ++counter; //after "session"
 
-        sessionsLogged.Clear();
-        sessionDuration.Clear();
-        while (data[counter] != "finish")
+        sessionsLogged.Clear(); //saftey
+        sessionDuration.Clear(); //saftey
+        while (data[counter] != "movement") //session data
         { //adding sessions
             sessionsLogged.Add(data[counter]);
             sessionDuration.Add(float.Parse(data[counter + 1]));
             counter += 2;
         }
+        counter++;
+
+        for (int i = counter; i < (counter + 4); i++) //movement bounds stuff
+        {
+            movementBounds[i - counter] = float.Parse(data[i]);
+            movementTime[i - counter + 4] = float.Parse(data[i]);
+        }
+        counter += 8;
+        //actual movement data
+        movements.Clear(); //saftey
+        while (data[counter] != "finish")
+        {
+            MovementData newMoveEntry = new MovementData( //alternative pos & rot, vector3's
+                new Vector3(float.Parse(data[counter]), float.Parse(data[counter + 1]), float.Parse(data[counter + 2])),
+                 new Vector3(float.Parse(data[counter + 3]), float.Parse(data[counter + 4]), float.Parse(data[counter + 5])),
+                new Vector3(float.Parse(data[counter + 6]), float.Parse(data[counter + 7]), float.Parse(data[counter + 8])),
+                 new Vector3(float.Parse(data[counter + 9]), float.Parse(data[counter + 10]), float.Parse(data[counter + 11])),
+                new Vector3(float.Parse(data[counter + 12]), float.Parse(data[counter + 13]), float.Parse(data[counter + 14])),
+                 new Vector3(float.Parse(data[counter + 15]), float.Parse(data[counter + 16]), float.Parse(data[counter + 17]))
+                );
+            movements.Add(newMoveEntry);
+            counter += 18;
+        }
+        //counter++;
         return true;
     }
 
@@ -343,4 +419,11 @@ public class UserInfo //not sure if : this() is necessary
     private float cursorSpeed;
     private float cursorSize;
     private float difficulty = 5;
+
+    private float[] movementBounds = new float[] { 0f, 0f, 0f, 0f }; //-x,x,-y,y
+    private float[] movementTime = new float[] { 0f, 0f, 0f, 0f }; //can also be new float[4]?
+    private List<MovementData> movements = new List<MovementData>();
+    //compulsory movement tracker?
+
+    
 }

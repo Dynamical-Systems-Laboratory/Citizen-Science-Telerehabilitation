@@ -139,7 +139,7 @@ public class MakeWordBank : MonoBehaviour {
     static int numTagsRemaining = 3;
 
 
-    public static GameObject tagSphere;
+    public static GameObject[] tagSphere = new GameObject[] {};
     public Material[] imageMaterialsToDragIn;
     public Material tutorialImageMaterialDragFromEditor;
     public static Material tutorialImageMaterial;
@@ -151,10 +151,10 @@ public class MakeWordBank : MonoBehaviour {
     public static GameObject quitButton;
 
     public static List<string> wordBank = new List<string>();
-    public static GameObject focusor;
-    public static GameObject tutorialArrow;
-    public static GameObject secondTutorialArrow; //Just for showing select buttons step (need 2 arrows)
-    public static GameObject falconHelper; //So when the focus window goes to the button it doesn't depend on absolute coordinates
+    //public static GameObject focusor;
+    //public static GameObject tutorialArrow;
+    //public static GameObject secondTutorialArrow; //Just for showing select buttons step (need 2 arrows)
+   //public static GameObject falconHelper; //So when the focus window goes to the button it doesn't depend on absolute coordinates
     public static Text tutorialText;
     public static GameObject helpTextContainer;
     public static GameObject helpTextPanel;
@@ -224,8 +224,6 @@ public class MakeWordBank : MonoBehaviour {
     public static GameObject mainCamera;
     public static GameObject UICamera;
     public static GameObject videoCamera;
-    public static GameObject homeCamera;
-    public static GameObject profileCamera;
     public static GameObject cursorCamera;
 
     public static bool play1 = false;
@@ -247,6 +245,9 @@ public class MakeWordBank : MonoBehaviour {
     public static Tag[] tags;
     public static int practiceMoveOn;
 
+    //public static GameObject cursorGroup;
+    public VRUser userMovement;
+
     //TODO: randomize indexes and tags
     //private static System.Random rng = new System.Random();
 
@@ -266,55 +267,73 @@ public class MakeWordBank : MonoBehaviour {
     //Shuffle(imageMaterials);
 
     void Awake() {
+        userMovement = GameObject.Find("VRPerson").GetComponent<VRUser>();
+
+        mainCamera = GameObject.Find("Main Camera");
+        UICamera = GameObject.Find("UICamera");
+        videoCamera = GameObject.Find("VideoCamera");
+        cursorCamera = GameObject.Find("CursorCamera");
+        //cursorGroup = GameObject.Find("FalconCursor");
+        
+        eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
+
+        nextButton = GameObject.Find("NextButton");
+        quitButton = GameObject.Find("HomeButton");
+        cursorCamera.SetActive(false);
+
         DataCollector.MakeFolder();
-        tagSphere = GameObject.FindGameObjectWithTag("TagSphere");
+        tagSphere = GameObject.FindGameObjectsWithTag("TagSphere"); //tag spheres
         imageMaterials = new Material[imageMaterialsToDragIn.Length];
         tutorialImageMaterial = tutorialImageMaterialDragFromEditor;
-        focusor = GameObject.FindGameObjectWithTag("Focusor"); //Just used for step where user picks a tag
-        focusor.SetActive(false);
+        //focusor = GameObject.FindGameObjectWithTag("Focusor"); //Just used for step where user picks a tag
+        //focusor.SetActive(false);
 
-        falconHelper = GameObject.FindGameObjectWithTag("FalconHelper");
+        //falconHelper = GameObject.FindGameObjectWithTag("FalconHelper");
         state = GameObject.Find("Canvas").GetComponent<StateManager>(); //state of game**
-        tutorialArrow = GameObject.Find("TutorialArrow");
-        secondTutorialArrow = GameObject.Find("SecondTutorialArrow");
-        secondTutorialArrow.SetActive(false);
-        tutorialArrow.SetActive(false);
+        //tutorialArrow = GameObject.Find("TutorialArrow");
+        //secondTutorialArrow = GameObject.Find("SecondTutorialArrow");
+        //secondTutorialArrow.SetActive(false);
+        //tutorialArrow.SetActive(false);
         tutorialText = GameObject.FindGameObjectWithTag("TutorialText").GetComponent<Text>() as Text;
         tutorialText.text = ""; //Blank for now since welcome screen must come first
         helpTextContainer = GameObject.Find("HelpTextContainer");
         helpTextContainer.SetActive(false);
-        welcomeText = GameObject.FindGameObjectWithTag("WelcomeText").GetComponent<Text>() as Text;
-        welcomeScreen = GameObject.Find("WelcomeScreenPanel");
+        //welcomeText = GameObject.FindGameObjectWithTag("WelcomeText").GetComponent<Text>() as Text;
+        //welcomeScreen = GameObject.Find("WelcomeScreenPanel");
         practiceLevelText = GameObject.Find("PracticeLevelText");
         helpTextPanel = tutorialText.transform.parent.gameObject;
         practiceLevelText.SetActive(false);
 
-        taggerPanel = GameObject.FindGameObjectWithTag("TaggerPanel");
-        trasherPanel = GameObject.FindGameObjectWithTag("TrasherPanel");
+        //taggerPanel = GameObject.FindGameObjectWithTag("TaggerPanel");
+        //trasherPanel = GameObject.FindGameObjectWithTag("TrasherPanel");
 
-        taggerPanel.transform.Translate(new Vector3(0, 5000, 0)); //Moving it out of the way for tutorial
-        trasherPanel.transform.Translate(new Vector3(0, 5000, 0));
+        //taggerPanel.transform.Translate(new Vector3(0, 5000, 0)); //Moving it out of the way for tutorial
+        //trasherPanel.transform.Translate(new Vector3(0, 5000, 0));
 
         for (int i = 0; i < imageMaterials.Length; i++) {
             imageMaterials[i] = imageMaterialsToDragIn[i];
         }
         tagsRemainingText = GameObject.FindGameObjectWithTag("TagsRemainingText").GetComponent<Text>(); // remaining tags**
 
-        tagGameObjects = new List<GameObject>();
-        foreach (Transform child in transform)
+        tagGameObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag("Tag"));
+        /*foreach (Transform child in transform) //add all of children of this object as tags
         {
             if (child != transform) // The first child will be the parent transform, which should be excluded
             {
                 tagGameObjects.Add(child.gameObject);
             }
         }
+        tagGameObjects.Add(GameObject.Find("Tag1"));
+        tagGameObjects.Add(GameObject.Find("Tag2"));
+        tagGameObjects.Add(GameObject.Find("Tag3"));
+        tagGameObjects.Add(GameObject.Find("Tag4"));*/
 
         tags = new Tag[tagGameObjects.Count];
         for (int i = 0; i < tags.Length; i++) {
             tags[i] = new Tag(tagGameObjects[i], i);
         }
-        //Read CSV File:
 
+        //Read CSV File:
         using (StringReader sr = new StringReader(tagsText.text))
         {
             string line;
@@ -338,57 +357,14 @@ public class MakeWordBank : MonoBehaviour {
         dataCollector = GameObject.FindGameObjectWithTag("DataCollector"); //Turn off data collection for tutorial
         dataCollector.SetActive(false);
 
-        tagSphere.GetComponent<Renderer>().material = tutorialImageMaterial;
+        renderBackground(0, tutorialImageMaterial); //renders background, img # doesnt matter
+
         //Word bank isn't applicable for the tutorial level:
         for (int i = 0; i < tags.Length; i++)
         {
             tags[i].setText(tutorialWords[tutorialWordsIndex]);
             tutorialWordsIndex++;
         }
-        ////////
-        /// 
-        /// 
-        // **************** IMAGE 1: *******************************
-        /*for (int i = 0; i < tags.Length; i++) {
-			tags[i].setText(wordBank [ SEQUENCE[imageIndex, sequenceIndex] ]);
-			sequenceIndex++;
-		}
-		tagSphere.GetComponent<Renderer> ().material = imageMaterials [imageIndex];*/
-
-        /*
-        VP1 = GameObject.Find("VPlayer1");
-        VP2 = GameObject.Find("VPlayer2");
-        VP3 = GameObject.Find("VPlayer3");
-        VP4 = GameObject.Find("VPlayer4");
-        VP5 = GameObject.Find("VPlayer5");
-
-        cameraLRVP = VP1.GetComponent<UnityEngine.Video.VideoPlayer>();
-        cameraUDVP = VP2.GetComponent<UnityEngine.Video.VideoPlayer>();
-        cursorLRVP = VP3.GetComponent<UnityEngine.Video.VideoPlayer>();
-        cursorUDVP = VP4.GetComponent<UnityEngine.Video.VideoPlayer>();
-        clickVP = VP5.GetComponent<UnityEngine.Video.VideoPlayer>();
-
-        VP1.SetActive(false);
-        VP2.SetActive(false);
-        VP3.SetActive(false);
-        VP4.SetActive(false);
-        VP5.SetActive(false);
-        */
-
-        mainCamera = GameObject.Find("Main Camera");
-        UICamera = GameObject.Find("UICamera");
-        videoCamera = GameObject.Find("VideoCamera");
-        homeCamera = GameObject.Find("HomeCamera");
-        cursorCamera = GameObject.Find("CursorCamera");
-        profileCamera = GameObject.Find("ProfileCamera");
-
-        eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
-
-        nextButton = GameObject.Find("NextButton");
-        quitButton = GameObject.Find("HomeButton");
-
-        homeCamera.SetActive(false); //precausion
-        cursorCamera.SetActive(false);
 
         //updating user info
         //TODO: read data
@@ -398,6 +374,7 @@ public class MakeWordBank : MonoBehaviour {
         }
         state.user.addSession();
         //TODO: set settings to user settings;
+        Debug.Log("**********************Awake**********************");
     }
     
     public GameObject toClick = null; // obj for clicking
@@ -405,7 +382,6 @@ public class MakeWordBank : MonoBehaviour {
     // Update is called once per frame
     void Update(/*EventSystem eventSystem*/)
     {
-        //Debug.Log("Time: " + System.DateTime.Now.ToString());
         state.user.logTime(Time.deltaTime); //add time
         state.user.show(); //displaying data
 
@@ -420,7 +396,7 @@ public class MakeWordBank : MonoBehaviour {
          * * v = progress
          * * m = drop object
          */
-        if (stepOfTutorial >= 12 && (SimpleTutorial.step > 34))
+        if (true)//stepOfTutorial >= 12 && (SimpleTutorial.step > 34))
         {
             //Debug.Log("in the movement loop...");
             //StateManager.allSystemsGo = true;
@@ -486,49 +462,53 @@ public class MakeWordBank : MonoBehaviour {
             //CLICKING
             //V for button press
             //Debug.Log("Practice Tags: " + practiceMoveOn + ", prog: " + state.user.getProgress());
-            if (state.getState() == 2 || state.getState() == 7 || state.getState() == 5) //in-game or practice level or button tutorial
+            if (state.isGaming()) //in-game or practice level or button tutorial
             {
-                if (Input.GetKeyDown(KeyCode.B)) //select
+                //Debug.Log("IsGaming");
+                if (Input.GetKeyDown(KeyCode.B) || VRUser.isClicking(true)) //select
                 {
-                    if (ClickAction.buttonClose(nextButton.transform.position))
+                    int buttonsConverted = VRUser.buttonConversion();
+                    Debug.Log("IsClicking! " + buttonsConverted);
+                    if (buttonsConverted == 1)
                     {
-                        if (imageIndex >= imageMaterials.Length - 1)
+                        if (imageIndex >= imageMaterials.Length - 1) //out of images
                         {
                             Debug.Log("Out of images...");
                             state.setState(1);
                         }
-                        else if(state.getState() == 7 && practiceMoveOn < 3)
+                        else if(state.getState() == 7 && practiceMoveOn < 3) //havent placed required tags (practive lvl)
                         {
-                            eventListener.OnPointerClick(nextButton);
+                            eventListener.OnPointerClick(nextButton); //shows notif and prevents stuff
+                            StateManager.makeCursReset = true;
                         }
                         else
                         {
                             if (state.getState() == 7)
                             {
-                                state.setState(2);
+                                state.setState(2); //set to game if in pract lvl
                                 state.user.setLevelProgress(true, true); //set practice level trackers
                             }
-                            StateManager.makeCamReset = true;
-                            state.user.logTagData(state.tagsPlaced, imageIndex, state.getCameraPosition()); //store image data
+                            state.user.logTagData(state.tagsPlaced, imageIndex); //store image/tag data
                             eventListener.OnPointerClick(nextButton); //click next
-                            state.user.setNewImage(imageIndex); //save new image
+                            state.user.setNewImage(imageIndex); //set new image as current image
+                            StateManager.makeCursReset = true; //reset cursor to prevent many image skips?
                         }
                     }
-                    else if (ClickAction.buttonClose(quitButton.transform.position)) //home
-                    {
+                    else if (buttonsConverted == 6) //home
+                    { //keep tags in place without them bveing a child of the tag class objects thing? new subclass?
                         eventListener.OnPointerClick(quitButton);
-                        //homeCamera.SetActive(true);
-                        //mainCamera.SetActive(false);
-                        //UICamera.SetActive(false);
-                        //videoCamera.SetActive(false);
                         state.setState(1);
+                    }
+                    else if (buttonsConverted == 7) //bin
+                    {
+                        eventListener.OnPointerClick();
                     }
                     else
                     {
                         findObjClick();
                     }
                 }
-                else if (Input.GetKeyDown(KeyCode.N) && state.getSelected() != null) //deselect
+                else if ((Input.GetKeyDown(KeyCode.N) || VRUser.userContinue()) && state.getSelected() != null) //deselect
                 { // (.1f is the bounds of the screen where the cursor is on the image side)
                     if (state.getCursorPosition().x < .1f) //placing on image canvas
                     {
@@ -538,7 +518,7 @@ public class MakeWordBank : MonoBehaviour {
                         }
                         eventListener.OnPointerClick();
                     }
-                    else if (ClickAction.isByTrash(state.getCursorPosition())) //trashing
+                    else if (ClickAction.binClose(state.getCursorPosition())) //trashing
                     {
                         eventListener.OnPointerClick();
                         newTag(ClickAction.initTagPos);
@@ -557,20 +537,18 @@ public class MakeWordBank : MonoBehaviour {
             state.cameraMoving = true;
             UICamera.SetActive(true);
             videoCamera.SetActive(false);
-            //VP1.SetActive(false);
-            //VP5.SetActive(false);
             if (state.getState() == 7) //inPracticeLevel
             {
                 practiceMoveOn = state.tagsPlaced.Count;
             }
             
         }
-        Debug.Log("IsReloading: " + state.reloading);
+        /*Debug.Log("IsReloading: " + state.reloading);
         if (state.reloading) //reloading tags
         {
             state.loadTags(state.user.getLastImage(), tagGameObjects);
             state.reloading = false;
-        }
+        }*/
 
         if (state.getState() == 5) //edge cases with old booleans
         {
@@ -610,7 +588,11 @@ public class MakeWordBank : MonoBehaviour {
                 mainCamera.SetActive(true);
                 UICamera.SetActive(true);
                 videoCamera.SetActive(false);
-                homeCamera.SetActive(false);
+
+                if (state.getState() == 5) //start of button tutorial --> changes background to be brighter
+                {
+                    nextImage(imageIndex);
+                }
 
                 StateManager.moveCameraU = true;
                 StateManager.moveCameraD = true;
@@ -626,12 +608,8 @@ public class MakeWordBank : MonoBehaviour {
             timer3 += Time.deltaTime;
             //if (timer3 > 0.5f)
             //{
-            if (Input.GetKeyDown(KeyCode.Escape) && state.getState() == 5)
+            if (skip() && state.getState() == 5)
             {
-                focusor.SetActive(false);
-                //mainCamera.SetActive(true);
-                //UICamera.SetActive(true);
-                //videoCamera.SetActive(false);
                 step22proceed = true;
                 stepOfTutorial = 22;
                 state.setState(7);
@@ -643,27 +621,10 @@ public class MakeWordBank : MonoBehaviour {
             { //Welcome screen step:
                 //timeSpentAfterSurvey += Time.deltaTime;
                 //if (timeSpentAfterSurvey >= 2f)
-                if (moveOn() && !Input.GetKeyDown(KeyCode.Escape))
+                if (moveOn() && !skip())
                 { //Move to the next step (change for falcon):
-                    welcomeScreen.SetActive(false);
+                    //welcomeScreen.SetActive(false);
                     helpTextContainer.SetActive(false);
-                    focusor.SetActive(true);
-                    //focusor.transform.localPosition = new Vector3(-100.7f, -450f, -271.39f);
-                    //focusor.transform.localScale = new Vector3(30.7f, 8.2f, 3f);
-                    //play1 = true;
-                    /*
-                    helpTextContainer.SetActive(true);
-                    //Change the size of the box
-                    tutorialText.text = "Rotate the rod this way to pan the image to the left";
-                    //Width from 150->218
-                    //228,24
-                    helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                    = new Vector2(315, 25);
-                    tutorialText.GetComponent<RectTransform>().sizeDelta
-                    = new Vector2(310, 60);
-                    tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x + 2, -22);
-                    helpTextContainer.transform.localPosition = new Vector3(-220f, 200f, 0f);
-                    */
                     state.setState(5);
                     stepOfTutorial = 13; //All videos moved to pleTutorial, sSimtart with step 13
                 }
@@ -746,14 +707,6 @@ public class MakeWordBank : MonoBehaviour {
                         tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
                         helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                         stepOfTutorial++;
-                        /*
-                        helpTextContainer.SetActive(false);
-                        timer = 0f;
-                        VP2.SetActive(true);
-                        cameraRVP.Play();
-                        StateManager.moveCamera = false;
-                        stepOfTutorial++;
-                        */
                     }
                 }
             }
@@ -813,8 +766,7 @@ public class MakeWordBank : MonoBehaviour {
                     helpTextContainer.SetActive(true);
                     //Change the size of the box
                     tutorialText.text = "Pan the image upward" + "\n" + "(To replay the video, press the space bar on your keyboard)";
-                    //Width from 150->218
-                    //228,24
+                    //Width from 150->218   228,24
                     helpTextPanel.GetComponent<RectTransform>().sizeDelta
                     = new Vector2(500, 60);
                     tutorialText.GetComponent<RectTransform>().sizeDelta
@@ -1081,13 +1033,6 @@ public class MakeWordBank : MonoBehaviour {
             }
             else if (stepOfTutorial == 13)
             {
-                //if (clickVP.isPlaying)
-                //{
-                //    startedPlaying = true;
-                //}
-
-                //if (startedPlaying && (!clickVP.isPlaying))
-                //{
                 mainCamera.SetActive(true);
                 UICamera.SetActive(true);
                 videoCamera.SetActive(false);
@@ -1104,16 +1049,8 @@ public class MakeWordBank : MonoBehaviour {
                     tag.transform.Translate(newPos * Time.deltaTime);
                 }
                 helpTextContainer.SetActive(true);
-                focusor.transform.localPosition = new Vector3(208.12f, -276.5f, -271.39f); //transforming black thing (literally making the user focus on something)
-                focusor.transform.localScale = new Vector3(10.8f, 4.62f, 3f);
                 tutorialText.text = "This list of words may describe objects in the image" + "\n"
                     + "(Push the rod forward to continue)";
-                //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                //= new Vector2(500, 60);
-                //tutorialText.GetComponent<RectTransform>().sizeDelta
-                //= new Vector2(500, 65);
-                //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -10);
-                //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                 timer = 0f;
                 stepOfTutorial++;
                 //}
@@ -1125,8 +1062,6 @@ public class MakeWordBank : MonoBehaviour {
                 {
                     if ((StateManager.falconButtons[1] == true && prevClick == false) || moveOn())
                     {
-                        focusor.transform.localPosition = new Vector3(208.12f, -187.6f, -271.39f);
-                        focusor.transform.localScale = new Vector3(10.8f, 1.1f, 3f);
                         tutorialText.text = "Select the tag \"Building\" by pushing the rod";
                         timer = 0f;
                         stepOfTutorial++;
@@ -1135,37 +1070,9 @@ public class MakeWordBank : MonoBehaviour {
             }
             else if (stepOfTutorial == 15)
             {
-                /*
-                if (Input.GetKeyDown("space"))
-                {
-                    stepOfTutorial = 12;
-                }
-                */
-
-                //Debug.Log("Click: " + ClickAction.state.getSelected() + ", " + eventListener);
-                //Debug.Log("System: " + EventSystem.current + ", " + eventS);
-
-                //foreach (Tag newTag in tags)
-                //{
-                //    GameObject obj = GameObject.FindGameObjectsWithTag(newTag.getText()).transform.position;
-                //}
-
-                //PointerEventData pointerData = new PointerEventData(EventSystem.current);
-                //pointerData.position = state.getCursorPosition();//Input.mousePosition;
-                //List<RaycastResult> results = new List<RaycastResult>();
-                //EventSystem.current.RaycastAll(pointerData, results);
-
                 if (state.getSelected() != null)
-                { //User's holding a tag, go to the next step:
-                    focusor.transform.localPosition = new Vector3(-100.7f, -450f, -271.39f);
-                    focusor.transform.localScale = new Vector3(30.7f, 8.2f, 3f);
+                {
                     tutorialText.text = "Move the tag to a building in the image" + "\n" + "and push the rod again to place it";
-                    //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                    //= new Vector2(500, 60);
-                    //tutorialText.GetComponent<RectTransform>().sizeDelta
-                    //= new Vector2(500, 65);
-                    //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                    //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                     stepOfTutorial++;
                 }
             }
@@ -1174,12 +1081,6 @@ public class MakeWordBank : MonoBehaviour {
                 if (state.getSelected() == null)
                 {
                     tutorialText.text = "If none of the tags appear in the image, you can trash a tag " + "\n" + "(Push the rod forward to continue)";
-                    //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                    //= new Vector2(500, 60);
-                    //tutorialText.GetComponent<RectTransform>().sizeDelta
-                    //= new Vector2(500, 65);
-                    //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -5);
-                    //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                     stepOfTutorial++;
                 }
                 else
@@ -1196,15 +1097,7 @@ public class MakeWordBank : MonoBehaviour {
                     if (StateManager.falconButtons[1] == true && prevClick == false || moveOn())
                     {
                         timer = 0f;
-                        focusor.transform.localPosition = new Vector3(208.12f, -276.5f, -271.39f);
-                        focusor.transform.localScale = new Vector3(10.8f, 4.62f, 3f);
                         tutorialText.text = "Select a tag you would like to discard from the wordbank";
-                        //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                        //= new Vector2(500, 60);
-                        //tutorialText.GetComponent<RectTransform>().sizeDelta
-                        //= new Vector2(500, 65);
-                        //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                        //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                         stepOfTutorial++;
                     }
                 }
@@ -1214,15 +1107,7 @@ public class MakeWordBank : MonoBehaviour {
                 timeSpentOnStep8 += Time.deltaTime; //To prevent this step from instantly being gone over (this var is being checked in ClickAction.cs)
                 if (state.getSelected() != null)
                 { //User's holding a tag
-                    focusor.transform.localPosition = new Vector3(347.42f, -111.9f, -271.39f);
-                    focusor.transform.localScale = new Vector3(6.1f, 2.22f, 3f);
                     tutorialText.text = "Place it in the bin, and a new word will appear in the wordbank";
-                    //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                    //= new Vector2(500, 60);
-                    //tutorialText.GetComponent<RectTransform>().sizeDelta
-                    //= new Vector2(500, 65);
-                    //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                    //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                     stepOfTutorial++;
                 }
             }
@@ -1230,16 +1115,8 @@ public class MakeWordBank : MonoBehaviour {
             {
                 if (state.getSelected() == null)
                 {
-                    focusor.transform.localPosition = new Vector3(208.12f, -276.5f, -271.39f);
-                    focusor.transform.localScale = new Vector3(10.8f, 4.62f, 3f);
                     tutorialText.text = "The tag you trashed is replaced with a new one" + "\n"
                         + "(Push the rod forward to continue)"; ;
-                    //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                    //= new Vector2(500, 60);
-                    //tutorialText.GetComponent<RectTransform>().sizeDelta
-                    //= new Vector2(500, 65);
-                    //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                    //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                     stepOfTutorial++;
                 }
 
@@ -1254,14 +1131,6 @@ public class MakeWordBank : MonoBehaviour {
                     {
                         tutorialText.text = "Press the next image button to go to the next image\n" +
                         "(Push the rod forward to continue)";
-                        focusor.transform.localPosition = new Vector3(332.5f, 141f, 0f); //edit focusor * (offset)
-                        focusor.transform.localScale = new Vector3(15f, 1.65f, 3f);
-                        //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                        //= new Vector2(500, 60);
-                        //tutorialText.GetComponent<RectTransform>().sizeDelta
-                        //= new Vector2(500, 65);
-                        //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                        //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                         timer = 0f;
                         stepOfTutorial++;
                     }
@@ -1276,17 +1145,9 @@ public class MakeWordBank : MonoBehaviour {
                 {
                     if (StateManager.falconButtons[1] == true && prevClick == false || moveOn())
                     {
-                        focusor.transform.localPosition = new Vector3(166.2f, 305f, -350f);
-                        focusor.transform.localScale = new Vector3(7.1f, 1.1f, 3f);
                         tutorialText.text
                         = "You can quit any time you want by pressing the Quit button" + "\n" +
                         "(Push the rod forward to continue)";
-                        //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                        //= new Vector2(500, 60);
-                        //tutorialText.GetComponent<RectTransform>().sizeDelta
-                        //= new Vector2(500, 65);
-                        //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                        //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
                         timer = 0f;
                         stepOfTutorial++;
                     }
@@ -1306,16 +1167,15 @@ public class MakeWordBank : MonoBehaviour {
                 if (step22proceed)
                 {
                     timer = 0f;
-                    focusor.SetActive(false);
+                   // focusor.SetActive(false);
                     helpTextContainer.SetActive(false);
-                    welcomeScreen.SetActive(true);
+                   //welcomeScreen.SetActive(true);
                     mainCamera.SetActive(true);
                     UICamera.SetActive(true);
                     videoCamera.SetActive(false);
                     //VP1.SetActive(false);
                     //VP5.SetActive(false);
-                    welcomeText.text = "Now let's do a practice level" + "\n" +
-                    "It will be just like a real level but data will not be collected" + "\n" + "(Push the rod forward to begin the practice level)";
+                    //welcomeText.text = "Now let's do a practice level" + "\n" + "It will be just like a real level but data will not be collected" + "\n" + "(Push the rod forward to begin the practice level)";
                     //StateManager.allSystemsGo = true;
                     stepOfTutorial++;
                     state.setState(7);
@@ -1332,7 +1192,7 @@ public class MakeWordBank : MonoBehaviour {
                         timer = 0f;
                         //inTutorial = false;
                         //dataCollector.SetActive (true); Don't collect data for practice level
-                        welcomeScreen.SetActive(false);
+                        //welcomeScreen.SetActive(false);
 
                         sequenceIndex = 0; //Reset tags
                         for (int i = 0; i < tags.Length; i++)
@@ -1340,12 +1200,12 @@ public class MakeWordBank : MonoBehaviour {
                             tags[i].setText(wordBank[SEQUENCE[imageIndex, sequenceIndex]]);
                             sequenceIndex++;
                         }
-                        tagSphere.GetComponent<Renderer>().material = imageMaterials[imageIndex]; //in first image
+                        renderBackground(imageIndex);
                         //imageIndex++;
-                        foreach (Transform t in ClickAction.sphere.transform)
+                        /*foreach (Transform t in ClickAction.sphere.transform)
                         {
                             Destroy(t.gameObject);
-                        }
+                        }*/
 
                         for (int i = 0; i < ClickAction.trashedTags.Count; i++)
                         {
@@ -1357,12 +1217,6 @@ public class MakeWordBank : MonoBehaviour {
 
                         helpTextContainer.SetActive(true);
                         tutorialText.text = "Place 3 tags and then move to the next image to begin data collection";
-                        //helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                        //= new Vector2(500, 60);
-                        //tutorialText.GetComponent<RectTransform>().sizeDelta
-                        //= new Vector2(500, 65);
-                        //tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                        //helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
 
                         stepOfTutorial++; //End
                         //inPracticeLevel = true;
@@ -1381,9 +1235,9 @@ public class MakeWordBank : MonoBehaviour {
             {
                 //dataCollector.SetActive (true);
                 //welcomeScreen.SetActive (false);
-                welcomeText.text = "We are now waiting for the other player to finish the tutorial";
+               // welcomeText.text = "We are now waiting for the other player to finish the tutorial";
                 LoadingIconScript.active = true;
-                welcomeText.transform.localPosition = new Vector3(31.2f, -0.8f, 0f);
+                //welcomeText.transform.localPosition = new Vector3(31.2f, -0.8f, 0f);
                 inScreenBeforeExperiment = false;
                 waitingForOtherPlayer = true;
             }
@@ -1394,7 +1248,7 @@ public class MakeWordBank : MonoBehaviour {
             if (otherPlayerHasFinished)
             {
                 dataCollector.SetActive(true);
-                welcomeScreen.SetActive(false);
+                //welcomeScreen.SetActive(false);
                 waitingForOtherPlayer = false;
                 LoadingIconScript.active = false;
             }
@@ -1414,7 +1268,15 @@ public class MakeWordBank : MonoBehaviour {
 
     public static bool moveOn() //basically the catch-all method for continuing
     {
-        if (Input.GetKeyDown(KeyCode.V))
+        if ((Input.GetKeyDown(KeyCode.V) && VRUser.extraControls) || VRUser.userContinue())
+        {
+            return true;
+        }
+        return false;
+    }
+    public static bool skip()
+    {
+        if ((Input.GetKeyDown(KeyCode.Escape) && VRUser.extraControls) || VRUser.userSkip())
         {
             return true;
         }
@@ -1425,33 +1287,35 @@ public class MakeWordBank : MonoBehaviour {
 
         //if not holding an object and close to either the quit or the next image button do that
         //create get rid of object button
-
-        float shortDist = 1000000f;
-        foreach (GameObject tag in tagGameObjects) //mathf.abs
+        if (VRUser.buttonConversion() != 0 && VRUser.buttonConversion() != 7)// && Input.GetKeyDown(KeyCode.G)) - doublecheck
         {
-            Vector3 cursMod = state.getCursorPosition() * StateManager.cursorPosMod; //added modifications to cursor
-            cursMod += new Vector3(0f, 2f, 0.1f);
-            float newMin = (cursMod - tag.transform.position).magnitude; //distancel (Vector3.Distance())
-                                                                         //newMin = Mathf.Abs(newMin); //absolute value
-            if (newMin < shortDist && cursMod.y > tag.transform.position.y)
+            float shortDist = 1000000f;
+            /*foreach (GameObject tag in tagGameObjects) //mathf.abs
             {
-                shortDist = newMin;
-                toClick = tag;
-            }
-        }
-        Debug.Log("Closest Object" + toClick.name + ", Tag: " + toClick.tag + ", Distance: " + shortDist);
-        if (shortDist < 18.6f)// && Input.GetKeyDown(KeyCode.G))
-        {
+                float newMin = (state.getCursorPosition() - tag.transform.localPosition).magnitude; //confirm tag
+                //newMin = Mathf.Abs(newMin); //absolute value
+                if (newMin < shortDist)
+                {
+                    shortDist = newMin;
+                    toClick = tag;
+                }
+            }*/
+            toClick = VRUser.interactables[VRUser.buttonConversion()];
+
+            Debug.Log("Closest Object" + toClick.name + ", Tag: " + toClick.tag + ", Distance: " + shortDist);
             if (state.getSelected() != null)
             {
                 Destroy(state.getSelected());
                 state.setSelected(null);
             }
-            //Debug.Log("Object Clicked: " + toClick.name);
             //state.setSelected(toClick);
             eventListener.OnPointerClick(toClick);
-            toClick = null;
         }
+        else
+        {
+            eventListener.OnPointerClick();
+        }
+        toClick = null;
     }
 
     public void newTag(Vector3 location) //takes in the location of the tag u need replacing
@@ -1503,7 +1367,8 @@ public class MakeWordBank : MonoBehaviour {
         }
         else
         {
-            if (!inTutorial && inPracticeLevel && practiceMoveOn < 3)
+            //intutorial & in pracitce level are used suplimentarily becuase of static method - can replace later
+            if (!inTutorial && inPracticeLevel && practiceMoveOn < 3) 
             {
                 tutorialText.text = "Please place another " + (3 - practiceMoveOn) + " tags to continue.";
                 return false;
@@ -1532,10 +1397,10 @@ public class MakeWordBank : MonoBehaviour {
                     ClickAction.state.setSelected(null);
                 }
 
-                foreach (Transform t in tagSphere.transform)
+                /*foreach (Transform t in tagSphere.transform)
                 {
                     Destroy(t.gameObject, 0.08f);
-                }
+                }*/
 
                 for (int i = 0; i < ClickAction.trashedTags.Count; i++) //take out trash
                 {
@@ -1543,7 +1408,7 @@ public class MakeWordBank : MonoBehaviour {
                 }
                 ClickAction.trashedTags.Clear();
 
-                tagSphere.GetComponent<Renderer>().material = imageMaterials[img]; //next image
+                renderBackground(img);
                 sequenceIndex = 0;
                 for (int tagsIndex = 0; tagsIndex < tags.Length; tagsIndex++)
                 {
@@ -1559,11 +1424,10 @@ public class MakeWordBank : MonoBehaviour {
                 {
                     helpTextContainer.SetActive(false);
                     practiceLevelText.SetActive(false);
-                    welcomeText.text = "You have completed the practice level.\nPush the rod forward to " +
-                        "begin data collection"; //not displayed?
+                    //welcomeText.text = "You have completed the practice level.\nPush the rod forward to " + "begin data collection"; //not displayed?
                     //welcomeScreen.SetActive(true);
-                    welcomeScreen.SetActive(false);
-                    inScreenBeforeExperiment = true;
+                    //welcomeScreen.SetActive(false);
+                    //inScreenBeforeExperiment = true; //?
                     inPracticeLevel = false;
                 }
                 return true;
@@ -1571,7 +1435,21 @@ public class MakeWordBank : MonoBehaviour {
         }
         return false;
     }
-
+    public static void renderBackground(int img, Material obj = null)
+    {
+        foreach (GameObject sphere in tagSphere)
+        {
+            if (obj == null)
+            {
+                sphere.GetComponent<Renderer>().material = imageMaterials[img]; //next image
+            }
+            else
+            {
+                sphere.GetComponent<Renderer>().material = obj;
+            }
+            
+        }
+    }
     //This method can be called from the EventListener script using the GameObject that was clicked on as input:
     public static void replaceTag(GameObject obj, bool clickedImage)
     {

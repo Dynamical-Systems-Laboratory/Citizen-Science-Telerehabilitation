@@ -28,6 +28,6 @@ public class FalconCursor : MonoBehaviour
 			return;
 		}
         buttons = state.getFalconButtons();
-        this.cursor.transform.localPosition = state.getCursorPosition();
+        //this.cursor.transform.localPosition = state.getCursorPosition();
 	}
 }

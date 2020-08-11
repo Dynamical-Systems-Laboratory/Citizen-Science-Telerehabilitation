@@ -24,14 +24,13 @@ public class UserProfile : MonoBehaviour
     public static Text sessionsLogged;
     public static Text progress;
     public static Text difficulty;
+    public static List<Text> texts = new List<Text>(); //list of things to update
 
     //other
-    public static InputField userName;
     public static Slider progressBar;
-    public static Slider difficultyMeter;
-
-    public static Vector3 stateModifier2 = new Vector3(-100.2f + 2.8f + 380f, 500f, 66.6f); //offset of button positions relative to makewordbank
-    public static float scale = 1.72f;//3/2;
+    public static Slider difficultyMeter; //moveable slider
+    public static InputField userName; //interactable input
+    bool isTyping = false; //keeps track of state of input field
 
     //button colors
     public static float colorFactor = 183f / 255f;
@@ -40,15 +39,14 @@ public class UserProfile : MonoBehaviour
 
     private static string letters = "abcdefghijklmnopqrstuvwxyzACBDEFGHIJKLMNOPQRSTUVWXYZ";//allowed characters for username
 
-    bool isTyping = false;
+    public static GameObject mainCanv;
 
     void Awake()
     {
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
-
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
 
-        homeButton = GameObject.Find("HomeButton2");
+        homeButton = GameObject.Find("HomePanel2");
         userName = GameObject.Find("UserName").GetComponent<InputField>() as InputField;
 
         dateJoined = GameObject.Find("DateJoined").GetComponent<Text>() as Text;
@@ -61,8 +59,17 @@ public class UserProfile : MonoBehaviour
 
         difficulty = GameObject.Find("DifficultyNumber").GetComponent<Text>() as Text;
         difficultyMeter = GameObject.Find("DifficultySlider").GetComponent<Slider>() as Slider;
+
+        texts.Add(dateJoined);
+        texts.Add(imagesCompleted);
+        texts.Add(timeCompleted);
+        texts.Add(sessionsLogged);
+        texts.Add(progress);
+        texts.Add(difficulty);
+
+        mainCanv = GameObject.Find("ProfileCanvas");
     }
-    //TODO: change userName from text box to editable text field
+
     void Update()
     {
         if (state.getState() == 3)
@@ -94,12 +101,11 @@ public class UserProfile : MonoBehaviour
             //TODO: figure out horizontal transformation that coorelateds to scaler (-11.2 = 50%?)
             difficultyMeter.value = state.user.getSettingData()[0];
             difficulty.text = difficultyMeter.value.ToString();
-
             //difficulty = diffucultyMeter.value;
 
             if (isTyping)
             {
-                if (Input.GetKeyDown(KeyCode.Escape))
+                if (MakeWordBank.skip())
                 {
                     userName.DeactivateInputField();
                     isTyping = false;
@@ -116,52 +122,73 @@ public class UserProfile : MonoBehaviour
                     }
                     state.user.addName(Input.inputString);
                 }
-                
                 Debug.Log("Editing Username Mode...");
             }
-            //Clicking Things (buttons)
-            else if (Input.GetKey(KeyCode.B)) //clicking
+            else
             {
-                Vector3 homeDist = getScaledDist(homeButton.transform.position);
-                Vector3 sliderDist = getScaledDist(difficultyMeter.transform.position);
-                Vector3 nameDist = getScaledDist(userName.transform.position);
-                //Debug.Log("NameDist: " + nameDist + ", " + nameDist.magnitude);
-                if (homeDist.x <= 118 && homeDist.x >= 32 && homeDist.y <= 17.8 && homeDist.y >= -18.5)
+                int buttonNum = ClickAction.profileButtonClose();
+                //Debug.Log("Profile Button: " + buttonNum);
+                switch (buttonNum)
                 {
-                    state.setState(1);
+                    case 1: //user name
+                        ColorBlock cb1 = userName.colors;
+                        cb1.normalColor = VRUser.highlightColor;
+                        userName.colors = cb1;
+                        break;
+                    case 2: //home
+                        homeButton.GetComponent<Image>().color = VRUser.highlightColor;
+                        break;
+                    case 3: //difficulty meter
+                        ColorBlock cb2 = difficultyMeter.colors;
+                        cb2.normalColor = VRUser.highlightColor;
+                        difficultyMeter.colors = cb2;
+                        break;
+                    default: //0
+                        //GameObject.Find("Placeholder").GetComponent<Text>().color = new Color(50 / 255, 50 / 255, 50 / 255, 128 / 255);
+                        userName.colors = ColorBlock.defaultColorBlock;
+                        homeButton.GetComponent<Image>().color = unhighlighted;
+                        //GameObject.Find("Handle").GetComponent<Image>().color = new Color(1, 1, 1, 1);
+                        difficultyMeter.colors = ColorBlock.defaultColorBlock;
+                        break;
                 }
-                else if (sliderDist.x <= 142.5 && sliderDist.x > -5 &&sliderDist.y <= 9 && sliderDist.y >= -12)
+                //Clicking Things (buttons)
+                if (Input.GetKeyDown(KeyCode.B) || VRUser.isClicking(true))
                 {
-                    //Debug.Log("Using Slider");
-                    //[142.5 <--> -5] / 10 => 14.75*
-                    float slideNum = Mathf.Floor((142.5f - sliderDist.x) / 14.75f);
-                    difficultyMeter.value = slideNum + 1;
-                    difficulty.text = difficultyMeter.value.ToString(); //change text
-                    state.user.updateDifficulty(difficultyMeter.value); //change user settings
+                    switch (buttonNum)
+                    {
+                        case 1:
+                            Debug.Log("Editing Name");
+                            userName.ActivateInputField();
+                            isTyping = true;
+                            break;
+                        case 2:
+                            state.setState(1);
+                            break;
+                        case 3:
+                            //below
+                            break;
+                        default:
+                            Debug.Log("~No Button To Press~");
+                            userName.DeactivateInputField();
+                            break;
+                    }
                 }
-                else if (nameDist.x <= 117.5 && nameDist.x >= 10.5 && nameDist.y <= 14.8 && nameDist.y >= -7.6)
+                else if (Input.GetKey(KeyCode.B) || VRUser.isClicking(false))
                 {
-                    Debug.Log("Editing Name");
-                    userName.ActivateInputField();
-                    isTyping = true;
+                    if (buttonNum == 3)
+                    {
+                        //[-12.5,33] -- 45.5 len - (4.55) interval
+                        int slideNum = (int)((state.getCursorPosition().x + 12.5f) / 45.5f * 10f); //percentage 10.0 = 100&
+                        difficultyMeter.value = slideNum + 1;
+                        difficulty.text = difficultyMeter.value.ToString(); //change text
+                        state.user.updateDifficulty(difficultyMeter.value); //change user settings
+                    }
                 }
-                else
+                else //if not clicking
                 {
-                    Debug.Log("~No Button To Press~");
                     userName.DeactivateInputField();
                 }
             }
-            else //if not clicking
-            {
-                userName.DeactivateInputField();
-            }
-
         }
     }
-
-    private Vector3 getScaledDist(Vector3 dist) //helper
-    {
-        return ((dist - UserProfile.stateModifier2) - (state.getCursorPosition() * StateManager.cursorPosMod * HomeScreen.scale));
-    }
-
 }

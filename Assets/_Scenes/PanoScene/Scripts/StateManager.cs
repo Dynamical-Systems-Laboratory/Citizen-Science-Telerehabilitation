@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 using System.IO;
 using System.Linq;
+using UnityEngine.SocialPlatforms;
 
 /*
  StateManager is an object used for accessing and setting the state of the program 
@@ -25,6 +26,7 @@ public class StateManager : MonoBehaviour {
      */
 
     public UserInfo user = new UserInfo(); //main user to store info
+    public VRUser complexUser; //user's main body
 
     private GameObject selected = null; // The current tag being selected
     private GameObject falconCursor; // The cursor being manipulated by the falcon
@@ -94,8 +96,8 @@ public class StateManager : MonoBehaviour {
     public static bool makeCursReset = false; // resets the position of the cursor to the middle of the screen
     public static bool makeCamReset = false; // resets the position of the camera to the middle of the image/starting pt.
     public static bool allSystemsGo = false; // variable that enables all movement functionality for camera and cursor upon update()
-    public static Vector3 cursorAdd = new Vector3(0f, 0f, 0f);
-    public static Vector3 cameraAdd = new Vector3(0f, 0f, 0f);
+    public Vector3 cursorAdd = new Vector3(0f, 0f, 0f);
+    //public static Vector3 cameraAdd = new Vector3(0f, 0f, 0f);
 
     public static float cursorPosMod = 239.36f; //modifier for sphere to ui translation
 
@@ -109,8 +111,12 @@ public class StateManager : MonoBehaviour {
     public static float cursorSpeed = 3.75f; //factor that speeds up cursor's movement
     public static float cursorSize = -0.418f; //factor that makes cursor bigger or smaller
 
+    //reimplementation of cursor movement controlling for VR
+    public bool cursorXMove = true;
+    public bool cursorYMove = true;
+
     //TODO: Make tag count update as game goes on rather than after image is completed
-    public List<GameObject> tagsPlaced;
+    public List<GameObject> tagsPlaced = new List<GameObject>();
     //public List<InvisTag> invisTags;
 
     public static bool newUser = true; // whether or not data was read
@@ -118,11 +124,22 @@ public class StateManager : MonoBehaviour {
     public static bool makeNewUser = true; // used to bypass reading data if you want to create another save file
     private string path;
     private static string dataName = "user_data";
-    public static string[] dataRead = new string[] { "uninitialized", "no data" };
+    public static string[] dataRead = new string[] { "no data" };
 
     public bool reloading = false; //covers edge case with reloading tags
 
-    private int userState = 6;
+    public static GameObject trueCursor;
+    public static GameObject cursorOffset;
+
+    private static int gameCull;
+    private static int tutorialCull;
+    private static int homeCull;
+    private static int profileCull;
+    //public static int cursorCull;
+
+    public bool userControlActive = false; //bool that controls the reset mechanic for the 
+
+    private int userState = 4;//6;
     /* 0 = Quit
      * 1 = Home
      * 2 = In-Game
@@ -131,6 +148,7 @@ public class StateManager : MonoBehaviour {
      * 5 = Button Tutorial
      * 6 = About Project
      * 7 = Practice Level
+     * 8 = Survey
      */
      //Mock order: 6,4,5,7,1,0,1,7,2,1,3,1,2,1,0
     public int getState()
@@ -146,21 +164,35 @@ public class StateManager : MonoBehaviour {
     }
     public void updateState()
     {
+        //defaults*
+        MakeWordBank.cursorCamera.SetActive(true);
+        MakeWordBank.UICamera.SetActive(true);
+        MakeWordBank.videoCamera.SetActive(false);
+        MakeWordBank.mainCamera.SetActive(false);
+
+        MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = gameCull;
+        //GameObject.Find("SimpleTutorialCanvas").SetActive(true);
+        //complexUser.VRPerson.SetActive(true);
+
+        userControlActive = false;
+        makeCursReset = true;
+
+        if (isGaming()) //failsafe for seeing tags?
+        {
+            GameObject.Find("tagCanvas").GetComponent<Canvas>().overrideSorting = true;
+        }
+
         switch (userState)
         {
-            case 0:
-                MakeWordBank.mainCamera.SetActive(false);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.profileCamera.SetActive(false);
-                MakeWordBank.UICamera.SetActive(false);
-                MakeWordBank.videoCamera.SetActive(false);
+            case 0: //QUIT
+                complexUser.VRPerson.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(false);
+                MakeWordBank.UICamera.SetActive(false);
                 user.updateSettings();
                 user.addDuration();
 
                 //WRITING DATA CODE
-                /*
-                StreamWriter writer;
+                /*StreamWriter writer;
                 if (newUser) //if new user or no data detected
                 {
                     writer = System.IO.File.CreateText(path); //create new user_data file
@@ -177,86 +209,42 @@ public class StateManager : MonoBehaviour {
 
                 }
                 writer.Flush();
-                writer.Close();
-                */
+                writer.Close();*/
                 //ClickAction.destroyTags();
                 UnityEditor.EditorApplication.isPlaying = false;
                 Application.Quit();
                 break;
-            case 1:
-                //Debug.Log("State: Home");
-                MakeWordBank.mainCamera.SetActive(false);
-                MakeWordBank.homeCamera.SetActive(true);
-                MakeWordBank.profileCamera.SetActive(false);
-                MakeWordBank.UICamera.SetActive(false);
-                MakeWordBank.videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(true);
+
+            case 1: //HOME
+                MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = homeCull;
                 break;
-            case 2:
-                //Debug.Log("State: Game");
-                MakeWordBank.mainCamera.SetActive(true);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.profileCamera.SetActive(false);
-                MakeWordBank.UICamera.SetActive(true);
-                MakeWordBank.videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(true);
+            case 2: //GAME
+                MakeWordBank.nextImage(MakeWordBank.imageIndex);
+                //reload tags for image...?
+                GameObject.Find("gameText").GetComponent<Text>().text = "Game Screen";
                 break;
-            case 3:
-                //Debug.Log("State: Profile");
-                MakeWordBank.mainCamera.SetActive(false);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.profileCamera.SetActive(true);
-                MakeWordBank.UICamera.SetActive(false);
-                MakeWordBank.videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(true);
-                //MakeWordBank.profileCamera
+            case 3: //PROFILE
+                MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = profileCull;
                 break;
-            case 4:
-                //Debug.Log("State: Calibrate");
-                MakeWordBank.mainCamera.SetActive(true);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.profileCamera.SetActive(false);
-                MakeWordBank.UICamera.SetActive(false);
-                MakeWordBank.videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(true);
-                //SimpleTutorial.canvas.SetActive(true);
+            case 4: //CALIBRATE (simpletutorial)
+                MakeWordBank.mainCamera.SetActive(true); //videos?
+                MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = tutorialCull;
                 break;
-            case 5:
-                //Debug.Log("State: Tutorial");
-                MakeWordBank.mainCamera.SetActive(true);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.profileCamera.SetActive(false);
-                MakeWordBank.UICamera.SetActive(true);
-                MakeWordBank.videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(true);
+            case 5: //TUTORIAL
+                //tutorial tags
                 break;
-            case 6:
-                //Debug.Log("State: About Project");
-                MakeWordBank.mainCamera.SetActive(false);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.profileCamera.SetActive(false);
-                MakeWordBank.UICamera.SetActive(true);
-                MakeWordBank.videoCamera.SetActive(false);
+            case 6: //ABOUT PROJECT
                 MakeWordBank.cursorCamera.SetActive(false);
-                //GameObject.Find("Canvas").GetComponent<PowerpointScript>().enabled = true;
-                break;
-            case 7:
-                //Debug.Log("State: Practice");
-                MakeWordBank.mainCamera.SetActive(true);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.profileCamera.SetActive(false);
-                MakeWordBank.UICamera.SetActive(true);
-                MakeWordBank.videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(true);
-                break;
-            default:
-                //Debug.Log("User State Issue: " + userState);
-                MakeWordBank.mainCamera.SetActive(false);
-                MakeWordBank.homeCamera.SetActive(false);
-                MakeWordBank.profileCamera.SetActive(false);
                 MakeWordBank.UICamera.SetActive(false);
-                MakeWordBank.videoCamera.SetActive(false);
-                MakeWordBank.cursorCamera.SetActive(false);
+                break;
+            case 7: //PRACTICE LEVEL
+                GameObject.Find("gameText").GetComponent<Text>().text = "Practice Screen";
+                //activate/deactivate practice level text & help text stuffgameText
+                break;
+            case 8: //Survey
+                break;
+            default: //STATE ERROR
+                //complexUser.VRPerson.SetActive(false);
                 break;
         }
     }
@@ -271,14 +259,22 @@ public class StateManager : MonoBehaviour {
         selected = g;
     }
 
-    public Vector3 getCursorPosition()
+    public Vector3 getCursorPosition(bool isLocal = true)
     {
-        return cursorPos;
+        if (isLocal)
+        {
+            return trueCursor.transform.localPosition; //return cursorPos;
+        }
+        else
+        {
+            return trueCursor.transform.position;
+        }
+        
     }
 
     public Vector3 getCameraPosition()
     {
-        return cameraPos;
+        return cameraPos; //GameObject.Find("CenterEyeAnchor").transform.rotation.eulerAngles;
     }
 
     public int getButtons()
@@ -321,21 +317,21 @@ public class StateManager : MonoBehaviour {
         if (System.IO.File.Exists(path) && !makeNewUser)
         {
             StreamReader reader = new StreamReader(path);
-            dataRead = reader.ReadLine().Split(',');
+            dataRead = reader.ReadLine().Split(','); //array
             newUser = !user.readData(dataRead);
         }
+
+        /* List <--> Array conversions
+         * List<string> list = new List<string>(arr);
+         * string[] arr = list.ToArray()
+         */
 
         falconButtons = new bool[4] { false, false, false, false };
         speeds = new List<Tuple<float, float, float, float>>();
         mainCamera = GameObject.Find("Main Camera");
-        //if (mainCamera == null)
-        //{
-        //    mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-        //}
-        //if (mainCamera == null)
-        //{
-        //    mainCamera = MakeWordBank.mainCamera;
-        //}
+        trueCursor = GameObject.Find("exampleCursor");
+        cursorOffset = GameObject.Find("cursorCenter");
+
         if (user.getPracticeLevelState()[0])
         {//necessary for camera stuff
             //userState = 1;
@@ -347,15 +343,20 @@ public class StateManager : MonoBehaviour {
             MakeWordBank.stepOfTutorial = 24;
             MakeWordBank.welcomeScreen.SetActive(false);
             //MakeWordBank.helpTextContainer.SetActive(false);
-            MakeWordBank.focusor.SetActive(false);
+           // MakeWordBank.focusor.SetActive(false);
             //MakeWordBank.practiceLevelText.SetActive(false);
 
             //reload tags
         }
-        else
-        {
-            userState = 6;
-        }
+
+        cursorPos = GameObject.Find("exampleCursor").transform.position;
+
+        //culling masks
+        gameCull = GameObject.Find("UICamera").GetComponent<Camera>().cullingMask; //present culling mask with tag/trash/ui/bin/visibleTags
+        tutorialCull = (1 << LayerMask.NameToLayer("Tutorial"));
+        homeCull = (1 << LayerMask.NameToLayer("Home"));
+        profileCull = (1 << LayerMask.NameToLayer("Profile"));
+        //cursorCull = GameObject.Find("CursorCamera").GetComponent<Camera>().cullingMask;
     }
     private IEnumerator Start()
     {
@@ -366,8 +367,15 @@ public class StateManager : MonoBehaviour {
         //mainCamera = MakeWordBank.mainCamera;
     }
 
+    private static bool stateInit = false;
     private void Update()
     {
+        if (!stateInit)
+        {
+            updateState();
+            stateInit = true;
+        }
+        //updateState(); //testing...**
         //Debug.Log("isNewUser: " + newUser.ToString() + ", data: " + dataRead[0]);
         switch (userState)
         {
@@ -395,10 +403,14 @@ public class StateManager : MonoBehaviour {
             case 7:
                 Debug.Log("State: Practice Level");
                 break;
+            case 8: //Survey
+                Debug.Log("State: Survey");
+                break;
             default:
                 Debug.Log("State: Error " + userState);
                 break;
         }
+
         /*if (allSystemsGo)
         {
             moveCursorL = true; // cursors
@@ -413,117 +425,13 @@ public class StateManager : MonoBehaviour {
             //makeCamReset = false;
         }*/
 
-        //if (Kinect.LHandPos.x != 0 || Kinect.LHandPos.y != 0 || Kinect.LHandPos.z != 0)
-        //{
-        //    kinectReady = true;
-        //}
         kinectReady = true;
-        /*
-        if (Math.Abs(Kinect.LHandPos.z - Kinect.LShoulderPos.z) < smallestLHdiff) {
-            smallestLHdiff = Math.Abs(Kinect.LHandPos.z - Kinect.LShoulderPos.z);
-        }
-        
-        if (Math.Abs(Kinect.RHandPos.z - Kinect.RShoulderPos.z) < smallestRHdiff) {
-            smallestRHdiff = Math.Abs(Kinect.RHandPos.z - Kinect.RShoulderPos.z);
-        }
-        
-        if (Math.Abs(Kinect.LElbowPos.y - Kinect.LShoulderPos.y) > largestLEdiff) {
-            largestLEdiff = Math.Abs(Kinect.LElbowPos.y - Kinect.LShoulderPos.y);
-        }
-        
-        if (Math.Abs(Kinect.RElbowPos.y - Kinect.RShoulderPos.y) > largestREdiff) {
-            largestREdiff = Math.Abs(Kinect.RElbowPos.y - Kinect.RShoulderPos.y);
-        }
-
-        if (Math.Abs(Kinect.LHandPos.z - Kinect.LShoulderPos.z) > (smallestLHdiff / 0.8f) 
-            && Math.Abs(Kinect.RHandPos.z - Kinect.RShoulderPos.z) > (smallestRHdiff / 0.8f)
-            && Math.Abs(Kinect.LElbowPos.y - Kinect.LShoulderPos.y) < (largestLEdiff * 0.6f)
-            && Math.Abs(Kinect.RElbowPos.y - Kinect.RShoulderPos.y) < (largestREdiff * 0.6f)) {
-            
-            falconButtons[1] = true;
-            
-            smallestLHdiff = 999f; 
-            smallestRHdiff = 999f;
-            largestLEdiff = 0f;
-            largestREdiff = 0f;
-            
-        }
-        else {
-            falconButtons[1] = false;
-        }
-        */
-
         falconButtons[1] = false;
         rodClicked = false;
-
-        //LHandSpeed = (Kinect.LHandPos.z - prevLHand_z) / Time.deltaTime;
-        //RHandSpeed = (Kinect.RHandPos.z - prevRHand_z) / Time.deltaTime;
-        //LElbowSpeed = (Kinect.LElbowPos.y - prevLElbow_y) / Time.deltaTime;
-        //RElbowSpeed = (Kinect.RElbowPos.y - prevRElbow_y) / Time.deltaTime;
-
-        // If the user push the rod and then pull the rod OR pull the rod and then push the rod at a certain speed within 3.5 seconds, register a click
-        //Change for calibration
-        //if (speedInitializeTime < 3.5f)
-        //{
-        //    speedInitializeTime += Time.deltaTime;
-        //    Tuple<float, float, float, float> speed = new Tuple<float, float, float, float>(LHandSpeed, RHandSpeed, LElbowSpeed, RElbowSpeed);
-        //    speeds.Add(speed);
-        //}
-        //else
-        //{
-        //    for (int i = 0; i < speeds.Count; i++)
-        //    {
-        //        if ((Kinect.LShoulderPos.y > Kinect.LElbowPos.y) && (Kinect.LElbowPos.y < Kinect.LHandPos.y) 
-        //            && (Kinect.RShoulderPos.y > Kinect.RElbowPos.y) && (Kinect.RElbowPos.y < Kinect.RHandPos.y)) 
-        //        {
-        //            if (speeds[i].Item1 > 0.45 && LHandSpeed < -0.45 && speeds[i].Item2 > 0.45 && RHandSpeed < -0.45
-        //            && speeds[i].Item3 < -0.09 && LElbowSpeed > 0.09 && speeds[i].Item4 < -0.09 && RElbowSpeed > 0.09)
-        //            {
-        //                falconButtons[1] = true;
-        //                rodClicked = true;
-        //            }
-        //            else if (speeds[i].Item1 < -0.45 && LHandSpeed > 0.45 && speeds[i].Item2 < -0.45 && RHandSpeed > 0.45
-        //                && speeds[i].Item3 > 0.09 && LElbowSpeed < -0.09 && speeds[i].Item4 > 0.09 && RElbowSpeed < -0.09)
-        //            {
-        //                falconButtons[1] = true;
-        //                rodClicked = true;
-        //            }
-        //        }
-        //    }
-
-        //    for (int i = 0; i < speeds.Count - 1; i++)
-        //    {
-        //        speeds[i] = speeds[i + 1];
-        //    }
-
-        //    Tuple<float, float, float, float> new_speed = new Tuple<float, float, float, float>(LHandSpeed, RHandSpeed, LElbowSpeed, RElbowSpeed);
-
-        //    speeds[speeds.Count - 1] = new_speed;
-        //}
-        if (Input.GetKey(KeyCode.V)) //new update - forwards and backwards
+        if ((Input.GetKey(KeyCode.V) && VRUser.extraControls) || VRUser.isClicking()) //new update - forwards and backwards
         {
             rodClicked = true;
         }
-
-        /*
-        if (((Kinect.LHandPos.z - prevLHand_z) / Time.deltaTime) < -0.45 && ((Kinect.RHandPos.z - prevRHand_z) / Time.deltaTime) < -0.45 &&
-         ((Kinect.LElbowPos.y - prevLElbow_y) / Time.deltaTime) > 0.09 && ((Kinect.RElbowPos.y - prevRElbow_y) / Time.deltaTime) > 0.09 && pushCoolDown >= 1f)
-        {
-            falconButtons[1] = true;
-            pushCoolDown = 0f;
-        }
-        else
-        {
-            falconButtons[1] = false;
-        }
-
-        pushCoolDown += Time.deltaTime;
-        */
-
-        //prevLElbow_y = Kinect.LElbowPos.y;
-        //prevRElbow_y = Kinect.RElbowPos.y;
-        //prevLHand_z = Kinect.LHandPos.z;
-        //prevRHand_z = Kinect.RHandPos.z;
 
         cameraL = false;
         cameraR = false;
@@ -533,162 +441,43 @@ public class StateManager : MonoBehaviour {
         cameraUpCoolDown += Time.deltaTime;
         cameraDownCoolDown += Time.deltaTime;
 
-        //if (!SimpleTutorial.inSimpleTutorial)
-        //{ //Allow camera to rotate in SimpleTutorial
-        //    falconButtons[0] = false ;
-        //}
-
+        //TODO: Set cameraPos to orientation of oculus
+        cameraPos = GameObject.Find("CenterEyeAnchor").transform.rotation.eulerAngles;
         nextCameraPos = cameraPos;
-
-        if (moveCameraL)
-        {
-            //if (Kinect.RHandPos.y > Kinect.LHandPos.y && Kinect_Angle(Kinect.RHandPos.x, Kinect.RHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2) > (SimpleTutorial.angleLeftAverage * 0.4f))
-            //{
-            //    nextCameraPos = new Vector3(cameraPos.x, (cameraPos.y - 0.5f), 0f);
-            //    falconButtons[0] = true;
-            //    cameraL = true;
-            //}
-            if (Input.GetKey(KeyCode.A))
-            {
-                nextCameraPos += new Vector3(0f, -20f * camSpeed * Time.deltaTime, 0f);
-                absRotation += new Vector3(0f, -20f * camSpeed * Time.deltaTime, 0f);
-                cameraL = true;
-            }
-        }
-
-        if (moveCameraR)
-        {
-            //if (Kinect.RHandPos.y < Kinect.LHandPos.y && Kinect_Angle(Kinect.LHandPos.x, Kinect.LHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2) < (SimpleTutorial.angleRightAverage * 2.5f)
-            //    && Kinect_Angle(Kinect.LHandPos.x, Kinect.LHandPos.y, (Kinect.LHandPos.x + Kinect.RHandPos.x) / 2, (Kinect.LHandPos.y + Kinect.RHandPos.y) / 2) > 0)
-            //{
-            //    nextCameraPos = new Vector3(cameraPos.x, (cameraPos.y + 0.5f), 0f);
-            //    falconButtons[0] = true;
-            //    cameraR = true;
-            //}
-            if (Input.GetKey(KeyCode.D))
-            {
-                nextCameraPos += new Vector3(0f, 20f * camSpeed * Time.deltaTime, 0f);
-                absRotation += new Vector3(0f, 20f * camSpeed * Time.deltaTime, 0f);
-                cameraR = true;
-            }
-        }
-
-        if (moveCameraU)
-        {
-            //if (IMU.Gyro_Pitch > (SimpleTutorial.speedUpAverage * 0.4f) && cameraUpCoolDown > 1.5f)
-            //{
-            //    nextCameraPos = new Vector3((cameraPos.x - 2.5f), cameraPos.y, 0f);
-            //    falconButtons[0] = true;
-            //    cameraU = true;
-            //    cameraDownCoolDown = 0f;
-            //}
-            if (Input.GetKey(KeyCode.W))
-            {
-                nextCameraPos += new Vector3(-14f * camSpeed * Time.deltaTime, 0f, 0f);
-                absRotation += new Vector3(-14f * camSpeed * Time.deltaTime, 0f, 0f);
-                cameraU = true;
-            }
-        }
-
-        if (moveCameraD)
-        {
-            //if (IMU.Gyro_Pitch < (SimpleTutorial.speedDownAverage * 0.4f) && cameraDownCoolDown > 1.5f)
-            //{
-            //    nextCameraPos = new Vector3((cameraPos.x + 2.5f), cameraPos.y, 0f);
-            //    falconButtons[0] = true;
-            //    cameraD = true;
-            //    cameraUpCoolDown = 0f;
-            //    Debug.Log(IMU.Gyro_Pitch);
-            //}
-            if (Input.GetKey(KeyCode.S))
-            {
-                nextCameraPos += new Vector3(14f * camSpeed * Time.deltaTime, 0f, 0f);
-                absRotation += new Vector3(14f * camSpeed * Time.deltaTime, 0f, 0f);
-                cameraD = true;
-            }
-        }
         
-        if (moveCameraL || moveCameraR || moveCameraU || moveCameraD || cameraAdd != new Vector3(0f, 0f, 0f))
-        {
-            nextCameraPos -= cameraAdd;
-        }
-        cameraAdd = new Vector3(0f, 0f, 0f);
-
-        // Enforce a boundary on rotating up/down
-        //if (nextCameraPos.x > 270f && nextCameraPos.x < 280f)
-        //{
-        //    nextCameraPos.x = 280f;
-        //}
-        //else if (nextCameraPos.x > 35f && nextCameraPos.x < 90f)
-        //{
-        //    nextCameraPos.x = 35f;
-        //}
-        //old boundaries [-16.8,17.4]
-
-        if (nextCameraPos.x < MakeWordBank.camBot) //[-90,90]
-        {
-            nextCameraPos.x = MakeWordBank.camBot;
-        }
-        else if (nextCameraPos.x > MakeWordBank.camTop)
-        {
-            nextCameraPos.x = MakeWordBank.camTop;
-        }
-
-        if (absRotation.x < MakeWordBank.camBot)
-        {
-            absRotation.x = MakeWordBank.camBot;
-        }
-        else if (absRotation.x > MakeWordBank.camTop)
-        {
-            absRotation.x = MakeWordBank.camTop;
-        }
-
-        //if (Input.GetKey(KeyCode.Y))
-        //{
-        //    camSpeed += .01f;
-        //}
-
         if (makeCamReset) //cam reset method
         {
-            nextCameraPos = new Vector3(0f, 0f, 0f);
+            //nextCameraPos = new Vector3(0f, 0f, 0f);
             absRotation = nextCameraPos;
             makeCamReset = false;
         }
-        nextCameraPos.y = getLowestAngle(nextCameraPos.y); //reset x pos if goes too far
-        if (cameraMoving)
+
+        /*foreach (TagPlaced obj in tagsPlaced)
         {
-            //quarterion rotations ***
-            Quaternion qRotation = Quaternion.Euler(nextCameraPos);// * Time.deltaTime);
-            mainCamera.transform.rotation = qRotation; //occassionally not instanced...?
+            obj.tag.transform.position -= (cameraPos - obj.headPos);
+        }*/
 
-            //tags movement
-            Vector3 change = (nextCameraPos - cameraPos); //take the amount that the camera moves and displace all placed tags by it
-            foreach (GameObject obj in tagsPlaced)
+        //nextCameraPos.y = getLowestAngle(nextCameraPos.y); //reset x pos if goes too far
+            /*if (cameraMoving)
             {
-                obj.transform.position -= new Vector3(change.y * 1.815f, -change.x * 1.805f, 0f); //**
-
-                //float offset = (obj.transform.position.x - nextCameraPos.y);
-                //Debug.Log("Object " + obj.name + ": " + obj.transform.position + ", offset: " + (obj.transform.position - nextCameraPos) + ", " + offset);
-
-                Color newColor = obj.GetComponent<Image>().color;
-                if (obj.transform.position.x > 15 && obj.transform.position.x < 101)//offset > xOffset) disapear after a certain x (factoring for full rotations of 180 degrees)
+                foreach (GameObject obj in tagsPlaced)
                 {
-                    obj.GetComponentInChildren<Text>().color = Color.clear; //text color change
-                    newColor.a = 0;
+                    Color newColor = obj.GetComponent<Image>().color;
+                    if (obj.transform.position.x > 15 && obj.transform.position.x < 101)//offset > xOffset) disapear after a certain x (factoring for full rotations of 180 degrees)
+                    {
+                        obj.GetComponentInChildren<Text>().color = Color.clear; //text color change
+                        newColor.a = 0;
+                    }
+                    else //reapear
+                    {
+                        obj.GetComponentInChildren<Text>().color = Color.blue;
+                        newColor.a = .391f; // (100/255) = (.39/1) - transfer to 0->1 scale
+                    }
+                    obj.GetComponent<Image>().color = newColor;
                 }
-                else //reapear
-                {
-                    obj.GetComponentInChildren<Text>().color = Color.blue;
-                    newColor.a = .391f; // (100/255) = (.39/1) - transfer to 0->1 scale
-                }
-                obj.GetComponent<Image>().color = newColor;
-            }
-        }
-        Debug.Log("Camera Info: (" + nextCameraPos.y + ", " + nextCameraPos.x + ", " + nextCameraPos.z + "), abs: " + absRotation + ", speed: " + camSpeed);
+            }*/
+            Debug.Log("Camera Info: " + getCameraPosition() + ", abs: " + absRotation + ", speed: " + camSpeed);
         cameraPos = nextCameraPos;
-
-        //avgDistance_x = Mathf.Abs(((Kinect.LHandPos.x - Kinect.LShoulderPos.x) + (Kinect.RHandPos.x - Kinect.RShoulderPos.x)) / 2);
-        //avgDistance_y = Mathf.Abs(((Kinect.LHandPos.y - Kinect.LShoulderPos.y) + (Kinect.RHandPos.y - Kinect.RShoulderPos.y)) / 2);
 
         cursorL = false;
         cursorR = false;
@@ -698,17 +487,12 @@ public class StateManager : MonoBehaviour {
         //float keyspeed = 0.07f * cursorSpeed; //x
         //float keyspeed2 = .00016f * cursorSpeed; //y
         nextCursorPos = cursorPos;
+
         if (moveCursorL)
         {
-            //if ((Kinect.LHandPos.x - Kinect.LShoulderPos.x) < (SimpleTutorial.LHandLeftAverage * 0.4f) && (Kinect.RHandPos.x - Kinect.RShoulderPos.x) < (SimpleTutorial.RHandLeftAverage * 0.4f))
-            //{
-            //    nextCursorPos = new Vector3((cursorPos.x - (0.0005f + 0.02f * avgDistance_x)), cursorPos.y, 0.418f);
-            //    cursorL = true;
-            //}
-
             //nextCursorPos = new Vector3(cursorPos.x + Input.GetAxis("Horizontal")* keyspeed, cursorPos.y, 0.418f);
             //cursorL = true;
-            if (Input.GetKey(KeyCode.LeftArrow))
+            if (Input.GetKey(KeyCode.LeftArrow) && VRUser.extraControls)
             {
                 nextCursorPos += new Vector3(-.06f * cursorSpeed * Time.deltaTime, 0f, 0f);
                 cursorL = true;
@@ -717,15 +501,7 @@ public class StateManager : MonoBehaviour {
 
         if (moveCursorR)
         {
-            //if ((Kinect.LHandPos.x - Kinect.LShoulderPos.x) > (SimpleTutorial.LHandRightAverage * 0.4f) && (Kinect.RHandPos.x - Kinect.RShoulderPos.x) > (SimpleTutorial.RHandRightAverage * 0.4f))
-            //{
-            //    nextCursorPos = new Vector3((cursorPos.x + (0.0005f + 0.02f * avgDistance_x)), cursorPos.y, 0.418f);
-            //    cursorR = true;
-            //}
-
-            //nextCursorPos = new Vector3(cursorPos.x + Input.GetAxis("Horizontal")* keyspeed, cursorPos.y, 0.418f);
-            //cursorR = true;
-            if (Input.GetKey(KeyCode.RightArrow))
+            if (Input.GetKey(KeyCode.RightArrow) && VRUser.extraControls)
             {
                 nextCursorPos += new Vector3(.06f * cursorSpeed * Time.deltaTime, 0f, 0f);
                 cursorR = true;
@@ -734,15 +510,7 @@ public class StateManager : MonoBehaviour {
 
         if (moveCursorU)
         {
-            //if ((Kinect.LHandPos.y - Kinect.LShoulderPos.y) > (SimpleTutorial.LHandUpAverage * 0.4f) && (Kinect.RHandPos.y - Kinect.RShoulderPos.y) > (SimpleTutorial.RHandUpAverage * 0.4f))
-            //{
-            //    nextCursorPos = new Vector3(cursorPos.x, (cursorPos.y + (0.0005f + 0.02f * avgDistance_y)), 0.418f);
-            //    cursorU = true;
-            //}
-
-            //nextCursorPos = new Vector3(cursorPos.x, cursorPos.y + Input.GetAxis("Vertical") * keyspeed2, 0.418f);
-            //cursorU = true;
-            if (Input.GetKey(KeyCode.UpArrow))
+            if (Input.GetKey(KeyCode.UpArrow) && VRUser.extraControls)
             {
                 nextCursorPos += new Vector3(0f, .048f * cursorSpeed * Time.deltaTime, 0f);
                 cursorU = true;
@@ -751,56 +519,21 @@ public class StateManager : MonoBehaviour {
 
         if (moveCursorD)
         {
-            //if ((Kinect.LHandPos.y - Kinect.LShoulderPos.y) < (SimpleTutorial.LHandDownAverage * 0.4f) && (Kinect.RHandPos.y - Kinect.RShoulderPos.y) < (SimpleTutorial.RHandDownAverage * 0.4f))
-            //{
-            //    nextCursorPos = new Vector3(cursorPos.x, (cursorPos.y - (0.0005f + 0.02f * avgDistance_y)), 0.418f);
-            //    cursorD = true;
-            //}
-
-            //nextCursorPos = new Vector3(cursorPos.x, cursorPos.y + Input.GetAxis("Vertical") * keyspeed2, 0.418f);
-            //cursorD = true;
-            if (Input.GetKey(KeyCode.DownArrow))
+            if (Input.GetKey(KeyCode.DownArrow) && VRUser.extraControls)
             {
                 nextCursorPos += new Vector3(0f, -.048f * cursorSpeed * Time.deltaTime, 0f);
                 cursorD = true;
             }
         }
         
-        if (moveCursorL || moveCursorR || moveCursorU || moveCursorD || cursorAdd != new Vector3(0f, 0f, 0f))
+        /*if (moveCursorL || moveCursorR || moveCursorU || moveCursorD || cursorAdd != new Vector3(0f, 0f, 0f))
         {
             nextCursorPos += cursorAdd;
         }
-        cursorAdd = new Vector3(0f,0f,0f);
+        cursorAdd = new Vector3(0f,0f,0f);*/
 
-        nextCursorPos.z = -cursorSize;
-
-        //Cursor cannot move past screen borders (bondaries)
-        if (nextCursorPos.x > MakeWordBank.rightBound)
-        {
-            nextCursorPos.x = MakeWordBank.rightBound;
-        }
-        else if (nextCursorPos.x < MakeWordBank.leftBound)
-        {
-            nextCursorPos.x = MakeWordBank.leftBound;
-        }
-        else if (nextCursorPos.y > MakeWordBank.upperBound)
-        {
-            nextCursorPos.y = MakeWordBank.upperBound;
-        }
-        else if (nextCursorPos.y < MakeWordBank.lowerBound)
-        {
-            nextCursorPos.y = MakeWordBank.lowerBound;
-        }
-
-        //if (Input.GetKey(KeyCode.T))
-        //{
-        //    cursorSize += .0006f;
-        //}
-        //if (Input.GetKey(KeyCode.Y))
-        //{
-        //    cursorSize -= .0006f;
-        //}
-
+        //nextCursorPos.z = -cursorSize;
+        //originally where cursor bounds were... - migrated to VRUser
         if (makeCursReset)
         {
             cursorPos = new Vector3(0f, 0f, -cursorSize);
@@ -811,26 +544,15 @@ public class StateManager : MonoBehaviour {
             cursorPos = nextCursorPos;
         }
         Vector3 outCursor = cursorPos * cursorPosMod; //modifier to match tag vals (was 180)
-        Debug.Log("Cursor Info: " + cursorPos + ", *Mod: " + outCursor + ", Size: " + -cursorSize);
+        Debug.Log("Cursor Info: " + getCursorPosition() + ", Mag: " + getCursorPosition().magnitude + ", Size: " + -cursorSize);
 
         //Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
         //Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);
+    }
 
-        //buttons = 0;
-        //if (kinectReady)
-        //{
-        //    buttons |= falconButtons[0] ? 1 : 0; // middle button
-        //    buttons |= falconButtons[1] ? 2 : 0; // left button
-        //    buttons |= falconButtons[2] ? 4 : 0; // top button
-        //    buttons |= falconButtons[3] ? 2 : 0; // right button
-        //}
-        //else
-        //{
-        //    cursorPos = Input.mousePosition;
-        //    buttons |= Input.GetMouseButton(1) ? 1 : 0; // right mouse button
-        //    buttons |= Input.GetMouseButton(0) ? 2 : 0; // left mouse button
-        //}
-        //Debug.Log("Update() exit - StateManager");
+    public bool isGaming()
+    {
+        return userState == 2 || userState == 5 || userState == 7;
     }
 
     public void loadTags(int images, List<GameObject> tagExample) //loadTags(user.getLastImage())
@@ -842,15 +564,19 @@ public class StateManager : MonoBehaviour {
             newTag.name = tag.name;
             newTag.tag = tag.name;
             newTag.transform.position = tag.transform.position;
+            newTag.transform.localScale -= new Vector3(0.5f, 0.5f, 0f);
             newTag.layer = 4;
             tagsPlaced.Add(newTag);
         }
     }
 }
-
-//struct InvisTag
-//{
-//    string name;
-//    //color blue
-//    Vector3 location;
-//}
+/*public struct TagPlaced
+{
+    public GameObject tag;
+    public Vector3 headPos;
+    public TagPlaced(GameObject obj, Vector3 pos)
+    {
+        tag = obj;
+        headPos = pos;
+    }
+}*/
