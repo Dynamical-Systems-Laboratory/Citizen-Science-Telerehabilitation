@@ -126,6 +126,7 @@ public class VRUser : MonoBehaviour
             trueCursor.transform.position = centerer.transform.position;
             state.userControlActive = false;
             StateManager.makeCursReset = false;
+            ClickAction.dropObject();
         }
 
         if (state.isGaming())
@@ -283,7 +284,7 @@ public class VRUser : MonoBehaviour
         //HAPTICS
         float scaledVal = Math.Abs(OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch).y + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch).y +
                                    OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch).x + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch).x) / 4f;
-        Debug.Log("scaled val: " + scaledVal);
+        //Debug.Log("scaled val: " + scaledVal);
         OVRInput.SetControllerVibration(scaledVal, scaledVal, OVRInput.Controller.RTouch);
         OVRInput.SetControllerVibration(scaledVal, scaledVal, OVRInput.Controller.LTouch);
         //idea: after 15% of range of motion the cursor moves -15% and after 90% haptics signify closeness/surpassing limits
@@ -322,9 +323,23 @@ public class VRUser : MonoBehaviour
                 Debug.Log("VR State Error");
                 break;
         }
-        //TODO: bring back welcome panel
-        
-        //Debug.Log("Clicking: " + isClicking());
+
+        if (state.getSelected() != null)
+        {
+            Debug.Log("*Raycast starting up...");
+            Ray cursorRay = new Ray(state.getCursorPosition(), (state.getCursorPosition() - playerHead.transform.position).normalized);
+            RaycastHit[] hits = Physics.RaycastAll(cursorRay, (state.getCursorPosition() - playerHead.transform.position).magnitude);
+            foreach (RaycastHit hit in hits)
+            {
+                Debug.Log("**" + hit.collider.gameObject.name + ": " + hit.collider.gameObject.transform.position);
+                //RaycastHit hit = new RaycastHit();
+                if (Physics.Raycast(state.getCursorPosition(), (state.getCursorPosition() - playerHead.transform.position).normalized))
+                {
+                    //Instantiate(state.getSelected(), hit.point, Quaternion.identity);
+                    Debug.Log("*** raycast working???");
+                }
+            }
+        }
     }
     
     public void vrInfo()

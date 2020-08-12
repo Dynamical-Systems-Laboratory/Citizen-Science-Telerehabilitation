@@ -30,9 +30,13 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 
 	public static GameObject nextButton;
 	public static GameObject quitButton;
+
+	private static GameObject playerHead;
+	private static float showNum = 0; //random num that is shown in debug
 	public void Awake()
     {
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
+		playerHead = GameObject.Find("CenterEyeAnchor");
 
 		tagPrefab = GameObject.CreatePrimitive(PrimitiveType.Cube);
 		tagPrefab.name = "TagPrefab"; //So it can be destroyed
@@ -48,7 +52,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
         trashy = GameObject.Find("Bin");
 		nextButton = MakeWordBank.nextButton;
 		quitButton = MakeWordBank.quitButton;
-    }
+	}
 
     /* Clicking Logic:
      * * if the click action is called AND a tag is within a certain distance/location parameters relative to the cursor AND there is not another tag already selected it is clicked
@@ -65,6 +69,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 
 	//This method is only needed when the user has clicked a tag, and the instantiated GameObject tag needs to follow the cursor:
 	public void Update() {
+		Debug.Log("Show: " + showNum);
 		if (MakeWordBank.stepOfTutorial == 11 && trashedTags.Count != 0) {
 			for (int i = 0; i < trashedTags.Count; i++) {
 				Destroy (trashedTags [i]);
@@ -104,7 +109,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 				{
 					tag.transform.parent = canvas.transform;
 				}
-				tagCanvas.transform.localScale += new Vector3(.88f, .88f, .88f);
+				tagCanvas.transform.localScale += new Vector3(.885f, .885f, .885f);
 			}
 			state.tagsPlaced.Add(state.getSelected()); //adds to movement list
 			state.getSelected().layer = 16; //VisibleTags layer
@@ -112,12 +117,34 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			tagCanvas.transform.localScale -= new Vector3(.88f, .88f, .88f);
 
 			//MOVE tag to outter edge of sphere
-			//state.getSelected().transform.position = GameObject.Find("headsetForward").transform.position + screenScale(state.getSelected().transform.localPosition);
-			RaycastHit hit = new RaycastHit();
-			if (Physics.Raycast(state.getCursorPosition(), (state.getCursorPosition() - GameObject.Find("CenterEyeAnchor").transform.position)))
+			//option 1: raycasting
+			/*Ray cursorRay = new Ray(state.getCursorPosition(), (state.getCursorPosition() - playerHead.transform.position).normalized);
+			RaycastHit[] hits = Physics.RaycastAll(cursorRay, (state.getCursorPosition() - playerHead.transform.position).magnitude);
+			foreach (RaycastHit hit in hits)
+            {
+				//RaycastHit hit = new RaycastHit();
+				if (Physics.Raycast(state.getCursorPosition(), (state.getCursorPosition() - playerHead.transform.position).normalized))
+				{
+					//Instantiate(state.getSelected(), hit.point, Quaternion.identity);
+					Debug.Log(hit.collider.gameObject.name + ": " + hit.collider.gameObject.transform.position);
+				}
+			}*/
+
+			//option 2: movetoward till dist <= sphere radius
+			/* Alternatives to raycast
+			* Vector3.MoveToward()
+			* Quaternion.Lerp
+			* Quaternion.
+			*/
+			/*int i = 0;
+			while ((state.getSelected().transform.position - playerHead.transform.position).magnitude > 0.5f && i < 100)
 			{
-				Instantiate(state.getSelected(), hit.point, Quaternion.identity);
-			}
+				state.getSelected().transform.position = Vector3.MoveTowards(state.getCursorPosition(), playerHead.transform.position, 0.0005f * Time.deltaTime); //move in increments of 1?
+				i++;
+			}*/
+
+			//option 3: scale & transform (Roni's angle formula)
+			moveCursor();
 
 			if (state.tagsPlaced.Count > 1)
             {
@@ -330,18 +357,17 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		return 0;
 	}
 
-	public static Vector3 screenScale(Vector3 localPos, Vector3 headset)
+	public static void moveCursor()// takes localpos of cursor and transforms it to v3 of 
     { // x[-90, 88], y[-90, 66]
-		Vector3 outPos = new Vector3();
-
-		//Vector3 starting = localPos;
-		//Vector3 vect = localPos - headset;
-		//Raycast(localPos, vect, t?);
-		//RaycastHit ray;
-		//y = GameObject.Find("CenterEyeCamera").main
-
-
-		return outPos;
+		// a/A = b/B, (a*B)/A = b
+		float a = (GameObject.Find("headsetForward").transform.position - playerHead.transform.position).magnitude;
+		float A = (GameObject.Find("cursorCenter").transform.position - playerHead.transform.position).magnitude;
+		float B = (GameObject.Find("exampleCursor").transform.position - playerHead.transform.position).magnitude;
+		float b = a * B / A;
+		float offset = Math.Abs(B - A) / 7f;
+		offset = 1 - offset;
+		showNum = offset;
+		state.getSelected().transform.position = Vector3.MoveTowards(playerHead.transform.position, state.getSelected().transform.position, b*offset);
     }
 
 	public static void destroyTags() //error?
