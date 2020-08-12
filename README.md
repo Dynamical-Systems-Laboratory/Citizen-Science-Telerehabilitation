@@ -1,4 +1,4 @@
-# VR Interface for Citizen Science-Base Telerehabilitation (Citizen-Science-Telerehabilitation)
+# VR Interface for Citizen Science-Base Telerehabilitation
 ## Purpose
 Fostering a better option for stroke patients in their at-home rehabilitation.
 The initial vision was for patients to be able to better progress and feel motivated in completing their own rehabilitation without needing a healthcare provider to assist them through it.
