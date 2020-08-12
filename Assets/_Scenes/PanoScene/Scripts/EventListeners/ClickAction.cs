@@ -97,21 +97,28 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			state.getSelected().transform.localScale -= new Vector3(0.35f, 0.35f, 0f); //scale it down to 65% size (not thickness tho)
             tagIsFollowing = false;
 
-			//Tfor each obj already a child of the tag canvas, put somewhere else, transform canvas back up to original size, put new obj in, transform back to small scale, add old objs back
+			//for each obj already a child of the tag canvas, put somewhere else, transform canvas back up to original size, put new obj in, transform back to small scale, add old objs back
 			if (state.tagsPlaced.Count > 0)
             {
 				foreach (GameObject tag in state.tagsPlaced)
 				{
 					tag.transform.parent = canvas.transform;
 				}
-				tagCanvas.transform.localScale += new Vector3(.87f, .87f, .87f);
+				tagCanvas.transform.localScale += new Vector3(.88f, .88f, .88f);
 			}
 			state.tagsPlaced.Add(state.getSelected()); //adds to movement list
 			state.getSelected().layer = 16; //VisibleTags layer
 			state.getSelected().transform.parent = tagCanvas.transform; //make child of other canvas to save pos
-			tagCanvas.transform.localScale -= new Vector3(.87f, .87f, .87f);
-			state.getSelected().transform.position = (state.getSelected().transform.position - GameObject.Find("CenterEyeAnchor").transform.position) / 2.15f;
-			state.getSelected().transform.position += GameObject.Find("CenterEyeAnchor").transform.position; //bring tag closer
+			tagCanvas.transform.localScale -= new Vector3(.88f, .88f, .88f);
+
+			//MOVE tag to outter edge of sphere
+			//state.getSelected().transform.position = GameObject.Find("headsetForward").transform.position + screenScale(state.getSelected().transform.localPosition);
+			RaycastHit hit = new RaycastHit();
+			if (Physics.Raycast(state.getCursorPosition(), (state.getCursorPosition() - GameObject.Find("CenterEyeAnchor").transform.position)))
+			{
+				Instantiate(state.getSelected(), hit.point, Quaternion.identity);
+			}
+
 			if (state.tagsPlaced.Count > 1)
             {
 				foreach (GameObject tag in state.tagsPlaced)
@@ -119,9 +126,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 					tag.transform.parent = tagCanvas.transform;
 				}
 			}
-				//TODO: undo TagPlaced struct stuff
-
-				state.setSelected(null);
+			state.setSelected(null);
         }
 
 		else if (objectClicked != null && objectClicked.tag == "Bin" && state.getSelected() != null) // The bin was pressed, so we move the tag to the bin
@@ -181,58 +186,6 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			MakeWordBank.nextImage(MakeWordBank.imageIndex);
 			//tagSphere.GetComponent<Renderer>().material = imageMaterials[imageIndex]
 		}
-
-        ////else if ((objectClicked == null || objectClicked.tag == "Image") && state.getSelected() != null) // The image area was pressed, so here we cast a tag onto the sphere
-        ////{
-        //Vector3 cursorPosition = Camera.current.WorldToScreenPoint(state.getCursorPosition()); // Use the cursor position to cast a ray onto the sphere
-        //Ray ray = Camera.main.ScreenPointToRay(cursorPosition);  // The ray that will be casted onto the sphere
-
-        //// In the following two lines, since the sphere collider is outside the sphere
-        //// We move the point of the ray well outside of the sphere, then invert the direction
-        //// This way, we cast ray to the same point of the sphere, but from the outside rather than the inside
-        //ray.origin = ray.GetPoint(100);
-        //ray.direction = -ray.direction;
-
-        //RaycastHit hit; // The raycast
-
-        //Debug.DrawRay(ray.origin, ray.direction, Color.red, 5);
-        //if (Physics.Raycast(ray, out hit))
-        //{
-
-        //}
-
-        ////game object instiantiated
-        //GameObject newObject = Instantiate(tagPrefab, canvas.transform.position, Quaternion.identity); // Create the new object using the tagPrefab
-        //newObject.transform.LookAt(Vector3.zero); // Make it face the center of the sphere*
-        //newObject.transform.localScale = new Vector3(0.25f, 0.1f, 0.00001f);
-        //newObject.name = state.getSelected().transform.parent.name; // CHANGE THIS LATER
-        //newObject.transform.parent = sphere.transform;
-        ////newObject.GetComponent<Renderer>().material = new Material(Shader.Find("Diffuse"));
-
-        ////object to hold container
-        //GameObject textContainer = new GameObject();
-        //textContainer.transform.parent = newObject.transform;
-
-        ////creates text thing that displays
-        //TextMesh text = textContainer.AddComponent<TextMesh>();
-        //text.text = state.getSelected().transform.parent.name;
-        //text.fontSize = 20;
-        //text.alignment = TextAlignment.Center;
-        //text.anchor = TextAnchor.MiddleCenter;
-        //text.name = state.getSelected().transform.parent.name + "_Text";
-
-        ///*state.getSelected().transform.localScale /= 239.36f; // state.cursorPosMod
-        //      state.getSelected().transform.position = state.getCursorPosition(); // state.cursorPosMod
-        //state.getSelected().transform.LookAt(Vector3.zero);
-        //state.getSelected().GetComponentInChildren<Text>().color = Color.red;*
-
-        ////get rid of the existing copy
-        //Destroy(state.getSelected());*/
-        //state.setSelected(null);
-
-        ////stop following cursor
-        //tagIsFollowing = false;
-        ////}
         else
         {
 			Debug.Log("OnPointerClicked is not doing the things...");
@@ -376,6 +329,20 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		}
 		return 0;
 	}
+
+	public static Vector3 screenScale(Vector3 localPos, Vector3 headset)
+    { // x[-90, 88], y[-90, 66]
+		Vector3 outPos = new Vector3();
+
+		//Vector3 starting = localPos;
+		//Vector3 vect = localPos - headset;
+		//Raycast(localPos, vect, t?);
+		//RaycastHit ray;
+		//y = GameObject.Find("CenterEyeCamera").main
+
+
+		return outPos;
+    }
 
 	public static void destroyTags() //error?
     {
@@ -538,7 +505,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 				Ray ray = Camera.main.ScreenPointToRay(cursorPosition);  // The ray that will be casted onto the sphere
 
 				// In the following two lines, since the sphere collider is outside the sphere
-				// We move the point of the ray well outside of the sphere, then invert the direction
+				// We move the point of the ray wellsp outside of the here, then invert the direction
 				// This way, we cast ray to the same point of the sphere, but from the outside rather than the inside
 				ray.origin = ray.GetPoint(100);
 				ray.direction = -ray.direction;
