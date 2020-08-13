@@ -5,7 +5,7 @@ public class FollowUserRotation : MonoBehaviour
 {
 	void Update () 
 	{
-		KinectManager manager = KinectManager.Instance;
+		/*KinectManager manager = KinectManager.Instance;
 
 		if(manager && manager.IsInitialized())
 		{
@@ -30,6 +30,6 @@ public class FollowUserRotation : MonoBehaviour
 					transform.rotation = rotationShoulders;
 				}
 			}
-		}
+		}*/
 	}
 }

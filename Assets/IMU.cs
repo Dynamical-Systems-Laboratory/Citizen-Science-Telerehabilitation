@@ -42,7 +42,7 @@ public class IMU : MonoBehaviour
     {
         while (false)
         {  //never happens cuz update bad ************************************************************************************
-            try
+            /*try
             {
                 string new_line = sp.ReadLine();//read from the port that the arduino is accessing
 
@@ -104,7 +104,7 @@ public class IMU : MonoBehaviour
                     sp.Open();
                     sp.ReadTimeout = 2500;
                 }
-            }
+            }*/
         }
     }
 

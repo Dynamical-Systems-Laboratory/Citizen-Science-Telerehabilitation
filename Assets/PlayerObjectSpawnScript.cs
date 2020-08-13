@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-
-public class PlayerObjectSpawnScript : NetworkBehaviour {
+/*
+public class PlayerObjectSpawnScript{// : NetworkBehaviour {
 
 	// Use this for initialization
 
@@ -24,3 +24,4 @@ public class PlayerObjectSpawnScript : NetworkBehaviour {
 		
 	}
 }
+*/

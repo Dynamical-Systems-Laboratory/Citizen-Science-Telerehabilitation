@@ -11,7 +11,7 @@ using System.Text;
 public class AvatarControllerClassic : AvatarController
 {	
 	// Public variables that will get matched to bones. If empty, the Kinect will simply not track it.
-	public Transform HipCenter;
+	/*public Transform HipCenter;
 	public Transform Spine;
 	public Transform Neck;
 	public Transform Head;
@@ -92,7 +92,7 @@ public class AvatarControllerClassic : AvatarController
 //		{
 //			bodyRoot = transform;
 //		}
-	}
+	}*/
 	
 }
 

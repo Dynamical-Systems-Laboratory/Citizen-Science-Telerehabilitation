@@ -21,11 +21,11 @@ public class GetJointPositionDemo : MonoBehaviour
 
 
 	// start time of data saving to csv file
-	private float saveStartTime = -1f;
+	//private float saveStartTime = -1f;
 
 
 	void Update () 
-	{
+	{/*
 		if(isSaving)
 		{
 			// create the file, if needed
@@ -75,7 +75,7 @@ public class GetJointPositionDemo : MonoBehaviour
 				}
 			}
 		}
-
+		*/
 	}
 
 }

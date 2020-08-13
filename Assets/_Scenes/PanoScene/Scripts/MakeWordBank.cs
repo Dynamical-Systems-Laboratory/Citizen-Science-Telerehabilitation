@@ -197,7 +197,7 @@ public class MakeWordBank : MonoBehaviour {
 
     public static GameObject taggerPanel, trasherPanel;
 
-    int buttons;
+    //int buttons;
     int buttonsPrev;
 
     //VideoPlayers
@@ -281,7 +281,7 @@ public class MakeWordBank : MonoBehaviour {
         quitButton = GameObject.Find("HomeButton");
         cursorCamera.SetActive(false);
 
-        DataCollector.MakeFolder();
+       // DataCollector.MakeFolder();
         tagSphere = GameObject.FindGameObjectsWithTag("TagSphere"); //tag spheres
         imageMaterials = new Material[imageMaterialsToDragIn.Length];
         tutorialImageMaterial = tutorialImageMaterialDragFromEditor;
@@ -616,7 +616,7 @@ public class MakeWordBank : MonoBehaviour {
             }
             //}
 
-            buttons = state.getButtons();
+            //buttons = state.getButtons();
             if (stepOfTutorial == 0)
             { //Welcome screen step:
                 //timeSpentAfterSurvey += Time.deltaTime;
@@ -1225,13 +1225,13 @@ public class MakeWordBank : MonoBehaviour {
                     }
                 }
             }
-            buttonsPrev = buttons;
+            //buttonsPrev = buttons;
             prevClick = StateManager.falconButtons[1];
         }
         if (inScreenBeforeExperiment)
         {
-            buttons = state.getButtons();
-            if (buttons > 0 && buttonsPrev == 0)
+            //buttons = state.getButtons();
+            /*if (buttons > 0 && buttonsPrev == 0)
             {
                 //dataCollector.SetActive (true);
                 //welcomeScreen.SetActive (false);
@@ -1241,7 +1241,7 @@ public class MakeWordBank : MonoBehaviour {
                 inScreenBeforeExperiment = false;
                 waitingForOtherPlayer = true;
             }
-            buttonsPrev = buttons;
+            buttonsPrev = buttons;*/
         }
         if (waitingForOtherPlayer)
         {
@@ -1357,7 +1357,7 @@ public class MakeWordBank : MonoBehaviour {
         toReplace.name = newName; //replace name of tagtag
     }
 
-    public static bool nextImage(int img)
+    public static bool nextImage(int img = 0)
     { //Change to the next image, reset tags, clear bin
         if (img >= imageMaterials.Length - 1)
         { //On last image, then quit:

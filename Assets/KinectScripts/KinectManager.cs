@@ -10,6 +10,7 @@ using System.Text;
 
 public class KinectManager : MonoBehaviour
 {
+	/*
 	public enum Smoothing : int { None, Default, Medium, Aggressive }
 	
 	
@@ -84,7 +85,7 @@ public class KinectManager : MonoBehaviour
 	public List<MonoBehaviour> GestureListeners;
 	
 	// GUI Text to show messages.
-	public GUIText CalibrationText;
+	//public GUIText CalibrationText;
 	
 	// GUI Texture to display the hand cursor for Player1
 	public GameObject HandCursor1;
@@ -96,7 +97,7 @@ public class KinectManager : MonoBehaviour
 	public bool ControlMouseCursor = false;
 
 	// GUI Text to show gesture debug message.
-	public GUIText GesturesDebugText;
+	//public GUIText GesturesDebugText;
 	
 
 	// Bool to keep track of whether Kinect has been initialized
@@ -1304,10 +1305,10 @@ public class KinectManager : MonoBehaviour
 		}
 		
 		// Kill the program with ESC.
-		/*if(Input.GetKeyDown(KeyCode.Escape))
-		{
-			Application.Quit();
-		}*/
+		//if(Input.GetKeyDown(KeyCode.Escape))
+		//{
+		//	Application.Quit();
+		//}
 	}
 	
 	// Make sure to kill the Kinect on quitting.
@@ -1326,7 +1327,7 @@ public class KinectManager : MonoBehaviour
     {
 		if(KinectInitialized)
 		{
-	        if(ComputeUserMap && (/**(allUsers.Count == 0) ||*/ DisplayUserMap))
+	        if(ComputeUserMap && (DisplayUserMap)) // (allUsers.Count == 0) ||
 	        {
 				if(usersMapRect.width == 0 || usersMapRect.height == 0)
 				{
@@ -1351,7 +1352,7 @@ public class KinectManager : MonoBehaviour
 	            GUI.DrawTexture(usersMapRect, usersLblTex);
 	        }
 
-			else if(ComputeColorMap && (/**(allUsers.Count == 0) ||*/ DisplayColorMap))
+			else if(ComputeColorMap && ( DisplayColorMap))
 			{
 				if(usersClrRect.width == 0 || usersClrTex.height == 0)
 				{
@@ -1774,8 +1775,8 @@ public class KinectManager : MonoBehaviour
 						
 //						if(j == (int)KinectWrapper.NuiSkeletonPositionIndex.HipCenter)
 //						{
-//							string debugText = String.Format("{0} {1}", /**(int)skeletonData.eSkeletonPositionTrackingState[j], */
-//								player1JointsTracked[j] ? "T" : "F", player1JointsPos[j]/**, skeletonData.SkeletonPositions[j]*/);
+//							string debugText = String.Format("{0} {1}", (int)skeletonData.eSkeletonPositionTrackingState[j], 
+//								player1JointsTracked[j] ? "T" : "F", player1JointsPos[j], skeletonData.SkeletonPositions[j]);
 //							
 //							if(CalibrationText)
 //								CalibrationText.guiText.text = debugText;
@@ -2211,7 +2212,7 @@ public class KinectManager : MonoBehaviour
 		
 		return false;
 	}
-	
+	*/
 }
 
 

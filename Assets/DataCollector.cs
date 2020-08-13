@@ -7,15 +7,15 @@ using System;
 using UnityEngine.UI;
 using System.Linq;
 using UnityGoogleDrive;
-using System.Text;
+//using System.Text;
 
 public class DataCollector : MonoBehaviour
 {
 
-    static int sequenceIndex = 0;
-    static int imageIndex = 0;
-    static int numTagsRemaining = 5;
-    static int userID = 0;
+   // static int sequenceIndex = 0;
+    //static int imageIndex = 0;
+   // static int numTagsRemaining = 5;
+   // static int userID = 0;
 
     static float elapsedTime; // Running time of the app
     static string timeLog;
@@ -90,9 +90,9 @@ public class DataCollector : MonoBehaviour
     // Use this for initialization
     public static void MakeFolder() {
         Directory.CreateDirectory(dataPath);
-        userID = Directory.GetDirectories(dataPath).Length;
+        //userID = Directory.GetDirectories(dataPath).Length;
 
-        userPath = dataPath + "User-" + userID + '/';
+       // userPath = dataPath + "User-" + userID + '/';
         Directory.CreateDirectory(userPath);
     }
 
@@ -456,14 +456,14 @@ public class DataCollector : MonoBehaviour
 		TagInfo nTagInfo;
 		nTagInfo.position = position;
 		nTagInfo.name = name;
-		nTagInfo.userID = userID;
+		//nTagInfo.userID = userID;
 		nTagInfo.timeStamp = elapsedTime;
-		tagInfo.Add (nTagInfo);
+		//tagInfo.Add (nTagInfo);
 
 		//Write to memory here instead of Flush() :
 
 		Transform tagTransform = ClickAction.sphere.transform;
-		string userPath = dataPath + "User-" + userID + '/';
+	//	string userPath = dataPath + "User-" + userID + '/';
 		Directory.CreateDirectory(userPath);
 
 		// Log tag data

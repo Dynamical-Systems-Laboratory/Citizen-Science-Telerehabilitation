@@ -35,11 +35,11 @@ public class StateManager : MonoBehaviour {
 
     public static bool[] falconButtons = new bool[4];
 
-    private int buttons; // bit 1 is the pan button, bit 2 is the click button, bit 3 is the top button of the falcon
+    //private int buttons; // bit 1 is the pan button, bit 2 is the click button, bit 3 is the top button of the falcon
 
     public static bool kinectReady = false;
 
-    private float pushCoolDown = 0f;
+    //private float pushCoolDown = 0f;
 
     private float prevLHand_z = Kinect.LHandPos.z;
     private float prevRHand_z = Kinect.RHandPos.z;
@@ -64,10 +64,10 @@ public class StateManager : MonoBehaviour {
 
     private List<Tuple<float, float, float, float>> speeds;
 
-    private float speedInitializeTime = 0f;
+   // private float speedInitializeTime = 0f;
 
-    private float avgDistance_x = 0f;
-    private float avgDistance_y = 0f;
+    //private float avgDistance_x = 0f;
+    //private float avgDistance_y = 0f;
 
     public static bool cameraL = false;
     public static bool cameraR = false;
@@ -277,10 +277,10 @@ public class StateManager : MonoBehaviour {
         return cameraPos; //GameObject.Find("CenterEyeAnchor").transform.rotation.eulerAngles;
     }
 
-    public int getButtons()
+    /*public int getButtons()
     {
         return buttons;
-    }
+    }*/
 
     public bool[] getFalconButtons()
     {
@@ -358,21 +358,21 @@ public class StateManager : MonoBehaviour {
         profileCull = (1 << LayerMask.NameToLayer("Profile"));
         //cursorCull = GameObject.Find("CursorCamera").GetComponent<Camera>().cullingMask;
     }
-    private IEnumerator Start()
+    /*private IEnumerator Start()
     {
         yield return new WaitForSeconds(5f);
         this.falconCursor = GameObject.Find("CursorSphere");
         this.falconCamera = GameObject.Find("CursorCamera").GetComponent<Camera>();
         //mainCamera = GameObject.Find("Main Camera");
         //mainCamera = MakeWordBank.mainCamera;
-    }
+    }*/
 
     private static bool stateInit = false;
     private void Update()
     {
         if (!stateInit)
         {
-            updateState();
+            //updateState();
             stateInit = true;
         }
         //updateState(); //testing...**

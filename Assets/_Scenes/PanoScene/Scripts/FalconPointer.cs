@@ -12,37 +12,37 @@ public class FalconPointer : PointerInputModule
     private bool[] buttons;
     private bool prevClick; // To know if the button had been pressed in the last frame
 
-    StateManager state; // State of the application
+    //StateManager state; // State of the application
 
     public override void Process()
 	{
 		//PointerEventData falconEventData = this.GetFalconEventData();
 	}
 
-    public void Awake ()
+    /*public void Awake ()
     {
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
         this.buttons = new bool[] { false, false, false, false }; // Buttons on the Falcon
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
-    }
+    }*/
 
     public void Update()
     {
-        if (state.isKinectReady())
+        /*if (state.isKinectReady())
         {
             this.buttons = state.getFalconButtons(); // Which buttons are currently pressed?
             if (!prevClick && (this.buttons[3] || buttons[1]))
             {
                 //Process();
                 try {
-                    eventListener.OnPointerClick(GetFalconEventData());
+                    //eventListener.OnPointerClick(GetFalconEventData());
                 }
                 catch (Exception e) {
                     Debug.Log("Cannot process eventListener.OnPointerClick(GetFalconEventData())");
                 }
             }
             prevClick = (this.buttons[3] || buttons[1]);
-        }
+        }*/
     }
 
     public virtual PointerEventData GetFalconEventData() //was protected

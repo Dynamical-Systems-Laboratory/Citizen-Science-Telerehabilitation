@@ -6,7 +6,7 @@ public class SetSceneAvatars : MonoBehaviour
 
 	void Start () 
 	{
-		KinectManager manager = KinectManager.Instance;
+		/*KinectManager manager = KinectManager.Instance;
 		
 		if(manager)
 		{
@@ -37,6 +37,7 @@ public class SetSceneAvatars : MonoBehaviour
 			}
 
 		}
+		*/
 	}
 	
 }

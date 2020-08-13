@@ -39,9 +39,9 @@ public class CubemanController : MonoBehaviour
 	private Vector3 initialPosition;
 	private Quaternion initialRotation;
 	private Vector3 initialPosOffset = Vector3.zero;
-	private uint initialPosUserID = 0;
+	//private uint initialPosUserID = 0;
 	
-	
+	/*
 	void Start () 
 	{
 		//store bones in a list for easier access
@@ -199,5 +199,5 @@ public class CubemanController : MonoBehaviour
 		}
 
 	}
-
+	*/
 }

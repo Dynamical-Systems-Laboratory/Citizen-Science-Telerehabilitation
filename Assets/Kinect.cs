@@ -42,10 +42,10 @@ public class Kinect : MonoBehaviour
     // Update is called once per frame
     void Update()
     { //Getting all joint positions
-        KinectManager manager = KinectManager.Instance;
+        //KinectManager manager = KinectManager.Instance;
 
         // get 1st player
-        playerID = manager != null ? manager.GetPlayer1ID() : 0;
+        //playerID = manager != null ? manager.GetPlayer1ID() : 0;
 
         /*CHipPos = manager.GetJointPosition(playerID, 0); //should just be pos 0's
         SpinePos = manager.GetJointPosition(playerID, 1);

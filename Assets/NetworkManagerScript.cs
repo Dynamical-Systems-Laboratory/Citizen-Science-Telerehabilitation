@@ -6,15 +6,15 @@ using UnityEngine.Networking;
 public class NetworkManagerScript : MonoBehaviour {
 	public static bool hudOff = false;
     public static bool turnedOff = false;
-	NetworkManagerHUD hd;
+	//NetworkManagerHUD hd;
 	// Use this for initialization
 	void Start () {
-		hd = FindObjectOfType<NetworkManagerHUD>();
+		//hd = FindObjectOfType<NetworkManagerHUD>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if (hudOff && hd.enabled) {
+		/*if (hudOff && hd.enabled) {
 			if (!turnedOff)
             {
                 hd.enabled = false;
@@ -25,6 +25,6 @@ public class NetworkManagerScript : MonoBehaviour {
         {
             hd.enabled = !hd.enabled;
             hudOff = !hd.enabled;
-        }
+        }*/
 	}
 }

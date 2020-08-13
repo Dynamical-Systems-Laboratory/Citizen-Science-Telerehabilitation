@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ClickAction : MonoBehaviour, IPointerClickHandler
+public class ClickAction : MonoBehaviour //, IPointerClickHandler
 {
     public static StateManager state; // State of the application
 
@@ -367,6 +367,7 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 	}
 
 	//old...
+	/*
 	public void OnPointerClick(PointerEventData eventData) //not in use atm...
 	{
 		// OnClick code goes here ...
@@ -376,23 +377,21 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 
 		if (objectClicked.tag == "Tag") // A tag was pressed
 		{
-			/*
-			if (MakeWordBank.inTutorial && MakeWordBank.stepOfTutorial != 4 && MakeWordBank.stepOfTutorial != 8)
-            {
-                return;
-            }
-			if (MakeWordBank.stepOfTutorial == 8 && MakeWordBank.timeSpentOnStep8 <= 0.25f) {
-				return; //prevents glitch
-			}
+			//if (MakeWordBank.inTutorial && MakeWordBank.stepOfTutorial != 4 && MakeWordBank.stepOfTutorial != 8)
+   //         {
+   //             return;
+   //         }
+			//if (MakeWordBank.stepOfTutorial == 8 && MakeWordBank.timeSpentOnStep8 <= 0.25f) {
+			//	return; //prevents glitch
+			//}
             
-			if (objectClicked.GetComponentInChildren<Text> ().color == Color.red) {
-				return; //Prevents trasher from clicking on a tag the tagger has selected in multiplayer
-			}
-            if (objectClicked.GetComponent<Text>() != null && objectClicked.GetComponent<Text>().color == Color.red)
-            {
-                return;
-            }
-            */
+			//if (objectClicked.GetComponentInChildren<Text> ().color == Color.red) {
+			//	return; //Prevents trasher from clicking on a tag the tagger has selected in multiplayer
+			//}
+   //         if (objectClicked.GetComponent<Text>() != null && objectClicked.GetComponent<Text>().color == Color.red)
+   //         {
+   //             return;
+   //         }
 
 			Debug.Log(objectClicked.name); // Name of the object
 			GameObject currentTag = state.getSelected();
@@ -589,4 +588,5 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 			}
 		}
 	}
+	*/
 }

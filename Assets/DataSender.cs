@@ -19,7 +19,7 @@ public class DataSender : MonoBehaviour
 
         var bytes = System.IO.File.ReadAllBytes("Builds/Data/User-5/20190716_IMU_Data.csv");
         var file = new UnityGoogleDrive.Data.File { Name = "20190716_IMU_Data.csv", Content = bytes };
-        UnityGoogleDrive.Helpers.CreateOrUpdateFileAtPathAsync(file, "/Test/user-0/20190716_IMU_Data.csv");
+        //UnityGoogleDrive.Helpers.CreateOrUpdateFileAtPathAsync(file, "/Test/user-0/20190716_IMU_Data.csv");
 
         //bytes = System.IO.File.ReadAllBytes("Builds/Data/User-5/20190716_Kinect_Data.csv");
         //file = new UnityGoogleDrive.Data.File { Name = "20190716_Kinect_Data.csv", Content = bytes };

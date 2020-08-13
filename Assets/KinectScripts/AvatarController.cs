@@ -10,7 +10,7 @@ using System.Text;
 
 [RequireComponent(typeof(Animator))]
 public class AvatarController : MonoBehaviour
-{	
+{	/*
 	// Bool that has the characters (facing the player) actions become mirrored. Default false.
 	public bool mirroredMovement = false;
 	
@@ -501,6 +501,6 @@ public class AvatarController : MonoBehaviour
 		{4, new List<KinectWrapper.NuiSkeletonPositionIndex> {KinectWrapper.NuiSkeletonPositionIndex.ShoulderRight, KinectWrapper.NuiSkeletonPositionIndex.ShoulderCenter} },
 		{9, new List<KinectWrapper.NuiSkeletonPositionIndex> {KinectWrapper.NuiSkeletonPositionIndex.ShoulderLeft, KinectWrapper.NuiSkeletonPositionIndex.ShoulderCenter} },
 	};
-	
+	*/
 }
 

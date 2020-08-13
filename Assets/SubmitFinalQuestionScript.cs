@@ -21,7 +21,7 @@ public class SubmitFinalQuestionScript : MonoBehaviour {
     public Button submitButton;
 
     public string finalGenderChoice = "";
-	bool notAwake = true;
+	//bool notAwake = true;
 
 	void Start() {
 		Vector3 pos = transform.localPosition;
