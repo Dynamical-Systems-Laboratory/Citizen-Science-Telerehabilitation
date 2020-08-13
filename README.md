@@ -27,3 +27,5 @@ In the interim, the project's controls were changed to the keyboard to make navi
 ### Project Specifications
 Unity Version 2019.2.8f1 (2019.1.6f1 previously), 
 Edited primarily through Visual Studio
+## View/Play Access to Game
+https://drive.google.com/file/d/1pm9YrqQNMTC-w-QHhLDQQA2GcD1DojAp/view?usp=sharing
