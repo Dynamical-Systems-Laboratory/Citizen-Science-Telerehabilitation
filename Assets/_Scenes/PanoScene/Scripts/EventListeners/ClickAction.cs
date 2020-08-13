@@ -255,16 +255,9 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		{
 			return 4;
 		}
-		/*else if (diff.y < 16.7 && diff.y >) //-44.6, 16.7
-		{
-
-        }*/
+		
 		return 0;
 	}
-	/*public static bool tagClose(Vector3 pos)
-    {
-		return tagClose(pos) != 0;
-    }*/
 	public static bool binClose(Vector3 pos) //bin
 	{
 		Vector3 diff = pos - state.getCursorPosition();

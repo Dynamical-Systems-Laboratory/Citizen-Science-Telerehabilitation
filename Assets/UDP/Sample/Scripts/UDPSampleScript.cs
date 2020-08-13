@@ -21,7 +21,7 @@ public class UDPSampleScript : MonoBehaviour
     private static bool m_Initialized;
 
     PurchaseListener m_PurchaseListener;
-    InitListener m_InitListener;
+    //InitListener m_InitListener;
     LicenseCheckListener m_LicenseCheckListener;
 
 
@@ -30,7 +30,7 @@ public class UDPSampleScript : MonoBehaviour
         #region Basic Information Initialization
 
         m_PurchaseListener = new PurchaseListener();
-        m_InitListener = new InitListener();
+        //m_InitListener = new InitListener();
         m_LicenseCheckListener = new LicenseCheckListener();
 
         #endregion
@@ -93,7 +93,7 @@ public class UDPSampleScript : MonoBehaviour
             m_Initialized = false;
             Debug.Log("Init button is clicked.");
             Show("Initializing");
-            StoreService.Initialize(m_InitListener);
+            //StoreService.Initialize(m_InitListener);
         });
 
         /*
@@ -203,7 +203,7 @@ public class UDPSampleScript : MonoBehaviour
     /// <summary>
     /// Init Listener
     /// </summary>
-    public class InitListener : IInitListener
+    /*public class InitListener : IInitListener
     {
         public void OnInitialized(UserInfo userInfo)
         {
@@ -217,7 +217,7 @@ public class UDPSampleScript : MonoBehaviour
             Debug.Log("[Game]OnInitializeFailed: " + message);
             Show("Initialize Failed: " + message);
         }
-    }
+    }*/
 
     public class LicenseCheckListener : ILicensingListener
     {
