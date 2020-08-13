@@ -139,7 +139,7 @@ public class StateManager : MonoBehaviour {
 
     public bool userControlActive = false; //bool that controls the reset mechanic for the 
 
-    private int userState = 2;//6;
+    private int userState = 6;
     /* 0 = Quit
      * 1 = Home
      * 2 = In-Game
@@ -372,7 +372,7 @@ public class StateManager : MonoBehaviour {
     {
         if (!stateInit)
         {
-            //updateState();
+            updateState();
             stateInit = true;
         }
         //updateState(); //testing...**
