@@ -32,8 +32,8 @@ public class IMU : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        sp.Open();
-        sp.ReadTimeout = 2500; //milliseconds before time-out when read operation does not finish
+        //sp.Open();
+        //sp.ReadTimeout = 2500; //milliseconds before time-out when read operation does not finish
         
     }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 using OVRTouchSample;
 using System;
 using UnityEngine.UI;
-using UnityEditor.Build.Content;
+//using UnityEditor.Build.Content;
 
 public class VRUser : MonoBehaviour
 {
@@ -87,11 +87,6 @@ public class VRUser : MonoBehaviour
         interactables.Add(GameObject.Find("Bin"));
         tagColor = interactables[2].GetComponent<Image>().color; //precausion
         binColor = interactables[6].GetComponent<Image>().color;
-
-        pos1 = interactables[2].transform.localPosition;
-        pos2 = interactables[3].transform.localPosition;
-        pos3 = interactables[4].transform.localPosition;
-        pos4 = interactables[5].transform.localPosition;
     }
 
     // Update is called once per frame
@@ -132,7 +127,7 @@ public class VRUser : MonoBehaviour
                     interactables[3].GetComponent<Image>().color = tagColor;
                     interactables[4].GetComponent<Image>().color = tagColor;
                     interactables[5].GetComponent<Image>().color = tagColor;
-                    GameObject.Find("Trash image").GetComponent<Image>().color = binUnhighlight; //trash
+                    //GameObject.Find("Trash image").GetComponent<Image>().color = binUnhighlight; //trash
                     interactables[6].GetComponent<Image>().color = binColor;
                     break;
                 case 1:
@@ -142,8 +137,8 @@ public class VRUser : MonoBehaviour
                     interactables[1].GetComponent<Image>().color = highlightColor;
                     break;
                 case 7:
-                    GameObject.Find("Trash image").GetComponent<Image>().color = highlightColor;
-                    interactables[6].GetComponent<Image>().color = binColor2;
+                    //GameObject.Find("Trash image").GetComponent<Image>().color = binColor2;
+                    interactables[6].GetComponent<Image>().color = highlightColor;
                     break;
                 default:
                     //tags (converted 2-5)
@@ -437,7 +432,7 @@ public class VRUser : MonoBehaviour
         {
             return 6;
         }
-        else if (interactables[6].name == "Bin" && ClickAction.binClose(interactables[6].transform.localPosition))
+        else if (ClickAction.binClose())
         {
             return 7;
         }

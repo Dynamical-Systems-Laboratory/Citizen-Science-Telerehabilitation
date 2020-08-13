@@ -91,7 +91,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
         //{
         //    objectClicked = background;
         //}
-        if (objectClicked == null && binClose(GameObject.Find("Bin").transform.localPosition))
+        if (objectClicked == null && binClose())
 		{//if the cursor is over the trash, the obj we are looking at is the trash
 			objectClicked = trashy;
         }
@@ -163,12 +163,12 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			//	DataCollector.AddTag(state.getSelected().transform.parent.name);
 			//}
 			state.getSelected().GetComponentInChildren<Text>().color = Color.black; //transform tag
-			state.getSelected().transform.localScale -= new Vector3(0.85f, 0.85f, 0f);
+			state.getSelected().transform.localScale -= new Vector3(0.55f, 0.55f, 0f);
 			state.getSelected().transform.tag = "TrashedTag";
 			state.getSelected().transform.GetChild(0).tag = "TrashedTag";
 
 			//newTrashedTag.transform.position = canvas.transform.TransformPoint(new Vector2(320 + horizontalBump, -55 - 12 * trashedTags.Count + verticalBump)) + Vector3.back * -0.25f;
-			state.getSelected().transform.position = new Vector3(trashy.transform.position.x, trashy.transform.position.y - 12.7f - (8.5f*trashedTags.Count), trashy.transform.position.z);
+			state.getSelected().transform.localPosition = new Vector3(trashy.transform.localPosition.x, trashy.transform.localPosition.y - 12.7f - (8.5f*trashedTags.Count), trashy.transform.localPosition.z);
 			state.getSelected().transform.LookAt(state.getSelected().transform.position + Vector3.back * state.getSelected().transform.position.z * -1);
             trashedTags.Add(state.getSelected());
 			//trashedTags[trashedTags.Count - 1].layer = 5; //UI
@@ -257,18 +257,14 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 
 		return 0;
 	}
-	public static bool binClose(Vector3 pos) //bin
+	public static bool binClose() //bin
 	{
-		Vector3 diff = pos - state.getCursorPosition();
-		if (diff.x > -49 || diff.x < -66)
+		Vector3 diff = state.getCursorPosition();
+		if (diff.x > 58.5 && diff.x < 76.3 && diff.y > -20 && diff.y < 33.8)
 		{
-			return false;
-		}
-		if (diff.y > 63.7 || diff.y < 34.5)
-		{
-			return false;
-		}
-		return true;
+			return true;
+        }
+		return false;
 	}
 	public static bool uiButtonClose() //next
 	{

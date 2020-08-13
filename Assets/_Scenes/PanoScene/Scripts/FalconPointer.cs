@@ -45,7 +45,7 @@ public class FalconPointer : PointerInputModule
         }*/
     }
 
-    public virtual PointerEventData GetFalconEventData() //was protected
+    /*public virtual PointerEventData GetFalconEventData() //was protected
     {
         PointerEventData pointerEventData;
         bool pointerData = base.GetPointerData(-1, out pointerEventData, true);
@@ -78,5 +78,5 @@ public class FalconPointer : PointerInputModule
         pointerEventData.button = PointerEventData.InputButton.Left;
         this.m_RaycastResultCache.Clear();
 		return pointerEventData;
-	}
+	}*/
 }

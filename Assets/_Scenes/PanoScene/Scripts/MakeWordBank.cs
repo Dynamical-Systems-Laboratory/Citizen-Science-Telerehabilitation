@@ -279,7 +279,7 @@ public class MakeWordBank : MonoBehaviour {
 
         nextButton = GameObject.Find("NextButton");
         quitButton = GameObject.Find("HomeButton");
-        cursorCamera.SetActive(false);
+        //cursorCamera.SetActive(false);
 
        // DataCollector.MakeFolder();
         tagSphere = GameObject.FindGameObjectsWithTag("TagSphere"); //tag spheres
@@ -354,8 +354,8 @@ public class MakeWordBank : MonoBehaviour {
         ///
         /// 
         //////// 
-        dataCollector = GameObject.FindGameObjectWithTag("DataCollector"); //Turn off data collection for tutorial
-        dataCollector.SetActive(false);
+        //dataCollector = GameObject.FindGameObjectWithTag("DataCollector"); //Turn off data collection for tutorial
+        //dataCollector.SetActive(false);
 
         renderBackground(0, tutorialImageMaterial); //renders background, img # doesnt matter
 
@@ -518,7 +518,7 @@ public class MakeWordBank : MonoBehaviour {
                         }
                         eventListener.OnPointerClick();
                     }
-                    else if (ClickAction.binClose(state.getCursorPosition())) //trashing
+                    else if (ClickAction.binClose()) //trashing
                     {
                         eventListener.OnPointerClick();
                         newTag(ClickAction.initTagPos);
@@ -1392,8 +1392,8 @@ public class MakeWordBank : MonoBehaviour {
                 {
                     Destroy(ClickAction.cursorTag);
                     ClickAction.cursorTag = null;
-                    PlayerScript.holdingTag = "";
-                    PlayerScript.trashedTagText = "";
+                    //PlayerScript.holdingTag = "";
+                    //PlayerScript.trashedTagText = "";
                     ClickAction.state.setSelected(null);
                 }
 

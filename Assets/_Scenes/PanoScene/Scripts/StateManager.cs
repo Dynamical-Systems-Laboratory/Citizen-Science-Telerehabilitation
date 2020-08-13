@@ -211,7 +211,7 @@ public class StateManager : MonoBehaviour {
                 writer.Flush();
                 writer.Close();*/
                 //ClickAction.destroyTags();
-                UnityEditor.EditorApplication.isPlaying = false;
+                //UnityEditor.EditorApplication.isPlaying = false;
                 Application.Quit();
                 break;
 

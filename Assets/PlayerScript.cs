@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Networking;
+//using UnityEngine.Networking;
 
-public class PlayerScript{// : NetworkBehaviour {
+/*public class PlayerScript{// : NetworkBehaviour {
 	// Use this for initialization
 
 	//private static bool finishedWaiting = false; //Once this is true, client and server should be playing together and constantly sending signals back and forth
@@ -28,20 +28,20 @@ public class PlayerScript{// : NetworkBehaviour {
 	//static bool trasherPanelIsSet = false;
 
 	void Start () {
-		/*if (!localPlayerAuthority) {
-			return;
-		}
+		//if (!localPlayerAuthority) {
+		//	return;
+		//}
 
-		if (isServer) {  //Server is tagger, client is trasher
+		//if (isServer) {  //Server is tagger, client is trasher
 			
-		} else {
+		//} else {
 			
-		}*/
+		//}
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		/*if (!localPlayerAuthority) {
+		if (!localPlayerAuthority) {
 			return;
 		}
 		frame++;
@@ -146,17 +146,17 @@ public class PlayerScript{// : NetworkBehaviour {
 				}
 			}
 			frame = 0;
-		}*/
+		}
 	}
 
 	//[ClientRpc]
 	void RpcAskClientIfFinishedTutorial() {
-		/*if (!isServer) { //Server is a client too
+		if (!isServer) { //Server is a client too
 			if (MakeWordBank.waitingForOtherPlayer) { //If client is already waiting
 				MakeWordBank.otherPlayerHasFinished = true;
 				finishedWaiting = true;
 			}
-		}*/
+		}
 	}
 
 	//[Command]
@@ -168,7 +168,7 @@ public class PlayerScript{// : NetworkBehaviour {
 
 	//[ClientRpc]
 	void RpcTellClientTagIsHeld(string name) {
-		/*if (!isServer) {
+		if (!isServer) {
 			for (int i = 0; i < MakeWordBank.tags.Length; i++) {
 				if (MakeWordBank.tags [i].getText ().Equals (name)) {
 					MakeWordBank.tags [i].text.color = Color.red;
@@ -187,7 +187,7 @@ public class PlayerScript{// : NetworkBehaviour {
 					ClickAction.cursorTag = null;
 				}
 			}
-		}*/
+		}
 	}
 
     //[Command]
@@ -217,7 +217,7 @@ public class PlayerScript{// : NetworkBehaviour {
 
 	//[ClientRpc]
 	void RpcAddTagToSphere (Vector3 position, string name, string tagUniqueName) {
-		/*if (!isServer) {
+		if (!isServer) {
 			GameObject newTag = Instantiate (ClickAction.tagPrefab);
 			newTag.name = name;
 			newTag.GetComponent<Renderer>().material = new Material(Shader.Find("Diffuse"));
@@ -247,13 +247,13 @@ public class PlayerScript{// : NetworkBehaviour {
 			obj.name = tagUniqueName; //Doing this because I'm trying not to really change any scripts outside of this one significantly
 
 			MakeWordBank.replaceTag (obj, true);
-		}*/
+		}
 	}
 
 	//[Command]
 	void CmdTellServerThrowAwayTag(string tagText, string uniqueTagName) {
 		//Nevermind:
-        /*
+        
 		for (int i = 0; i < MakeWordBank.tags.Length; i++) {
 			if (MakeWordBank.tags [i].getText ().Equals (tagText)) {
 				if (MakeWordBank.tags [i].text.color == Color.red) { //If they just then clicked on it, deselect it for tagger:
@@ -270,7 +270,7 @@ public class PlayerScript{// : NetworkBehaviour {
 				}
 			}
 		}
-        */
+        
 
 		GameObject objToInstantiate = null; //Object to put under trash can:
 		for (int i = 0; i < MakeWordBank.tags.Length; i++) {
@@ -280,7 +280,7 @@ public class PlayerScript{// : NetworkBehaviour {
 		}
 
 
-		/*if (MakeWordBank.sequenceIndex < MakeWordBank.wordBank.Count) {
+		if (MakeWordBank.sequenceIndex < MakeWordBank.wordBank.Count) {
 			GameObject newTrashedTag = Instantiate (objToInstantiate, ClickAction.canvas.transform);
 			newTrashedTag.transform.localScale 
 			= new Vector3 (newTrashedTag.transform.localScale.x / 2.0f, newTrashedTag.transform.localScale.y / 2.5f, newTrashedTag.transform.localScale.z);
@@ -308,7 +308,7 @@ public class PlayerScript{// : NetworkBehaviour {
 			newTrashedTag.transform.LookAt(newTrashedTag.transform.position + Vector3.back * newTrashedTag.transform.position.z * -1);
 			ClickAction.trashedTags.Add (newTrashedTag);
 			ClickAction.trashedTags[ClickAction.trashedTags.Count - 1].layer = 5; //UI
-		}*/
+		}
 
 		GameObject obj = new GameObject ();
 		obj.name = uniqueTagName;
@@ -320,11 +320,11 @@ public class PlayerScript{// : NetworkBehaviour {
 
 	//[ClientRpc]
 	void RpcQuitGame() {
-		/*if (!isServer) {
+		if (!isServer) {
 			if (!SubmitFinalQuestionScript.isListening) { //So this isn't done twice
 				QuitGameScript.TaskOnClick ();
 			}
-		}*/
+		}
 	}
 
 	//[Command]
@@ -346,7 +346,7 @@ public class PlayerScript{// : NetworkBehaviour {
 
 	//[ClientRpc]
 	void RpcContinuePlaying() {
-		/*if (!isServer) {
+		if (!isServer) {
 			MakeWordBank.practiceLevelText.SetActive(true); //For convenience, the text object practiceLevelText will be the text that says the other person quit
 			MakeWordBank.practiceLevelText.transform.localPosition = new Vector3(248.9f, -54.5f, 0f);
 			MakeWordBank.practiceLevelText.GetComponent<RectTransform> ().sizeDelta
@@ -354,6 +354,7 @@ public class PlayerScript{// : NetworkBehaviour {
 			MakeWordBank.practiceLevelText.GetComponent<Text> ().fontSize = 10;
 			MakeWordBank.practiceLevelText.GetComponent<Text> ().text = "The other party has left the session";
 			MakeWordBank.continueAfterOtherQuit = true;
-		}*/
+		}
 	}
 }
+*/
