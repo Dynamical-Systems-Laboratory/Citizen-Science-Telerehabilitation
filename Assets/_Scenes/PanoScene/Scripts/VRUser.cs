@@ -30,6 +30,8 @@ public class VRUser : MonoBehaviour
     public static Color cursorHighlight2 = Color.red;
     public static Color tagColor = new Color(1, 1, 1, 101 / 255);
     public static Color binColor = new Color(134 / 255, 150 / 255, 167 / 255, 186 / 255);
+    public static Color binColor2 = new Color(167 / 255, 134 / 255, 143 / 255, 186 / 255);
+    public static Color binUnhighlight = new Color(167 / 255, 167 / 255, 167 / 255, 167 / 255);
 
     public static GameObject trueCursor;
 
@@ -51,25 +53,13 @@ public class VRUser : MonoBehaviour
     public static Vector3 pos4;
 
     /*  TODO!!
-     * prefect tracking of headset and controllers
-     * recreate cursor movement based on controller positions/rotations
      * rework cameras:
-     * * UI camera menu stuck to headset - controlled via highlighting UI elements (thumbstick & button/trigger selection)
-     * * * selection of tags indicated by tag floating along cursor sphere OR controller replaced with scaled down tag
-     * * Home Screen, Video Camera, and Profile similar to UI except float in space in front of user with current image greyed out
      * * * work with survey stuff later
      * * cursor camera moved along invis sphere with r = 95% of imageSphere.r
-     * * * controlled via arm movements (tbd)
-     * 
-     * * * cursor reset idea
      */
 
     //TODO: maybe fix floating feeling with flatform at user feet (make camera lower, put platform right under, set to floor lvl instead of eye lvl)
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
     private void Awake()
     { //Ctrl+K+C = comment (+K+U = uncomment)
         cursorHighlight.a = 105f / 255f;
@@ -132,67 +122,33 @@ public class VRUser : MonoBehaviour
         if (state.isGaming())
         {
             //ui highlighting
-            foreach (GameObject obj in interactables)
+            int converted = buttonConversion();
+            switch (converted)
             {
-                if (obj.tag == "Tag")
-                {
-                    //Debug.Log("Tag Close " + obj.name + ": " + ClickAction.tagClose(obj.transform.localPosition));
-                }
-                //Debug.Log(obj.name + ": " + (obj.transform.localPosition - trueCursor.transform.localPosition) + ", Mag: " + (obj.transform.localPosition - trueCursor.transform.localPosition).magnitude);
-                if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) == 1 && obj.transform.localPosition == pos1)
-                {
-                    obj.GetComponent<Image>().color = highlightColor;
-                }
-                else if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) == 2 && obj.transform.localPosition == pos2)
-                {
-                    obj.GetComponent<Image>().color = highlightColor;
-                }
-                else if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) == 3 && obj.transform.localPosition == pos3)
-                {
-                    obj.GetComponent<Image>().color = highlightColor;
-                }
-                else if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) == 4 && obj.transform.localPosition == pos4)
-                {
-                    obj.GetComponent<Image>().color = highlightColor;
-                }
-                /*if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) != 0)
-                {
-                    obj.GetComponent<Image>().color = highlightColor;
-                }*/
-
-                else if (obj.name == "Bin" && ClickAction.binClose(obj.transform.localPosition))
-                {
-                    obj.GetComponent<Image>().color = highlightColor;
-                    //GameObject.Find("Trash image").GetComponent<Image>().color = highlightColor;
-                }
-                else if (obj.name == "NextButtonPanel" && ClickAction.uiButtonClose(obj.transform.position))
-                {
-                    obj.GetComponent<Image>().color = highlightColor;
-                }
-                else if (obj.name == "HomeButtonPanel" && ClickAction.uiButtonClose2(obj.transform.position))
-                {
-                    obj.GetComponent<Image>().color = highlightColor;
-                }
-                else
-                {
-                    if (obj.name == "Bin")
-                    {
-                        //GameObject.Find("Trash image").GetComponent<Image>().color = binColor;
-                        obj.GetComponent<Image>().color = binColor;
-                    }
-                    else if (obj.name == "NextButtonPanel" || obj.name == "HomeButtonPanel")
-                    {
-                        obj.GetComponent<Image>().color = new Color(1, 1, 1, 1);
-                    }
-                    else if (obj.tag == "Tag")
-                    {
-                        obj.GetComponent<Image>().color = tagColor;
-                    }
-                    else
-                    {
-                        Debug.Log("Interactables error: " + obj.name);
-                    }
-                }
+                case 0:
+                    interactables[0].GetComponent<Image>().color = new Color(1, 1, 1, 1); //next
+                    interactables[1].GetComponent<Image>().color = new Color(1, 1, 1, 1); //home
+                    interactables[2].GetComponent<Image>().color = tagColor; //tags
+                    interactables[3].GetComponent<Image>().color = tagColor;
+                    interactables[4].GetComponent<Image>().color = tagColor;
+                    interactables[5].GetComponent<Image>().color = tagColor;
+                    GameObject.Find("Trash image").GetComponent<Image>().color = binUnhighlight; //trash
+                    interactables[6].GetComponent<Image>().color = binColor;
+                    break;
+                case 1:
+                    interactables[0].GetComponent<Image>().color = highlightColor;
+                    break;
+                case 6:
+                    interactables[1].GetComponent<Image>().color = highlightColor;
+                    break;
+                case 7:
+                    GameObject.Find("Trash image").GetComponent<Image>().color = highlightColor;
+                    interactables[6].GetComponent<Image>().color = binColor2;
+                    break;
+                default:
+                    //tags (converted 2-5)
+                    interactables[converted].GetComponent<Image>().color = highlightColor;
+                    break;
             }
         }
 
@@ -468,36 +424,22 @@ public class VRUser : MonoBehaviour
 
     public static int buttonConversion() //for MakeWordBank
     {
-        foreach (GameObject obj in interactables)
+        int i = ClickAction.tagClose();
+        if (i != 0)
         {
-            if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) == 1 && obj.transform.localPosition == pos1)
-            {
-                return 2;
-            }
-            else if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) == 2 && obj.transform.localPosition == pos2)
-            {
-                return 3;
-            }
-            else if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) == 3 && obj.transform.localPosition == pos3)
-            {
-                return 4;
-            }
-            else if (obj.tag == "Tag" && ClickAction.tagClose(obj.transform.localPosition) == 4 && obj.transform.localPosition == pos4)
-            {
-                return 5;
-            }
-            else if (obj.name == "Bin" && ClickAction.binClose(obj.transform.localPosition))
-            {
-                return 7;
-            }
-            else if (obj.name == "NextButtonPanel" && ClickAction.uiButtonClose(obj.transform.position))
-            {
-                return 1;
-            }
-            else if (obj.name == "HomeButtonPanel" && ClickAction.uiButtonClose2(obj.transform.position))
-            {
-                return 6;
-            }
+            return (i + 1); //2-5
+        }
+        else if (ClickAction.uiButtonClose())
+        {
+            return 1;
+        }
+        else if (ClickAction.uiButtonClose2())
+        {
+            return 6;
+        }
+        else if (interactables[6].name == "Bin" && ClickAction.binClose(interactables[6].transform.localPosition))
+        {
+            return 7;
         }
         return 0;
     }

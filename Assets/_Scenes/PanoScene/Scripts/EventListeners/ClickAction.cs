@@ -232,30 +232,29 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		//tagCopy = null;
 	}
 
-	public static int tagClose(Vector3 pos) //tags -- maybe try implicit operator to easily int->bool convert?
+	public static int tagClose() //tags -- maybe try implicit operator to easily int->bool convert?
 	{ //nextButton.transform.position
-		Vector3 diff = pos - state.getCursorPosition();
-		if (diff.x > -25.9 || diff.x < -56.6)
+		Vector3 diff = state.getCursorPosition();
+		if (diff.x > 25 && diff.x < 55.8)
 		{
-			return 0;
+			if (diff.y > 4.2 && diff.y < 16.8)
+			{
+				return 1;
+			}
+			else if (diff.y > -12.7 && diff.y < 0.7 )
+			{
+				return 2;
+			}
+			else if (diff.y > -28.7 && diff.y < -15.6)
+			{
+				return 3;
+			}
+			else if (diff.y > -45.5 && diff.y < -32.2)
+			{
+				return 4;
+			}
 		}
-		else if (diff.y > 55.9 && diff.y < 68.1)
-		{
-			return 1;
-		}
-		else if (diff.y > 5.3 && diff.y < 17.5)
-		{
-			return 2;
-		}
-		else if (diff.y > -44.8 && diff.y < -32.6)
-		{
-			return 3;
-		}
-		else if (diff.y > -93.8 && diff.y < -81.6)
-		{
-			return 4;
-		}
-		
+
 		return 0;
 	}
 	public static bool binClose(Vector3 pos) //bin
@@ -271,31 +270,23 @@ public class ClickAction : MonoBehaviour, IPointerClickHandler
 		}
 		return true;
 	}
-	public static bool uiButtonClose(Vector3 pos) //next
+	public static bool uiButtonClose() //next
 	{
-		Vector3 diff = pos - state.getCursorPosition() + VRUser.uiButtonOffset;
-		if (diff.x > -20.7 || diff.x < -49.8)
-		{
-			return false;
-		}
-		if (diff.y > 27.4 || diff.y < 16.5)
-		{
-			return false;
-		}
-		return true;
+		Vector3 diff = state.getCursorPosition();
+		if (diff.x > 25.8 && diff.x < 55 && diff.y > 21.6 && diff.y < 33.8)
+        {
+			return true;
+        }
+		return false;
 	}
-	public static bool uiButtonClose2(Vector3 pos) //home
+	public static bool uiButtonClose2() //home
 	{
-		Vector3 diff = pos - state.getCursorPosition() + VRUser.uiButtonOffset;
-		if (diff.x > -20.7 || diff.x < -49.8)
+		Vector3 diff = state.getCursorPosition();
+		if (diff.x > 25.8 && diff.x < 55 && diff.y > -61.8 && diff.y < -49.7)
 		{
-			return false;
+			return true;
 		}
-		if (diff.y > 100.9 || diff.y < 89.2)
-		{
-			return false;
-		}
-		return true;
+		return false;
 	}
 
 	public static int homeButtonClose()
