@@ -100,8 +100,17 @@ public class HomeScreen : MonoBehaviour
                             state.setState(7);
                         }
                         //TODO: reload last level & tags (read data stuff here)
+                        Debug.Log("**IsReloading: " + state.reloading);
+                        if (state.tagsPlaced.Count > 0)
+                        {
+                            //tags already exist for some reason?
+                        }
+                        else if (state.reloading) //reloading tags
+                        {
+                            state.loadTags(state.user.getLastImage());
+                            state.reloading = false;
+                        }
                         //MakeWordBank.nextImage(state.user.getLastImage());
-                        //state.reloading = true;
                     }
                     else if (obj.name == profileButton.name)
                     {

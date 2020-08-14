@@ -121,7 +121,7 @@ public class StateManager : MonoBehaviour {
 
     public static bool newUser = true; // whether or not data was read
     //TODO: makeNewUser = false; --> when ready to fix reading data issues
-    public static bool makeNewUser = true; // used to bypass reading data if you want to create another save file
+    public bool makeNewUser = false; // used to bypass reading data if you want to create another save file
     private string path;
     private static string dataName = "user_data";
     public static string[] dataRead = new string[] { "no data" };
@@ -192,7 +192,7 @@ public class StateManager : MonoBehaviour {
                 user.addDuration();
 
                 //WRITING DATA CODE
-                /*StreamWriter writer;
+                StreamWriter writer;
                 if (newUser) //if new user or no data detected
                 {
                     writer = System.IO.File.CreateText(path); //create new user_data file
@@ -209,9 +209,9 @@ public class StateManager : MonoBehaviour {
 
                 }
                 writer.Flush();
-                writer.Close();*/
+                writer.Close();
                 //ClickAction.destroyTags();
-                //UnityEditor.EditorApplication.isPlaying = false;
+                UnityEditor.EditorApplication.isPlaying = false; //for editing only
                 Application.Quit();
                 break;
 
@@ -312,13 +312,14 @@ public class StateManager : MonoBehaviour {
 
     void Awake()
     {
-        path = Application.dataPath + "/UserData/" + dataName + ".csv";
         //READING DATA CODE
+        path = Application.dataPath + "/UserData/" + dataName + ".csv";
         if (System.IO.File.Exists(path) && !makeNewUser)
         {
             StreamReader reader = new StreamReader(path);
             dataRead = reader.ReadLine().Split(','); //array
             newUser = !user.readData(dataRead);
+            reloading = newUser;
         }
 
         /* List <--> Array conversions
@@ -337,16 +338,9 @@ public class StateManager : MonoBehaviour {
             //userState = 1;
             setState(1);
             //TODO: disable canvases (welcome screen, help text, and simple tutorial stuff)
-            //MakeWordBank.welcomeScreen.SetActive(false);
-            //MakeWordBank.helpTextPanel.SetActive(false);
             GameObject.Find("SimpleTutorialCanvas").SetActive(false);
             MakeWordBank.stepOfTutorial = 24;
             MakeWordBank.welcomeScreen.SetActive(false);
-            //MakeWordBank.helpTextContainer.SetActive(false);
-           // MakeWordBank.focusor.SetActive(false);
-            //MakeWordBank.practiceLevelText.SetActive(false);
-
-            //reload tags
         }
 
         cursorPos = GameObject.Find("exampleCursor").transform.position;
@@ -376,7 +370,7 @@ public class StateManager : MonoBehaviour {
             stateInit = true;
         }
         //updateState(); //testing...**
-        //Debug.Log("isNewUser: " + newUser.ToString() + ", data: " + dataRead[0]);
+        Debug.Log("isNewUser: " + newUser.ToString() + ", data: " + dataRead[0]);
         switch (userState)
         {
             case 0:
@@ -555,17 +549,18 @@ public class StateManager : MonoBehaviour {
         return userState == 2 || userState == 5 || userState == 7;
     }
 
-    public void loadTags(int images, List<GameObject> tagExample) //loadTags(user.getLastImage())
+    public void loadTags(int images) //loadTags(user.getLastImage())
     {
         foreach (GameObject tag in user.getTags(images))
         {
-            GameObject newTag = Instantiate(tagExample[0], ClickAction.canvas.transform);
+            GameObject newTag = Instantiate(GameObject.Find("tagRef"), ClickAction.canvas.transform);
             newTag.GetComponentInChildren<Text>().color = Color.blue;
             newTag.name = tag.name;
             newTag.tag = tag.name;
+            newTag.transform.parent = GameObject.Find("tagCanvas").transform; //saftey
+            newTag.layer = 16;//4;
             newTag.transform.position = tag.transform.position;
-            newTag.transform.localScale -= new Vector3(0.5f, 0.5f, 0f);
-            newTag.layer = 4;
+            //newTag.transform.localScale -= new Vector3(0.5f, 0.5f, 0f);
             tagsPlaced.Add(newTag);
         }
     }

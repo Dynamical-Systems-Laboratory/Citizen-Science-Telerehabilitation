@@ -114,6 +114,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			state.tagsPlaced.Add(state.getSelected()); //adds to movement list
 			state.getSelected().layer = 16; //VisibleTags layer
 			state.getSelected().transform.parent = tagCanvas.transform; //make child of other canvas to save pos
+			state.getSelected().tag = "Untagged"; //just in case
 			tagCanvas.transform.localScale -= new Vector3(.88f, .88f, .88f);
 
 			//MOVE tag to outter edge of sphere

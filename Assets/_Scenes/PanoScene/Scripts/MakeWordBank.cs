@@ -543,12 +543,6 @@ public class MakeWordBank : MonoBehaviour {
             }
             
         }
-        /*Debug.Log("IsReloading: " + state.reloading);
-        if (state.reloading) //reloading tags
-        {
-            state.loadTags(state.user.getLastImage(), tagGameObjects);
-            state.reloading = false;
-        }*/
 
         if (state.getState() == 5) //edge cases with old booleans
         {

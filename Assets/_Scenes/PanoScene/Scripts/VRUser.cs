@@ -52,6 +52,8 @@ public class VRUser : MonoBehaviour
     public static Vector3 pos3;
     public static Vector3 pos4;
 
+    public static bool showMoveStats = false;
+
     /*  TODO!!
      * rework cameras:
      * * * work with survey stuff later
@@ -94,9 +96,10 @@ public class VRUser : MonoBehaviour
     {
         OVRInput.Update();
         OVRInput.FixedUpdate();
-        state.user.addMovement(playerHead.transform, 
+        state.user.addMovement(playerHead.transform,
             OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles,
             OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles);
+        armsFixes();
         //vrInfo();
 
         //FORCE QUIT
@@ -104,6 +107,11 @@ public class VRUser : MonoBehaviour
         //{
         //    state.setState(0);
         //}
+
+        if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.LeftShift))
+        {
+            state.setState(0);
+        }
 
         //RESETS
         if (cursorRelock() || StateManager.makeCursReset)
@@ -306,6 +314,10 @@ public class VRUser : MonoBehaviour
 
         Debug.Log("LStick: " + OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + ", RStick: " + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch));
         Debug.Log("LStickP: " + OVRInput.Get(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) + ", RStickP: " + OVRInput.Get(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch));
+        if (showMoveStats)
+        {
+            state.user.showMoveBounds();
+        }
     }
 
     public static bool userContinue(bool isContinuous = false) //implemented for both hands
@@ -438,6 +450,14 @@ public class VRUser : MonoBehaviour
         }
         return 0;
     }
+
+    public static void armsFixes()
+    {
+        GameObject.Find("headsetUp").transform.localPosition -= new Vector3(0f, GameObject.Find("headsetUp").transform.localPosition.y - 3.6f, 0f); //constant 3.6 y
+        GameObject.Find("headsetRight").transform.localPosition -= new Vector3(0f, GameObject.Find("headsetRight").transform.localPosition.y, 0f); // constant 0 y
+        GameObject.Find("headsetForward").transform.localPosition -= new Vector3(0f, GameObject.Find("headsetForward").transform.localPosition.y, 0f); // constant 0 y
+    }
+
     public class UserBounds //used for later instances of compensatory motion tracking
     {
         public Vector3 head;

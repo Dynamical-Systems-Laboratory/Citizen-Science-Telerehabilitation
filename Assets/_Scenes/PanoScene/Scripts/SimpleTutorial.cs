@@ -217,7 +217,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 state.userControlActive = false;
             }
 
-            if (MakeWordBank.skip())
+            if (MakeWordBank.skip() && hasCompleted)
             {
                 step = 35;//changed from 35
             }
@@ -270,22 +270,24 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (!VPA1.isPlaying && startedPlaying) //if video done
                 {
                     VP1.SetActive(false);
-                    //cursorCam.GetComponent<Camera>().cullingMask = beginngingCull;
-                    text.text = "(1)Now try unlocking the cursor yourself...\n Remeber the unlock buttons are the two hand triggers";
                     Debug.Log("Step 2 Counter: " + counter);
-                    if (counter == 0 && VRUser.isResetting()) //just skips cuz of getdown problems but solve later...
+                    if (counter == 0 && !VRUser.isResetting())
+                    {
+                        text.text = "(1)Now try unlocking the cursor yourself, the cursor will flash green if youve done it correctly...\n Remeber the unlock buttons are the two hand triggers.";
+                    }
+                    else if (counter == 0 && VRUser.isResetting()) //just skips cuz of getdown problems but solve later...
                     {
                         counter = 1;
                         StateManager.makeCursReset = true;
                         state.userControlActive = false;
                     }
-                    if (counter == 1 && VRUser.isNotResetting())
+                    else if (counter == 1 && VRUser.isNotResetting())
                     {
                         text.text = "Great! Try to unlock the cursor one more time...";
                         counter = 2;
                         state.userControlActive = false;
                     }
-                    if (counter == 2 && state.userControlActive)
+                    else if (counter == 2 && state.userControlActive)
                     {
                         //lockPanel.transform.localScale -= new Vector3(0.2f, 0.2f, 0.2f);
                         //lockPanel.GetComponentInChildren<Text>().fontSize -= 1;
@@ -510,7 +512,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
             else if (step == 9)
             {
-                text.text = "Nice job! If you want to lock the cursor again without needing to hold the hand triggers, press either *A and B* on your right hand or *X and Y* on your left hand.\n" +
+                text.text = "Nice job! If you want to lock the cursor again without needing to hold the hand triggers, \n" +
+                    "press either *A and B* on your right hand or *X and Y* on your left hand.\n" +
                     "This will prevent the cursor from moving until you unlock it again.\n" +
                     "As a final step, please lock the cursor once.";
                 if (VRUser.cursorRelock())
@@ -524,8 +527,10 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 //state.cursorAdd = new Vector3(.2f * Time.deltaTime, 0f, 0f);
                 cursor.transform.localPosition -= (cursor.transform.right * Time.deltaTime);
                 timer += Time.deltaTime;
-                text.text = "Finished Tutorial... Here's your data:\n (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" +
-                    string.Join(", ", userMovement.timeOfMotion) + ")\n " + continueText + " to the next section of the tutorial...";
+                text.text = "Great, in a second you will move onto the game tutorial.";
+                //text.text = "Finished Tutorial... Here's your data:\n (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" +
+                //string.Join(", ", userMovement.timeOfMotion) + ")\n " + continueText + " to the next section of the tutorial...";
+                VRUser.showMoveStats = true;
                 if (timer > longInterval || MakeWordBank.moveOn())
                 {
                     timer = 0f;
@@ -582,7 +587,7 @@ public class MovementBounds
 
     public MovementBounds()
     {
-        rangeOfMotion = new float[4];
-        timeOfMotion = new float[4];
+        rangeOfMotion = new float[] { -1f, -1f, -1f, -1f };
+        timeOfMotion = new float[] { -1f, -1f, -1f, -1f };
     }
 }

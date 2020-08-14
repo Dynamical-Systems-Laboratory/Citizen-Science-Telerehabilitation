@@ -62,7 +62,7 @@ public class UserInfo //not sure if : this() is necessary
 
     public void addMovementBounds(MovementBounds userMove)
     {
-        for (int i = 0; i <= 4; i++)
+        for (int i = 0; i < 4; i++)
         {
             movementBounds[i] = userMove.rangeOfMotion[i];
             movementTime[i] = userMove.timeOfMotion[i];
@@ -235,7 +235,7 @@ public class UserInfo //not sure if : this() is necessary
     {
         return new bool[] { startedPracticeLevel, finishedPracticeLevel };
     }
-
+    
     public IEnumerable<GameObject> getTags(int image)
     {
         foreach (TagInfo tagInform in tags)
@@ -244,7 +244,7 @@ public class UserInfo //not sure if : this() is necessary
             {
                 GameObject tag = new GameObject(tagInform.name);
                 tag.transform.position = tagInform.location;
-                //tag.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                tag.transform.localScale -= new Vector3(.88f, .88f, .88f);
                 //TODO: make it look like a normal tag (cleanup with MakeWordBank as well)
                 yield return tag;
             }
@@ -259,6 +259,10 @@ public class UserInfo //not sure if : this() is necessary
             ", SPract: " + startedPracticeLevel + ", FPract: " + finishedPracticeLevel); //progress data
         //Debug.Log("*Settings: " + getSettingData()[0] + " " + getSettingData()[1] + " " + getSettingData()[2] + " " + getSettingData()[3] +
             //", PractState: " + boolToString(getPracticeLevelState()[0]) + " " + boolToString(getPracticeLevelState()[1]) + ", AvgSess: " + getAvgSessionDuration());
+    }
+    public void showMoveBounds()
+    {
+        Debug.Log("Move Data: (" + string.Join(", ", movementBounds) + "), (" + string.Join(", ", movementTime) + ")");
     }
 
     //data usage (reading/writing)
@@ -420,8 +424,8 @@ public class UserInfo //not sure if : this() is necessary
     private float cursorSize;
     private float difficulty = 5;
 
-    private float[] movementBounds = new float[] { 0f, 0f, 0f, 0f }; //-x,x,-y,y
-    private float[] movementTime = new float[] { 0f, 0f, 0f, 0f }; //can also be new float[4]?
+    private float[] movementBounds = new float[] { -1f, -1f, -1f, -1f }; //-x,x,-y,y
+    private float[] movementTime = new float[] { -1f, -1f, -1f, -1f }; //can also be new float[4]?
     private List<MovementData> movements = new List<MovementData>();
     //compulsory movement tracker?
 
