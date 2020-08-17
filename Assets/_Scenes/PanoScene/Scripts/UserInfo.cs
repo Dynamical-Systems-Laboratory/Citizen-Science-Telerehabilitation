@@ -215,10 +215,12 @@ public class UserInfo //not sure if : this() is necessary
         vals[1] = movementBounds[1];
         vals[2] = movementBounds[2];
         vals[3] = movementBounds[3];
-        vals[4] = movementTime[0];
-        vals[5] = movementTime[1];
-        vals[6] = movementTime[2];
-        vals[7] = movementTime[3];
+        vals[4] = movementBounds[4];
+        vals[5] = movementTime[0];
+        vals[6] = movementTime[1];
+        vals[7] = movementTime[2];
+        vals[8] = movementTime[3];
+        vals[9] = movementTime[4];
         return vals;
     }
     public int getLastImage() { return lastImage; }
@@ -424,8 +426,8 @@ public class UserInfo //not sure if : this() is necessary
     private float cursorSize;
     private float difficulty = 5;
 
-    private float[] movementBounds = new float[] { -1f, -1f, -1f, -1f }; //-x,x,-y,y
-    private float[] movementTime = new float[] { -1f, -1f, -1f, -1f }; //can also be new float[4]?
+    private float[] movementBounds = new float[] { -1f, -1f, -1f, -1f, -1f }; //-x, x,-y, y, z
+    private float[] movementTime = new float[] { -1f, -1f, -1f, -1f, -1f }; //can also be new float[5]?
     private List<MovementData> movements = new List<MovementData>();
     //compulsory movement tracker?
 

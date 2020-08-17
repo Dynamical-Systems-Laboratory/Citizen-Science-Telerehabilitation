@@ -217,7 +217,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 state.userControlActive = false;
             }
 
-            if (MakeWordBank.skip() )//&& hasCompleted)
+            if (MakeWordBank.skip() && step > 0 && hasCompleted)
             {
                 step = 35;//changed from 35
             }
@@ -435,7 +435,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     VP3.SetActive(false);
                     if (counter == 0)
                     {
-                        text.text = "(4)Now we'll try the *up* direction.\n Unlock the cursor and move your hands/arms to the left as far as you can stretch without moving your body\n" +
+                        text.text = "(4)Now we'll try the *up* direction.\n Unlock the cursor and move your hands/arms up as far as you can stretch without moving your body\n" +
                         "it is important to stretch at this point without moving your shoulders as it will determine your exercise progress later on";
                     }
                     else if (counter > 0 && counter < 5)
@@ -476,7 +476,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 timer += Time.deltaTime;
                 if (counter == 0)
                 {
-                    text.text = "(5)Now we'll try the *down* direction.\n Unlock the cursor and move your hands/arms to the left as far as you can stretch without moving your body\n" +
+                    text.text = "(5)Now we'll try the *down* direction.\n Unlock the cursor and move your hands/arms down as far as you can stretch without moving your body\n" +
                     "it is important to stretch at this point without moving your shoulders as it will determine your exercise progress later on";
                 }
                 else if (counter > 0 && counter < 5)
@@ -493,6 +493,11 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     step++;
                     counter = 0;
                     timer = 0;
+
+                    state.cursorXMove = false;
+                    state.cursorYMove = false;
+                    VP4.SetActive(true);
+                    VPA4.Play();
                 }
 
                 if (state.getCursorPosition().y <= -89f && state.userControlActive)
@@ -512,20 +517,77 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
             else if (step == 9)
             {
-                text.text = "Nice job! If you want to lock the cursor again without needing to hold the hand triggers, \n" +
-                    "press either *A and B* on your right hand or *X and Y* on your left hand.\n" +
-                    "This will prevent the cursor from moving until you unlock it again.\n" +
-                    "As a final step, please lock the cursor once.";
+                if (VPA4.isPlaying)
+                {
+                    text.text = "The cursor can be clicked";
+                    startedPlaying = true;
+                }
+                if (startedPlaying == true)
+                {
+                    timer += Time.deltaTime;
+                }
+                if (!VPA4.isPlaying && startedPlaying)
+                {
+                    VP4.SetActive(false);
+                    if (counter == 0)
+                    {
+                        text.text = "(5)Now we'll try the *forward* direction.\n " +
+                            "Unlock the cursor and move your hands/arms forward as far as you can stretch without moving your body\n" +
+                        "THEN press any button (A,B,X,Y) to signify your at your maximum range.";
+                    }
+                    else if (counter > 0 && counter < 5)
+                    {
+                        text.text = "Great! Now unlock the cursor and repeat that *forward* movement " + (5 - counter) + " more times.\n" +
+                            "Remember to stretch as far as you can. ";
+                    }
+                    else if (counter == 5)
+                    {
+                        float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
+                        userMovement.rangeOfMotion[4] = avg / 5;
+                        avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
+                        userMovement.timeOfMotion[4] = avg / 5;
+                        step++;
+                        startedPlaying = false;
+                        counter = 0;
+                        timer = 0;
+
+                        state.cursorXMove = true;
+                        state.cursorYMove = true;
+                    }
+
+                    if ((VRUser.handTracking() - handPos1).z < 5f && VRUser.hasButton())
+                    {
+                        text.text = "Try to extend a bit farther forward to get a good calibration...";
+                    }
+                    else if ((VRUser.handTracking() - handPos1).z >= 5f && VRUser.hasButton()) //VRUser.change.z
+                    {
+                        movementAvg[counter] = (VRUser.handTracking() - handPos1).z;
+                        timerAvg[counter] = timer;
+                        counter += 1;
+                        StateManager.makeCursReset = true;
+                        state.userControlActive = false;
+                    }
+
+                    if (!state.userControlActive && VRUser.isResetting())
+                    {
+                        handPos1 = VRUser.handTracking();
+                        timer = 0;
+                    }
+                }
+            }
+            else if (step == 10)
+            {
+                text.text = "Nice job! Once in-game, if you want to lock the cursor again without needing to hold the hand triggers, \n" +
+                    "press either index trigger. This will prevent the cursor from moving until you unlock it again.\n" +
+                    "(6) As a final step, please lock the cursor once.";
                 if (VRUser.cursorRelock())
                 {
                     text.text = "Tutorial Completed";
                     step++;
                 }
             }
-            else if (step == 10) //cursor moves right
+            else if (step == 11) //cursor moves right
             {
-                //state.cursorAdd = new Vector3(.2f * Time.deltaTime, 0f, 0f);
-                cursor.transform.localPosition -= (cursor.transform.right * Time.deltaTime);
                 timer += Time.deltaTime;
                 text.text = "Great, in a second you will move onto the game tutorial.";
                 //text.text = "Finished Tutorial... Here's your data:\n (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" +
@@ -587,7 +649,7 @@ public class MovementBounds
 
     public MovementBounds()
     {
-        rangeOfMotion = new float[] { -1f, -1f, -1f, -1f };
-        timeOfMotion = new float[] { -1f, -1f, -1f, -1f };
+        rangeOfMotion = new float[] { -1f, -1f, -1f, -1f, -1f };
+        timeOfMotion = new float[] { -1f, -1f, -1f, -1f, -1f };
     }
 }

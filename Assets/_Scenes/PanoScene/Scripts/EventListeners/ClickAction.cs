@@ -102,7 +102,8 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			state.getSelected().transform.localScale -= new Vector3(0.35f, 0.35f, 0f); //scale it down to 65% size (not thickness tho)
             tagIsFollowing = false;
 
-			//for each obj already a child of the tag canvas, put somewhere else, transform canvas back up to original size, put new obj in, transform back to small scale, add old objs back
+			//for each obj already a child of the tag canvas, put somewhere else, transform canvas back up to original size,
+			//put new obj in, transform back to small scale, add old objs back
 			if (state.tagsPlaced.Count > 0)
             {
 				foreach (GameObject tag in state.tagsPlaced)

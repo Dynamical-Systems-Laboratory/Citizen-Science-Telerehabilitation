@@ -152,7 +152,7 @@ public class UserProfile : MonoBehaviour
                         break;
                 }
                 //Clicking Things (buttons)
-                if (Input.GetKeyDown(KeyCode.B) || VRUser.isClicking(true))
+                if (Input.GetKeyDown(KeyCode.B) || state.userIsClicking)
                 {
                     switch (buttonNum)
                     {
@@ -173,7 +173,7 @@ public class UserProfile : MonoBehaviour
                             break;
                     }
                 }
-                else if (Input.GetKey(KeyCode.B) || VRUser.isClicking(false))
+                else if (Input.GetKey(KeyCode.B) || state.userClick)
                 {
                     if (buttonNum == 3)
                     {

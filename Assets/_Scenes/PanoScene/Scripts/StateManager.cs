@@ -137,7 +137,10 @@ public class StateManager : MonoBehaviour {
     private static int profileCull;
     //public static int cursorCull;
 
-    public bool userControlActive = false; //bool that controls the reset mechanic for the 
+    public bool userControlActive = false; //bool that controls the reset mechanic for the cursor, aka cursorNotLocked
+
+    public bool userIsClicking = false; //getbutton - isClicking(true)
+    public bool userClick = false; //getbuttondown
 
     private int userState = 6;
     /* 0 = Quit
@@ -208,6 +211,7 @@ public class StateManager : MonoBehaviour {
                     writer.Write(data + ","); //comma separated value file = csv
 
                 }
+                writer.Write("\n"); //indent for new data (delete previous data in another step)
                 writer.Flush();
                 writer.Close();
                 //ClickAction.destroyTags();
@@ -421,11 +425,11 @@ public class StateManager : MonoBehaviour {
 
         kinectReady = true;
         falconButtons[1] = false;
-        rodClicked = false;
+        /*rodClicked = false;
         if ((Input.GetKey(KeyCode.V) && VRUser.extraControls) || VRUser.isClicking()) //new update - forwards and backwards
         {
             rodClicked = true;
-        }
+        }*/
 
         cameraL = false;
         cameraR = false;

@@ -83,7 +83,7 @@ public class HomeScreen : MonoBehaviour
                     }
                 }
 
-                if (Input.GetKeyDown(KeyCode.B) || VRUser.isClicking(true)) //clicking
+                if (Input.GetKeyDown(KeyCode.B) || state.userIsClicking) //clicking
                 {
                     obj.GetComponent<Image>().color = unhighlighted;
                     if (obj.name == startGameButton.name)

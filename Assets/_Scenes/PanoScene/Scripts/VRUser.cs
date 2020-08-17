@@ -5,6 +5,7 @@ using UnityEngine;
 using OVRTouchSample;
 using System;
 using UnityEngine.UI;
+using System.Runtime.Remoting.Messaging;
 //using UnityEditor.Build.Content;
 
 public class VRUser : MonoBehaviour
@@ -46,13 +47,12 @@ public class VRUser : MonoBehaviour
 
     public static Vector3 uiButtonOffset = new Vector3(0f, 27f, 0f); //offset needed for button accuracy with uiButton methods within clickaction
 
-    //tag sorting helpers
-    public static Vector3 pos1;
-    public static Vector3 pos2;
-    public static Vector3 pos3;
-    public static Vector3 pos4;
+    public static Vector3 change; //modified change of controller movement
 
     public static bool showMoveStats = false;
+
+    public static float moveThreshold1 = 0.10f; //percentages for (1)reading movement & (2)displaying movement (+haptics)
+    public static float moveThreshold2 = 0.80f;
 
     /*  TODO!!
      * rework cameras:
@@ -89,6 +89,9 @@ public class VRUser : MonoBehaviour
         interactables.Add(GameObject.Find("Bin"));
         tagColor = interactables[2].GetComponent<Image>().color; //precausion
         binColor = interactables[6].GetComponent<Image>().color;
+
+        moveThreshold1 += 0.025f * (state.user.getSettingData()[0]- 5); //mod by difficulty
+        moveThreshold2 += 0.02f * (state.user.getSettingData()[0] - 5); //mod by difficulty
     }
 
     // Update is called once per frame
@@ -193,16 +196,55 @@ public class VRUser : MonoBehaviour
             cursorMove = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch);
         }
 
-        Vector3 change = controllerOffset - movementVal; // handPos - controllerOffset;
+        change = controllerOffset - movementVal; // handPos - controllerOffset;
         change *= StateManager.cursorSpeed;
-        if (state.cursorXMove)
+
+        if (state.user.getPracticeLevelState()[0]) //has started practice level, aka has finished calibration
         {
-            cursorMove += new Vector2(change.x, 0);
+            Debug.Log("Move Change: " + change + ", Threshold: " +
+            new Vector3(state.user.getMovementBounds()[1], state.user.getMovementBounds()[3], state.user.getMovementBounds()[4]) * moveThreshold1
+            + ", " + new Vector3(state.user.getMovementBounds()[0], state.user.getMovementBounds()[2], state.user.getMovementBounds()[4]) * moveThreshold1);
+
+            if (state.cursorXMove && change.x > (state.user.getMovementBounds()[1] * moveThreshold1) || change.x < (state.user.getMovementBounds()[0] * moveThreshold1))
+            {
+                cursorMove += new Vector2(change.x, 0);
+            }
+            if (state.cursorYMove && change.y > (state.user.getMovementBounds()[3] * moveThreshold1) || change.y < (state.user.getMovementBounds()[2] * moveThreshold1))
+            {
+                cursorMove += new Vector2(0, change.y);
+            }
+
+            //clicking
+            if (change.z == state.user.getMovementBounds()[4] * moveThreshold1) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
+            {
+                state.userClick = true;
+                state.userIsClicking = true;
+            }
+            else if (change.z > state.user.getMovementBounds()[4] * moveThreshold1)
+            {
+                state.userIsClicking = true;
+                state.userClick = false;
+            }
+            else
+            {
+                state.userIsClicking = false;
+                state.userClick = false;
+            }
         }
-        if (state.cursorYMove)
+        else
         {
-            cursorMove += new Vector2(0, change.y);
+            Debug.Log("Move Change: " + change);
+
+            if (state.cursorXMove)
+            {
+                cursorMove += new Vector2(change.x, 0);
+            }
+            if (state.cursorYMove)
+            {
+                cursorMove += new Vector2(0, change.y);
+            }
         }
+
         Debug.Log("VRUser CursorAdd: " + state.cursorAdd);
         cursorMove += new Vector2(state.cursorAdd.x, state.cursorAdd.y);
         state.cursorAdd = new Vector3(0f, 0f, 0f); //resetting additive property
@@ -227,7 +269,7 @@ public class VRUser : MonoBehaviour
             trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, -150, trueCursor.transform.localPosition.z);
         }
 
-        if (isClicking())
+        if (state.userIsClicking)
         {
             GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight2;
         }
@@ -338,33 +380,15 @@ public class VRUser : MonoBehaviour
      }
     public static bool userSkip(bool isContinuous = false)
     {
-        if (!isContinuous)
+        /*if (!isContinuous)
         {
             return OVRInput.GetDown(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) || OVRInput.GetDown(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch);
         }
         else
         {
             return OVRInput.Get(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch);
-        }
-    }
-    public static bool cursorRelock()
-    {
-        if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch) && OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.RTouch))
-        {
-            return true;
-        }
-        else if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.LTouch) && OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.LTouch))
-        {
-            return true;
-        }
-        return false;
-    }
-    public static bool isClicking(bool isContinuous = false) //getbutton
-    {
-        /*Debug.Log("isClicking: " + (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) >= .9 || OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) >= .9) + ", " 
-            + ((OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) < .9 && OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) >= .15) ||
-                (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) < .9 && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) >= .15)));*/
-        if (!isContinuous)
+        }*/
+        if (isContinuous)
         {
             return OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) >= .9 || OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) >= .9;
         }
@@ -373,6 +397,19 @@ public class VRUser : MonoBehaviour
             return (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) < .9 && OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) >= .15) ||
                 (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) >= .9 && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) >= .15);
         }
+    }
+    public static bool cursorRelock(bool isContinuous = true)
+    {
+        /*if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch) && OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.RTouch))
+        {
+            return true;
+        }
+        else if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.LTouch) && OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.LTouch))
+        {
+            return true;
+        }
+        return false;*/
+        return userSkip(isContinuous);
     }
     public static bool clickDown() //getbuttondown
     {
@@ -396,14 +433,39 @@ public class VRUser : MonoBehaviour
             (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) > 1.9);
         }
     }
+    public static bool hasButton(bool isContinuous = false)
+    {
+        if (!isContinuous)
+        {
+            return OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch)
+                || OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.LTouch);
+        }
+        else
+        {
+            return OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.LTouch)
+                || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.RTouch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.LTouch);
+        }
+    }
     public static bool isNotResetting()
     {
         return (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) == 0 && OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) == 0);
     }
-    
-    public static Vector3 handTracking()
+
+    public static Vector3 handTracking(bool factored = false)
     {
-        return (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;
+        if (!factored)
+        {
+            return (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;
+        }
+        else
+        {
+            Vector3 hand = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;
+            state.userControlActive = true;
+            trueCursor.transform.position = centerer.transform.position; //center
+            controllerOffset = playerPos.arms;
+            movementVal = new Vector3((farRight.transform.position - hand).magnitude, (farUp.transform.position - hand).magnitude, (farForward.transform.position - hand).magnitude);
+            return movementVal * -StateManager.cursorSpeed;
+        }
     }
 
     public static int getStickState()

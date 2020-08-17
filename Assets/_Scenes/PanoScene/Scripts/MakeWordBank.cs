@@ -167,7 +167,7 @@ public class MakeWordBank : MonoBehaviour {
     public static bool inTutorial = false; //***
     public static bool inPracticeLevel = false;
 
-    public static int stepOfTutorial = 13;
+    public static int stepOfTutorial = 12;
     public static float timePannedInTutorial = 0f;
     public static float timeSpentOnStep8 = 0f;
     public static float timeSpentBeforeFocus = 0f; //I don't want the step of demonstrating focus to possibly end instantly, so I'll make it show up for a mandatory minimum of time ~2 sec
@@ -298,8 +298,8 @@ public class MakeWordBank : MonoBehaviour {
         tutorialText.text = ""; //Blank for now since welcome screen must come first
         helpTextContainer = GameObject.Find("HelpTextContainer");
         helpTextContainer.SetActive(false);
-        //welcomeText = GameObject.FindGameObjectWithTag("WelcomeText").GetComponent<Text>() as Text;
-        //welcomeScreen = GameObject.Find("WelcomeScreenPanel");
+        welcomeText = GameObject.FindGameObjectWithTag("WelcomeText").GetComponent<Text>() as Text;
+        welcomeScreen = GameObject.Find("welcomePanel");
         practiceLevelText = GameObject.Find("PracticeLevelText");
         helpTextPanel = tutorialText.transform.parent.gameObject;
         practiceLevelText.SetActive(false);
@@ -465,7 +465,7 @@ public class MakeWordBank : MonoBehaviour {
             if (state.isGaming()) //in-game or practice level or button tutorial
             {
                 //Debug.Log("IsGaming");
-                if (Input.GetKeyDown(KeyCode.B) || VRUser.isClicking(true)) //select
+                if (Input.GetKeyDown(KeyCode.B) || state.userClick) //select
                 {
                     int buttonsConverted = VRUser.buttonConversion();
                     Debug.Log("IsClicking! " + buttonsConverted);
@@ -602,7 +602,7 @@ public class MakeWordBank : MonoBehaviour {
             }
 
             timer3 += Time.deltaTime;
-            if (skip() && state.getState() == 5)
+            if (skip() && stepOfTutorial > 12 && state.getState() == 5)
             {
                 step22proceed = true;
                 stepOfTutorial = 22;
@@ -749,13 +749,13 @@ public class MakeWordBank : MonoBehaviour {
                     timer = 0f;
                    // focusor.SetActive(false);
                     helpTextContainer.SetActive(false);
-                   //welcomeScreen.SetActive(true);
+                   welcomeScreen.SetActive(true);
                     mainCamera.SetActive(true);
                     UICamera.SetActive(true);
                     videoCamera.SetActive(false);
                     //VP1.SetActive(false);
                     //VP5.SetActive(false);
-                    //welcomeText.text = "Now let's do a practice level" + "\n" + "It will be just like a real level but data will not be collected" + "\n" + "(Push the rod forward to begin the practice level)";
+                    welcomeText.text = "Now let's do a practice level" + "\n" + "It will be just like a real level but data will not be collected" + "\n" + "(Push the rod forward to begin the practice level)";
                     //StateManager.allSystemsGo = true;
                     stepOfTutorial++;
                     state.setState(7);
