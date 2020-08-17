@@ -142,7 +142,7 @@ public class StateManager : MonoBehaviour {
     public bool userIsClicking = false; //getbutton - isClicking(true)
     public bool userClick = false; //getbuttondown
 
-    private int userState = 2;//6;
+    private int userState = 6;
     /* 0 = Quit
      * 1 = Home
      * 2 = In-Game
@@ -154,6 +154,7 @@ public class StateManager : MonoBehaviour {
      * 8 = Survey
      */
      //Mock order: 6,4,5,7,1,0,1,7,2,1,3,1,2,1,0
+     //distance from baseline of head anchors affecting the amount of change rather than the difference...
     public int getState()
     {
         return userState;

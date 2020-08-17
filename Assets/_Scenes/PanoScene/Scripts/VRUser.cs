@@ -104,6 +104,7 @@ public class VRUser : MonoBehaviour
             OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles);
         armsFixes();
         //vrInfo();
+        state.user.showMoveBounds();
 
         //FORCE QUIT
         //if(OVRInput.Get(OVRInput.Touch.PrimaryThumbRest, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Touch.SecondaryThumbRest, OVRInput.Controller.Touch))
@@ -204,7 +205,6 @@ public class VRUser : MonoBehaviour
             Debug.Log("Move Change: " + change + ", Threshold: " +
             new Vector3(state.user.getMovementBounds()[1], state.user.getMovementBounds()[3], state.user.getMovementBounds()[4]) * moveThreshold1
             + ", " + new Vector3(state.user.getMovementBounds()[0], state.user.getMovementBounds()[2], state.user.getMovementBounds()[4]) * moveThreshold1);
-
             if (state.cursorXMove && change.x > (state.user.getMovementBounds()[1] * moveThreshold1) || change.x < (state.user.getMovementBounds()[0] * moveThreshold1))
             {
                 cursorMove += new Vector2(change.x, 0);
@@ -215,7 +215,7 @@ public class VRUser : MonoBehaviour
             }
 
             //clicking
-            if (change.z == state.user.getMovementBounds()[4] * moveThreshold1) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
+            if (Math.Floor(change.z) == state.user.getMovementBounds()[4] * moveThreshold1) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
             {
                 state.userClick = true;
                 state.userIsClicking = true;
@@ -233,8 +233,7 @@ public class VRUser : MonoBehaviour
         }
         else
         {
-            Debug.Log("Move Change: " + change);
-
+            //Debug.Log("Move Change: " + change);
             if (state.cursorXMove)
             {
                 cursorMove += new Vector2(change.x, 0);
@@ -243,8 +242,26 @@ public class VRUser : MonoBehaviour
             {
                 cursorMove += new Vector2(0, change.y);
             }
-        }
 
+            //clicking
+            if (Math.Floor(change.z) == 5f * moveThreshold1) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
+            {
+                state.userClick = true;
+                state.userIsClicking = true;
+            }
+            else if (change.z > 5f * moveThreshold1)
+            {
+                state.userIsClicking = true;
+                state.userClick = false;
+            }
+            else
+            {
+                state.userIsClicking = false;
+                state.userClick = false;
+            }
+        }
+        Debug.Log("Clicking: " + state.userIsClicking + ", " + state.userClick);
+        //Debug.Log("Testing Mod: " + movementVal.z + " vs. " + handTracking().z);
         Debug.Log("VRUser CursorAdd: " + state.cursorAdd);
         cursorMove += new Vector2(state.cursorAdd.x, state.cursorAdd.y);
         state.cursorAdd = new Vector3(0f, 0f, 0f); //resetting additive property
@@ -269,13 +286,13 @@ public class VRUser : MonoBehaviour
             trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, -150, trueCursor.transform.localPosition.z);
         }
 
-        if (state.userIsClicking)
-        {
-            GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight2;
-        }
-        else if (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) >= .2 || OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) >= .2)
+        if (isResetting(true) || isResetting(false))
         {
             GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight;
+        }
+        else if (state.userIsClicking)
+        {
+            GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight2; //red
         }
         else
         {

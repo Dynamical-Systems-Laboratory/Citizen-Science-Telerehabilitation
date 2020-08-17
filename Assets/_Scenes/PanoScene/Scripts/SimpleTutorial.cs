@@ -531,10 +531,10 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (!VPA4.isPlaying && startedPlaying)
                 {
                     VP4.SetActive(false);
-                    if (state.userControlActive)
+                    /*if (state.userControlActive)
                     {
                         cursor.transform.localScale += new Vector3((VRUser.handTracking() - handPos1).z, (VRUser.handTracking() - handPos1).z, (VRUser.handTracking() - handPos1).z)/5f;
-                    }
+                    }*/
                     
                     if (counter == 0)
                     {
@@ -563,11 +563,11 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     }
 
                     Debug.Log("Z Offset: " + (VRUser.handTracking() - handPos1).z + ", Button: " + VRUser.hasButton().ToString());
-                    if (Math.Abs((VRUser.handTracking() - handPos1).z) <= 2f && VRUser.hasButton())
+                    if (Math.Abs((VRUser.handTracking() - handPos1).z) <= 1f && VRUser.hasButton())
                     {
                         text.text = "Try to extend a bit farther forward to get a good calibration...";
                     }
-                    else if (Math.Abs((VRUser.handTracking() - handPos1).z) > 2f && VRUser.hasButton()) //VRUser.change.z
+                    else if (Math.Abs((VRUser.handTracking() - handPos1).z) > 1f && VRUser.hasButton()) //VRUser.change.z
                     {
                         movementAvg[counter] = (VRUser.handTracking() - handPos1).z * StateManager.cursorSpeed;
                         timerAvg[counter] = timer;
