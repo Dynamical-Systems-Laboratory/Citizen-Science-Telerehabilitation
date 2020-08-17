@@ -69,7 +69,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 
 	//This method is only needed when the user has clicked a tag, and the instantiated GameObject tag needs to follow the cursor:
 	public void Update() {
-		Debug.Log("Show: " + showNum);
+		//Debug.Log("Show: " + showNum);
 		if (MakeWordBank.stepOfTutorial == 11 && trashedTags.Count != 0) {
 			for (int i = 0; i < trashedTags.Count; i++) {
 				Destroy (trashedTags [i]);

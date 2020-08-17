@@ -167,7 +167,7 @@ public class MakeWordBank : MonoBehaviour {
     public static bool inTutorial = false; //***
     public static bool inPracticeLevel = false;
 
-    public static int stepOfTutorial = 0;
+    public static int stepOfTutorial = 13;
     public static float timePannedInTutorial = 0f;
     public static float timeSpentOnStep8 = 0f;
     public static float timeSpentBeforeFocus = 0f; //I don't want the step of demonstrating focus to possibly end instantly, so I'll make it show up for a mandatory minimum of time ~2 sec
@@ -547,6 +547,7 @@ public class MakeWordBank : MonoBehaviour {
         if (state.getState() == 5) //edge cases with old booleans
         {
             inTutorial = true;
+            Debug.Log("Button Tutorial Step: " + stepOfTutorial);
         }
         else
         {
@@ -586,6 +587,7 @@ public class MakeWordBank : MonoBehaviour {
                 if (state.getState() == 5) //start of button tutorial --> changes background to be brighter
                 {
                     nextImage(imageIndex);
+                    welcomeScreen.SetActive(true);
                 }
 
                 StateManager.moveCameraU = true;
@@ -600,457 +602,41 @@ public class MakeWordBank : MonoBehaviour {
             }
 
             timer3 += Time.deltaTime;
-            //if (timer3 > 0.5f)
-            //{
             if (skip() && state.getState() == 5)
             {
                 step22proceed = true;
                 stepOfTutorial = 22;
                 state.setState(7);
             }
-            //}
 
-            //buttons = state.getButtons();
-            if (stepOfTutorial == 0)
+            if (stepOfTutorial == 12)
             { //Welcome screen step:
-                //timeSpentAfterSurvey += Time.deltaTime;
-                //if (timeSpentAfterSurvey >= 2f)
                 if (moveOn() && !skip())
                 { //Move to the next step (change for falcon):
-                    //welcomeScreen.SetActive(false);
-                    helpTextContainer.SetActive(false);
-                    state.setState(5);
-                    stepOfTutorial = 13; //All videos moved to pleTutorial, sSimtart with step 13
-                }
-
-                /*
-                if (play1)
-                {
-                    VP1.SetActive(true);
-                    cameraLRVP.Play();
-                    mainCamera.SetActive(false);
-                    UICamera.SetActive(false);
-                    videoCamera.SetActive(true);
-                    StateManager.moveCameraU = false;
-                    StateManager.moveCameraD = false;
-                    StateManager.moveCameraL = false;
-                    StateManager.moveCameraR = false;
-                    stepOfTutorial++;
-                }
-                */
-            }
-            else if (stepOfTutorial == 1)
-            {
-                if (cameraLRVP.isPlaying)
-                {
-                    startedPlaying = true;
-                }
-
-                if (startedPlaying && (!cameraLRVP.isPlaying))
-                {
-                    mainCamera.SetActive(true);
-                    UICamera.SetActive(true);
-                    videoCamera.SetActive(false);
-                    VP1.SetActive(false);
-                    startedPlaying = false;
-                    StateManager.moveCameraU = true;
-                    StateManager.moveCameraD = true;
-                    StateManager.moveCameraL = true;
-                    StateManager.moveCameraR = true;
-                    helpTextContainer.SetActive(true);
-                    //Change the size of the box
-                    tutorialText.text = "Pan the image to the left" + "\n" + "(To replay the video, press the space bar on your keyboard)"; //space?
-                    //Width from 150->218
-                    //228,24
-                    helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                    = new Vector2(500, 60);
-                    tutorialText.GetComponent<RectTransform>().sizeDelta
-                    = new Vector2(500, 65);
-                    tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                    helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
-                    stepOfTutorial++;
+                    welcomeScreen.SetActive(false);
+                    //helpTextContainer.SetActive(true);
+                    //state.setState(5);
+                    stepOfTutorial = 13;
                 }
             }
-            else if (stepOfTutorial == 2)
-            {
-                if (StateManager.cameraL)
-                {
-                    timer += Time.deltaTime;
-                }
-
-                if (Input.GetKeyDown("space"))
-                {
-                    stepOfTutorial = 0;
-                }
-
-                if (timer > 2f)
-                {
-                    tutorialText.text = "";
-                    timer2 += Time.deltaTime;
-                    if (timer2 > 0.5f)
-                    {
-                        timer = 0f;
-                        timer2 = 0f;
-                        tutorialText.text = "Pan the image to the right" + "\n" + "(To replay the video, press the space bar on your keyboard)";
-                        //Width from 150->218
-                        //228,24
-                        helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                        = new Vector2(500, 60);
-                        tutorialText.GetComponent<RectTransform>().sizeDelta
-                        = new Vector2(500, 65);
-                        tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                        helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
-                        stepOfTutorial++;
-                    }
-                }
-            }
-            else if (stepOfTutorial == 3)
-            {
-                if (Input.GetKeyDown("space"))
-                {
-                    stepOfTutorial = 0;
-                    play1 = true;
-                }
-
-                if (StateManager.cameraR)
-                {
-                    timer += Time.deltaTime;
-                }
-
-                if (timer > 2f)
-                {
-                    helpTextContainer.SetActive(false);
-                    timer = 0f;
-                    play2 = true;
-                }
-
-                if (play2)
-                {
-                    mainCamera.SetActive(false);
-                    UICamera.SetActive(false);
-                    videoCamera.SetActive(true);
-                    VP2.SetActive(true);
-                    cameraUDVP.Play();
-                    StateManager.moveCameraU = false;
-                    StateManager.moveCameraD = false;
-                    StateManager.moveCameraL = false;
-                    StateManager.moveCameraR = false;
-                    stepOfTutorial++;
-                }
-
-            }
-            else if (stepOfTutorial == 4)
-            {
-                if (cameraUDVP.isPlaying)
-                {
-                    startedPlaying = true;
-                }
-
-                if (startedPlaying && (!cameraUDVP.isPlaying))
-                {
-                    mainCamera.SetActive(true);
-                    UICamera.SetActive(true);
-                    videoCamera.SetActive(false);
-                    VP2.SetActive(false);
-                    startedPlaying = false;
-                    StateManager.moveCameraU = true;
-                    StateManager.moveCameraD = true;
-                    StateManager.moveCameraL = true;
-                    StateManager.moveCameraR = true;
-                    helpTextContainer.SetActive(true);
-                    //Change the size of the box
-                    tutorialText.text = "Pan the image upward" + "\n" + "(To replay the video, press the space bar on your keyboard)";
-                    //Width from 150->218   228,24
-                    helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                    = new Vector2(500, 60);
-                    tutorialText.GetComponent<RectTransform>().sizeDelta
-                    = new Vector2(500, 65);
-                    tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                    helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
-                    stepOfTutorial++;
-                }
-            }
-            else if (stepOfTutorial == 5)
-            {
-                if (Input.GetKeyDown("space"))
-                {
-                    stepOfTutorial = 3;
-                }
-
-                if (StateManager.cameraU)
-                {
-                    tutorialText.text = "";
-                    step5proceed = true;
-                }
-
-                if (step5proceed)
-                {
-                    timer2 += Time.deltaTime;
-                    if (timer2 > 0.5f)
-                    {
-                        timer = 0f;
-                        timer2 = 0f;
-                        tutorialText.text = "Pan the image downward" + "\n" + "(To replay the video, press the space bar on your keyboard)";
-                        //Width from 150->218
-                        //228,24
-                        helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                        = new Vector2(500, 60);
-                        tutorialText.GetComponent<RectTransform>().sizeDelta
-                        = new Vector2(500, 65);
-                        tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                        helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
-                        stepOfTutorial++;
-                    }
-                }
-            }
-            else if (stepOfTutorial == 6)
-            {
-                if (Input.GetKeyDown("space"))
-                {
-                    stepOfTutorial = 3;
-                }
-
-                if (StateManager.cameraD)
-                {
-                    timer = 0f;
-                    helpTextContainer.SetActive(false);
-                    play3 = true;
-                }
-
-                if (play3)
-                {
-                    mainCamera.SetActive(false);
-                    UICamera.SetActive(false);
-                    videoCamera.SetActive(true);
-                    VP3.SetActive(true);
-                    cursorLRVP.Play();
-                    StateManager.moveCameraU = false;
-                    StateManager.moveCameraD = false;
-                    StateManager.moveCameraL = false;
-                    StateManager.moveCameraR = false;
-                    stepOfTutorial++;
-                }
-            }
-            else if (stepOfTutorial == 7)
-            {
-                if (cursorLRVP.isPlaying)
-                {
-                    startedPlaying = true;
-                }
-
-                if (startedPlaying && (!cursorLRVP.isPlaying))
-                {
-                    mainCamera.SetActive(true);
-                    UICamera.SetActive(true);
-                    videoCamera.SetActive(false);
-                    VP3.SetActive(false);
-                    startedPlaying = false;
-                    StateManager.moveCameraU = true;
-                    StateManager.moveCameraD = true;
-                    StateManager.moveCameraL = true;
-                    StateManager.moveCameraR = true;
-                    helpTextContainer.SetActive(true);
-                    tutorialText.text = "Move the cursor to the left" + "\n" + "(To replay the video, press the space bar on your keyboard)";
-                    //Width from 150->218
-                    //228,24
-                    helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                    = new Vector2(500, 60);
-                    tutorialText.GetComponent<RectTransform>().sizeDelta
-                    = new Vector2(500, 65);
-                    tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                    helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
-                    stepOfTutorial++;
-                }
-            }
-            else if (stepOfTutorial == 8)
-            {
-                if (Input.GetKeyDown("space"))
-                {
-                    stepOfTutorial = 6;
-                }
-
-                if (StateManager.cursorL)
-                {
-                    timer += Time.deltaTime;
-                }
-
-                if (timer > 2f)
-                {
-                    tutorialText.text = "";
-                    timer2 += Time.deltaTime;
-                    if (timer2 > 0.5f)
-                    {
-                        timer = 0f;
-                        timer2 = 0f;
-                        tutorialText.text = "Move the cursor to the right" + "\n" + "(To replay the video, press the space bar on your keyboard)";
-                        //Width from 150->218
-                        //228,24
-                        helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                        = new Vector2(500, 60);
-                        tutorialText.GetComponent<RectTransform>().sizeDelta
-                        = new Vector2(500, 65);
-                        tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                        helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
-                        stepOfTutorial++;
-                    }
-                }
-            }
-            else if (stepOfTutorial == 9)
-            {
-                if (Input.GetKeyDown("space"))
-                {
-                    stepOfTutorial = 6;
-                }
-
-                if (StateManager.cursorR)
-                {
-                    timer += Time.deltaTime;
-                }
-
-                if (timer > 2f)
-                {
-                    helpTextContainer.SetActive(false);
-                    timer = 0f;
-                    play4 = true;
-                }
-
-                if (play4)
-                {
-                    mainCamera.SetActive(false);
-                    UICamera.SetActive(false);
-                    videoCamera.SetActive(true);
-                    VP4.SetActive(true);
-                    cursorUDVP.Play();
-                    StateManager.moveCameraU = false;
-                    StateManager.moveCameraD = false;
-                    StateManager.moveCameraL = false;
-                    StateManager.moveCameraR = false;
-                    stepOfTutorial++;
-                }
-            }
-            else if (stepOfTutorial == 10)
-            {
-                if (cursorUDVP.isPlaying)
-                {
-                    startedPlaying = true;
-                }
-
-                if (startedPlaying && (!cursorUDVP.isPlaying))
-                {
-                    mainCamera.SetActive(true);
-                    UICamera.SetActive(true);
-                    videoCamera.SetActive(false);
-                    VP4.SetActive(false);
-                    startedPlaying = false;
-                    StateManager.moveCameraU = true;
-                    StateManager.moveCameraD = true;
-                    StateManager.moveCameraL = true;
-                    StateManager.moveCameraR = true;
-                    helpTextContainer.SetActive(true);
-                    tutorialText.text = "Move the cursor upward" + "\n" + "(To replay the video, press the space bar on your keyboard)";
-                    //Width from 150->218
-                    //228,24
-                    helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                    = new Vector2(500, 60);
-                    tutorialText.GetComponent<RectTransform>().sizeDelta
-                    = new Vector2(500, 65);
-                    tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                    helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
-                    stepOfTutorial++;
-                }
-            }
-            else if (stepOfTutorial == 11)
-            {
-                if (Input.GetKeyDown("space"))
-                {
-                    stepOfTutorial = 9;
-                }
-
-                if (StateManager.cursorU)
-                {
-                    timer += Time.deltaTime;
-                }
-
-                if (timer > 2f)
-                {
-                    tutorialText.text = "";
-                    timer2 += Time.deltaTime;
-                    if (timer2 > 0.5f)
-                    {
-                        timer = 0f;
-                        timer2 = 0f;
-                        tutorialText.text = "Move the cursor downward" + "\n" + "(To replay the video, press the space bar on your keyboard)";
-                        //Width from 150->218
-                        //228,24
-                        helpTextPanel.GetComponent<RectTransform>().sizeDelta
-                        = new Vector2(500, 60);
-                        tutorialText.GetComponent<RectTransform>().sizeDelta
-                        = new Vector2(500, 65);
-                        tutorialText.transform.localPosition = new Vector2(tutorialText.transform.localPosition.x, -15);
-                        helpTextContainer.transform.localPosition = new Vector3(-225f, -100f, 0f);
-                        stepOfTutorial++;
-                    }
-                }
-            }
-            else if (stepOfTutorial == 12)
-            {
-                if (Input.GetKeyDown("space"))
-                {
-                    stepOfTutorial = 9;
-                }
-
-                if (StateManager.cursorD)
-                {
-                    timer += Time.deltaTime;
-                }
-
-                if (timer > 2f)
-                {
-                    helpTextContainer.SetActive(false);
-                    timer = 0f;
-                    play5 = true;
-                }
-
-                if (play5)
-                {
-                    mainCamera.SetActive(false);
-                    UICamera.SetActive(false);
-                    videoCamera.SetActive(true);
-                    VP5.SetActive(true);
-                    clickVP.Play();
-                    StateManager.moveCameraU = false;
-                    StateManager.moveCameraD = false;
-                    StateManager.moveCameraL = false;
-                    StateManager.moveCameraR = false;
-                    stepOfTutorial++;
-                }
-            }
+           
             else if (stepOfTutorial == 13)
             {
-                mainCamera.SetActive(true);
-                UICamera.SetActive(true);
-                videoCamera.SetActive(false);
-                //VP5.SetActive(false);
                 startedPlaying = false;
-                StateManager.moveCameraU = true;
-                StateManager.moveCameraD = true;
-                StateManager.moveCameraL = true;
-                StateManager.moveCameraR = true;
                     
-                foreach (GameObject tag in tagGameObjects) //making sure tags stay on equal z axis'
+                /*foreach (GameObject tag in tagGameObjects) //making sure tags stay on equal z axis'
                 {
                     Vector3 newPos = new Vector3(tag.transform.position.x, tag.transform.position.y, 0f);
                     tag.transform.Translate(newPos * Time.deltaTime);
-                }
+                }*/
                 helpTextContainer.SetActive(true);
                 tutorialText.text = "This list of words may describe objects in the image" + "\n"
                     + "(Push the rod forward to continue)";
                 timer = 0f;
                 stepOfTutorial++;
-                //}
             }
             else if (stepOfTutorial == 14)
-            {
+            { 
                 timer += Time.deltaTime;
                 if (timer > 1f)
                 {
@@ -1270,7 +856,7 @@ public class MakeWordBank : MonoBehaviour {
     }
     public static bool skip()
     {
-        if ((Input.GetKeyDown(KeyCode.Escape) && VRUser.extraControls) || VRUser.userSkip())
+        if ((Input.GetKeyDown(KeyCode.Escape) && VRUser.extraControls) || VRUser.userSkip(false))
         {
             return true;
         }

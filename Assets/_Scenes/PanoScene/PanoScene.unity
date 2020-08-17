@@ -7378,7 +7378,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &403826530
 Transform:
   m_ObjectHideFlags: 0
@@ -14530,9 +14530,9 @@ MonoBehaviour:
 
     You can take a break now
 
-    When you''re ready, click the mouse to continue
+    When you''re ready, click *A* or *X* to continue
 
-    (Press esc on your keyboard to skip the tutorial)
+    (Press the stick button to skip the tutorial)
 
 '
 --- !u!222 &785418212
@@ -38487,7 +38487,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0, y: 0.000061035156}
+  m_AnchoredPosition: {x: 0, y: 0.000061035156}
   m_SizeDelta: {x: 1444, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2073035848

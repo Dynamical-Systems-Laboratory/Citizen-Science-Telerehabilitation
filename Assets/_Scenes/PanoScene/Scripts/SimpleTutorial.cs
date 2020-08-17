@@ -195,7 +195,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     {
         if (state.getState() == 4)
         {
-            Debug.Log("Step: " + step);
+            Debug.Log("Calibration Step: " + step);
             //canvas.SetActive(true);
             if (!initialized)
             {
@@ -217,7 +217,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 state.userControlActive = false;
             }
 
-            if (MakeWordBank.skip() && hasCompleted)
+            if (MakeWordBank.skip() )//&& hasCompleted)
             {
                 step = 35;//changed from 35
             }
