@@ -135,6 +135,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     public static GameObject cursor;
     public static GameObject cursorCam;
     //private static int beginngingCull;
+    public static Vector3 savedCursorScale;
 
     public static Vector3 handPos1; //helper vars for hand tracking
     public static Vector3 handPos2;
@@ -160,7 +161,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
         lockPanel = GameObject.Find("lockPanel");
 
-        cursor = GameObject.Find("CursorCanvas");
+        cursor = GameObject.Find("exampleCursor");
         cursorCam = GameObject.Find("CursorCamera");
         //beginngingCull = cursorCam.GetComponent<Camera>().cullingMask;
 
@@ -363,7 +364,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
                 if (state.getCursorPosition().x >= 87f && state.userControlActive)
                 {
-                    movementAvg[counter] = (VRUser.handTracking() - handPos1).x;
+                    movementAvg[counter] = (VRUser.handTracking() - handPos1).x * StateManager.cursorSpeed; //mult by cursorspeed for factoring
                     timerAvg[counter] = timer;
                     counter += 1;
                     StateManager.makeCursReset = true;
@@ -406,7 +407,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
                 if (state.getCursorPosition().x <= -89f && state.userControlActive)
                 {
-                    movementAvg[counter] = (VRUser.handTracking() - handPos1).x;
+                    movementAvg[counter] = (VRUser.handTracking() - handPos1).x * StateManager.cursorSpeed;
                     timerAvg[counter] = timer;
                     counter += 1;
                     StateManager.makeCursReset = true;
@@ -457,7 +458,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
                     if (state.getCursorPosition().y >= 65f && state.userControlActive)
                     {
-                        movementAvg[counter] = (VRUser.handTracking() - handPos1).y;
+                        movementAvg[counter] = (VRUser.handTracking() - handPos1).y * StateManager.cursorSpeed;
                         timerAvg[counter] = timer;
                         counter += 1;
                         StateManager.makeCursReset = true;
@@ -498,11 +499,12 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     state.cursorYMove = false;
                     VP4.SetActive(true);
                     VPA4.Play();
+                    savedCursorScale = cursor.transform.localScale;
                 }
 
                 if (state.getCursorPosition().y <= -89f && state.userControlActive)
                 {
-                    movementAvg[counter] = (VRUser.handTracking() - handPos1).y;
+                    movementAvg[counter] = (VRUser.handTracking() - handPos1).y * StateManager.cursorSpeed;
                     timerAvg[counter] = timer;
                     counter += 1;
                     StateManager.makeCursReset = true;
@@ -529,9 +531,14 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (!VPA4.isPlaying && startedPlaying)
                 {
                     VP4.SetActive(false);
+                    if (state.userControlActive)
+                    {
+                        cursor.transform.localScale += new Vector3((VRUser.handTracking() - handPos1).z, (VRUser.handTracking() - handPos1).z, (VRUser.handTracking() - handPos1).z)/5f;
+                    }
+                    
                     if (counter == 0)
                     {
-                        text.text = "(5)Now we'll try the *forward* direction.\n " +
+                        text.text = "(6)Now we'll try the *forward* direction.\n " +
                             "Unlock the cursor and move your hands/arms forward as far as you can stretch without moving your body\n" +
                         "THEN press any button (A,B,X,Y) to signify your at your maximum range.";
                     }
@@ -555,23 +562,26 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                         state.cursorYMove = true;
                     }
 
-                    if ((VRUser.handTracking() - handPos1).z < 5f && VRUser.hasButton())
+                    Debug.Log("Z Offset: " + (VRUser.handTracking() - handPos1).z + ", Button: " + VRUser.hasButton().ToString());
+                    if (Math.Abs((VRUser.handTracking() - handPos1).z) <= 2f && VRUser.hasButton())
                     {
                         text.text = "Try to extend a bit farther forward to get a good calibration...";
                     }
-                    else if ((VRUser.handTracking() - handPos1).z >= 5f && VRUser.hasButton()) //VRUser.change.z
+                    else if (Math.Abs((VRUser.handTracking() - handPos1).z) > 2f && VRUser.hasButton()) //VRUser.change.z
                     {
-                        movementAvg[counter] = (VRUser.handTracking() - handPos1).z;
+                        movementAvg[counter] = (VRUser.handTracking() - handPos1).z * StateManager.cursorSpeed;
                         timerAvg[counter] = timer;
                         counter += 1;
                         StateManager.makeCursReset = true;
                         state.userControlActive = false;
+                        cursor.transform.localScale = savedCursorScale;
                     }
 
                     if (!state.userControlActive && VRUser.isResetting())
                     {
                         handPos1 = VRUser.handTracking();
                         timer = 0;
+                        cursor.transform.localScale = savedCursorScale;
                     }
                 }
             }
@@ -579,7 +589,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             {
                 text.text = "Nice job! Once in-game, if you want to lock the cursor again without needing to hold the hand triggers, \n" +
                     "press either index trigger. This will prevent the cursor from moving until you unlock it again.\n" +
-                    "(6) As a final step, please lock the cursor once.";
+                    "(7) As a final step, please lock the cursor once.";
                 if (VRUser.cursorRelock())
                 {
                     text.text = "Tutorial Completed";
@@ -649,7 +659,7 @@ public class MovementBounds
 
     public MovementBounds()
     {
-        rangeOfMotion = new float[] { -1f, -1f, -1f, -1f, -1f };
-        timeOfMotion = new float[] { -1f, -1f, -1f, -1f, -1f };
+        rangeOfMotion = new float[] { 0f, 0f, 0f, 0f, 0f };
+        timeOfMotion = new float[] { 0f, 0f, 0f, 0f, 0f };
     }
 }

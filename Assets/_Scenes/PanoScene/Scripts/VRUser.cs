@@ -158,7 +158,7 @@ public class VRUser : MonoBehaviour
             }
         }
 
-        Vector3 handPos = handTracking();
+        Vector3 handPos = handTracking(false);
         Vector3 movementVal = new Vector3(0f,0f,0f);
         /*  Reset Mechanic:
          *  Cursor starts at the center (cursorCenter) position and cannot move until...
@@ -249,7 +249,7 @@ public class VRUser : MonoBehaviour
         cursorMove += new Vector2(state.cursorAdd.x, state.cursorAdd.y);
         state.cursorAdd = new Vector3(0f, 0f, 0f); //resetting additive property
 
-        trueCursor.transform.position += (3f * Time.deltaTime * ((trueCursor.transform.up * cursorMove.y) + (trueCursor.transform.right * cursorMove.x)));
+        trueCursor.transform.position += (3.2f * Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.2f) + (trueCursor.transform.right * cursorMove.x)));
 
         //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-151,66], x[-90,88.4]
         if (trueCursor.transform.localPosition.x > 88)
@@ -451,20 +451,17 @@ public class VRUser : MonoBehaviour
         return (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) == 0 && OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) == 0);
     }
 
-    public static Vector3 handTracking(bool factored = false)
+    public static Vector3 handTracking(bool factored = true)
     {
         if (!factored)
         {
             return (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;
         }
-        else
+        else //returns hand pos value factored for headset
         {
             Vector3 hand = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;
-            state.userControlActive = true;
-            trueCursor.transform.position = centerer.transform.position; //center
-            controllerOffset = playerPos.arms;
-            movementVal = new Vector3((farRight.transform.position - hand).magnitude, (farUp.transform.position - hand).magnitude, (farForward.transform.position - hand).magnitude);
-            return movementVal * -StateManager.cursorSpeed;
+            Vector3 move = new Vector3((farRight.transform.position - hand).magnitude, (farUp.transform.position - hand).magnitude, (farForward.transform.position - hand).magnitude);
+            return -move;// * StateManager.cursorSpeed;
         }
     }
 

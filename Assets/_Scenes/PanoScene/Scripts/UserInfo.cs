@@ -426,8 +426,8 @@ public class UserInfo //not sure if : this() is necessary
     private float cursorSize;
     private float difficulty = 5;
 
-    private float[] movementBounds = new float[] { -1f, -1f, -1f, -1f, -1f }; //-x, x,-y, y, z
-    private float[] movementTime = new float[] { -1f, -1f, -1f, -1f, -1f }; //can also be new float[5]?
+    private float[] movementBounds = new float[] { 0f, 0f, 0f, 0f, 0f }; //-x, x,-y, y, z
+    private float[] movementTime = new float[] { 0f, 0f, 0f, 0f, 0f }; //can also be new float[5]?
     private List<MovementData> movements = new List<MovementData>();
     //compulsory movement tracker?
 
