@@ -54,6 +54,8 @@ public class VRUser : MonoBehaviour
     public static float moveThreshold1 = 0.10f; //percentages for (1)reading movement & (2)displaying movement (+haptics)
     public static float moveThreshold2 = 0.80f;
 
+    public static float baseZCalibration = 4f;
+
     /*  TODO!!
      * rework cameras:
      * * * work with survey stuff later
@@ -244,12 +246,12 @@ public class VRUser : MonoBehaviour
             }
 
             //clicking
-            if (Math.Floor(change.z) == 5f * moveThreshold1) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
+            if (Math.Floor(change.z) == baseZCalibration * moveThreshold1) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
             {
                 state.userClick = true;
                 state.userIsClicking = true;
             }
-            else if (change.z > 5f * moveThreshold1)
+            else if (change.z > baseZCalibration * moveThreshold1)
             {
                 state.userIsClicking = true;
                 state.userClick = false;
@@ -407,7 +409,7 @@ public class VRUser : MonoBehaviour
         }*/
         if (isContinuous)
         {
-            return OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) >= .9 || OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) >= .9;
+            return OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) >= .99 || OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) >= .99;
         }
         else
         {

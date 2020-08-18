@@ -44,66 +44,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     public static float camera_x = 0f;
     public static float camera_y = 0f;
 
-    public static int counter = 5;
-
-    public static float maxLDistance = 0f;
-    public static float maxRDistance = 0f;
-    public static float LHandLeftTotal = 0f;
-    public static float LHandLeftAverage = -0.275f;
-    public static float RHandLeftTotal = 0f;
-    public static float RHandLeftAverage = -0.225f;
-    public static float LHandRightTotal = 0f;
-    public static float LHandRightAverage = 0.225f;
-    public static float RHandRightTotal = 0f;
-    public static float RHandRightAverage = 0.275f;
-    public static float LHandUpTotal = 0f;
-    public static float LHandUpAverage = 0.225f;
-    public static float RHandUpTotal = 0f;
-    public static float RHandUpAverage = 0.275f;
-    public static float LHandDownTotal = 0f;
-    public static float LHandDownAverage = -0.225f;
-    public static float RHandDownTotal = 0f;
-    public static float RHandDownAverage = -0.275f;
-
-    public static float maxAngle = 0f;
-    public static float angleLeftTotal = 0f;
-    public static float angleLeftAverage = 75f;
-    public static float angleRightTotal = 0f;
-    public static float angleRightAverage = 60f;
-
-    public static float maxSpeed = 0f;
-    public static float speedUpTotal = 0f;
-    public static float speedUpAverage = 50f;
-    public static float speedDownTotal = 0f;
-    public static float speedDownAverage = -50f;
-
-    public static float LHSmin = 0f;
-    public static float LHSmax = 0f;
-    public static float RHSmin = 0f;
-    public static float RHSmax = 0f;
-    public static float LESmin = 0f;
-    public static float LESmax = 0f;
-    public static float RESmin = 0f;
-    public static float RESmax = 0f;
-
-    public static float LHandSpeedForwardTotal = 0f;
-    public static float LHandSpeedForwardAverage = 0f;
-    public static float RHandSpeedForwardTotal = 0f;
-    public static float RHandSpeedForwardAverage = 0f;
-    public static float LElbowSpeedForwardTotal = 0f;
-    public static float LElbowSpeedForwardAverage = 0f;
-    public static float RElbowSpeedForwardTotal = 0f;
-    public static float RElbowSpeedForwardAverage = 0f;
-    public static float LHandSpeedBackwardTotal = 0f;
-    public static float LHandSpeedBackwardAverage = 0f;
-    public static float RHandSpeedBackwardTotal = 0f;
-    public static float RHandSpeedBackwardAverage = 0f;
-    public static float LElbowSpeedBackwardTotal = 0f;
-    public static float LElbowSpeedBackwardAverage = 0f;
-    public static float RElbowSpeedBackwardTotal = 0f;
-    public static float RElbowSpeedBackwardAverage = 0f;
-
-    public static float prevCameraAngle = 0f;
+    public static int counter = 0;
     public static bool logged = false;
     public static bool moved = false;
 
@@ -221,6 +162,17 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             if (MakeWordBank.skip() && step > 0 && hasCompleted)
             {
                 step = 35;//changed from 35
+            }
+            else if (MakeWordBank.skip() && step == 0) //for testing purposes of z movements
+            {
+                step = 9;
+                counter = 0;
+                timer = 0;
+                state.cursorXMove = false;
+                state.cursorYMove = false;
+                VP4.SetActive(true);
+                VPA4.Play();
+                savedCursorScale = cursor.transform.localScale;
             }
 
             //saftey for user seeing when cursor is locked or not
@@ -535,12 +487,12 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     {
                         cursor.transform.localScale += new Vector3((VRUser.handTracking() - handPos1).z, (VRUser.handTracking() - handPos1).z, (VRUser.handTracking() - handPos1).z)/5f;
                     }*/
-                    
+                    Debug.Log("ZCounter: " + counter);
                     if (counter == 0)
                     {
                         text.text = "(6)Now we'll try the *forward* direction.\n " +
                             "Unlock the cursor and move your hands/arms forward as far as you can stretch without moving your body\n" +
-                        "THEN press any button (A,B,X,Y) to signify your at your maximum range.";
+                        "THEN press either of the hand triggers to signify your at your maximum range.";
                     }
                     else if (counter > 0 && counter < 5)
                     {
@@ -562,12 +514,12 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                         state.cursorYMove = true;
                     }
 
-                    Debug.Log("Z Offset: " + (VRUser.handTracking() - handPos1).z + ", Button: " + VRUser.hasButton().ToString());
-                    if (Math.Abs((VRUser.handTracking() - handPos1).z) <= 1f && VRUser.hasButton())
+                    Debug.Log("Z Offset: " + (VRUser.handTracking() - handPos1).z + ", Button: " + VRUser.cursorRelock().ToString());
+                    if (Math.Abs((VRUser.handTracking() - handPos1).z) <= VRUser.baseZCalibration/2 && VRUser.cursorRelock() && state.userControlActive)
                     {
                         text.text = "Try to extend a bit farther forward to get a good calibration...";
                     }
-                    else if (Math.Abs((VRUser.handTracking() - handPos1).z) > 1f && VRUser.hasButton()) //VRUser.change.z
+                    else if (Math.Abs((VRUser.handTracking() - handPos1).z) > VRUser.baseZCalibration/2 && VRUser.cursorRelock() && state.userControlActive) //VRUser.change.z
                     {
                         movementAvg[counter] = (VRUser.handTracking() - handPos1).z * StateManager.cursorSpeed;
                         timerAvg[counter] = timer;
@@ -599,9 +551,16 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             else if (step == 11) //cursor moves right
             {
                 timer += Time.deltaTime;
-                text.text = "Great, in a second you will move onto the game tutorial.";
-                //text.text = "Finished Tutorial... Here's your data:\n (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" +
-                //string.Join(", ", userMovement.timeOfMotion) + ")\n " + continueText + " to the next section of the tutorial...";
+                if (hasCompleted)
+                {
+                    text.text = "Finished Tutorial... Here's your data:\n (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" +
+                    string.Join(", ", userMovement.timeOfMotion) + ")\n " + continueText + " to the next section of the tutorial...";
+                }
+                else
+                {
+                    text.text = "Great, in a second you will move onto the game tutorial. In the meanwhile, here is your data:\n(" +
+                        string.Join(", ", userMovement.rangeOfMotion) + "),\n (" + string.Join(", ", userMovement.timeOfMotion) + ")";
+                }
                 VRUser.showMoveStats = true;
                 if (timer > longInterval || MakeWordBank.moveOn())
                 {
