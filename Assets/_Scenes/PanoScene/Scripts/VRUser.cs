@@ -108,6 +108,12 @@ public class VRUser : MonoBehaviour
         //vrInfo();
         state.user.showMoveBounds();
 
+        //arms position editing
+        playerArms.transform.localRotation = Quaternion.Euler( 0f, 0f, -playerHead.transform.rotation.z); //override parent transform rotation?
+        //GameObject.Find("headsetForward").transform.position = new Vector3(GameObject.Find("headsetForward").transform.position.x, 0f, GameObject.Find("headsetForward").transform.position.z);
+        //GameObject.Find("headsetRight").transform.position -= new Vector3(GameObject.Find("headsetRight").transform.position.x, 0f, GameObject.Find("headsetRight").transform.position.z);
+        //GameObject.Find("headsetUp").transform.position -= new Vector3(0f, GameObject.Find("headsetUp").transform.position.y, 0f);
+
         //FORCE QUIT
         //if(OVRInput.Get(OVRInput.Touch.PrimaryThumbRest, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Touch.SecondaryThumbRest, OVRInput.Controller.Touch))
         //{
@@ -207,6 +213,7 @@ public class VRUser : MonoBehaviour
             Debug.Log("Move Change: " + change + ", Threshold: " +
             new Vector3(state.user.getMovementBounds()[1], state.user.getMovementBounds()[3], state.user.getMovementBounds()[4]) * moveThreshold1
             + ", " + new Vector3(state.user.getMovementBounds()[0], state.user.getMovementBounds()[2], state.user.getMovementBounds()[4]) * moveThreshold1);
+            //lowerbound threshold
             if (state.cursorXMove && change.x > (state.user.getMovementBounds()[1] * moveThreshold1) || change.x < (state.user.getMovementBounds()[0] * moveThreshold1))
             {
                 cursorMove += new Vector2(change.x, 0);
@@ -215,6 +222,31 @@ public class VRUser : MonoBehaviour
             {
                 cursorMove += new Vector2(0, change.y);
             }
+
+            //upperbound haptics
+            float addHapt = 0f;
+            if (state.cursorXMove && change.x > (state.user.getMovementBounds()[1] * moveThreshold2)) //x
+            {
+                addHapt += (change.x / (state.user.getMovementBounds()[1] * moveThreshold2)) / 2;
+            }
+            else if (change.x < (state.user.getMovementBounds()[0] * moveThreshold2))
+            {
+                addHapt += (change.x / (state.user.getMovementBounds()[0] * moveThreshold2)) / 2;
+            }
+            if (state.cursorYMove && change.y > (state.user.getMovementBounds()[3] * moveThreshold2)) //y
+            {
+                addHapt += (change.y / (state.user.getMovementBounds()[3] * moveThreshold2)) / 2;
+            }
+            else if (change.y < (state.user.getMovementBounds()[2] * moveThreshold2))
+            {
+                addHapt += (change.y / (state.user.getMovementBounds()[2] * moveThreshold2)) / 2;
+            }
+            if (change.z > (state.user.getMovementBounds()[4] * moveThreshold2)) //z
+            {
+                addHapt += (change.z / (state.user.getMovementBounds()[4] * moveThreshold2)) / 2;
+            }
+            OVRInput.SetControllerVibration(addHapt, addHapt, OVRInput.Controller.RTouch); //set
+            OVRInput.SetControllerVibration(addHapt, addHapt, OVRInput.Controller.LTouch);
 
             //clicking
             if (Math.Floor(change.z) == state.user.getMovementBounds()[4] * moveThreshold1) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
