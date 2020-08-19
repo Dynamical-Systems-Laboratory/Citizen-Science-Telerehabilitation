@@ -12110,8 +12110,6 @@ GameObject:
   - component: {fileID: 657037554}
   - component: {fileID: 657037560}
   - component: {fileID: 657037559}
-  - component: {fileID: 657037558}
-  - component: {fileID: 657037557}
   - component: {fileID: 657037556}
   - component: {fileID: 657037555}
   m_Layer: 10
@@ -12181,43 +12179,6 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &657037557
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 657037553}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f5a7c0a7a5024e4f9d233954880f530, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  complexUser: {fileID: 0}
-  cursorAdd: {x: 0, y: 0, z: 0}
-  cameraMoving: 0
-  xOffset: 25.9
-  cursorXMove: 1
-  cursorYMove: 1
-  tagsPlaced: []
-  makeNewUser: 1
-  reloading: 0
-  userControlActive: 0
-  userIsClicking: 0
-  userClick: 0
---- !u!114 &657037558
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 657037553}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 304c8640f3c71264a97ee6cc06e17069, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tagMaterial: {fileID: 0}
 --- !u!114 &657037559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24570,7 +24531,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Help Help...
+  m_Text: 
 --- !u!222 &1292713967
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -35617,8 +35578,6 @@ GameObject:
   - component: {fileID: 1878484558}
   - component: {fileID: 1878484557}
   - component: {fileID: 1878484556}
-  - component: {fileID: 1878484555}
-  - component: {fileID: 1878484554}
   - component: {fileID: 1878484560}
   m_Layer: 12
   m_Name: SimpleTutorialCanvas
@@ -35627,43 +35586,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1878484554
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1878484553}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 304c8640f3c71264a97ee6cc06e17069, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tagMaterial: {fileID: 0}
---- !u!114 &1878484555
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1878484553}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f5a7c0a7a5024e4f9d233954880f530, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  complexUser: {fileID: 0}
-  cursorAdd: {x: 0, y: 0, z: 0}
-  cameraMoving: 0
-  xOffset: 25.9
-  cursorXMove: 1
-  cursorYMove: 1
-  tagsPlaced: []
-  makeNewUser: 1
-  reloading: 0
-  userControlActive: 0
-  userIsClicking: 0
-  userClick: 0
 --- !u!114 &1878484556
 MonoBehaviour:
   m_ObjectHideFlags: 0

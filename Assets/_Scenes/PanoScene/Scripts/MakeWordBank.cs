@@ -248,8 +248,6 @@ public class MakeWordBank : MonoBehaviour {
     public static GameObject cursorGroup;
     public VRUser userMovement;
 
-    public static Text helpText;
-
     //TODO: randomize indexes and tags
     //private static System.Random rng = new System.Random();
 
@@ -296,10 +294,9 @@ public class MakeWordBank : MonoBehaviour {
         //secondTutorialArrow = GameObject.Find("SecondTutorialArrow");
         //secondTutorialArrow.SetActive(false);
         //tutorialArrow.SetActive(false);
-        tutorialText = GameObject.FindGameObjectWithTag("TutorialText").GetComponent<Text>() as Text;
+        tutorialText = GameObject.FindGameObjectWithTag("TutorialText").GetComponent<Text>() as Text; //helpText
         tutorialText.text = ""; //Blank for now since welcome screen must come first
         helpTextContainer = GameObject.Find("HelpTextContainer");
-        helpText = GameObject.Find("HelpText").GetComponent<Text>() as Text;
         helpTextContainer.SetActive(false);
         welcomeText = GameObject.FindGameObjectWithTag("WelcomeText").GetComponent<Text>() as Text;
         welcomeScreen = GameObject.Find("welcomePanel");
@@ -570,6 +567,40 @@ public class MakeWordBank : MonoBehaviour {
         }
 
         //Button Tutorial Stuff
+        if (state.getState() == 7)
+        {
+            if (!initialized)
+            {
+                stepOfTutorial = 23;
+                if (state.tagsPlaced.Count != 0) //has already started and is reloading practice level
+                {
+                    //reload prev tags?
+                }
+                sequenceIndex = 0; //Reset tags
+                for (int i = 0; i < tags.Length; i++)
+                {
+                    tags[i].setText(wordBank[SEQUENCE[imageIndex, sequenceIndex]]);
+                    sequenceIndex++;
+                }
+                renderBackground(imageIndex);
+                //imageIndex++;
+                for (int i = 0; i < ClickAction.trashedTags.Count; i++)
+                {
+                    Destroy(ClickAction.trashedTags[i]);
+                }
+                ClickAction.trashedTags.Clear();
+
+                practiceLevelText.SetActive(true);
+                welcomeScreen.SetActive(false);
+                helpTextContainer.SetActive(true);
+                tutorialText.text = "Place 3 tags and then move to the next image to begin data collection";
+
+                numTagsRemaining = 3;
+            }
+            practiceLevelText.SetActive(!state.user.getPracticeLevelState()[1]);
+
+            
+        }
         if (state.getState() == 5)
         {
             //Debug.Log("Running Buttons");
@@ -594,12 +625,12 @@ public class MakeWordBank : MonoBehaviour {
 
                 stepOfTutorial = 1;
                 initialized = true;
+                timer3 = 0;
             }
 
             timer3 += Time.deltaTime;
-            if (skip() && stepOfTutorial > 0 && state.getState() == 5)
+            if (skip() && stepOfTutorial > 0 && state.getState() == 5 && timer3 > 1)
             {
-                step22proceed = true;
                 stepOfTutorial = 22;
                 state.setState(7);
             }
@@ -614,7 +645,7 @@ public class MakeWordBank : MonoBehaviour {
             }
             else if (stepOfTutorial == 2)
             {
-                helpText.GetComponent<Text>().text = "This is the game view, take a moment to look around...\n" +
+                tutorialText.text = "This is the game view, take a moment to look around...\n" +
                     "What you see in the background is an example of one of the images you will be placing tags in.\n" +
                     "When your ready to start placing tags" + SimpleTutorial.continueText;
                 if (moveOn() && !skip())
@@ -625,7 +656,7 @@ public class MakeWordBank : MonoBehaviour {
             else if (stepOfTutorial == 3)
             {
                 cursorGroup.transform.position = GameObject.Find("cursorPos1").transform.position;
-                helpText.GetComponent<Text>().text = "If you hover your mouse over a tag or button you can click, it will highlight red...\n" +
+                tutorialText.text = "If you hover your mouse over a tag or button you can click, it will highlight red...\n" +
                     "Once you click it, the tag will attatch to your cursor until you drop it on the image to the left of the screen.\n" +
                     SimpleTutorial.continueText;
                 if (moveOn() && !skip())
@@ -636,7 +667,7 @@ public class MakeWordBank : MonoBehaviour {
             else if (stepOfTutorial == 4)
             {
                 cursorGroup.transform.position = GameObject.Find("cursorPos2").transform.position;
-                helpText.GetComponent<Text>().text = "Then once you place it down, the tag will appear in the space around you.\n" +
+                tutorialText.text = "Then once you place it down, the tag will appear in the space around you.\n" +
                     SimpleTutorial.continueText;
                 if (moveOn() && !skip())
                 {
@@ -646,7 +677,7 @@ public class MakeWordBank : MonoBehaviour {
             else if (stepOfTutorial == 5)
             {
                 cursorGroup.transform.position = GameObject.Find("cursorPos3").transform.position;
-                helpText.GetComponent<Text>().text = "If you dont want to use a given tag anymore, you can also place the tag in the trash...\n" +
+                tutorialText.text = "If you dont want to use a given tag anymore, you can also place the tag in the trash...\n" +
                     "If successful, a small version of the tag will appear under the trash icon, \n" +
                     "And a new tag will appear in place of the previous... " + SimpleTutorial.continueText;
                 if (moveOn() && !skip())
@@ -657,7 +688,7 @@ public class MakeWordBank : MonoBehaviour {
             else if (stepOfTutorial == 6)
             {
                 cursorGroup.transform.position = GameObject.Find("cursorPos4").transform.position;
-                helpText.GetComponent<Text>().text = "If you hover over the next button and click,\n" +
+                tutorialText.text = "If you hover over the next button and click,\n" +
                     "the game will storre all of the tag data displayed on the screen, and show a new image to you\n" +
                     SimpleTutorial.continueText;
                 if (moveOn() && !skip())
@@ -668,7 +699,7 @@ public class MakeWordBank : MonoBehaviour {
             else if (stepOfTutorial == 7)
             {
                 cursorGroup.transform.position = GameObject.Find("cursorPos5").transform.position;
-                helpText.GetComponent<Text>().text = "If you hover over the home button and click,\n" +
+                tutorialText.text = "If you hover over the home button and click,\n" +
                     "you will be taken to the home screen, where you can freely navigate between different parts of the game, \n" +
                     "as well as view your exercise progress... " + SimpleTutorial.continueText;
                 if (moveOn() && !skip())
@@ -679,7 +710,7 @@ public class MakeWordBank : MonoBehaviour {
             else if (stepOfTutorial == 8)
             {
                 cursorGroup.transform.position = GameObject.Find("cursorPos2").transform.position;
-                helpText.GetComponent<Text>().text = "Finally, before you start logging your data, you will ahve a chance to practice what you've learned\n" +
+                tutorialText.text = "Finally, before you start logging your data, you will ahve a chance to practice what you've learned\n" +
                     "when your ready, " + SimpleTutorial.continueText + ", and you will start the pratice level";
                 if (moveOn() && !skip())
                 {
@@ -689,94 +720,23 @@ public class MakeWordBank : MonoBehaviour {
 
             else if (stepOfTutorial == 22)
             { //Last element of tutorial, reshowing welcome screen basically
-                timer += Time.deltaTime;
-                if (timer > 1f)
+                //timer = 0f;
+                welcomeScreen.SetActive(true);
+                welcomeText.text = "Now let's do a practice level" + "\n" + "It will be just like a real level but data will not be collected" + "\n" + "(Push the rod forward to begin the practice level)";
+                //StateManager.allSystemsGo = true;
+                if (moveOn() || skip())
                 {
-                    if (StateManager.falconButtons[1] == true && prevClick == false || moveOn())
-                    {
-                        step22proceed = true;
-                    }
-                }
-
-                if (step22proceed)
-                {
-                    timer = 0f;
-                   // focusor.SetActive(false);
-                    helpTextContainer.SetActive(false);
-                   welcomeScreen.SetActive(true);
-                    mainCamera.SetActive(true);
-                    UICamera.SetActive(true);
-                    videoCamera.SetActive(false);
-                    //VP1.SetActive(false);
-                    //VP5.SetActive(false);
-                    welcomeText.text = "Now let's do a practice level" + "\n" + "It will be just like a real level but data will not be collected" + "\n" + "(Push the rod forward to begin the practice level)";
-                    //StateManager.allSystemsGo = true;
-                    stepOfTutorial++;
+                    timer = 0;
+                    //practice level initialization
+                    stepOfTutorial++; //End
+                    inPracticeLevel = true;
                     state.setState(7);
+                    initialized = false;
                 }
             }
-            else if (stepOfTutorial == 23)
-            {
-                timer += Time.deltaTime;
-                if (timer > 1f)
-                {
-                    if ((StateManager.falconButtons[1] == true && prevClick == false) || moveOn()) //b to continue
-                    { //Change for falcon
-                      //END OF TUTORIAL:
-                        timer = 0f;
-                        //inTutorial = false;
-                        //dataCollector.SetActive (true); Don't collect data for practice level
-                        //welcomeScreen.SetActive(false);
-
-                        sequenceIndex = 0; //Reset tags
-                        for (int i = 0; i < tags.Length; i++)
-                        {
-                            tags[i].setText(wordBank[SEQUENCE[imageIndex, sequenceIndex]]);
-                            sequenceIndex++;
-                        }
-                        renderBackground(imageIndex);
-                        //imageIndex++;
-                        /*foreach (Transform t in ClickAction.sphere.transform)
-                        {
-                            Destroy(t.gameObject);
-                        }*/
-
-                        for (int i = 0; i < ClickAction.trashedTags.Count; i++)
-                        {
-                            Destroy(ClickAction.trashedTags[i]);
-                        }
-                        ClickAction.trashedTags.Clear();
-
-                        numTagsRemaining = 3;
-
-                        helpTextContainer.SetActive(true);
-                        tutorialText.text = "Place 3 tags and then move to the next image to begin data collection";
-
-                        stepOfTutorial++; //End
-                        //inPracticeLevel = true;
-                        state.setState(7);
-                        practiceLevelText.SetActive(true);
-                    }
-                }
-            }
-            //buttonsPrev = buttons;
-            prevClick = StateManager.falconButtons[1];
+            //prevClick = StateManager.falconButtons[1];
         }
-        if (inScreenBeforeExperiment)
-        {
-            //buttons = state.getButtons();
-            /*if (buttons > 0 && buttonsPrev == 0)
-            {
-                //dataCollector.SetActive (true);
-                //welcomeScreen.SetActive (false);
-               // welcomeText.text = "We are now waiting for the other player to finish the tutorial";
-                LoadingIconScript.active = true;
-                //welcomeText.transform.localPosition = new Vector3(31.2f, -0.8f, 0f);
-                inScreenBeforeExperiment = false;
-                waitingForOtherPlayer = true;
-            }
-            buttonsPrev = buttons;*/
-        }
+        /*
         if (waitingForOtherPlayer)
         {
             if (otherPlayerHasFinished)
@@ -787,7 +747,8 @@ public class MakeWordBank : MonoBehaviour {
                 LoadingIconScript.active = false;
             }
         }
-        for (int i = 0; i < tags.Length; i++)
+        */
+        for (int i = 0; i < tags.Length; i++) //?
         {
             if (tags[i].isChangingColor)
             {

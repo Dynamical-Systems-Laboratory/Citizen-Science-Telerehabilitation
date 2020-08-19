@@ -362,6 +362,11 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			}
 		}
 		state.tagsPlaced.Clear();
+		/*for (int i = 0; i < trashedTags.Count; i++)
+		{
+			Destroy(trashedTags[i]);
+		}
+		trashedTags.Clear();*/
 	}
 
 	//old...
