@@ -53,7 +53,7 @@ public class PowerpointScript : MonoBehaviour {
 			if (MakeWordBank.skip())
             {
 				slideIndex = 1;
-				if (!hasBeenToTutorial)
+				if (!hasBeenToTutorial || !state.user.getPracticeLevelState()[0])
                 {
 					//SimpleTutorial.inSimpleTutorial = true;
 					state.setState(4);
@@ -91,10 +91,10 @@ public class PowerpointScript : MonoBehaviour {
 				} else { //Powerpoint over:
 					if (MakeWordBank.moveOn()) {
 						slideIndex = 1;
-						if (!hasBeenToTutorial)
+						if (!hasBeenToTutorial || !state.user.getPracticeLevelState()[0])
 						{
 							//SimpleTutorial.inSimpleTutorial = true;
-							state.setState(4);
+							state.setState(4); //calibrating
 							hasBeenToTutorial = true;
 						}
 						else

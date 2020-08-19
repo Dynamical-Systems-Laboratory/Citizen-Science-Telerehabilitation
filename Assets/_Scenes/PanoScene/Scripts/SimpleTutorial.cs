@@ -159,11 +159,11 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 state.userControlActive = false;
             }
 
-            if (MakeWordBank.skip() && step > 0 && hasCompleted)
+            if (MakeWordBank.skip() && hasCompleted && timer > 1)
             {
                 step = 35;//changed from 35
             }
-            else if (MakeWordBank.skip() && step == 0 && timer > 1) //for testing purposes of z movements
+            /*else if (MakeWordBank.skip() && step == 0 && timer > 1) //for testing purposes of z movements
             {
                 step = 9;
                 counter = 0;
@@ -173,7 +173,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 VP4.SetActive(true);
                 VPA4.Play();
                 savedCursorScale = cursor.transform.localScale;
-            }
+            }*/
 
             //saftey for user seeing when cursor is locked or not
             /*if (state.userControlActive && step > 0 && step < 3)

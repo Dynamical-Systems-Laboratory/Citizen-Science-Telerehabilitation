@@ -328,7 +328,7 @@ public class VRUser : MonoBehaviour
         state.cursorAdd = new Vector3(0f, 0f, 0f); //resetting additive property
         
         //moves cursor by factor of all the above
-        trueCursor.transform.position += ((1.4f+((5 - state.user.getSettingData()[0])/10f)) * 5f * Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.2f) + (trueCursor.transform.right * cursorMove.x)));
+        trueCursor.transform.position += ((1.4f+((5 - state.user.getSettingData()[0])/10f)) * 5f * Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.3f) + (trueCursor.transform.right * cursorMove.x)));
 
         //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-151,66], x[-90,88.4]
         if (trueCursor.transform.localPosition.x > 88)

@@ -142,7 +142,7 @@ public class StateManager : MonoBehaviour {
     public bool userIsClicking = false; //getbutton - isClicking(true)
     public bool userClick = false; //getbuttondown
 
-    private int userState = 4;//6;
+    private int userState = 6;
     /* 0 = Quit
      * 1 = Home
      * 2 = In-Game
@@ -216,7 +216,7 @@ public class StateManager : MonoBehaviour {
                 writer.Flush();
                 writer.Close();
                 //ClickAction.destroyTags();
-                UnityEditor.EditorApplication.isPlaying = false; //for editing only
+                //UnityEditor.EditorApplication.isPlaying = false; //for editing only
                 Application.Quit();
                 break;
 
