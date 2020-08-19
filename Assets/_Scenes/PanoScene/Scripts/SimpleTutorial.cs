@@ -190,6 +190,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
 
             //start of steps
+            //TODO: maybe go over color coding?
             if (step == 0) //introduces calibration
             {
                 timer += Time.deltaTime;
@@ -264,6 +265,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     text.text = "The cursor can be moved left and right...";
                     VP2.SetActive(true);
                     VPA2.Play();
+                    state.userControlActive = false;
                     step++;
                 }
             }
@@ -494,7 +496,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     {
                         text.text = "(6)Now we'll try the *forward* direction.\n " +
                             "Unlock the cursor and move your hands/arms forward as far as you can stretch without moving your body\n" +
-                        "THEN press either of the hand triggers to signify your at your maximum range.";
+                        "THEN press any of the controller buttons (A/B/X/Y) to signify your at your maximum range and relock the cursor.";
                     }
                     else if (counter > 0 && counter < 5)
                     {
@@ -516,26 +518,26 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                         state.cursorYMove = true;
                     }
 
-                    Debug.Log("Z Offset: " + (VRUser.handTracking() - handPos1) + ", Button: " + VRUser.cursorRelock().ToString());
-                    if (Math.Abs((VRUser.handTracking() - handPos1).z) <= VRUser.baseZCalibration/2 && VRUser.cursorRelock() && state.userControlActive)
+                    Debug.Log("Z Offset: " + (VRUser.handTracking() - handPos1) + ", Button: " + VRUser.hasButton(true).ToString()); //VRUser.cursorRelock()
+                    if (Math.Abs((VRUser.handTracking() - handPos1).z) <= VRUser.baseZCalibration/2 && VRUser.hasButton(true) && state.userControlActive)
                     {
                         text.text = "Try to extend a bit farther forward to get a good calibration...";
                     }
-                    else if (Math.Abs((VRUser.handTracking() - handPos1).z) > VRUser.baseZCalibration/2 && VRUser.cursorRelock() && state.userControlActive) //VRUser.change.z
+                    else if (Math.Abs((VRUser.handTracking() - handPos1).z) > VRUser.baseZCalibration/2 && VRUser.hasButton(true) && state.userControlActive) //VRUser.change.z
                     {
                         movementAvg[counter] = (VRUser.handTracking() - handPos1).z * StateManager.cursorSpeed;
                         timerAvg[counter] = timer;
                         counter += 1;
                         StateManager.makeCursReset = true;
                         state.userControlActive = false;
-                        cursor.transform.localScale = savedCursorScale;
+                        //cursor.transform.localScale = savedCursorScale;
                     }
 
                     if (!state.userControlActive && VRUser.isResetting())
                     {
                         handPos1 = VRUser.handTracking();
                         timer = 0;
-                        cursor.transform.localScale = savedCursorScale;
+                        //cursor.transform.localScale = savedCursorScale;
                     }
                 }
             }

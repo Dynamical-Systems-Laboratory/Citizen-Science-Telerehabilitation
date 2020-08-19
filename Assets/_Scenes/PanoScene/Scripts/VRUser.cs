@@ -109,8 +109,8 @@ public class VRUser : MonoBehaviour
             OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles);
         armsFixes();
         //vrInfo();
-        state.user.showMoveBounds();
-        Debug.Log("Hand Tracking: " + handTracking() + ", Offset By: " + playerPos.arms);
+        state.user.showMoveBounds(); //Move Data: (29.0044, -29.00861, 13.51058, -14.32116, 0), (3.651338, 6.311625, 4.176139, 7.143209, 0)
+        Debug.Log("Hand Tracking: " + handTracking(true) + ", Offset By: " + playerPos.arms + ", unfactored: " + handTracking(false));
         Debug.Log("Clicking: " + state.userIsClicking + ", " + state.userClick); //continuous, noncontinuous clicking
         /* movement correction ideas:
          * correct local rotation by normal rotation
@@ -178,7 +178,7 @@ public class VRUser : MonoBehaviour
             }
         }
 
-        Vector3 handPos = handTracking(false); //present position of hands
+        //Vector3 handPos = handTracking(false); //present position of hands
         Vector3 movementVal = new Vector3(0f,0f,0f); //amount of movement pushed to cursor
         /*  Reset Mechanic:
          *  Cursor starts at the center (cursorCenter) position and cannot move until...
@@ -189,9 +189,13 @@ public class VRUser : MonoBehaviour
         if (isResetting()) //user resets cursor via hand triggers
         {
             //sets arm bounds to location of hands
-            playerArms.transform.position = handPos; 
+            //playerArms.transform.position = handPos; 
+            playerArms.transform.position = handTracking(false);
+
             //stores coords of arms relative to headset bounds
-            playerPos.arms = new Vector3((farRight.transform.position - handPos).magnitude, (farUp.transform.position - handPos).magnitude, (farForward.transform.position - handPos).magnitude);
+            //playerPos.arms = new Vector3((farRight.transform.position - handPos).magnitude, (farUp.transform.position - handPos).magnitude, (farForward.transform.position - handPos).magnitude);
+            playerPos.arms = handTracking(true);
+            
             //stores present position of head
             playerPos.head = playerHead.transform.position;
             //activates user control
@@ -207,8 +211,8 @@ public class VRUser : MonoBehaviour
                 //add init pos of cursor
                 controllerOffset = playerPos.arms;
                 //store present controller pos
-                //handTracking(true)
-                movementVal = new Vector3( (farRight.transform.position - handPos).magnitude, (farUp.transform.position - handPos).magnitude, (farForward.transform.position - handPos).magnitude );
+                //movementVal = new Vector3( (farRight.transform.position - handPos).magnitude, (farUp.transform.position - handPos).magnitude, (farForward.transform.position - handPos).magnitude );
+                movementVal = handTracking(true);
                 //movementVal += playerHead.transform.position - playerPos.head;
             }
         }
@@ -232,24 +236,32 @@ public class VRUser : MonoBehaviour
             Debug.Log("Move Change: " + change + ", Threshold: " +
             new Vector3(state.user.getMovementBounds(2), state.user.getMovementBounds(4), state.user.getMovementBounds(5)) * moveThreshold1
             + ", " + new Vector3(state.user.getMovementBounds(1), state.user.getMovementBounds(3), state.user.getMovementBounds(5)) * moveThreshold1);
-            
+            //signs changed
             //lowerbound threshold - controls when the cursor can move based on a % of the calibration values (x&y)
-            if (state.cursorXMove && change.x > (state.user.getMovementBounds(2) * moveThreshold1))
+            if (state.cursorXMove && change.x < (state.user.getMovementBounds(2) * moveThreshold1)) //-x,x,-y,y,z
             {
-                cursorMove += new Vector2(change.x - (state.user.getMovementBounds(2) * moveThreshold1), 0);
+                //cursorMove += new Vector2(change.x - (state.user.getMovementBounds(2) * moveThreshold1), 0);
+                cursorMove += new Vector2(change.x, 0);
+                Debug.Log("MoveChange1");
             }
-            else if (change.x < (state.user.getMovementBounds(1) * moveThreshold1))
+            else if (change.x > (state.user.getMovementBounds(1) * moveThreshold1))
             {
-                cursorMove += new Vector2(change.x - (state.user.getMovementBounds(1) * moveThreshold1), 0);
+                //cursorMove += new Vector2(change.x - (state.user.getMovementBounds(1) * moveThreshold1), 0);
+                cursorMove += new Vector2(change.x, 0);
+                Debug.Log("MoveChange2");
             }
 
-            if (state.cursorYMove && change.y > (state.user.getMovementBounds(4) * moveThreshold1))
+            if (state.cursorYMove && change.y < (state.user.getMovementBounds(4) * moveThreshold1))
             {
-                cursorMove += new Vector2(0, change.y - (state.user.getMovementBounds(4) * moveThreshold1));
+                //cursorMove += new Vector2(0, change.y - (state.user.getMovementBounds(4) * moveThreshold1));
+                cursorMove += new Vector2(0, change.y);
+                Debug.Log("MoveChange3");
             }
-            else if (change.y < (state.user.getMovementBounds(3) * moveThreshold1))
+            else if (change.y > (state.user.getMovementBounds(3) * moveThreshold1))
             {
-                cursorMove += new Vector2(0, change.y - (state.user.getMovementBounds(3) * moveThreshold1));
+                //cursorMove += new Vector2(0, change.y - (state.user.getMovementBounds(3) * moveThreshold1));
+                cursorMove += new Vector2(0, change.y);
+                Debug.Log("MoveChange4");
             }
 
             //upperbound haptics - tells user when they are close to their max range xy&z
@@ -278,12 +290,12 @@ public class VRUser : MonoBehaviour
             OVRInput.SetControllerVibration(addHapt, addHapt, OVRInput.Controller.LTouch);
 
             //clicking - click if user is a certain % of their max z range
-            if (Math.Floor(change.z) == state.user.getMovementBounds(5)* moveThreshold1) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
+            if (Math.Floor(change.z) == state.user.getMovementBounds(5)* moveThreshold2) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
             {
                 state.userClick = true;
                 state.userIsClicking = true;
             }
-            else if (change.z > state.user.getMovementBounds(5) * moveThreshold1)
+            else if (change.z < state.user.getMovementBounds(5) * moveThreshold2)
             {
                 state.userIsClicking = true;
                 state.userClick = false;
@@ -298,11 +310,11 @@ public class VRUser : MonoBehaviour
         {
             if (state.cursorXMove) //give user access to x&y movements if these booleans say so
             {
-                cursorMove -= new Vector2(change.x, 0);
+                cursorMove += new Vector2(change.x, 0);
             }
             if (state.cursorYMove)
             {
-                cursorMove -= new Vector2(0, change.y);
+                cursorMove += new Vector2(0, change.y);
             }
 
             //clicking - same clicking methodology but based on an easy-to-reach position instead of calibrated data
@@ -328,7 +340,7 @@ public class VRUser : MonoBehaviour
         state.cursorAdd = new Vector3(0f, 0f, 0f); //resetting additive property
         
         //moves cursor by factor of all the above
-        trueCursor.transform.position += ((1.4f+((5 - state.user.getSettingData()[0])/10f)) * 5f * Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.3f) + (trueCursor.transform.right * cursorMove.x)));
+        trueCursor.transform.position += ((1.4f+((5 - state.user.getSettingData()[0])/10f)) * 2f * Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.3f) + (trueCursor.transform.right * cursorMove.x)));
 
         //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-151,66], x[-90,88.4]
         if (trueCursor.transform.localPosition.x > 88)
@@ -353,11 +365,11 @@ public class VRUser : MonoBehaviour
         {
             GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight;
         }
-        else if (state.userIsClicking) //red = clicking
+        else if (state.userIsClicking && state.getState() != 5 && state.getState() != 6) //red = clicking
         {
             GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight2; 
         }
-        else if (state.userControlActive) //purple = locked
+        else if (!state.userControlActive) //purple = locked
         {
             GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight3;
         }
