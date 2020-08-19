@@ -167,7 +167,7 @@ public class MakeWordBank : MonoBehaviour {
     public static bool inTutorial = false; //***
     public static bool inPracticeLevel = false;
 
-    public static int stepOfTutorial = 12;
+    public static int stepOfTutorial = 0;
     public static float timePannedInTutorial = 0f;
     public static float timeSpentOnStep8 = 0f;
     public static float timeSpentBeforeFocus = 0f; //I don't want the step of demonstrating focus to possibly end instantly, so I'll make it show up for a mandatory minimum of time ~2 sec
@@ -245,8 +245,10 @@ public class MakeWordBank : MonoBehaviour {
     public static Tag[] tags;
     public static int practiceMoveOn;
 
-    //public static GameObject cursorGroup;
+    public static GameObject cursorGroup;
     public VRUser userMovement;
+
+    public static Text helpText;
 
     //TODO: randomize indexes and tags
     //private static System.Random rng = new System.Random();
@@ -273,7 +275,7 @@ public class MakeWordBank : MonoBehaviour {
         UICamera = GameObject.Find("UICamera");
         videoCamera = GameObject.Find("VideoCamera");
         cursorCamera = GameObject.Find("CursorCamera");
-        //cursorGroup = GameObject.Find("FalconCursor");
+        cursorGroup = GameObject.Find("exampleCursor");
         
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
 
@@ -297,16 +299,16 @@ public class MakeWordBank : MonoBehaviour {
         tutorialText = GameObject.FindGameObjectWithTag("TutorialText").GetComponent<Text>() as Text;
         tutorialText.text = ""; //Blank for now since welcome screen must come first
         helpTextContainer = GameObject.Find("HelpTextContainer");
+        helpText = GameObject.Find("HelpText").GetComponent<Text>() as Text;
         helpTextContainer.SetActive(false);
         welcomeText = GameObject.FindGameObjectWithTag("WelcomeText").GetComponent<Text>() as Text;
         welcomeScreen = GameObject.Find("welcomePanel");
         practiceLevelText = GameObject.Find("PracticeLevelText");
-        helpTextPanel = tutorialText.transform.parent.gameObject;
-        practiceLevelText.SetActive(false);
+        helpTextPanel = tutorialText.transform.parent.gameObject; //button tutorial help text
+        practiceLevelText.SetActive(false); //text @ top right that shows is practice level
 
         //taggerPanel = GameObject.FindGameObjectWithTag("TaggerPanel");
         //trasherPanel = GameObject.FindGameObjectWithTag("TrasherPanel");
-
         //taggerPanel.transform.Translate(new Vector3(0, 5000, 0)); //Moving it out of the way for tutorial
         //trasherPanel.transform.Translate(new Vector3(0, 5000, 0));
 
@@ -531,17 +533,10 @@ public class MakeWordBank : MonoBehaviour {
                 }
             }
         }
-        if (stepOfTutorial == 22 || stepOfTutorial == 23) //just in case
-        { //camera control...?
-            mainCamera.SetActive(true);
-            state.cameraMoving = true;
-            UICamera.SetActive(true);
-            videoCamera.SetActive(false);
-            if (state.getState() == 7) //inPracticeLevel
-            {
-                practiceMoveOn = state.tagsPlaced.Count;
-            }
-            
+
+        if (state.getState() == 7) //inPracticeLevel
+        {
+            practiceMoveOn = state.tagsPlaced.Count;
         }
 
         if (state.getState() == 5) //edge cases with old booleans
@@ -574,21 +569,19 @@ public class MakeWordBank : MonoBehaviour {
             state.user.setLevelProgress(true);
         }
 
-        //Start of Runtime Stuff
-        if (state.getState() == 2 || state.getState() == 7 || state.getState() == 5)
+        //Button Tutorial Stuff
+        if (state.getState() == 5)
         {
             //Debug.Log("Running Buttons");
-            if (!initialized)
+            if (!initialized || stepOfTutorial == 0)
             {
                 mainCamera.SetActive(true);
                 UICamera.SetActive(true);
                 videoCamera.SetActive(false);
 
-                if (state.getState() == 5) //start of button tutorial --> changes background to be brighter
-                {
-                    nextImage(imageIndex);
-                    welcomeScreen.SetActive(true);
-                }
+                nextImage(imageIndex); //makes background brighter
+                welcomeScreen.SetActive(true);
+                helpTextContainer.SetActive(true);
 
                 StateManager.moveCameraU = true;
                 StateManager.moveCameraD = true;
@@ -598,141 +591,102 @@ public class MakeWordBank : MonoBehaviour {
                 StateManager.moveCursorD = true;
                 StateManager.moveCursorL = true;
                 StateManager.moveCursorR = true;
+
+                stepOfTutorial = 1;
                 initialized = true;
             }
 
             timer3 += Time.deltaTime;
-            if (skip() && stepOfTutorial > 12 && state.getState() == 5)
+            if (skip() && stepOfTutorial > 0 && state.getState() == 5)
             {
                 step22proceed = true;
                 stepOfTutorial = 22;
                 state.setState(7);
             }
 
-            if (stepOfTutorial == 12)
+            if (stepOfTutorial == 1)
             { //Welcome screen step:
                 if (moveOn() && !skip())
-                { //Move to the next step (change for falcon):
+                {
                     welcomeScreen.SetActive(false);
-                    //helpTextContainer.SetActive(true);
-                    //state.setState(5);
-                    stepOfTutorial = 13;
-                }
-            }
-           
-            else if (stepOfTutorial == 13)
-            {
-                startedPlaying = false;
-                    
-                /*foreach (GameObject tag in tagGameObjects) //making sure tags stay on equal z axis'
-                {
-                    Vector3 newPos = new Vector3(tag.transform.position.x, tag.transform.position.y, 0f);
-                    tag.transform.Translate(newPos * Time.deltaTime);
-                }*/
-                helpTextContainer.SetActive(true);
-                tutorialText.text = "This list of words may describe objects in the image" + "\n"
-                    + "(Push the rod forward to continue)";
-                timer = 0f;
-                stepOfTutorial++;
-            }
-            else if (stepOfTutorial == 14)
-            { 
-                timer += Time.deltaTime;
-                if (timer > 1f)
-                {
-                    if ((StateManager.falconButtons[1] == true && prevClick == false) || moveOn())
-                    {
-                        tutorialText.text = "Select the tag \"Building\" by pushing the rod";
-                        timer = 0f;
-                        stepOfTutorial++;
-                    }
-                }
-            }
-            else if (stepOfTutorial == 15)
-            {
-                if (state.getSelected() != null)
-                {
-                    tutorialText.text = "Move the tag to a building in the image" + "\n" + "and push the rod again to place it";
                     stepOfTutorial++;
                 }
             }
-            else if (stepOfTutorial == 16)
+            else if (stepOfTutorial == 2)
             {
-                if (state.getSelected() == null)
+                helpText.GetComponent<Text>().text = "This is the game view, take a moment to look around...\n" +
+                    "What you see in the background is an example of one of the images you will be placing tags in.\n" +
+                    "When your ready to start placing tags" + SimpleTutorial.continueText;
+                if (moveOn() && !skip())
                 {
-                    tutorialText.text = "If none of the tags appear in the image, you can trash a tag " + "\n" + "(Push the rod forward to continue)";
-                    stepOfTutorial++;
-                }
-                else
-                {
-                    Debug.Log("Object Clicked (step 16): " + state.getSelected().name);
-                }
-            }
-            else if (stepOfTutorial == 17)
-            {
-                timer += Time.deltaTime;
-
-                if (timer > 1f)
-                {
-                    if (StateManager.falconButtons[1] == true && prevClick == false || moveOn())
-                    {
-                        timer = 0f;
-                        tutorialText.text = "Select a tag you would like to discard from the wordbank";
-                        stepOfTutorial++;
-                    }
-                }
-            }
-            else if (stepOfTutorial == 18)
-            {
-                timeSpentOnStep8 += Time.deltaTime; //To prevent this step from instantly being gone over (this var is being checked in ClickAction.cs)
-                if (state.getSelected() != null)
-                { //User's holding a tag
-                    tutorialText.text = "Place it in the bin, and a new word will appear in the wordbank";
                     stepOfTutorial++;
                 }
             }
-            else if (stepOfTutorial == 19)
+            else if (stepOfTutorial == 3)
             {
-                if (state.getSelected() == null)
+                cursorGroup.transform.position = GameObject.Find("cursorPos1").transform.position;
+                helpText.GetComponent<Text>().text = "If you hover your mouse over a tag or button you can click, it will highlight red...\n" +
+                    "Once you click it, the tag will attatch to your cursor until you drop it on the image to the left of the screen.\n" +
+                    SimpleTutorial.continueText;
+                if (moveOn() && !skip())
                 {
-                    tutorialText.text = "The tag you trashed is replaced with a new one" + "\n"
-                        + "(Push the rod forward to continue)"; ;
                     stepOfTutorial++;
                 }
-
             }
-            else if (stepOfTutorial == 20)
+            else if (stepOfTutorial == 4)
             {
-                timer += Time.deltaTime;
-
-                if (timer > 1f)
+                cursorGroup.transform.position = GameObject.Find("cursorPos2").transform.position;
+                helpText.GetComponent<Text>().text = "Then once you place it down, the tag will appear in the space around you.\n" +
+                    SimpleTutorial.continueText;
+                if (moveOn() && !skip())
                 {
-                    if ((StateManager.falconButtons[1] == true && prevClick == false) || moveOn())
-                    {
-                        tutorialText.text = "Press the next image button to go to the next image\n" +
-                        "(Push the rod forward to continue)";
-                        timer = 0f;
-                        stepOfTutorial++;
-                    }
-                }
-
-            }
-            else if (stepOfTutorial == 21)
-            {
-                timer += Time.deltaTime;
-
-                if (timer > 1f)
-                {
-                    if (StateManager.falconButtons[1] == true && prevClick == false || moveOn())
-                    {
-                        tutorialText.text
-                        = "You can quit any time you want by pressing the Quit button" + "\n" +
-                        "(Push the rod forward to continue)";
-                        timer = 0f;
-                        stepOfTutorial++;
-                    }
+                    stepOfTutorial++;
                 }
             }
+            else if (stepOfTutorial == 5)
+            {
+                cursorGroup.transform.position = GameObject.Find("cursorPos3").transform.position;
+                helpText.GetComponent<Text>().text = "If you dont want to use a given tag anymore, you can also place the tag in the trash...\n" +
+                    "If successful, a small version of the tag will appear under the trash icon, \n" +
+                    "And a new tag will appear in place of the previous... " + SimpleTutorial.continueText;
+                if (moveOn() && !skip())
+                {
+                    stepOfTutorial++;
+                }
+            }
+            else if (stepOfTutorial == 6)
+            {
+                cursorGroup.transform.position = GameObject.Find("cursorPos4").transform.position;
+                helpText.GetComponent<Text>().text = "If you hover over the next button and click,\n" +
+                    "the game will storre all of the tag data displayed on the screen, and show a new image to you\n" +
+                    SimpleTutorial.continueText;
+                if (moveOn() && !skip())
+                {
+                    stepOfTutorial++;
+                }
+            }
+            else if (stepOfTutorial == 7)
+            {
+                cursorGroup.transform.position = GameObject.Find("cursorPos5").transform.position;
+                helpText.GetComponent<Text>().text = "If you hover over the home button and click,\n" +
+                    "you will be taken to the home screen, where you can freely navigate between different parts of the game, \n" +
+                    "as well as view your exercise progress... " + SimpleTutorial.continueText;
+                if (moveOn() && !skip())
+                {
+                    stepOfTutorial++;
+                }
+            }
+            else if (stepOfTutorial == 8)
+            {
+                cursorGroup.transform.position = GameObject.Find("cursorPos2").transform.position;
+                helpText.GetComponent<Text>().text = "Finally, before you start logging your data, you will ahve a chance to practice what you've learned\n" +
+                    "when your ready, " + SimpleTutorial.continueText + ", and you will start the pratice level";
+                if (moveOn() && !skip())
+                {
+                    stepOfTutorial = 22;
+                }
+            }
+
             else if (stepOfTutorial == 22)
             { //Last element of tutorial, reshowing welcome screen basically
                 timer += Time.deltaTime;

@@ -29,6 +29,7 @@ public class VRUser : MonoBehaviour
     public static Vector3 controllerOffset;
     public static Color cursorHighlight = Color.green;
     public static Color cursorHighlight2 = Color.red;
+    public static Color cursorHighlight3 = Color.magenta;
     public static Color tagColor = new Color(1, 1, 1, 101 / 255);
     public static Color binColor = new Color(134 / 255, 150 / 255, 167 / 255, 186 / 255);
     public static Color binColor2 = new Color(167 / 255, 134 / 255, 143 / 255, 186 / 255);
@@ -49,12 +50,12 @@ public class VRUser : MonoBehaviour
 
     public static Vector3 change; //modified change of controller movement
 
-    public static bool showMoveStats = false;
+    public static bool showMoveStats = false; //bool to debug.log calibration stats
 
     public static float moveThreshold1 = 0.10f; //percentages for (1)reading movement & (2)displaying movement (+haptics)
     public static float moveThreshold2 = 0.80f;
 
-    public static float baseZCalibration = 4f;
+    public static float baseZCalibration = 4f; //var that signifies how far the user is supposed to reach (z) given no calibration data
 
     /*  TODO!!
      * rework cameras:
@@ -68,6 +69,8 @@ public class VRUser : MonoBehaviour
     { //Ctrl+K+C = comment (+K+U = uncomment)
         cursorHighlight.a = 105f / 255f;
         cursorHighlight2.a = 75f / 255f;
+        //cursorHighlight3 = HomeScreen.nyuPurple;
+        cursorHighlight3.a = 80f / 255f;
         //player head and controllers set within Unity Scene (VRPerson's children)
         VRPerson = GameObject.Find("VRPerson");
         playerHead = GameObject.Find("CenterEyeAnchor");
@@ -107,13 +110,21 @@ public class VRUser : MonoBehaviour
         armsFixes();
         //vrInfo();
         state.user.showMoveBounds();
+        Debug.Log("Hand Tracking: " + handTracking() + ", Offset By: " + playerPos.arms);
+        Debug.Log("Clicking: " + state.userIsClicking + ", " + state.userClick); //continuous, noncontinuous clicking
+        /* movement correction ideas:
+         * correct local rotation by normal rotation
+         * transform positions/orientations of parent relative to headset roll
+         * 
+         */
 
         //arms position editing
-        playerArms.transform.localRotation = Quaternion.Euler( 0f, 0f, -playerHead.transform.rotation.z); //override parent transform rotation?
+        //playerArms.transform.localRotation = Quaternion.Euler( 0f, 0f, -playerHead.transform.rotation.z); //override parent transform rotation?
         //GameObject.Find("headsetForward").transform.position = new Vector3(GameObject.Find("headsetForward").transform.position.x, 0f, GameObject.Find("headsetForward").transform.position.z);
         //GameObject.Find("headsetRight").transform.position -= new Vector3(GameObject.Find("headsetRight").transform.position.x, 0f, GameObject.Find("headsetRight").transform.position.z);
         //GameObject.Find("headsetUp").transform.position -= new Vector3(0f, GameObject.Find("headsetUp").transform.position.y, 0f);
 
+        
         //FORCE QUIT
         //if(OVRInput.Get(OVRInput.Touch.PrimaryThumbRest, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Touch.SecondaryThumbRest, OVRInput.Controller.Touch))
         //{
@@ -167,94 +178,112 @@ public class VRUser : MonoBehaviour
             }
         }
 
-        Vector3 handPos = handTracking(false);
-        Vector3 movementVal = new Vector3(0f,0f,0f);
+        Vector3 handPos = handTracking(false); //present position of hands
+        Vector3 movementVal = new Vector3(0f,0f,0f); //amount of movement pushed to cursor
         /*  Reset Mechanic:
          *  Cursor starts at the center (cursorCenter) position and cannot move until...
          *  the user presses the isResetting() hand triggers and the user's head/hands pos is taken
          *  the user then can move the cursor relative to the saved vals
          *  the only exception is when the user changes states or the user presses the hand triggers
          * */
-        if (isResetting())
+        if (isResetting()) //user resets cursor via hand triggers
         {
-            playerArms.transform.position = handPos;
+            //sets arm bounds to location of hands
+            playerArms.transform.position = handPos; 
+            //stores coords of arms relative to headset bounds
             playerPos.arms = new Vector3((farRight.transform.position - handPos).magnitude, (farUp.transform.position - handPos).magnitude, (farForward.transform.position - handPos).magnitude);
+            //stores present position of head
             playerPos.head = playerHead.transform.position;
+            //activates user control
             state.userControlActive = true;
-            trueCursor.transform.position = centerer.transform.position; //center
+            //resets position of cursor to the center of the user's vision
+            trueCursor.transform.position = centerer.transform.position;
         }
 
-        if (state.userControlActive)
+        if (state.userControlActive) //if user has control
         {
-            if (!isResetting())
+            if (!isResetting()) //if user is not attempting to reset cursor
             {
+                //add init pos of cursor
                 controllerOffset = playerPos.arms;
+                //store present controller pos
+                //handTracking(true)
                 movementVal = new Vector3( (farRight.transform.position - handPos).magnitude, (farUp.transform.position - handPos).magnitude, (farForward.transform.position - handPos).magnitude );
                 //movementVal += playerHead.transform.position - playerPos.head;
             }
         }
         else
-        {
+        { //pos of cursor is 0
             controllerOffset = new Vector3(0f, 0f, 0f);
         }
 
         //extra control
-        Vector2 cursorMove = new Vector2(0f, 0f);
+        Vector2 cursorMove = new Vector2(0f, 0f); //var to add stick positional stuff to cursor movement
         if (extraControls)
         {
+            //add stick controls
             cursorMove = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch);
         }
 
-        change = controllerOffset - movementVal; // handPos - controllerOffset;
-        change *= StateManager.cursorSpeed;
-
+        change =  movementVal - controllerOffset; // get change in hand pos from last reset
+        //change *= StateManager.cursorSpeed;
         if (state.user.getPracticeLevelState()[0]) //has started practice level, aka has finished calibration
         {
             Debug.Log("Move Change: " + change + ", Threshold: " +
-            new Vector3(state.user.getMovementBounds()[1], state.user.getMovementBounds()[3], state.user.getMovementBounds()[4]) * moveThreshold1
-            + ", " + new Vector3(state.user.getMovementBounds()[0], state.user.getMovementBounds()[2], state.user.getMovementBounds()[4]) * moveThreshold1);
-            //lowerbound threshold
-            if (state.cursorXMove && change.x > (state.user.getMovementBounds()[1] * moveThreshold1) || change.x < (state.user.getMovementBounds()[0] * moveThreshold1))
+            new Vector3(state.user.getMovementBounds(2), state.user.getMovementBounds(4), state.user.getMovementBounds(5)) * moveThreshold1
+            + ", " + new Vector3(state.user.getMovementBounds(1), state.user.getMovementBounds(3), state.user.getMovementBounds(5)) * moveThreshold1);
+            
+            //lowerbound threshold - controls when the cursor can move based on a % of the calibration values (x&y)
+            if (state.cursorXMove && change.x > (state.user.getMovementBounds(2) * moveThreshold1))
             {
-                cursorMove += new Vector2(change.x, 0);
+                cursorMove += new Vector2(change.x - (state.user.getMovementBounds(2) * moveThreshold1), 0);
             }
-            if (state.cursorYMove && change.y > (state.user.getMovementBounds()[3] * moveThreshold1) || change.y < (state.user.getMovementBounds()[2] * moveThreshold1))
+            else if (change.x < (state.user.getMovementBounds(1) * moveThreshold1))
             {
-                cursorMove += new Vector2(0, change.y);
+                cursorMove += new Vector2(change.x - (state.user.getMovementBounds(1) * moveThreshold1), 0);
             }
 
-            //upperbound haptics
+            if (state.cursorYMove && change.y > (state.user.getMovementBounds(4) * moveThreshold1))
+            {
+                cursorMove += new Vector2(0, change.y - (state.user.getMovementBounds(4) * moveThreshold1));
+            }
+            else if (change.y < (state.user.getMovementBounds(3) * moveThreshold1))
+            {
+                cursorMove += new Vector2(0, change.y - (state.user.getMovementBounds(3) * moveThreshold1));
+            }
+
+            //upperbound haptics - tells user when they are close to their max range xy&z
             float addHapt = 0f;
-            if (state.cursorXMove && change.x > (state.user.getMovementBounds()[1] * moveThreshold2)) //x
+            if (state.cursorXMove && change.x > (state.user.getMovementBounds(2) * moveThreshold2)) //x
             {
-                addHapt += (change.x / (state.user.getMovementBounds()[1] * moveThreshold2)) / 2;
+                addHapt += (change.x / (state.user.getMovementBounds(2) * moveThreshold2)) / 2;
             }
-            else if (change.x < (state.user.getMovementBounds()[0] * moveThreshold2))
+            else if (change.x < (state.user.getMovementBounds(1) * moveThreshold2))
             {
-                addHapt += (change.x / (state.user.getMovementBounds()[0] * moveThreshold2)) / 2;
+                addHapt += (change.x / (state.user.getMovementBounds(1) * moveThreshold2)) / 2;
             }
-            if (state.cursorYMove && change.y > (state.user.getMovementBounds()[3] * moveThreshold2)) //y
+            if (state.cursorYMove && change.y > (state.user.getMovementBounds(4) * moveThreshold2)) //y
             {
-                addHapt += (change.y / (state.user.getMovementBounds()[3] * moveThreshold2)) / 2;
+                addHapt += (change.y / (state.user.getMovementBounds(4) * moveThreshold2)) / 2;
             }
-            else if (change.y < (state.user.getMovementBounds()[2] * moveThreshold2))
+            else if (change.y < (state.user.getMovementBounds(3) * moveThreshold2))
             {
-                addHapt += (change.y / (state.user.getMovementBounds()[2] * moveThreshold2)) / 2;
+                addHapt += (change.y / (state.user.getMovementBounds(3) * moveThreshold2)) / 2;
             }
-            if (change.z > (state.user.getMovementBounds()[4] * moveThreshold2)) //z
+            if (change.z > (state.user.getMovementBounds(5) * moveThreshold2)) //z
             {
-                addHapt += (change.z / (state.user.getMovementBounds()[4] * moveThreshold2)) / 2;
+                addHapt += (change.z / (state.user.getMovementBounds(5) * moveThreshold2)) / 2;
             }
-            OVRInput.SetControllerVibration(addHapt, addHapt, OVRInput.Controller.RTouch); //set
+            OVRInput.SetControllerVibration(addHapt, addHapt, OVRInput.Controller.RTouch); //set haptics
             OVRInput.SetControllerVibration(addHapt, addHapt, OVRInput.Controller.LTouch);
 
-            //clicking
-            if (Math.Floor(change.z) == state.user.getMovementBounds()[4] * moveThreshold1) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
+            //clicking - click if user is a certain % of their max z range
+            if (Math.Floor(change.z) == state.user.getMovementBounds(5)* moveThreshold1) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
             {
                 state.userClick = true;
                 state.userIsClicking = true;
             }
-            else if (change.z > state.user.getMovementBounds()[4] * moveThreshold1)
+            else if (change.z > state.user.getMovementBounds(5) * moveThreshold1)
             {
                 state.userIsClicking = true;
                 state.userClick = false;
@@ -265,20 +294,19 @@ public class VRUser : MonoBehaviour
                 state.userClick = false;
             }
         }
-        else
+        else //if no calibration data (assuming we're in calibration step)
         {
-            //Debug.Log("Move Change: " + change);
-            if (state.cursorXMove)
+            if (state.cursorXMove) //give user access to x&y movements if these booleans say so
             {
-                cursorMove += new Vector2(change.x, 0);
+                cursorMove -= new Vector2(change.x, 0);
             }
             if (state.cursorYMove)
             {
-                cursorMove += new Vector2(0, change.y);
+                cursorMove -= new Vector2(0, change.y);
             }
 
-            //clicking
-            if (Math.Floor(change.z) == baseZCalibration * moveThreshold1) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
+            //clicking - same clicking methodology but based on an easy-to-reach position instead of calibrated data
+            if (Math.Floor(change.z) == baseZCalibration * moveThreshold1)
             {
                 state.userClick = true;
                 state.userIsClicking = true;
@@ -294,13 +322,13 @@ public class VRUser : MonoBehaviour
                 state.userClick = false;
             }
         }
-        Debug.Log("Clicking: " + state.userIsClicking + ", " + state.userClick);
-        //Debug.Log("Testing Mod: " + movementVal.z + " vs. " + handTracking().z);
-        Debug.Log("VRUser CursorAdd: " + state.cursorAdd);
+        //adds hand position stuff to cursor movements
         cursorMove += new Vector2(state.cursorAdd.x, state.cursorAdd.y);
-        state.cursorAdd = new Vector3(0f, 0f, 0f); //resetting additive property
 
-        trueCursor.transform.position += (3.2f * Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.2f) + (trueCursor.transform.right * cursorMove.x)));
+        state.cursorAdd = new Vector3(0f, 0f, 0f); //resetting additive property
+        
+        //moves cursor by factor of all the above
+        trueCursor.transform.position += ((1.4f+((5 - state.user.getSettingData()[0])/10f)) * 5f * Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.2f) + (trueCursor.transform.right * cursorMove.x)));
 
         //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-151,66], x[-90,88.4]
         if (trueCursor.transform.localPosition.x > 88)
@@ -320,29 +348,33 @@ public class VRUser : MonoBehaviour
             trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, -150, trueCursor.transform.localPosition.z);
         }
 
-        if (isResetting(true) || isResetting(false))
+        //highlights the cursor based on certain actions
+        if (isResetting(true) || isResetting(false)) //green = resetting
         {
             GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight;
         }
-        else if (state.userIsClicking)
+        else if (state.userIsClicking) //red = clicking
         {
-            GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight2; //red
+            GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight2; 
+        }
+        else if (state.userControlActive) //purple = locked
+        {
+            GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight3;
         }
         else
         {
             GameObject.Find("showClick").GetComponent<Image>().color = nothing;
         }
 
-        //HAPTICS
+        //extra haptics with thumbsticks
         float scaledVal = Math.Abs(OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch).y + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch).y +
                                    OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch).x + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch).x) / 4f;
         //Debug.Log("scaled val: " + scaledVal);
         OVRInput.SetControllerVibration(scaledVal, scaledVal, OVRInput.Controller.RTouch);
         OVRInput.SetControllerVibration(scaledVal, scaledVal, OVRInput.Controller.LTouch);
-        //idea: after 15% of range of motion the cursor moves -15% and after 90% haptics signify closeness/surpassing limits
 
         //CAMERA CONTROL & CLICKING
-        switch (state.getState()) //state camera control
+        switch (state.getState()) //state camera control (positions of camera at various states)
         {
             case 0: //QUIT
                 VRPerson.SetActive(false);
@@ -375,8 +407,8 @@ public class VRUser : MonoBehaviour
                 Debug.Log("VR State Error");
                 break;
         }
-
-        if (state.getSelected() != null)
+        //raycasting attempts on hold for now...
+        /*if (state.getSelected() != null)
         {
             Debug.Log("*Raycast starting up...");
             Ray cursorRay = new Ray(state.getCursorPosition(), (state.getCursorPosition() - playerHead.transform.position).normalized);
@@ -391,7 +423,7 @@ public class VRUser : MonoBehaviour
                     Debug.Log("*** raycast working???");
                 }
             }
-        }
+        }*/
     }
     
     public void vrInfo()
@@ -512,7 +544,7 @@ public class VRUser : MonoBehaviour
         {
             Vector3 hand = (OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand) + OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand)) / 2f;
             Vector3 move = new Vector3((farRight.transform.position - hand).magnitude, (farUp.transform.position - hand).magnitude, (farForward.transform.position - hand).magnitude);
-            return -move;// * StateManager.cursorSpeed;
+            return move * StateManager.cursorSpeed;
         }
     }
 

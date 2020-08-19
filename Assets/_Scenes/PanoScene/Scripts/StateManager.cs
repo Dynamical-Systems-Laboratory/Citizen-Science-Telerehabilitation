@@ -142,7 +142,7 @@ public class StateManager : MonoBehaviour {
     public bool userIsClicking = false; //getbutton - isClicking(true)
     public bool userClick = false; //getbuttondown
 
-    private int userState = 2;//6;
+    private int userState = 4;//6;
     /* 0 = Quit
      * 1 = Home
      * 2 = In-Game
@@ -226,7 +226,7 @@ public class StateManager : MonoBehaviour {
             case 2: //GAME
                 MakeWordBank.nextImage(MakeWordBank.imageIndex);
                 //reload tags for image...?
-                GameObject.Find("gameText").GetComponent<Text>().text = "Game Screen";
+                //GameObject.Find("gameText").GetComponent<Text>().text = "Game Screen";
                 break;
             case 3: //PROFILE
                 MakeWordBank.UICamera.GetComponent<Camera>().cullingMask = profileCull;
@@ -243,7 +243,7 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.UICamera.SetActive(false);
                 break;
             case 7: //PRACTICE LEVEL
-                GameObject.Find("gameText").GetComponent<Text>().text = "Practice Screen";
+                //GameObject.Find("gameText").GetComponent<Text>().text = "Practice Screen";
                 //activate/deactivate practice level text & help text stuffgameText
                 break;
             case 8: //Survey

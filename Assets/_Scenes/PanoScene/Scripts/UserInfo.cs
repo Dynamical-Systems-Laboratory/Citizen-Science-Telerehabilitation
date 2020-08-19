@@ -208,20 +208,34 @@ public class UserInfo //not sure if : this() is necessary
         avg /= sessionDuration.Count;
         return (int)avg;
     }
-    public float[] getMovementBounds()
+    public float getMovementBounds(int index)
     {
-        float[] vals = new float[8];
-        vals[0] = movementBounds[0];
-        vals[1] = movementBounds[1];
-        vals[2] = movementBounds[2];
-        vals[3] = movementBounds[3];
-        vals[4] = movementBounds[4];
-        vals[5] = movementTime[0];
-        vals[6] = movementTime[1];
-        vals[7] = movementTime[2];
-        vals[8] = movementTime[3];
-        vals[9] = movementTime[4];
-        return vals;
+        switch (index)
+        {
+            case 1:
+                return movementBounds[0];
+            case 2:
+                return movementBounds[1];
+            case 3:
+                return movementBounds[2];
+            case 4:
+                return movementBounds[3];
+            case 5:
+                return movementBounds[4];
+            case 6:
+                return movementTime[0];
+            case 7:
+                return movementTime[1];
+            case 8:
+                return movementTime[2];
+            case 9:
+                return movementTime[3];
+            case 10:
+                return movementTime[4];
+            default:
+                Debug.LogError("movement bounds error");
+                return 0;
+        }
     }
     public int getLastImage() { return lastImage; }
 

@@ -71,7 +71,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     public static GameObject horiz;
     //public static Text lockText;
 
-    private static string continueText = "press* A* or *X* to continue";
+    public static string continueText = "press* A* or *X* to continue";
 
     public static GameObject cursor;
     public static GameObject cursorCam;
@@ -163,7 +163,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             {
                 step = 35;//changed from 35
             }
-            else if (MakeWordBank.skip() && step == 0) //for testing purposes of z movements
+            else if (MakeWordBank.skip() && step == 0 && timer > 1) //for testing purposes of z movements
             {
                 step = 9;
                 counter = 0;
@@ -192,12 +192,14 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             //start of steps
             if (step == 0) //introduces calibration
             {
+                timer += Time.deltaTime;
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
                     StateManager.makeCursReset = true;
                     text.text = "The cursor is currently in locked mode,\n center your hands and squeeze the *hand triggers* to unlock the cursor\n"
                         + "To see a demonstration of this, " + continueText + " to a video";
                     step++;
+                    timer = 0;
                 }
             }
             else if (step == 1)
@@ -514,7 +516,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                         state.cursorYMove = true;
                     }
 
-                    Debug.Log("Z Offset: " + (VRUser.handTracking() - handPos1).z + ", Button: " + VRUser.cursorRelock().ToString());
+                    Debug.Log("Z Offset: " + (VRUser.handTracking() - handPos1) + ", Button: " + VRUser.cursorRelock().ToString());
                     if (Math.Abs((VRUser.handTracking() - handPos1).z) <= VRUser.baseZCalibration/2 && VRUser.cursorRelock() && state.userControlActive)
                     {
                         text.text = "Try to extend a bit farther forward to get a good calibration...";
