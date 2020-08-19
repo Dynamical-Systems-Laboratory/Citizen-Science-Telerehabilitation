@@ -60,12 +60,13 @@ public class UserInfo //not sure if : this() is necessary
         sessionDuration.Add(timeLogged - startTime);
     }
 
-    public void addMovementBounds(MovementBounds userMove)
+    public void addMovementBounds(float[] moves, float[] times)
     {
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 5; i++)
         {
-            movementBounds[i] = userMove.rangeOfMotion[i];
-            movementTime[i] = userMove.timeOfMotion[i];
+            Debug.Log("Adding Movement2, ex: " + moves[i] + ", " + times[i]);
+            movementBounds[i] = moves[i];
+            movementTime[i] = times[i];
         }
     }
     public void addMovement(Transform head, Vector3 rightHandp, Vector3 rightHandr, Vector3 leftHandp, Vector3 leftHandr)

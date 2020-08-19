@@ -197,7 +197,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
                     StateManager.makeCursReset = true;
-                    text.text = "The cursor is currently in locked mode,\n center your hands and squeeze the *hand triggers* to unlock the cursor\n"
+                    text.text = "The cursor is currently in locked mode (*purple*),\n center your hands and squeeze the *hand triggers* to unlock the cursor\n"
                         + "To see a demonstration of this, " + continueText + " to a video";
                     step++;
                     timer = 0;
@@ -229,7 +229,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     Debug.Log("Step 2 Counter: " + counter);
                     if (counter == 0 && !VRUser.isResetting())
                     {
-                        text.text = "(1)Now try unlocking the cursor yourself, the cursor will flash green if youve done it correctly...\n Remeber the unlock buttons are the two hand triggers.";
+                        text.text = "(1)Now try unlocking the cursor yourself, the cursor will flash *green* if youve done it correctly...\n Remeber the unlock buttons are the two hand triggers.";
                     }
                     else if (counter == 0 && VRUser.isResetting()) //just skips cuz of getdown problems but solve later...
                     {
@@ -458,7 +458,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     savedCursorScale = cursor.transform.localScale;
                 }
 
-                if (state.getCursorPosition().y <= -89f && state.userControlActive)
+                if (state.getCursorPosition().y <= -84f && state.userControlActive)
                 {
                     movementAvg[counter] = (VRUser.handTracking() - handPos1).y * StateManager.cursorSpeed;
                     timerAvg[counter] = timer;
@@ -501,7 +501,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     else if (counter > 0 && counter < 5)
                     {
                         text.text = "Great! Now unlock the cursor and repeat that *forward* movement " + (5 - counter) + " more times.\n" +
-                            "Remember to stretch as far as you can. ";
+                            "The cursor should appear *red* as you do the motion... Remember to stretch as far as you can.";
                     }
                     else if (counter == 5)
                     {
@@ -565,6 +565,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     text.text = "Great, in a second you will move onto the game tutorial. In the meanwhile, here is your data:\n(" +
                         string.Join(", ", userMovement.rangeOfMotion) + "),\n (" + string.Join(", ", userMovement.timeOfMotion) + ")";
                 }
+                Debug.Log("***Move Data: (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" + string.Join(", ", userMovement.timeOfMotion) + ")");
                 VRUser.showMoveStats = true;
                 if (timer > longInterval || MakeWordBank.moveOn())
                 {
@@ -575,6 +576,10 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             
             else if (step == 35) //end
             {
+                //import movement data into UserInfo;
+                Debug.Log("Adding Movement1: (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" + string.Join(", ", userMovement.timeOfMotion) + ")");
+                state.user.addMovementBounds(userMovement.rangeOfMotion, userMovement.timeOfMotion);
+
                 cam.rect = new Rect(0.0f, 0.0f, 0.622f, 1.0f);
                 StateManager.moveCameraU = true;
                 StateManager.moveCameraD = true;
@@ -594,8 +599,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 inSimpleTutorial = false; //stops simple tutorial
                 initialized = false;
 
-                //import movement data into UserInfo;
-                state.user.addMovementBounds(userMovement);
                 //lockPanel.SetActive(false);
                 if (hasCompleted)
                 {
