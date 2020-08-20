@@ -141,7 +141,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             //canvas.SetActive(true);
             if (!initialized)
             {
-                hasCompleted = state.user.getPracticeLevelState()[1]; //finished pract lvl
+                hasCompleted = state.user.getPracticeLevelState()[0]; //started pract lvl
                 circle.SetActive(false);
                 cam.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
                 StateManager.kinectReady = true;
@@ -157,11 +157,20 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 state.cursorXMove = false;
                 state.cursorYMove = false;
                 state.userControlActive = false;
+
+                if (hasCompleted)
+                {
+                   for (int i = 0; i < 5; i++)
+                    {
+                        userMovement.rangeOfMotion[i] = state.user.getMovementBounds(i+1);
+                        userMovement.timeOfMotion[i] = state.user.getMovementBounds(i+6);
+                    }
+                }
             }
 
             if (MakeWordBank.skip() && hasCompleted && timer > 1)
             {
-                step = 35;//changed from 35
+                step = 12;//changed from 35
             }
             /*else if (MakeWordBank.skip() && step == 0 && timer > 1) //for testing purposes of z movements
             {
@@ -383,12 +392,9 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     text.text = "The cursor can be moved upward and downward...";
                     startedPlaying = true;
                 }
-                if (startedPlaying == true)
-                {
-                    timer += Time.deltaTime;
-                }
                 if (!VPA3.isPlaying && startedPlaying)
                 {
+                    timer += Time.deltaTime;
                     VP3.SetActive(false);
                     if (counter == 0)
                     {
@@ -480,12 +486,9 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     text.text = "The cursor can be clicked";
                     startedPlaying = true;
                 }
-                if (startedPlaying == true)
-                {
-                    timer += Time.deltaTime;
-                }
                 if (!VPA4.isPlaying && startedPlaying)
                 {
+                    timer += Time.deltaTime;
                     VP4.SetActive(false);
                     /*if (state.userControlActive)
                     {
@@ -570,11 +573,11 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (timer > longInterval || MakeWordBank.moveOn())
                 {
                     timer = 0f;
-                    step = 35;
+                    step++;
                     Debug.Log("Adding Movement0: (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" + string.Join(", ", userMovement.timeOfMotion) + ")");
                 }
             }
-            else if (step == 35) //end
+            else if (step == 12) //end
             {
                 //import movement data into UserInfo;
                 Debug.Log("Adding Movement1: (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" + string.Join(", ", userMovement.timeOfMotion) + ")");

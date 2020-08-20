@@ -189,7 +189,7 @@ public class StateManager : MonoBehaviour {
         switch (userState)
         {
             case 0: //QUIT
-                complexUser.VRPerson.SetActive(false);
+                //complexUser.VRPerson.SetActive(false);
                 MakeWordBank.cursorCamera.SetActive(false);
                 MakeWordBank.UICamera.SetActive(false);
                 user.updateSettings();
@@ -200,6 +200,7 @@ public class StateManager : MonoBehaviour {
                 if (newUser) //if new user or no data detected
                 {
                     writer = System.IO.File.CreateText(path); //create new user_data file
+                    Debug.Log("File Created at " + path);
                     //writer.WriteLine("UserName,DateJoined,TimeLogged,StartedPL,FinishedPL,Difficulty,LastImage,ImageData,,TagData,,SessionData,,finish");
                 }
                 else
@@ -213,6 +214,7 @@ public class StateManager : MonoBehaviour {
 
                 }
                 writer.Write("\n"); //indent for new data (delete previous data in another step)
+                Debug.Log("Data Written...");
                 writer.Flush();
                 writer.Close();
                 //ClickAction.destroyTags();
@@ -369,94 +371,100 @@ public class StateManager : MonoBehaviour {
     private static bool stateInit = false;
     private void Update()
     {
-        if (!stateInit)
+        if (userState == 0)
         {
-            updateState();
-            stateInit = true;
+            Debug.Log("****************************Game Should Be Closed***************************");
         }
-        //updateState(); //testing...**
-        Debug.Log("isNewUser: " + newUser.ToString() + ", data: " + dataRead[0]);
-        switch (userState)
+        else
         {
-            case 0:
-                Debug.Log("State: Quit");
-                break;
-            case 1:
-                Debug.Log("State: Home");
-                break;
-            case 2:
-                Debug.Log("State: Game");
-                break;
-            case 3:
-                Debug.Log("State: Profile");
-                break;
-            case 4:
-                Debug.Log("State: Calibrating");
-                break;
-            case 5:
-                Debug.Log("State: Button Tutorial");
-                break;
-            case 6:
-                Debug.Log("State: About Project");
-                break;
-            case 7:
-                Debug.Log("State: Practice Level");
-                break;
-            case 8: //Survey
-                Debug.Log("State: Survey");
-                break;
-            default:
-                Debug.Log("State: Error " + userState);
-                break;
-        }
+            if (!stateInit)
+            {
+                updateState();
+                stateInit = true;
+            }
+            //updateState(); //testing...**
+            Debug.Log("isNewUser: " + newUser.ToString() + ", data: " + dataRead[0]);
+            switch (userState)
+            {
+                case 0:
+                    Debug.Log("State: Quit");
+                    break;
+                case 1:
+                    Debug.Log("State: Home");
+                    break;
+                case 2:
+                    Debug.Log("State: Game");
+                    break;
+                case 3:
+                    Debug.Log("State: Profile");
+                    break;
+                case 4:
+                    Debug.Log("State: Calibrating");
+                    break;
+                case 5:
+                    Debug.Log("State: Button Tutorial");
+                    break;
+                case 6:
+                    Debug.Log("State: About Project");
+                    break;
+                case 7:
+                    Debug.Log("State: Practice Level");
+                    break;
+                case 8: //Survey
+                    Debug.Log("State: Survey");
+                    break;
+                default:
+                    Debug.Log("State: Error " + userState);
+                    break;
+            }
 
-        /*if (allSystemsGo)
-        {
-            moveCursorL = true; // cursors
-            moveCursorR = true;
-            moveCursorU = true;
-            moveCursorD = true;
-            moveCameraL = true; // cameras
-            moveCameraR = true;
-            moveCameraU = true;
-            moveCameraD = true;
-            //makeCursReset = false;
-            //makeCamReset = false;
-        }*/
+            /*if (allSystemsGo)
+            {
+                moveCursorL = true; // cursors
+                moveCursorR = true;
+                moveCursorU = true;
+                moveCursorD = true;
+                moveCameraL = true; // cameras
+                moveCameraR = true;
+                moveCameraU = true;
+                moveCameraD = true;
+                //makeCursReset = false;
+                //makeCamReset = false;
+            }*/
 
-        kinectReady = true;
-        falconButtons[1] = false;
-        /*rodClicked = false;
-        if ((Input.GetKey(KeyCode.V) && VRUser.extraControls) || VRUser.isClicking()) //new update - forwards and backwards
-        {
-            rodClicked = true;
-        }*/
+            kinectReady = true;
+            falconButtons[1] = false;
+            /*rodClicked = false;
+            if ((Input.GetKey(KeyCode.V) && VRUser.extraControls) || VRUser.isClicking()) //new update - forwards and backwards
+            {
+                rodClicked = true;
+            }*/
 
-        cameraL = false;
-        cameraR = false;
-        cameraU = false;
-        cameraD = false;
+            cameraL = false;
+            cameraR = false;
+            cameraU = false;
+            cameraD = false;
 
-        cameraUpCoolDown += Time.deltaTime;
-        cameraDownCoolDown += Time.deltaTime;
+            cameraUpCoolDown += Time.deltaTime;
+            cameraDownCoolDown += Time.deltaTime;
 
-        //TODO: Set cameraPos to orientation of oculus
-        cameraPos = GameObject.Find("CenterEyeAnchor").transform.rotation.eulerAngles;
-        nextCameraPos = cameraPos;
-        
-        if (makeCamReset) //cam reset method
-        {
-            //nextCameraPos = new Vector3(0f, 0f, 0f);
-            absRotation = nextCameraPos;
-            makeCamReset = false;
-        }
+            //TODO: Set cameraPos to orientation of oculus
+            cameraPos = GameObject.Find("CenterEyeAnchor").transform.rotation.eulerAngles;
+            nextCameraPos = cameraPos;
 
-        /*foreach (TagPlaced obj in tagsPlaced)
-        {
-            obj.tag.transform.position -= (cameraPos - obj.headPos);
-        }*/
+            if (makeCamReset) //cam reset method
+            {
+                //nextCameraPos = new Vector3(0f, 0f, 0f);
+                absRotation = nextCameraPos;
+                makeCamReset = false;
+            }
 
-        //nextCameraPos.y = getLowestAngle(nextCameraPos.y); //reset x pos if goes too far
+            /*foreach (TagPlaced obj in tagsPlaced)
+            {
+                obj.tag.transform.position -= (cameraPos - obj.headPos);
+            }*/
+
+            //nextCameraPos.y = getLowestAngle(nextCameraPos.y); //reset x pos if goes too far
             /*if (cameraMoving)
             {
                 foreach (GameObject obj in tagsPlaced)
@@ -476,77 +484,78 @@ public class StateManager : MonoBehaviour {
                 }
             }*/
             Debug.Log("Camera Info: " + getCameraPosition() + ", abs: " + absRotation + ", speed: " + camSpeed);
-        cameraPos = nextCameraPos;
+            cameraPos = nextCameraPos;
 
-        cursorL = false;
-        cursorR = false;
-        cursorU = false;
-        cursorD = false;
+            cursorL = false;
+            cursorR = false;
+            cursorU = false;
+            cursorD = false;
 
-        //float keyspeed = 0.07f * cursorSpeed; //x
-        //float keyspeed2 = .00016f * cursorSpeed; //y
-        nextCursorPos = cursorPos;
+            //float keyspeed = 0.07f * cursorSpeed; //x
+            //float keyspeed2 = .00016f * cursorSpeed; //y
+            nextCursorPos = cursorPos;
 
-        if (moveCursorL)
-        {
-            //nextCursorPos = new Vector3(cursorPos.x + Input.GetAxis("Horizontal")* keyspeed, cursorPos.y, 0.418f);
-            //cursorL = true;
-            if (Input.GetKey(KeyCode.LeftArrow) && VRUser.extraControls)
+            if (moveCursorL)
             {
-                nextCursorPos += new Vector3(-.06f * cursorSpeed * Time.deltaTime, 0f, 0f);
-                cursorL = true;
+                //nextCursorPos = new Vector3(cursorPos.x + Input.GetAxis("Horizontal")* keyspeed, cursorPos.y, 0.418f);
+                //cursorL = true;
+                if (Input.GetKey(KeyCode.LeftArrow) && VRUser.extraControls)
+                {
+                    nextCursorPos += new Vector3(-.06f * cursorSpeed * Time.deltaTime, 0f, 0f);
+                    cursorL = true;
+                }
             }
-        }
 
-        if (moveCursorR)
-        {
-            if (Input.GetKey(KeyCode.RightArrow) && VRUser.extraControls)
+            if (moveCursorR)
             {
-                nextCursorPos += new Vector3(.06f * cursorSpeed * Time.deltaTime, 0f, 0f);
-                cursorR = true;
+                if (Input.GetKey(KeyCode.RightArrow) && VRUser.extraControls)
+                {
+                    nextCursorPos += new Vector3(.06f * cursorSpeed * Time.deltaTime, 0f, 0f);
+                    cursorR = true;
+                }
             }
-        }
 
-        if (moveCursorU)
-        {
-            if (Input.GetKey(KeyCode.UpArrow) && VRUser.extraControls)
+            if (moveCursorU)
             {
-                nextCursorPos += new Vector3(0f, .048f * cursorSpeed * Time.deltaTime, 0f);
-                cursorU = true;
+                if (Input.GetKey(KeyCode.UpArrow) && VRUser.extraControls)
+                {
+                    nextCursorPos += new Vector3(0f, .048f * cursorSpeed * Time.deltaTime, 0f);
+                    cursorU = true;
+                }
             }
-        }
 
-        if (moveCursorD)
-        {
-            if (Input.GetKey(KeyCode.DownArrow) && VRUser.extraControls)
+            if (moveCursorD)
             {
-                nextCursorPos += new Vector3(0f, -.048f * cursorSpeed * Time.deltaTime, 0f);
-                cursorD = true;
+                if (Input.GetKey(KeyCode.DownArrow) && VRUser.extraControls)
+                {
+                    nextCursorPos += new Vector3(0f, -.048f * cursorSpeed * Time.deltaTime, 0f);
+                    cursorD = true;
+                }
             }
-        }
-        
-        /*if (moveCursorL || moveCursorR || moveCursorU || moveCursorD || cursorAdd != new Vector3(0f, 0f, 0f))
-        {
-            nextCursorPos += cursorAdd;
-        }
-        cursorAdd = new Vector3(0f,0f,0f);*/
 
-        //nextCursorPos.z = -cursorSize;
-        //originally where cursor bounds were... - migrated to VRUser
-        if (makeCursReset)
-        {
-            cursorPos = new Vector3(0f, 0f, -cursorSize);
-            makeCursReset = false;
-        }
-        else
-        {
-            cursorPos = nextCursorPos;
-        }
-        Vector3 outCursor = cursorPos * cursorPosMod; //modifier to match tag vals (was 180)
-        Debug.Log("Cursor Info: " + getCursorPosition() + ", Mag: " + getCursorPosition().magnitude + ", Size: " + -cursorSize);
+            /*if (moveCursorL || moveCursorR || moveCursorU || moveCursorD || cursorAdd != new Vector3(0f, 0f, 0f))
+            {
+                nextCursorPos += cursorAdd;
+            }
+            cursorAdd = new Vector3(0f,0f,0f);*/
 
-        //Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
-        //Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);
+            //nextCursorPos.z = -cursorSize;
+            //originally where cursor bounds were... - migrated to VRUser
+            if (makeCursReset)
+            {
+                cursorPos = new Vector3(0f, 0f, -cursorSize);
+                makeCursReset = false;
+            }
+            else
+            {
+                cursorPos = nextCursorPos;
+            }
+            Vector3 outCursor = cursorPos * cursorPosMod; //modifier to match tag vals (was 180)
+            Debug.Log("Cursor Info: " + getCursorPosition() + ", Mag: " + getCursorPosition().magnitude + ", Size: " + -cursorSize);
+
+            //Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
+            //Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);
+        }
     }
 
     public bool isGaming()

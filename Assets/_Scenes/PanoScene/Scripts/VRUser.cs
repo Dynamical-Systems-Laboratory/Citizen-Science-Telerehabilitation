@@ -52,9 +52,9 @@ public class VRUser : MonoBehaviour
 
     public static bool showMoveStats = false; //bool to debug.log calibration stats
 
-    public static float moveThreshold1 = 0.10f; //percentages for (1)reading movement & (2)displaying movement (+haptics)
-    public static float moveThreshold2 = 0.80f;
-    public static float moveThreshold3 = (moveThreshold1 + moveThreshold2) / 2f;
+    public static float moveThreshold1 = 0.08f; //percentages for (1)reading movement & (2)displaying movement (+haptics)
+    public static float moveThreshold2 = 0.70f;
+    public static float moveThreshold3;
 
     public static float baseZCalibration = 3f; //var that signifies how far the user is supposed to reach (z) given no calibration data
 
@@ -96,8 +96,11 @@ public class VRUser : MonoBehaviour
         tagColor = interactables[2].GetComponent<Image>().color; //precausion
         binColor = interactables[6].GetComponent<Image>().color;
 
-        moveThreshold1 += 0.025f * (state.user.getSettingData()[0]- 5); //mod by difficulty
-        moveThreshold2 += 0.02f * (state.user.getSettingData()[0] - 5); //mod by difficulty
+        moveThreshold1 += 0.025f * (state.user.getSettingData()[0]- 6); //mod by difficulty
+        moveThreshold2 += 0.02f * (state.user.getSettingData()[0] - 5);
+        if (moveThreshold1 < 0) { moveThreshold1 = 0; }
+        if (moveThreshold2 < 0) { moveThreshold2 = 0; }
+        moveThreshold3 = (moveThreshold1 + moveThreshold2) / 2f;
     }
 
     // Update is called once per frame
@@ -236,19 +239,19 @@ public class VRUser : MonoBehaviour
         { //Note: with the factored handpos, all axis' are reversed*
             Debug.Log("Move Change: " + change + ", Threshold: " +
             new Vector3(state.user.getMovementBounds(2), state.user.getMovementBounds(4), state.user.getMovementBounds(5)) * moveThreshold3
-            + ", " + new Vector3(state.user.getMovementBounds(1), state.user.getMovementBounds(3), state.user.getMovementBounds(5)) * moveThreshold3);
+            + ", " + new Vector3(state.user.getMovementBounds(1), state.user.getMovementBounds(3), state.user.getMovementBounds(5)) * moveThreshold1);
             //signs changed
             //lowerbound threshold - controls when the cursor can move based on a % of the calibration values (x&y)
             if (state.cursorXMove && change.x < (state.user.getMovementBounds(2) * moveThreshold1)) //(-x,x,-y,y,z) (1,2,3,4,5)
             {
-                //cursorMove += new Vector2(change.x - (state.user.getMovementBounds(2) * moveThreshold1), 0);
-                cursorMove += new Vector2(change.x, 0);
+                cursorMove += new Vector2(change.x - (state.user.getMovementBounds(2) * moveThreshold1 / 2f), 0);
+                //cursorMove += new Vector2(change.x, 0);
                 Debug.Log("MoveChange:Right");
             }
             else if (state.cursorXMove && change.x > (state.user.getMovementBounds(1) * moveThreshold1))
             {
-                //cursorMove += new Vector2(change.x - (state.user.getMovementBounds(1) * moveThreshold1), 0);
-                cursorMove += new Vector2(change.x, 0);
+                cursorMove += new Vector2(change.x - (state.user.getMovementBounds(1) * moveThreshold1 / 2f), 0);
+                //cursorMove += new Vector2(change.x, 0);
                 Debug.Log("MoveChange:Left");
             }
             else
@@ -258,14 +261,14 @@ public class VRUser : MonoBehaviour
 
             if (state.cursorYMove && change.y < (state.user.getMovementBounds(4) * moveThreshold1))
             {
-                //cursorMove += new Vector2(0, change.y - (state.user.getMovementBounds(4) * moveThreshold1));
-                cursorMove += new Vector2(0, change.y);
+                cursorMove += new Vector2(0, change.y - (state.user.getMovementBounds(4) * moveThreshold1 / 2f));
+                //cursorMove += new Vector2(0, change.y);
                 Debug.Log("MoveChange:Up");
             }
             else if (state.cursorYMove && change.y > (state.user.getMovementBounds(3) * moveThreshold1))
             {
-                //cursorMove += new Vector2(0, change.y - (state.user.getMovementBounds(3) * moveThreshold1));
-                cursorMove += new Vector2(0, change.y);
+                cursorMove += new Vector2(0, change.y - (state.user.getMovementBounds(3) * moveThreshold1 / 2f));
+                //cursorMove += new Vector2(0, change.y);
                 Debug.Log("MoveChange:Down");
             }
             else
@@ -332,7 +335,7 @@ public class VRUser : MonoBehaviour
                 state.userClick = true;
                 state.userIsClicking = true;
             }
-            else if (change.z > baseZCalibration * moveThreshold3)
+            else if (change.z < baseZCalibration * moveThreshold3)
             {
                 state.userIsClicking = true;
                 state.userClick = false;
@@ -344,13 +347,16 @@ public class VRUser : MonoBehaviour
             }
         }
         //failsafe for clicking
-        if (userStickButton(false))
+        if (extraControls)
         {
-            state.userClick = true;
-        }
-        if (userStickButton(true))
-        {
-            state.userIsClicking = true;
+            if (userStickButton(false))
+            {
+                state.userClick = true;
+            }
+            if (userStickButton(true))
+            {
+                state.userIsClicking = true;
+            }
         }
 
         //adds hand position stuff to cursor movements
@@ -359,7 +365,7 @@ public class VRUser : MonoBehaviour
         state.cursorAdd = new Vector3(0f, 0f, 0f); //resetting additive property
         
         //moves cursor by factor of all the above*****
-        trueCursor.transform.position += ((1.4f+((5 - state.user.getSettingData()[0])/10f)) * 1.65f * Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.4f) + (trueCursor.transform.right * cursorMove.x)));
+        trueCursor.transform.position += ((1.4f+((5 - state.user.getSettingData()[0])/10f)) * 1.65f * Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.42f) + (trueCursor.transform.right * cursorMove.x)));
 
         //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-151,66], x[-90,88.4]
         if (trueCursor.transform.localPosition.x > 88)
@@ -384,7 +390,7 @@ public class VRUser : MonoBehaviour
         {
             GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight;
         }
-        else if (state.userIsClicking && state.getState() != 5 && state.getState() != 6) //red = clicking
+        else if (state.userIsClicking && state.getState() != 5 && state.getState() != 7) //red = clicking
         {
             GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight2; 
         }
