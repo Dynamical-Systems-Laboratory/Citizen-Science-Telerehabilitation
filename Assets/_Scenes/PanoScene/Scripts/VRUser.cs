@@ -54,8 +54,9 @@ public class VRUser : MonoBehaviour
 
     public static float moveThreshold1 = 0.10f; //percentages for (1)reading movement & (2)displaying movement (+haptics)
     public static float moveThreshold2 = 0.80f;
+    public static float moveThreshold3 = (moveThreshold1 + moveThreshold2) / 2f;
 
-    public static float baseZCalibration = 4f; //var that signifies how far the user is supposed to reach (z) given no calibration data
+    public static float baseZCalibration = 3f; //var that signifies how far the user is supposed to reach (z) given no calibration data
 
     /*  TODO!!
      * rework cameras:
@@ -232,36 +233,44 @@ public class VRUser : MonoBehaviour
         change =  controllerOffset - movementVal; // get change in hand pos from last reset
         //change *= StateManager.cursorSpeed;
         if (state.user.getPracticeLevelState()[0]) //has started practice level, aka has finished calibration
-        {
+        { //Note: with the factored handpos, all axis' are reversed*
             Debug.Log("Move Change: " + change + ", Threshold: " +
-            new Vector3(state.user.getMovementBounds(2), state.user.getMovementBounds(4), state.user.getMovementBounds(5)) * moveThreshold1
-            + ", " + new Vector3(state.user.getMovementBounds(1), state.user.getMovementBounds(3), state.user.getMovementBounds(5)) * moveThreshold1);
+            new Vector3(state.user.getMovementBounds(2), state.user.getMovementBounds(4), state.user.getMovementBounds(5)) * moveThreshold3
+            + ", " + new Vector3(state.user.getMovementBounds(1), state.user.getMovementBounds(3), state.user.getMovementBounds(5)) * moveThreshold3);
             //signs changed
             //lowerbound threshold - controls when the cursor can move based on a % of the calibration values (x&y)
-            if (state.cursorXMove && change.x < (state.user.getMovementBounds(2) * moveThreshold1)) //-x,x,-y,y,z
+            if (state.cursorXMove && change.x < (state.user.getMovementBounds(2) * moveThreshold1)) //(-x,x,-y,y,z) (1,2,3,4,5)
             {
-                cursorMove += new Vector2(change.x - (state.user.getMovementBounds(2) * moveThreshold1), 0);
-                //cursorMove += new Vector2(change.x, 0);
+                //cursorMove += new Vector2(change.x - (state.user.getMovementBounds(2) * moveThreshold1), 0);
+                cursorMove += new Vector2(change.x, 0);
                 Debug.Log("MoveChange:Right");
             }
-            else if (change.x > (state.user.getMovementBounds(1) * moveThreshold1))
+            else if (state.cursorXMove && change.x > (state.user.getMovementBounds(1) * moveThreshold1))
             {
-                cursorMove += new Vector2(change.x - (state.user.getMovementBounds(1) * moveThreshold1), 0);
-                //cursorMove += new Vector2(change.x, 0);
+                //cursorMove += new Vector2(change.x - (state.user.getMovementBounds(1) * moveThreshold1), 0);
+                cursorMove += new Vector2(change.x, 0);
                 Debug.Log("MoveChange:Left");
+            }
+            else
+            {
+                Debug.Log("MoveChange:XNothing");
             }
 
             if (state.cursorYMove && change.y < (state.user.getMovementBounds(4) * moveThreshold1))
             {
-                cursorMove += new Vector2(0, change.y - (state.user.getMovementBounds(4) * moveThreshold1));
-                //cursorMove += new Vector2(0, change.y);
+                //cursorMove += new Vector2(0, change.y - (state.user.getMovementBounds(4) * moveThreshold1));
+                cursorMove += new Vector2(0, change.y);
                 Debug.Log("MoveChange:Up");
             }
-            else if (change.y > (state.user.getMovementBounds(3) * moveThreshold1))
+            else if (state.cursorYMove && change.y > (state.user.getMovementBounds(3) * moveThreshold1))
             {
-                cursorMove += new Vector2(0, change.y - (state.user.getMovementBounds(3) * moveThreshold1));
-                //cursorMove += new Vector2(0, change.y);
+                //cursorMove += new Vector2(0, change.y - (state.user.getMovementBounds(3) * moveThreshold1));
+                cursorMove += new Vector2(0, change.y);
                 Debug.Log("MoveChange:Down");
+            }
+            else
+            {
+                Debug.Log("MoveChange:YNothing");
             }
 
             //upperbound haptics - tells user when they are close to their max range xy&z
@@ -290,12 +299,12 @@ public class VRUser : MonoBehaviour
             OVRInput.SetControllerVibration(addHapt, addHapt, OVRInput.Controller.LTouch);
 
             //clicking - click if user is a certain % of their max z range
-            if (Math.Floor(change.z) == state.user.getMovementBounds(5)* moveThreshold2) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
+            if (Math.Floor(change.z) == state.user.getMovementBounds(5)* moveThreshold3) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
             {
                 state.userClick = true;
                 state.userIsClicking = true;
             }
-            else if (change.z > state.user.getMovementBounds(5) * moveThreshold2)
+            else if (change.z < state.user.getMovementBounds(5) * moveThreshold3)
             {
                 state.userIsClicking = true;
                 state.userClick = false;
@@ -318,12 +327,12 @@ public class VRUser : MonoBehaviour
             }
 
             //clicking - same clicking methodology but based on an easy-to-reach position instead of calibrated data
-            if (Math.Floor(change.z) == baseZCalibration * moveThreshold1)
+            if (Math.Floor(change.z) == baseZCalibration * moveThreshold3)
             {
                 state.userClick = true;
                 state.userIsClicking = true;
             }
-            else if (change.z > baseZCalibration * moveThreshold1)
+            else if (change.z > baseZCalibration * moveThreshold3)
             {
                 state.userIsClicking = true;
                 state.userClick = false;
@@ -334,13 +343,23 @@ public class VRUser : MonoBehaviour
                 state.userClick = false;
             }
         }
+        //failsafe for clicking
+        if (userStickButton(false))
+        {
+            state.userClick = true;
+        }
+        if (userStickButton(true))
+        {
+            state.userIsClicking = true;
+        }
+
         //adds hand position stuff to cursor movements
         cursorMove += new Vector2(state.cursorAdd.x, state.cursorAdd.y);
 
         state.cursorAdd = new Vector3(0f, 0f, 0f); //resetting additive property
         
         //moves cursor by factor of all the above*****
-        trueCursor.transform.position += ((1.4f+((5 - state.user.getSettingData()[0])/10f)) * 1.6f * Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.4f) + (trueCursor.transform.right * cursorMove.x)));
+        trueCursor.transform.position += ((1.4f+((5 - state.user.getSettingData()[0])/10f)) * 1.65f * Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.4f) + (trueCursor.transform.right * cursorMove.x)));
 
         //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-151,66], x[-90,88.4]
         if (trueCursor.transform.localPosition.x > 88)
@@ -475,14 +494,6 @@ public class VRUser : MonoBehaviour
      }
     public static bool userSkip(bool isContinuous = false)
     {
-        /*if (!isContinuous)
-        {
-            return OVRInput.GetDown(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) || OVRInput.GetDown(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch);
-        }
-        else
-        {
-            return OVRInput.Get(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch);
-        }*/
         if (isContinuous)
         {
             return OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) >= .99 || OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) >= .99;
@@ -491,6 +502,17 @@ public class VRUser : MonoBehaviour
         {
             return (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) < .9 && OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) >= .15) ||
                 (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) >= .9 && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) >= .15);
+        }
+    }
+    public static bool userStickButton(bool isContinuous = false)
+    {
+        if (!isContinuous)
+        {
+            return OVRInput.GetDown(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) || OVRInput.GetDown(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch);
+        }
+        else
+        {
+            return OVRInput.Get(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch);
         }
     }
     public static bool cursorRelock(bool isContinuous = true)

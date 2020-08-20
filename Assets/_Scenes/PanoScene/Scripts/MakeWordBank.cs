@@ -487,10 +487,10 @@ public class MakeWordBank : MonoBehaviour {
                                 state.setState(2); //set to game if in pract lvl
                                 state.user.setLevelProgress(true, true); //set practice level trackers
                             }
+                            StateManager.makeCursReset = true; //reset cursor to prevent many image skips?
                             state.user.logTagData(state.tagsPlaced, imageIndex); //store image/tag data
                             eventListener.OnPointerClick(nextButton); //click next
                             state.user.setNewImage(imageIndex); //set new image as current image
-                            StateManager.makeCursReset = true; //reset cursor to prevent many image skips?
                         }
                     }
                     else if (buttonsConverted == 6) //home

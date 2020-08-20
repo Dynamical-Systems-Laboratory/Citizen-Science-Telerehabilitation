@@ -9,7 +9,7 @@ using UnityEngine.Video;
 
 public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be considered Calibrate.cs
 {
-    public MovementBounds userMovement = new MovementBounds();
+    private static MovementBounds userMovement = new MovementBounds();
 
     public StateManager state;
     public static bool inSimpleTutorial = false;
@@ -566,19 +566,21 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                         string.Join(", ", userMovement.rangeOfMotion) + "),\n (" + string.Join(", ", userMovement.timeOfMotion) + ")";
                 }
                 Debug.Log("***Move Data: (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" + string.Join(", ", userMovement.timeOfMotion) + ")");
-                VRUser.showMoveStats = true;
+                
                 if (timer > longInterval || MakeWordBank.moveOn())
                 {
                     timer = 0f;
                     step = 35;
+                    Debug.Log("Adding Movement0: (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" + string.Join(", ", userMovement.timeOfMotion) + ")");
                 }
             }
-            
             else if (step == 35) //end
             {
                 //import movement data into UserInfo;
                 Debug.Log("Adding Movement1: (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" + string.Join(", ", userMovement.timeOfMotion) + ")");
                 state.user.addMovementBounds(userMovement.rangeOfMotion, userMovement.timeOfMotion);
+                //Ex: Adding Movement1: (28.53447, -29.49958, 15.65605, -15.51243, -8.604665), (5.484325, 5.240921, 3.642139, 4.295701, 13.32272)
+                VRUser.showMoveStats = true;
 
                 cam.rect = new Rect(0.0f, 0.0f, 0.622f, 1.0f);
                 StateManager.moveCameraU = true;
