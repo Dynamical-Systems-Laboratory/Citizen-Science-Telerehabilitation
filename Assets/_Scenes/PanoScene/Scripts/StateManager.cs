@@ -121,9 +121,9 @@ public class StateManager : MonoBehaviour {
 
     public static bool newUser = true; // whether or not data was read
     //TODO: makeNewUser = false; --> when ready to fix reading data issues
-    public bool makeNewUser = false; // used to bypass reading data if you want to create another save file
+    public bool makeNewUser = true; // used to bypass reading data if you want to create another save file (true for testing)
     private string path;
-    private static string dataName = "user_data";
+    private static string dataName = "user_data"; //name of the file
     public static string[] dataRead = new string[] { "no data" };
 
     public bool reloading = false; //covers edge case with reloading tags
@@ -195,6 +195,9 @@ public class StateManager : MonoBehaviour {
                 user.updateSettings();
                 user.addDuration();
 
+                //RePathing (maybe make a folder)System.DateTime.Now.ToString("MM/dd/yyyy");
+                path = Application.dataPath + System.DateTime.Now.ToString() + ".csv";
+
                 //WRITING DATA CODE
                 StreamWriter writer;
                 if (newUser) //if new user or no data detected
@@ -208,10 +211,11 @@ public class StateManager : MonoBehaviour {
                     writer = new StreamWriter(path); //TODO: convert to try catch
                 }
 
+                Debug.Log("Data Writting...");
                 foreach (string data in user.writeData())
                 {
                     writer.Write(data + ","); //comma separated value file = csv
-
+                    //Debug.Log("Data: " + data);
                 }
                 writer.Write("\n"); //indent for new data (delete previous data in another step)
                 Debug.Log("Data Written...");
@@ -320,7 +324,7 @@ public class StateManager : MonoBehaviour {
     void Awake()
     {
         //READING DATA CODE
-        path = Application.dataPath + "/UserData/" + dataName + ".csv";
+        path = Application.dataPath + dataName + ".csv";
         if (System.IO.File.Exists(path) && !makeNewUser)
         {
             StreamReader reader = new StreamReader(path);

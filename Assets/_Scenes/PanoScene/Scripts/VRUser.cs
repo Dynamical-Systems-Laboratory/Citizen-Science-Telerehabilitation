@@ -42,7 +42,7 @@ public class VRUser : MonoBehaviour
     public static GameObject farRight;
     public static GameObject farForward;
 
-    public static bool extraControls = true;
+    public static bool extraControls = false; //for keyboard and other editing stuff
 
     public static List<GameObject> interactables = new List<GameObject>();
 
@@ -100,7 +100,7 @@ public class VRUser : MonoBehaviour
         moveThreshold2 += 0.02f * (state.user.getSettingData()[0] - 5);
         if (moveThreshold1 < 0) { moveThreshold1 = 0; }
         if (moveThreshold2 < 0) { moveThreshold2 = 0; }
-        moveThreshold3 = (moveThreshold1 + moveThreshold2) / 2f;
+        moveThreshold3 = (moveThreshold1  + moveThreshold2) / 2f;
     }
 
     // Update is called once per frame
@@ -246,13 +246,13 @@ public class VRUser : MonoBehaviour
             {
                 cursorMove += new Vector2(change.x - (state.user.getMovementBounds(2) * moveThreshold1 / 2f), 0);
                 //cursorMove += new Vector2(change.x, 0);
-                Debug.Log("MoveChange:Right");
+                Debug.Log("MoveChange:Left");
             }
             else if (state.cursorXMove && change.x > (state.user.getMovementBounds(1) * moveThreshold1))
             {
                 cursorMove += new Vector2(change.x - (state.user.getMovementBounds(1) * moveThreshold1 / 2f), 0);
                 //cursorMove += new Vector2(change.x, 0);
-                Debug.Log("MoveChange:Left");
+                Debug.Log("MoveChange:Right");
             }
             else
             {
@@ -263,13 +263,13 @@ public class VRUser : MonoBehaviour
             {
                 cursorMove += new Vector2(0, change.y - (state.user.getMovementBounds(4) * moveThreshold1 / 2f));
                 //cursorMove += new Vector2(0, change.y);
-                Debug.Log("MoveChange:Up");
+                Debug.Log("MoveChange:Down");
             }
             else if (state.cursorYMove && change.y > (state.user.getMovementBounds(3) * moveThreshold1))
             {
                 cursorMove += new Vector2(0, change.y - (state.user.getMovementBounds(3) * moveThreshold1 / 2f));
                 //cursorMove += new Vector2(0, change.y);
-                Debug.Log("MoveChange:Down");
+                Debug.Log("MoveChange:Up");
             }
             else
             {
@@ -278,23 +278,23 @@ public class VRUser : MonoBehaviour
 
             //upperbound haptics - tells user when they are close to their max range xy&z
             float addHapt = 0f;
-            if (state.cursorXMove && change.x > (state.user.getMovementBounds(2) * moveThreshold2)) //x
+            if (state.cursorXMove && change.x < (state.user.getMovementBounds(2) * moveThreshold2)) //x
             {
                 addHapt += (change.x / (state.user.getMovementBounds(2) * moveThreshold2)) / 2;
             }
-            else if (change.x < (state.user.getMovementBounds(1) * moveThreshold2))
+            else if (change.x > (state.user.getMovementBounds(1) * moveThreshold2))
             {
                 addHapt += (change.x / (state.user.getMovementBounds(1) * moveThreshold2)) / 2;
             }
-            if (state.cursorYMove && change.y > (state.user.getMovementBounds(4) * moveThreshold2)) //y
+            if (state.cursorYMove && change.y < (state.user.getMovementBounds(4) * moveThreshold2)) //y
             {
                 addHapt += (change.y / (state.user.getMovementBounds(4) * moveThreshold2)) / 2;
             }
-            else if (change.y < (state.user.getMovementBounds(3) * moveThreshold2))
+            else if (change.y > (state.user.getMovementBounds(3) * moveThreshold2))
             {
                 addHapt += (change.y / (state.user.getMovementBounds(3) * moveThreshold2)) / 2;
             }
-            if (change.z > (state.user.getMovementBounds(5) * moveThreshold2)) //z
+            if (change.z < (state.user.getMovementBounds(5) * moveThreshold2)) //z
             {
                 addHapt += (change.z / (state.user.getMovementBounds(5) * moveThreshold2)) / 2;
             }
@@ -302,12 +302,12 @@ public class VRUser : MonoBehaviour
             OVRInput.SetControllerVibration(addHapt, addHapt, OVRInput.Controller.LTouch);
 
             //clicking - click if user is a certain % of their max z range
-            if (Math.Floor(change.z) == state.user.getMovementBounds(5)* moveThreshold3) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
+            if (Math.Abs(Math.Floor(change.z) - (state.user.getMovementBounds(5) * moveThreshold3)) < .05) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
             {
                 state.userClick = true;
                 state.userIsClicking = true;
             }
-            else if (change.z < state.user.getMovementBounds(5) * moveThreshold3)
+            else if (change.z > state.user.getMovementBounds(5) * moveThreshold3) 
             {
                 state.userIsClicking = true;
                 state.userClick = false;
@@ -330,12 +330,12 @@ public class VRUser : MonoBehaviour
             }
 
             //clicking - same clicking methodology but based on an easy-to-reach position instead of calibrated data
-            if (Math.Floor(change.z) == baseZCalibration * moveThreshold3)
+            if (Math.Abs(Math.Floor(change.z) - (baseZCalibration * moveThreshold3)) < .05)
             {
                 state.userClick = true;
                 state.userIsClicking = true;
             }
-            else if (change.z < baseZCalibration * moveThreshold3)
+            else if (change.z > baseZCalibration * moveThreshold3)
             {
                 state.userIsClicking = true;
                 state.userClick = false;

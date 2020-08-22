@@ -168,7 +168,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 }
             }
 
-            if (MakeWordBank.skip() && hasCompleted && timer > 1)
+            if (MakeWordBank.skip() && timer > 1) //add && hasCompleted if you dont want the calibration to be skipable
             {
                 step = 12;//changed from 35
             }
@@ -630,7 +630,7 @@ public class MovementBounds
 
     public MovementBounds()
     {
-        rangeOfMotion = new float[] { 0f, 0f, 0f, 0f, 0f };
-        timeOfMotion = new float[] { 0f, 0f, 0f, 0f, 0f };
+        rangeOfMotion = new float[] { 0f, 0f, 0f, 0f, 0f }; // { 7, -7, 4, -4, -2 } = small motion
+        timeOfMotion = new float[] { 0f, 0f, 0f, 0f, 0f }; 
     }
 }
