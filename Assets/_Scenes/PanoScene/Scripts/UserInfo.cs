@@ -69,11 +69,19 @@ public class UserInfo //not sure if : this() is necessary
             movementTime[i] = times[i];
         }
     }
-    public void addMovement(Transform head, Vector3 rightHandp, Vector3 rightHandr, Vector3 leftHandp, Vector3 leftHandr)
+    public void addMovement(float elapseTime, string systemTime, Transform head, Vector3 rightHandp, Vector3 rightHandr, Vector3 leftHandp, Vector3 leftHandr)
     {
-        MovementData moves = new MovementData(head.position, head.rotation.eulerAngles,
+        MovementData moves = new MovementData(elapseTime, systemTime, head.position, head.rotation.eulerAngles,
             rightHandp, rightHandr, leftHandp, leftHandr);
+        //Debug.Log("MoveData: " + String.Join(",", moves.write()));
         movements.Add(moves);
+    }
+    public void moveDataConfirm()
+    {
+        if (movements.Count > 0)
+        {
+            Debug.Log("Last MoveData: " + String.Join(",", movements[movements.Count - 1].write()));
+        }
     }
     private class MovementData
     {
@@ -88,21 +96,25 @@ public class UserInfo //not sure if : this() is necessary
             }
             public IEnumerable<String> write()
             {
-                yield return position.x.ToString();
-                yield return position.y.ToString();
-                yield return position.z.ToString();
-                yield return rotation.x.ToString();
-                yield return rotation.y.ToString();
-                yield return rotation.z.ToString();
+                yield return position.x.ToString(decimalPlaces); //3 decimal places
+                yield return position.y.ToString(decimalPlaces);
+                yield return position.z.ToString(decimalPlaces);
+                yield return rotation.x.ToString(decimalPlaces);
+                yield return rotation.y.ToString(decimalPlaces);
+                yield return rotation.z.ToString(decimalPlaces);
             }
         }
         UserPositions head;
         UserPositions leftHand;
         UserPositions rightHand;
-        public MovementData( Vector3 p1 = new Vector3(), Vector3 r1 = new Vector3(),
+        float elapseTime;
+        string systemTime;
+        public MovementData(float newElapseTime = 0f, string newSystemTime = "", Vector3 p1 = new Vector3(), Vector3 r1 = new Vector3(),
                       Vector3 p2 = new Vector3(), Vector3 r2 = new Vector3(),
                       Vector3 p3 = new Vector3(), Vector3 r3 = new Vector3() )
         {
+            elapseTime = newElapseTime;
+            systemTime = newSystemTime;
             head = new UserPositions(p1, r1);
             rightHand = new UserPositions(p2, r2);
             leftHand = new UserPositions(p3, r3);
@@ -238,6 +250,23 @@ public class UserInfo //not sure if : this() is necessary
                 return 0;
         }
     }
+    public string formattedMoveBounds(float modifier = 1f, bool isNotTime = true)
+    {
+        string outStr = "";
+        if (isNotTime)
+        {
+            outStr += "x:[" + movementBounds[0] * modifier + "," + movementBounds[1] * modifier + "], ";
+            outStr += "y:[" + movementBounds[2] * modifier + "," + movementBounds[3] * modifier + "], ";
+            outStr += "z: [" + movementBounds[4] * modifier + "]";
+        }
+        else
+        {
+            outStr += "xT:[" + movementTime[0] * modifier + "," + movementTime[1] * modifier + "], ";
+            outStr += "yT:[" + movementTime[2] * modifier + "," + movementTime[3] * modifier + "], ";
+            outStr += "z: [" + movementTime[4] * modifier + "]";
+        }
+        return outStr;
+    }
     public int getLastImage() { return lastImage; }
 
     public int[] getCompletionData()
@@ -283,8 +312,10 @@ public class UserInfo //not sure if : this() is necessary
     }
 
     //data usage (reading/writing)
-    public IEnumerable<string> writeData()
+    public IEnumerable<string> writeMainData()
     {
+        yield return "*Basic_Data*\n";
+        yield return "User_Name,Date_Joined,Time_Logged,Started_PL, Finshed_PL,Difficulty,Last_Image\n"; //formatting
         yield return userName;
         yield return dateJoined;
         yield return ((int)timeLogged).ToString(); //TODO: check if this int yields error
@@ -292,42 +323,83 @@ public class UserInfo //not sure if : this() is necessary
         yield return boolToString(finishedPracticeLevel);
         yield return difficulty.ToString();
         yield return lastImage.ToString();
+
+        yield return "\n*Completed_Images*\n";
+        for(int i = 0; i < imagesCompleted.Count; i++) //formatting
+        {
+            yield return "Image#";
+        }
+        yield return "\n";
         foreach (int image in imagesCompleted)
         {
             yield return image.ToString();
         }
-        yield return "tag"; //marker to collect tag info
+
+        yield return "\n*Movement_Bounds*\n";
+        yield return "Offset_XLeft,Time_XLeft,Offset_XRight,Time_XRight,Offset_YDown,Time_YDown,Offset_YUp,Time_YUp,Offset_ZForward,Time_ZForward\n"; //formatting
+        for (int i = 0; i < movementBounds.Length; i++) //always 8 entries
+        {
+            yield return movementBounds[i].ToString(decimalPlaces);
+            yield return movementTime[i].ToString(decimalPlaces);
+        }
+
+        yield return "\n*Placed_Tags*\n"; //marker to collect tag info
+        yield return "Tag_Name,TagX,TagY,TagZ,Tag_Image#\n"; //formatting
         foreach (TagInfo tag in tags)
         {
             yield return tag.name;
-            yield return tag.location.x.ToString();
-            yield return tag.location.y.ToString();
-            yield return tag.location.z.ToString();
-            yield return tag.image.ToString();
+            yield return tag.location.x.ToString(decimalPlaces);
+            yield return tag.location.y.ToString(decimalPlaces);
+            yield return tag.location.z.ToString(decimalPlaces);
+            yield return tag.image.ToString() + "\n";
         }
-        yield return "session";
-        for(int i = 0; i < sessionsLogged.Count; i++)
+
+        yield return "\n*Sessions*\n";
+        yield return "Date_Time,Duration\n";
+        for (int i = 0; i < sessionsLogged.Count; i++)
         {
             yield return sessionsLogged[i];
-            yield return sessionDuration[i].ToString();
+            yield return sessionDuration[i].ToString(decimalPlaces) + "\n";
         }
-        yield return "movement";
-        for(int i = 0; i < 4; i++) //always 8 entries
+        yield return "**finish**"; //end marker
+    }
+    public IEnumerable<string> writeMovementData()
+    {
+        yield return "*" + userName + "'s Movement Data*\n";
+        yield return "Elapsed_Time,System_Time";
+
+        string limb = "Head";
+        while (limb != "done") //formatting
         {
-            yield return movementBounds[i].ToString();
-            yield return movementTime[i].ToString();
+            yield return limb + "_PosX," + limb + "_PosY," + limb + "_PosZ," + limb + "_RotX," + limb + "_RotY," + limb + "_RotZ";
+            if (limb == "Head")
+            {
+                limb = "RHand";
+            }
+            else if (limb == "RHand")
+            {
+                limb = "LHand";
+            }
+            else if (limb == "LHand")
+            {
+                limb = "done";
+            }
         }
+        yield return "\n";
+
         foreach (MovementData move in movements)
         {
             foreach (String moveData in move.write()) //9
             {
                 yield return moveData;
             }
+            yield return "\n";
         }
-        yield return "finish"; //end marker
+        yield return "**finish**"; //end marker
     }
+
     public bool readData(string[] data) //array version
-    {
+    { //TODO: fix for spacing
         if (data.Length < 10) //if no data then assume default vals
         {
             return false;
@@ -379,7 +451,7 @@ public class UserInfo //not sure if : this() is necessary
         }
         counter += 8;
         //actual movement data
-        movements.Clear(); //saftey
+        /*movements.Clear(); //saftey
         while (data[counter] != "finish")
         {
             MovementData newMoveEntry = new MovementData( //alternative pos & rot, vector3's
@@ -392,7 +464,7 @@ public class UserInfo //not sure if : this() is necessary
                 );
             movements.Add(newMoveEntry);
             counter += 18;
-        }
+        }*/ //TODO: Fix for spacing in reading data
         //counter++;
         return true;
     }
@@ -446,5 +518,5 @@ public class UserInfo //not sure if : this() is necessary
     private List<MovementData> movements = new List<MovementData>();
     //compulsory movement tracker?
 
-    
+    private static string decimalPlaces = "0.000";//3 decimal places for saved data
 }

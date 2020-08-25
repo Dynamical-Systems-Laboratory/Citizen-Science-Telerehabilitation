@@ -33,6 +33,8 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 
 	private static GameObject playerHead;
 	private static float showNum = 0; //random num that is shown in debug
+	private static float tagScalor = 0.89f; //val that downscales tags
+
 	public void Awake()
     {
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
@@ -110,13 +112,13 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 				{
 					tag.transform.parent = canvas.transform;
 				}
-				tagCanvas.transform.localScale += new Vector3(.885f, .885f, .885f);
+				tagCanvas.transform.localScale += new Vector3(tagScalor, tagScalor, tagScalor);
 			}
 			state.tagsPlaced.Add(state.getSelected()); //adds to movement list
 			state.getSelected().layer = 16; //VisibleTags layer
 			state.getSelected().transform.parent = tagCanvas.transform; //make child of other canvas to save pos
 			state.getSelected().tag = "Untagged"; //just in case
-			tagCanvas.transform.localScale -= new Vector3(.88f, .88f, .88f);
+			tagCanvas.transform.localScale -= new Vector3(tagScalor, tagScalor, tagScalor);
 
 			//MOVE tag to outter edge of sphere
 			//option 1: raycasting
@@ -170,7 +172,8 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			state.getSelected().transform.GetChild(0).tag = "TrashedTag";
 
 			//newTrashedTag.transform.position = canvas.transform.TransformPoint(new Vector2(320 + horizontalBump, -55 - 12 * trashedTags.Count + verticalBump)) + Vector3.back * -0.25f;
-			state.getSelected().transform.localPosition = new Vector3(trashy.transform.localPosition.x, trashy.transform.localPosition.y - 12.7f - (8.5f*trashedTags.Count), trashy.transform.localPosition.z);
+			float scaleFactor = 0.5f; //factor for changing trash location stuff
+			state.getSelected().transform.localPosition = new Vector3(trashy.transform.localPosition.x, trashy.transform.localPosition.y - (12.7f* scaleFactor) - (8.5f*trashedTags.Count*scaleFactor), trashy.transform.localPosition.z);
 			state.getSelected().transform.LookAt(state.getSelected().transform.position + Vector3.back * state.getSelected().transform.position.z * -1);
             trashedTags.Add(state.getSelected());
 			//trashedTags[trashedTags.Count - 1].layer = 5; //UI
@@ -287,7 +290,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		return false;
 	}
 
-	public static int homeButtonClose()
+	public static int homeButtonClose() //buttons in home sreen
     {
 		if (state.getCursorPosition().x > -13 && state.getCursorPosition().x < 19.2)
         {
@@ -322,7 +325,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		return 0;
     }
 
-	public static int profileButtonClose()
+	public static int profileButtonClose() //ui in profile screen
 	{
 		if (state.getCursorPosition().y > 18.3 && state.getCursorPosition().y < 26.2 && state.getCursorPosition().x > -31.4 && state.getCursorPosition().x < 0.5)
 		{

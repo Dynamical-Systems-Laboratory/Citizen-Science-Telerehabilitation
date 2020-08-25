@@ -168,11 +168,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 }
             }
 
-            if (MakeWordBank.skip() && timer > 1) //add && hasCompleted if you dont want the calibration to be skipable
-            {
-                step = 12;//changed from 35
-            }
-            /*else if (MakeWordBank.skip() && step == 0 && timer > 1) //for testing purposes of z movements
+            /*if (MakeWordBank.skip() && step == 0 && timer > 1) //for testing purposes of z movements
             {
                 step = 9;
                 counter = 0;
@@ -183,7 +179,11 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 VPA4.Play();
                 savedCursorScale = cursor.transform.localScale;
             }*/
-
+            if (MakeWordBank.skip() && timer > 1) //add && hasCompleted if you dont want the calibration to be skipable
+            {
+                step = 12;//changed from 35
+            }
+            
             //saftey for user seeing when cursor is locked or not
             /*if (state.userControlActive && step > 0 && step < 3)
             { //StateManager.makeCursReset = false;
@@ -319,7 +319,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 else if (counter == 5)
                 {
                     float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
-                    userMovement.rangeOfMotion[1] = avg / 5;
+                    userMovement.rangeOfMotion[1] = -avg / 5;
                     avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
                     userMovement.timeOfMotion[1] = avg / 5;
                     step++;
@@ -358,7 +358,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 else if (counter == 5)
                 {
                     float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
-                    userMovement.rangeOfMotion[0] = avg / 5;
+                    userMovement.rangeOfMotion[0] = -avg / 5;
                     avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
                     userMovement.timeOfMotion[0] = avg / 5;
                     step++;
@@ -409,7 +409,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     else if (counter == 5)
                     {
                         float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
-                        userMovement.rangeOfMotion[3] = avg / 5;
+                        userMovement.rangeOfMotion[3] = -avg / 5;
                         avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
                         userMovement.timeOfMotion[3] = avg / 5;
                         step++;
@@ -450,7 +450,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 else if (counter == 5)
                 {
                     float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
-                    userMovement.rangeOfMotion[2] = avg / 5;
+                    userMovement.rangeOfMotion[2] = -avg / 5;
                     avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
                     userMovement.timeOfMotion[2] = avg / 5;
                     step++;
@@ -509,7 +509,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     else if (counter == 5)
                     {
                         float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
-                        userMovement.rangeOfMotion[4] = avg / 5;
+                        userMovement.rangeOfMotion[4] = -avg / 5;
                         avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
                         userMovement.timeOfMotion[4] = avg / 5;
                         step++;

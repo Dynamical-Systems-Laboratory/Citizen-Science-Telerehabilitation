@@ -123,7 +123,9 @@ public class StateManager : MonoBehaviour {
     //TODO: makeNewUser = false; --> when ready to fix reading data issues
     public bool makeNewUser = true; // used to bypass reading data if you want to create another save file (true for testing)
     private string path;
-    private static string dataName = "user_data"; //name of the file
+    private string path2;
+    private static string dataName = "main_data"; //name of the file
+    private static string data2Name = "move_data";
     public static string[] dataRead = new string[] { "no data" };
 
     public bool reloading = false; //covers edge case with reloading tags
@@ -195,11 +197,14 @@ public class StateManager : MonoBehaviour {
                 user.updateSettings();
                 user.addDuration();
 
-                //RePathing (maybe make a folder)System.DateTime.Now.ToString("MM/dd/yyyy");
-                path = Application.dataPath + System.DateTime.Now.ToString() + ".csv";
+                //RePathing (maybe make a folder)
+                string nowStamp = "_" + System.DateTime.Now.ToString("MM-dd-y--HH.mm.ss"); //"/" & ":" not allowed
+                path = Application.dataPath + "/" + dataName + nowStamp + ".csv"; //"_" + System.DateTime.Now.ToString("MM/dd/y_HH:mm:ss")
+                path2 = Application.dataPath + "/" + data2Name + nowStamp + ".csv";
 
                 //WRITING DATA CODE
                 StreamWriter writer;
+                StreamWriter writer2;
                 if (newUser) //if new user or no data detected
                 {
                     writer = System.IO.File.CreateText(path); //create new user_data file
@@ -208,19 +213,28 @@ public class StateManager : MonoBehaviour {
                 }
                 else
                 {
-                    writer = new StreamWriter(path); //TODO: convert to try catch
+                    writer = new StreamWriter(path, false);// overwrites insead of append = false
+                    //TODO: convert to try catch
                 }
+                writer2 = System.IO.File.CreateText(path2);
+                Debug.Log("File Created at " + path2);
 
                 Debug.Log("Data Writting...");
-                foreach (string data in user.writeData())
+                foreach (string data in user.writeMainData()) //or String.Join(",", enum)
                 {
                     writer.Write(data + ","); //comma separated value file = csv
                     //Debug.Log("Data: " + data);
                 }
+                foreach (string data in user.writeMovementData())
+                {
+                    writer2.Write(data + ",");
+                    //Debug.Log("Data2: " + data);
+                }
                 writer.Write("\n"); //indent for new data (delete previous data in another step)
-                Debug.Log("Data Written...");
-                writer.Flush();
+                Debug.Log("Data Finished Writting...");
                 writer.Close();
+                writer2.Close();
+
                 //ClickAction.destroyTags();
                 //UnityEditor.EditorApplication.isPlaying = false; //for editing only
                 Application.Quit();
@@ -324,7 +338,9 @@ public class StateManager : MonoBehaviour {
     void Awake()
     {
         //READING DATA CODE
-        path = Application.dataPath + dataName + ".csv";
+        path = Application.dataPath + dataName + ".csv"; //MainData
+        //path = Application.dataPath + dataName + "_" + System.DateTime.Now.ToString() + ".csv";
+        //path2 = Application.dataPath + data2Name + "_" + System.DateTime.Now.ToString() + ".csv";
         if (System.IO.File.Exists(path) && !makeNewUser)
         {
             StreamReader reader = new StreamReader(path);

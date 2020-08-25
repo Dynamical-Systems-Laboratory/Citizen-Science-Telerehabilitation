@@ -173,7 +173,7 @@ public class UserProfile : MonoBehaviour
                             break;
                     }
                 }
-                else if (Input.GetKey(KeyCode.B) || state.userClick)
+                else if (Input.GetKey(KeyCode.B) || state.userIsClicking)
                 {
                     if (buttonNum == 3)
                     {

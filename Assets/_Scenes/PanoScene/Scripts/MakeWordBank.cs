@@ -381,159 +381,167 @@ public class MakeWordBank : MonoBehaviour {
     // Update is called once per frame
     void Update(/*EventSystem eventSystem*/)
     {
-        state.user.logTime(Time.deltaTime); //add time
-        state.user.show(); //displaying data
-
-        //Debug.Log("MainC: " + mainCamera.activeSelf + ", UIC: " + UICamera.activeSelf + ", HomeC: " + homeCamera.activeSelf +
-        //    ", VidC: " + videoCamera.activeSelf + ", CursorC: " + cursorCamera.activeSelf);
-
-        /* Button MoveSets
-         * * arrow keys = cursor movement
-         * * b = cursor select
-         * * n = cursor deselect
-         * * wasd = camera movement
-         * * v = progress
-         * * m = drop object
-         */
-        if (true)//stepOfTutorial >= 12 && (SimpleTutorial.step > 34))
+        if (state.getState() != 0)
         {
-            //Debug.Log("in the movement loop...");
-            //StateManager.allSystemsGo = true;
-            StateManager.moveCursorL = true; // cursors
-            StateManager.moveCursorR = true;
-            StateManager.moveCursorU = true;
-            StateManager.moveCursorD = true;
-            StateManager.moveCameraL = true; // cameras
-            StateManager.moveCameraR = true;
-            StateManager.moveCameraU = true;
-            StateManager.moveCameraD = true;
-            //MOVEMENT
-            if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow)) //cursor
+            state.user.logTime(Time.deltaTime); //add time
+            state.user.show(); //displaying data
+
+            //Debug.Log("MainC: " + mainCamera.activeSelf + ", UIC: " + UICamera.activeSelf + ", HomeC: " + homeCamera.activeSelf +
+            //    ", VidC: " + videoCamera.activeSelf + ", CursorC: " + cursorCamera.activeSelf);
+
+            /* Button MoveSets
+             * * arrow keys = cursor movement
+             * * b = cursor select
+             * * n = cursor deselect
+             * * wasd = camera movement
+             * * v = progress
+             * * m = drop object
+             */
+            if (true)//stepOfTutorial >= 12 && (SimpleTutorial.step > 34))
             {
-                StateManager.moveCameraR = false;
-                StateManager.moveCameraL = false;
-                StateManager.moveCameraU = false;
-                StateManager.moveCameraD = false;
-                if (Input.GetKey(KeyCode.RightArrow))
+                //Debug.Log("in the movement loop...");
+                //StateManager.allSystemsGo = true;
+                StateManager.moveCursorL = true; // cursors
+                StateManager.moveCursorR = true;
+                StateManager.moveCursorU = true;
+                StateManager.moveCursorD = true;
+                StateManager.moveCameraL = true; // cameras
+                StateManager.moveCameraR = true;
+                StateManager.moveCameraU = true;
+                StateManager.moveCameraD = true;
+                //MOVEMENT
+                if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow)) //cursor
                 {
-                    StateManager.moveCursorR = true;
-                }
-                if (Input.GetKey(KeyCode.LeftArrow))
-                {
-                    StateManager.moveCursorL = true;
-                }
-                if (Input.GetKey(KeyCode.UpArrow))
-                {
-                    StateManager.moveCursorU = true;
-                }
-                if (Input.GetKey(KeyCode.DownArrow))
-                {
-                    StateManager.moveCursorD = true;
-                }
-            }
-            else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)) //camera
-            {
-                StateManager.moveCursorR = false;
-                StateManager.moveCursorL = false;
-                StateManager.moveCursorU = false;
-                StateManager.moveCursorD = false;
-                if (Input.GetKey(KeyCode.D))
-                {
-                    //StateManager.cameraAdd.x = -.6f;
-                    StateManager.moveCameraR = true;
-                }
-                if (Input.GetKey(KeyCode.A))
-                {
-                    //StateManager.cameraAdd.x = .6f;
-                    StateManager.moveCameraL = true;
-                }
-                if (Input.GetKey(KeyCode.W))
-                {
-                    //StateManager.cameraAdd.y = .5f;
-                    StateManager.moveCameraU = true;
-                }
-                if (Input.GetKey(KeyCode.S))
-                {
-                    //StateManager.cameraAdd.y = -.5f;
-                    StateManager.moveCameraD = true;
-                }
-            }
-            //CLICKING
-            //V for button press
-            //Debug.Log("Practice Tags: " + practiceMoveOn + ", prog: " + state.user.getProgress());
-            if (state.isGaming()) //in-game or practice level or button tutorial
-            {
-                //Debug.Log("IsGaming");
-                if (Input.GetKeyDown(KeyCode.B) || state.userClick) //select
-                {
-                    int buttonsConverted = VRUser.buttonConversion();
-                    Debug.Log("IsClicking! " + buttonsConverted);
-                    if (buttonsConverted == 1)
+                    StateManager.moveCameraR = false;
+                    StateManager.moveCameraL = false;
+                    StateManager.moveCameraU = false;
+                    StateManager.moveCameraD = false;
+                    if (Input.GetKey(KeyCode.RightArrow))
                     {
-                        if (imageIndex >= imageMaterials.Length - 1) //out of images
+                        StateManager.moveCursorR = true;
+                    }
+                    if (Input.GetKey(KeyCode.LeftArrow))
+                    {
+                        StateManager.moveCursorL = true;
+                    }
+                    if (Input.GetKey(KeyCode.UpArrow))
+                    {
+                        StateManager.moveCursorU = true;
+                    }
+                    if (Input.GetKey(KeyCode.DownArrow))
+                    {
+                        StateManager.moveCursorD = true;
+                    }
+                }
+                else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S)) //camera
+                {
+                    StateManager.moveCursorR = false;
+                    StateManager.moveCursorL = false;
+                    StateManager.moveCursorU = false;
+                    StateManager.moveCursorD = false;
+                    if (Input.GetKey(KeyCode.D))
+                    {
+                        //StateManager.cameraAdd.x = -.6f;
+                        StateManager.moveCameraR = true;
+                    }
+                    if (Input.GetKey(KeyCode.A))
+                    {
+                        //StateManager.cameraAdd.x = .6f;
+                        StateManager.moveCameraL = true;
+                    }
+                    if (Input.GetKey(KeyCode.W))
+                    {
+                        //StateManager.cameraAdd.y = .5f;
+                        StateManager.moveCameraU = true;
+                    }
+                    if (Input.GetKey(KeyCode.S))
+                    {
+                        //StateManager.cameraAdd.y = -.5f;
+                        StateManager.moveCameraD = true;
+                    }
+                }
+                //CLICKING
+                //V for button press
+                //Debug.Log("Practice Tags: " + practiceMoveOn + ", prog: " + state.user.getProgress());
+                if (state.isGaming()) //in-game or practice level or button tutorial
+                {
+                    //Debug.Log("IsGaming");
+                    if (Input.GetKeyDown(KeyCode.B) || state.userIsClicking) //select
+                    {
+                        int buttonsConverted = VRUser.buttonConversion();
+                        Debug.Log("IsClicking! " + buttonsConverted);
+                        if (buttonsConverted == 1)
                         {
-                            Debug.Log("Out of images...");
+                            if (imageIndex >= imageMaterials.Length - 1) //out of images
+                            {
+                                Debug.Log("Out of images...");
+                                state.setState(1);
+                            }
+                            else if (state.getState() == 7 && practiceMoveOn < 3) //havent placed required tags (practive lvl)
+                            {
+                                eventListener.OnPointerClick(nextButton); //shows notif and prevents stuff
+                                StateManager.makeCursReset = true;
+                            }
+                            else
+                            {
+                                if (state.getState() == 7)
+                                {
+                                    state.setState(2); //set to game if in pract lvl
+                                    state.user.setLevelProgress(true, true); //set practice level trackers
+                                }
+                                StateManager.makeCursReset = true; //reset cursor to prevent many image skips?
+                                state.user.logTagData(state.tagsPlaced, imageIndex); //store image/tag data
+                                eventListener.OnPointerClick(nextButton); //click next
+                                state.user.setNewImage(imageIndex); //set new image as current image
+                            }
+                        }
+                        else if (buttonsConverted == 6) //home
+                        { //keep tags in place without them bveing a child of the tag class objects thing? new subclass?
+                            eventListener.OnPointerClick(quitButton);
                             state.setState(1);
                         }
-                        else if(state.getState() == 7 && practiceMoveOn < 3) //havent placed required tags (practive lvl)
+                        else if (buttonsConverted == 7) //bin
                         {
-                            eventListener.OnPointerClick(nextButton); //shows notif and prevents stuff
-                            StateManager.makeCursReset = true;
+                            eventListener.OnPointerClick();
                         }
                         else
                         {
-                            if (state.getState() == 7)
-                            {
-                                state.setState(2); //set to game if in pract lvl
-                                state.user.setLevelProgress(true, true); //set practice level trackers
-                            }
-                            StateManager.makeCursReset = true; //reset cursor to prevent many image skips?
-                            state.user.logTagData(state.tagsPlaced, imageIndex); //store image/tag data
-                            eventListener.OnPointerClick(nextButton); //click next
-                            state.user.setNewImage(imageIndex); //set new image as current image
+                            findObjClick();
                         }
                     }
-                    else if (buttonsConverted == 6) //home
-                    { //keep tags in place without them bveing a child of the tag class objects thing? new subclass?
-                        eventListener.OnPointerClick(quitButton);
-                        state.setState(1);
-                    }
-                    else if (buttonsConverted == 7) //bin
-                    {
-                        eventListener.OnPointerClick();
-                    }
-                    else
-                    {
-                        findObjClick();
-                    }
-                }
-                else if ((Input.GetKeyDown(KeyCode.N) || VRUser.userContinue()) && state.getSelected() != null) //deselect
-                { // (.1f is the bounds of the screen where the cursor is on the image side)
-                    if (state.getCursorPosition().x < .1f) //placing on image canvas
-                    {
-                        if (state.getState() == 7 && state.getSelected() != null)
+                    else if ((Input.GetKeyDown(KeyCode.N) || VRUser.userContinue()) && state.getSelected() != null) //deselect
+                    { // (.1f is the bounds of the screen where the cursor is on the image side)
+                        if (state.getCursorPosition().x < .1f) //placing on image canvas
                         {
-                            ++practiceMoveOn; //check
+                            if (state.getState() == 7 && state.getSelected() != null)
+                            {
+                                ++practiceMoveOn; //check
+                            }
+                            eventListener.OnPointerClick();
                         }
-                        eventListener.OnPointerClick();
+                        else if (ClickAction.binClose()) //trashing
+                        {
+                            eventListener.OnPointerClick();
+                            newTag(ClickAction.initTagPos);
+                        }
                     }
-                    else if (ClickAction.binClose()) //trashing
+                    else if (Input.GetKeyDown(KeyCode.M) && state.getSelected() != null)
                     {
-                        eventListener.OnPointerClick();
-                        newTag(ClickAction.initTagPos);
+                        ClickAction.dropObject();
+                        //alternative dropObject that lets you pick up and move a tag that has already been placed?
                     }
-                }
-                else if (Input.GetKeyDown(KeyCode.M) && state.getSelected() != null)
-                {
-                    ClickAction.dropObject();
-                    //alternative dropObject that lets you pick up and move a tag that has already been placed?
                 }
             }
         }
-
+        
         if (state.getState() == 7) //inPracticeLevel
         {
+            inPracticeLevel = true;
             practiceMoveOn = state.tagsPlaced.Count;
+        }
+        else
+        {
+            inPracticeLevel = false;
         }
 
         if (state.getState() == 5) //edge cases with old booleans
@@ -545,14 +553,7 @@ public class MakeWordBank : MonoBehaviour {
         {
             inTutorial = false;
         }
-        if (state.getState() == 7)
-        {
-            inPracticeLevel = true;
-        }
-        else
-        {
-            inPracticeLevel = false;
-        }
+        
         if (state.getState() == 4)
         {
             SimpleTutorial.inSimpleTutorial = true;
@@ -629,10 +630,10 @@ public class MakeWordBank : MonoBehaviour {
             }
 
             timer3 += Time.deltaTime;
-            if (skip() && stepOfTutorial > 0 && state.getState() == 5 && timer3 > 1)
+            if (skip() && stepOfTutorial > 0 && timer3 > 1)
             {
                 stepOfTutorial = 22;
-                state.setState(7);
+                //state.setState(7);
             }
 
             if (stepOfTutorial == 1)
