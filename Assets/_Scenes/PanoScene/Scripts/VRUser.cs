@@ -60,6 +60,7 @@ public class VRUser : MonoBehaviour
 
     public float totalTime = 0f;
 
+    public static float controllerVibration = 0f;
     /*  TODO!!
      * rework cameras:
      * * * work with survey stuff later
@@ -137,6 +138,7 @@ public class VRUser : MonoBehaviour
             //GameObject.Find("headsetRight").transform.position -= new Vector3(GameObject.Find("headsetRight").transform.position.x, 0f, GameObject.Find("headsetRight").transform.position.z);
             //GameObject.Find("headsetUp").transform.position -= new Vector3(0f, GameObject.Find("headsetUp").transform.position.y, 0f);
 
+            controllerVibration = 0f;
 
             //FORCE QUIT
             //if(OVRInput.Get(OVRInput.Touch.PrimaryThumbRest, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Touch.SecondaryThumbRest, OVRInput.Controller.Touch))
@@ -156,6 +158,7 @@ public class VRUser : MonoBehaviour
                 state.userControlActive = false;
                 StateManager.makeCursReset = false;
                 ClickAction.dropObject();
+                controllerVibration += .35f;
             }
 
             if (state.isGaming())
@@ -215,8 +218,7 @@ public class VRUser : MonoBehaviour
                 state.userControlActive = true;
                 //resets position of cursor to the center of the user's vision
                 trueCursor.transform.position = centerer.transform.position;
-                OVRInput.SetControllerVibration(1f, 1f, OVRInput.Controller.RTouch); //set haptics
-                OVRInput.SetControllerVibration(1f, 1f, OVRInput.Controller.LTouch);
+                controllerVibration += .25f;
                 state.userIsClicking = false;
                 state.userClick = false;
             }
@@ -310,11 +312,8 @@ public class VRUser : MonoBehaviour
                 {
                     addHapt += (change.z / (state.user.getMovementBounds(5) * moveThreshold2)) / 2;
                 }
-                if (addHapt > 0)
-                {
-                    OVRInput.SetControllerVibration(addHapt, addHapt, OVRInput.Controller.RTouch); //set haptics
-                    OVRInput.SetControllerVibration(addHapt, addHapt, OVRInput.Controller.LTouch);
-                }
+                Debug.Log("Movement Haptic Adding: " + addHapt);
+                controllerVibration += addHapt;
 
                 //clicking - click if user is a certain % of their max z range
                 if ((Math.Floor(change.z) - (state.user.getMovementBounds(5) * moveThreshold3)) > 0) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
@@ -423,8 +422,7 @@ public class VRUser : MonoBehaviour
             float scaledVal = Math.Abs(OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch).y + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch).y +
                                        OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch).x + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch).x) / 4f;
             //Debug.Log("scaled val: " + scaledVal);
-            OVRInput.SetControllerVibration(scaledVal, scaledVal, OVRInput.Controller.RTouch);
-            OVRInput.SetControllerVibration(scaledVal, scaledVal, OVRInput.Controller.LTouch);
+            controllerVibration += scaledVal * 0.8f;
 
             //CAMERA CONTROL & CLICKING
             switch (state.getState()) //state camera control (positions of camera at various states)
@@ -477,6 +475,10 @@ public class VRUser : MonoBehaviour
                     }
                 }
             }*/
+
+            //Set Haptics
+            OVRInput.SetControllerVibration(controllerVibration, controllerVibration, OVRInput.Controller.RTouch); //set haptics
+            OVRInput.SetControllerVibration(controllerVibration, controllerVibration, OVRInput.Controller.LTouch);
         }
     }
     

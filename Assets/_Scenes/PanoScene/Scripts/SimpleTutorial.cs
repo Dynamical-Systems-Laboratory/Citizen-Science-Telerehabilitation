@@ -560,27 +560,31 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 timer += Time.deltaTime;
                 if (hasCompleted)
                 {
-                    text.text = "Finished Tutorial... Here's your data:\n (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" +
-                    string.Join(", ", userMovement.timeOfMotion) + ")\n " + continueText + " to the next section of the tutorial...";
+                    text.text = "Finished Tutorial...";
                 }
                 else
                 {
-                    text.text = "Great, in a second you will move onto the game tutorial. In the meanwhile, here is your data:\n(" +
-                        string.Join(", ", userMovement.rangeOfMotion) + "),\n (" + string.Join(", ", userMovement.timeOfMotion) + ")";
+                    text.text = "Great, in a second you will move onto the game tutorial.";
                 }
-                Debug.Log("***Move Data: (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" + string.Join(", ", userMovement.timeOfMotion) + ")");
+
+                if (VRUser.extraControls) //dev info
+                {
+                    text.text += "Here's your data:\n (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" +
+                    string.Join(", ", userMovement.timeOfMotion) + ")\n " + continueText + " to the next section of the tutorial...";
+                }
+                //Debug.Log("***Move Data: (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" + string.Join(", ", userMovement.timeOfMotion) + ")");
                 
                 if (timer > longInterval || MakeWordBank.moveOn())
                 {
                     timer = 0f;
                     step++;
-                    Debug.Log("Adding Movement0: (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" + string.Join(", ", userMovement.timeOfMotion) + ")");
+                   //Debug.Log("Adding Movement0: (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" + string.Join(", ", userMovement.timeOfMotion) + ")");
                 }
             }
             else if (step == 12) //end
             {
                 //import movement data into UserInfo;
-                Debug.Log("Adding Movement1: (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" + string.Join(", ", userMovement.timeOfMotion) + ")");
+                //Debug.Log("Adding Movement1: (" + string.Join(", ", userMovement.rangeOfMotion) + "),\n (" + string.Join(", ", userMovement.timeOfMotion) + ")");
                 state.user.addMovementBounds(userMovement.rangeOfMotion, userMovement.timeOfMotion);
                 //Ex: Adding Movement1: (28.53447, -29.49958, 15.65605, -15.51243, -8.604665), (5.484325, 5.240921, 3.642139, 4.295701, 13.32272)
                 VRUser.showMoveStats = true;

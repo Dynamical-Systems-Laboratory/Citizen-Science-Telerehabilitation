@@ -198,7 +198,7 @@ public class StateManager : MonoBehaviour {
                 user.addDuration();
 
                 //RePathing (maybe make a folder)
-                string nowStamp = "_" + System.DateTime.Now.ToString("MM-dd-y--HH.mm.ss"); //"/" & ":" not allowed
+                string nowStamp = "_" + System.DateTime.Now.ToString("MM-dd-y_HH.mm.ss"); //"/" & ":" not allowed in address
                 path = Application.dataPath + "/" + dataName + nowStamp + ".csv"; //"_" + System.DateTime.Now.ToString("MM/dd/y_HH:mm:ss")
                 path2 = Application.dataPath + "/" + data2Name + nowStamp + ".csv";
 

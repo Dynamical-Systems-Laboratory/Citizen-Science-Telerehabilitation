@@ -1,16 +1,16 @@
 *Basic_Data*
 ,User_Name,Date_Joined,Time_Logged,Started_PL, Finshed_PL,Difficulty,Last_Image
-,ExampleName,08/25/2020,25,1,0,5,0,
+,ExampleName,08/25/2020,291,1,0,5,0,
 *Completed_Images*
 ,
 ,
 *Movement_Bounds*
 ,Offset_XLeft,Time_XLeft,Offset_XRight,Time_XRight,Offset_YDown,Time_YDown,Offset_YUp,Time_YUp,Offset_ZForward,Time_ZForward
-,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,0.000,
+,-18.29937,7.04107,22.32200,4.78641,-11.43911,2.83117,15.46068,3.87867,29.86265,2.67366,
 *Placed_Tags*
 ,Tag_Name,TagX,TagY,TagZ,Tag_Image#
 ,
 *Sessions*
 ,Date_Time,Duration
-,8/25/2020 4:41:43 AM,25.843
+,8/25/2020 4:22:22 PM,291.32160
 ,**finish**,

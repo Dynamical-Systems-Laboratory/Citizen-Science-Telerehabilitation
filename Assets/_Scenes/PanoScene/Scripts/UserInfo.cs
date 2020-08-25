@@ -121,6 +121,8 @@ public class UserInfo //not sure if : this() is necessary
         }
         public IEnumerable<String> write()
         {
+            yield return elapseTime.ToString(decimalPlaces);
+            yield return systemTime;
             //yield return head.write().SelectMany(x => string);
             foreach (String word in head.write())
             {
@@ -518,5 +520,5 @@ public class UserInfo //not sure if : this() is necessary
     private List<MovementData> movements = new List<MovementData>();
     //compulsory movement tracker?
 
-    private static string decimalPlaces = "0.000";//3 decimal places for saved data
+    private static string decimalPlaces = "0.00000";//data collection significant figures (5 atm)
 }
