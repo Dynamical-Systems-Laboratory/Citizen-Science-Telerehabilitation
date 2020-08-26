@@ -526,11 +526,11 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     }
 
                     //Debug.Log("Move Change 2(Z): " + (VRUser.handTracking() - handPos1) + ", Button: " + VRUser.hasButton(true).ToString()); //VRUser.cursorRelock()
-                    if (Math.Abs(VRUser.change.z) > VRUser.baseZCalibration/2 && VRUser.hasButton(true) && state.userControlActive)
+                    if (Math.Abs(VRUser.change.z) < VRUser.baseZCalibration/2 && VRUser.hasButton(true) && state.userControlActive)
                     {
                         text.text = "Try to extend a bit farther forward to get a good calibration...";
                     }
-                    else if (Math.Abs(VRUser.change.z) > VRUser.baseZCalibration/2 && VRUser.hasButton(true) && state.userControlActive) //VRUser.change.z
+                    else if (Math.Abs(VRUser.change.z) >= VRUser.baseZCalibration/2 && VRUser.hasButton(true) && state.userControlActive) //VRUser.change.z
                     {
                         //movementAvg[counter] = (VRUser.handTracking() - handPos1).z;
                         movementAvg[counter] = VRUser.change.z;

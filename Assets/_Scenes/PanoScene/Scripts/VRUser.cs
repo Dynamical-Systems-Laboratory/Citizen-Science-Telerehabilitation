@@ -206,7 +206,7 @@ public class VRUser : MonoBehaviour
                 state.userControlActive = true;
                 //resets position of cursor to the center of the user's vision
                 trueCursor.transform.position = centerer.transform.position;
-                controllerVibration += .25f; //feedback to tell user is being reset
+                controllerVibration += .2f; //feedback to tell user is being reset
                 state.userIsClicking = false;
                 state.userClick = false;
             }
@@ -230,8 +230,9 @@ public class VRUser : MonoBehaviour
             {
                 change = new Vector3(0f, 0f, 0f);
             }
+
             Debug.Log("Move Change: " + change + ", Threshold: " + state.user.formattedMoveBounds() + ", " + state.user.formattedMoveBounds(moveThreshold1));
-            Debug.Log("Thresholds(1/2/3): " + moveThreshold1 + ", " + moveThreshold2 + ", " + moveThreshold3);
+            //Debug.Log("Thresholds(1/2/3): " + moveThreshold1 + ", " + moveThreshold2 + ", " + moveThreshold3);
 
             //set add controller stuff to cursorMove
             if (state.user.getPracticeLevelState()[0]) //has started practice level, aka has finished calibration
@@ -275,29 +276,29 @@ public class VRUser : MonoBehaviour
                 float addHapt = 0f;
                 if (state.cursorXMove && change.x < (state.user.getMovementBounds(1) * moveThreshold2)) //x
                 {
-                    addHapt += (change.x / (state.user.getMovementBounds(1) * moveThreshold2)) / 2;
+                    addHapt += (change.x / (state.user.getMovementBounds(1) * moveThreshold2)) / 4;
                 }
                 else if (change.x > (state.user.getMovementBounds(2) * moveThreshold2))
                 {
-                    addHapt += (change.x / (state.user.getMovementBounds(2) * moveThreshold2)) / 2;
+                    addHapt += (change.x / (state.user.getMovementBounds(2) * moveThreshold2)) / 4;
                 }
                 if (state.cursorYMove && change.y < (state.user.getMovementBounds(3) * moveThreshold2)) //y
                 {
-                    addHapt += (change.y / (state.user.getMovementBounds(3) * moveThreshold2)) / 2;
+                    addHapt += (change.y / (state.user.getMovementBounds(3) * moveThreshold2)) / 4;
                 }
                 else if (change.y > (state.user.getMovementBounds(4) * moveThreshold2))
                 {
-                    addHapt += (change.y / (state.user.getMovementBounds(5) * moveThreshold2)) / 2;
+                    addHapt += (change.y / (state.user.getMovementBounds(5) * moveThreshold2)) / 4;
                 }
                 if (change.z > (state.user.getMovementBounds(5) * moveThreshold2)) //z
                 {
-                    addHapt += (change.z / (state.user.getMovementBounds(5) * moveThreshold2)) / 2;
+                    addHapt += (change.z / (state.user.getMovementBounds(5) * moveThreshold2)) / 4;
                 }
                 Debug.Log("MovementBounds Haptic Adding: " + addHapt);
                 controllerVibration += addHapt;
 
                 //clicking - click if user is a certain % of their max z range
-                Debug.Log("Added Z Stuff: " + change.z + " vs. " + (state.user.getMovementBounds(5) * moveThreshold3));
+                //Debug.Log("Added Z Stuff: " + change.z + " vs. " + (state.user.getMovementBounds(5) * moveThreshold3));
                 if ((change.z - (state.user.getMovementBounds(5) * moveThreshold3)) > 0) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
                 {
                     state.userClick = true;
@@ -361,7 +362,8 @@ public class VRUser : MonoBehaviour
             state.cursorAdd = new Vector3(0f, 0f, 0f); //resetting additive property
 
             //moves cursor by factor of all the above*****
-            trueCursor.transform.position += ((1.4f + ((5 - state.user.getSettingData()[0]) / 10f)) * 1.7f * Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.25f) + (trueCursor.transform.right * cursorMove.x)));
+            trueCursor.transform.position += ((1.4f + ((5 - state.user.getSettingData()[0]) / 10f)) * 1.75f *
+                Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.1f) + (trueCursor.transform.right * cursorMove.x)));
 
             //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-151,66], x[-90,88.4]
             if (trueCursor.transform.localPosition.x > 88)
