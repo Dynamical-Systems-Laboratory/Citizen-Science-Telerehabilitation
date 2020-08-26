@@ -33,7 +33,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 
 	private static GameObject playerHead;
 	private static float showNum = 0; //random num that is shown in debug
-	private static float tagScalor = 0.89f; //val that downscales tags
+	private static float tagScalor = 0.895f; //val that downscales tags
 
 	public void Awake()
     {
@@ -71,20 +71,26 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 
 	//This method is only needed when the user has clicked a tag, and the instantiated GameObject tag needs to follow the cursor:
 	public void Update() {
-		//Debug.Log("Show: " + showNum);
-		if (MakeWordBank.stepOfTutorial == 11 && trashedTags.Count != 0) {
-			for (int i = 0; i < trashedTags.Count; i++) {
-				Destroy (trashedTags [i]);
+		if (state.isGaming())
+        {
+			Debug.Log("Tag%Num: " + showNum);
+
+			if (MakeWordBank.stepOfTutorial == 11 && trashedTags.Count != 0)
+			{
+				for (int i = 0; i < trashedTags.Count; i++)
+				{
+					Destroy(trashedTags[i]);
+				}
+				trashedTags.Clear();
 			}
-			trashedTags.Clear();
-		}
 
-		//bool isNull = state.getSelected() == null;
-		//Debug.Log("Selected Elem: " + state.getSelected() + ", isNull? " + isNull.ToString());
+			//bool isNull = state.getSelected() == null;
+			//Debug.Log("Selected Elem: " + state.getSelected() + ", isNull? " + isNull.ToString());
 
-		if (tagIsFollowing)
-		{
-			state.getSelected().transform.position = state.getCursorPosition(false);
+			if (tagIsFollowing)
+			{
+				state.getSelected().transform.position = state.getCursorPosition(false);
+			}
 		}
     }
 	public void OnPointerClick(GameObject objectClicked = null) //same method but takes in game obj

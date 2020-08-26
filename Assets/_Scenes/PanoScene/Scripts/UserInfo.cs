@@ -257,20 +257,20 @@ public class UserInfo //not sure if : this() is necessary
         string outStr = "";
         if (isNotTime)
         {
-            outStr += "x:[" + movementBounds[0] * modifier + "," + movementBounds[1] * modifier + "], ";
-            outStr += "y:[" + movementBounds[2] * modifier + "," + movementBounds[3] * modifier + "], ";
-            outStr += "z: [" + movementBounds[4] * modifier + "]";
+            outStr += "x:[" + (movementBounds[0] * modifier).ToString("0.00") + "," + (movementBounds[1] * modifier).ToString("0.00") + "], ";
+            outStr += "y:[" + (movementBounds[2] * modifier).ToString("0.00") + "," + (movementBounds[3] * modifier).ToString("0.00") + "], ";
+            outStr += "z: [" + (movementBounds[4] * modifier).ToString("0.00") + "]";
         }
         else
         {
-            outStr += "xT:[" + movementTime[0] * modifier + "," + movementTime[1] * modifier + "], ";
-            outStr += "yT:[" + movementTime[2] * modifier + "," + movementTime[3] * modifier + "], ";
-            outStr += "z: [" + movementTime[4] * modifier + "]";
+            outStr += "xT:[" + (movementTime[0] * modifier).ToString("0.00") + "," + (movementTime[1] * modifier).ToString("0.00") + "], ";
+            outStr += "yT:[" + (movementTime[2] * modifier).ToString("0.00") + "," + (movementTime[3] * modifier).ToString("0.00") + "], ";
+            outStr += "z: [" + (movementTime[4] * modifier).ToString("0.00") + "]";
         }
         return outStr;
     }
-    public int getLastImage() { return lastImage; }
 
+    public int getLastImage() { return lastImage; }
     public int[] getCompletionData()
     {
         return new int[] { lastImage, imagesCompleted.Count, tags.Count, sessionsLogged.Count };
@@ -310,7 +310,7 @@ public class UserInfo //not sure if : this() is necessary
     }
     public void showMoveBounds()
     {
-        Debug.Log("Move Data: (" + string.Join(", ", movementBounds) + "), (" + string.Join(", ", movementTime) + ")");
+        Debug.Log("Move Bounds: (" + string.Join(", ", movementBounds) + "), (" + string.Join(", ", movementTime) + ")");
     }
 
     //data usage (reading/writing)

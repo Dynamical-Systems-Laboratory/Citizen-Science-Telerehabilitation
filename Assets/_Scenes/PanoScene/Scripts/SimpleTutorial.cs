@@ -78,8 +78,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     //private static int beginngingCull;
     public static Vector3 savedCursorScale;
 
-    public static Vector3 handPos1; //helper vars for hand tracking
-    public static Vector3 handPos2;
+    //public static Vector3 handPos1; //helper vars for hand tracking
+    //public static Vector3 handPos2;
     public static float[] movementAvg = new float[5];
     public static float[] timerAvg = new float[5];
 
@@ -168,7 +168,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 }
             }
 
-            /*if (MakeWordBank.skip() && step == 0 && timer > 1) //for testing purposes of z movements
+            if (MakeWordBank.skip() && step == 0 && timer > 1 && VRUser.extraControls) //for testing purposes of z movements
             {
                 step = 9;
                 counter = 0;
@@ -178,7 +178,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 VP4.SetActive(true);
                 VPA4.Play();
                 savedCursorScale = cursor.transform.localScale;
-            }*/
+            }
             if (MakeWordBank.skip() && timer > 1) //add && hasCompleted if you dont want the calibration to be skipable
             {
                 step = 12;//changed from 35
@@ -319,7 +319,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 else if (counter == 5)
                 {
                     float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
-                    userMovement.rangeOfMotion[1] = -avg / 5;
+                    userMovement.rangeOfMotion[1] = avg / 5;
                     avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
                     userMovement.timeOfMotion[1] = avg / 5;
                     step++;
@@ -329,7 +329,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
                 if (state.getCursorPosition().x >= 87f && state.userControlActive)
                 {
-                    movementAvg[counter] = (VRUser.handTracking() - handPos1).x * StateManager.cursorSpeed; //mult by cursorspeed for factoring
+                    //movementAvg[counter] = (VRUser.handTracking() - handPos1).x; //mult by cursorspeed for factoring
+                    movementAvg[counter] = VRUser.change.x;
                     timerAvg[counter] = timer;
                     counter += 1;
                     StateManager.makeCursReset = true;
@@ -338,7 +339,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
                 if (!state.userControlActive && VRUser.isResetting())
                 {
-                    handPos1 = VRUser.handTracking();
+                    //handPos1 = VRUser.handTracking();
                     timer = 0;
                 }
             }
@@ -358,7 +359,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 else if (counter == 5)
                 {
                     float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
-                    userMovement.rangeOfMotion[0] = -avg / 5;
+                    userMovement.rangeOfMotion[0] = avg / 5;
                     avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
                     userMovement.timeOfMotion[0] = avg / 5;
                     step++;
@@ -372,7 +373,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
                 if (state.getCursorPosition().x <= -89f && state.userControlActive)
                 {
-                    movementAvg[counter] = (VRUser.handTracking() - handPos1).x * StateManager.cursorSpeed;
+                    //movementAvg[counter] = (VRUser.handTracking() - handPos1).x;
+                    movementAvg[counter] = VRUser.change.x;
                     timerAvg[counter] = timer;
                     counter += 1;
                     StateManager.makeCursReset = true;
@@ -381,7 +383,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
                 if (!state.userControlActive && VRUser.isResetting())
                 {
-                    handPos1 = VRUser.handTracking();
+                    //handPos1 = VRUser.handTracking();
                     timer = 0;
                 }
             }
@@ -409,7 +411,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     else if (counter == 5)
                     {
                         float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
-                        userMovement.rangeOfMotion[3] = -avg / 5;
+                        userMovement.rangeOfMotion[3] = avg / 5;
                         avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
                         userMovement.timeOfMotion[3] = avg / 5;
                         step++;
@@ -420,7 +422,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
                     if (state.getCursorPosition().y >= 65f && state.userControlActive)
                     {
-                        movementAvg[counter] = (VRUser.handTracking() - handPos1).y * StateManager.cursorSpeed;
+                        //movementAvg[counter] = (VRUser.handTracking() - handPos1).y;
+                        movementAvg[counter] = VRUser.change.y;
                         timerAvg[counter] = timer;
                         counter += 1;
                         StateManager.makeCursReset = true;
@@ -429,7 +432,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
                     if (!state.userControlActive && VRUser.isResetting())
                     {
-                        handPos1 = VRUser.handTracking();
+                        //handPos1 = VRUser.handTracking();
                         timer = 0;
                     }
                 }
@@ -450,7 +453,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 else if (counter == 5)
                 {
                     float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
-                    userMovement.rangeOfMotion[2] = -avg / 5;
+                    userMovement.rangeOfMotion[2] = avg / 5;
                     avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
                     userMovement.timeOfMotion[2] = avg / 5;
                     step++;
@@ -466,7 +469,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
                 if (state.getCursorPosition().y <= -84f && state.userControlActive)
                 {
-                    movementAvg[counter] = (VRUser.handTracking() - handPos1).y * StateManager.cursorSpeed;
+                    //movementAvg[counter] = (VRUser.handTracking() - handPos1).y;
+                    movementAvg[counter] = VRUser.change.y;
                     timerAvg[counter] = timer;
                     counter += 1;
                     StateManager.makeCursReset = true;
@@ -475,7 +479,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
                 if (!state.userControlActive && VRUser.isResetting())
                 {
-                    handPos1 = VRUser.handTracking();
+                    //handPos1 = VRUser.handTracking();
                     timer = 0;
                 }
             }
@@ -509,7 +513,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     else if (counter == 5)
                     {
                         float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
-                        userMovement.rangeOfMotion[4] = -avg / 5;
+                        userMovement.rangeOfMotion[4] = avg / 5;
                         avg = timerAvg[0] + timerAvg[1] + timerAvg[2] + timerAvg[3] + timerAvg[4];
                         userMovement.timeOfMotion[4] = avg / 5;
                         step++;
@@ -521,14 +525,15 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                         state.cursorYMove = true;
                     }
 
-                    Debug.Log("Z Offset: " + (VRUser.handTracking() - handPos1) + ", Button: " + VRUser.hasButton(true).ToString()); //VRUser.cursorRelock()
-                    if (Math.Abs((VRUser.handTracking() - handPos1).z) <= VRUser.baseZCalibration/2 && VRUser.hasButton(true) && state.userControlActive)
+                    //Debug.Log("Move Change 2(Z): " + (VRUser.handTracking() - handPos1) + ", Button: " + VRUser.hasButton(true).ToString()); //VRUser.cursorRelock()
+                    if (Math.Abs(VRUser.change.z) > VRUser.baseZCalibration/2 && VRUser.hasButton(true) && state.userControlActive)
                     {
                         text.text = "Try to extend a bit farther forward to get a good calibration...";
                     }
-                    else if (Math.Abs((VRUser.handTracking() - handPos1).z) > VRUser.baseZCalibration/2 && VRUser.hasButton(true) && state.userControlActive) //VRUser.change.z
+                    else if (Math.Abs(VRUser.change.z) > VRUser.baseZCalibration/2 && VRUser.hasButton(true) && state.userControlActive) //VRUser.change.z
                     {
-                        movementAvg[counter] = (VRUser.handTracking() - handPos1).z * StateManager.cursorSpeed;
+                        //movementAvg[counter] = (VRUser.handTracking() - handPos1).z;
+                        movementAvg[counter] = VRUser.change.z;
                         timerAvg[counter] = timer;
                         counter += 1;
                         StateManager.makeCursReset = true;
@@ -538,7 +543,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
                     if (!state.userControlActive && VRUser.isResetting())
                     {
-                        handPos1 = VRUser.handTracking();
+                        //handPos1 = VRUser.handTracking();
                         timer = 0;
                         //cursor.transform.localScale = savedCursorScale;
                     }
