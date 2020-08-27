@@ -119,7 +119,6 @@ public class HomeScreen : MonoBehaviour
                     else if (obj.name == calibrateButton.name)
                     {
                         SimpleTutorial.initialized = false;
-                        StateManager.makeCursReset = true;
                         state.setState(4);
                     }
                     else if (obj.name == tutorialButton.name)

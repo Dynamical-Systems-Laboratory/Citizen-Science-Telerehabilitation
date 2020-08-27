@@ -397,7 +397,7 @@ public class MakeWordBank : MonoBehaviour {
              * * v = progress
              * * m = drop object
              */
-            if (true)//stepOfTutorial >= 12 && (SimpleTutorial.step > 34))
+            if (VRUser.extraControls)//stepOfTutorial >= 12 && (SimpleTutorial.step > 34))
             {
                 //Debug.Log("in the movement loop...");
                 //StateManager.allSystemsGo = true;
@@ -460,76 +460,79 @@ public class MakeWordBank : MonoBehaviour {
                         StateManager.moveCameraD = true;
                     }
                 }
-                //CLICKING
-                //V for button press
-                //Debug.Log("Practice Tags: " + practiceMoveOn + ", prog: " + state.user.getProgress());
-                if (state.isGaming()) //in-game or practice level or button tutorial
+            }
+            //CLICKING
+            //Debug.Log("Practice Tags: " + practiceMoveOn + ", prog: " + state.user.getProgress());
+            if (state.isGaming()) //in-game or practice level or button tutorial
+            {
+                //Debug.Log("IsGaming");
+                if (Input.GetKeyDown(KeyCode.B) || state.userIsClicking) //select
                 {
-                    //Debug.Log("IsGaming");
-                    if (Input.GetKeyDown(KeyCode.B) || state.userIsClicking) //select
+                    int buttonsConverted = VRUser.buttonConversion();
+                    //Debug.Log("IsClicking! " + buttonsConverted);
+                    if (buttonsConverted == 1)
                     {
-                        int buttonsConverted = VRUser.buttonConversion();
-                        Debug.Log("IsClicking! " + buttonsConverted);
-                        if (buttonsConverted == 1)
+                        if (imageIndex >= imageMaterials.Length - 1) //out of images
                         {
-                            if (imageIndex >= imageMaterials.Length - 1) //out of images
-                            {
-                                Debug.Log("Out of images...");
-                                state.setState(1);
-                            }
-                            else if (state.getState() == 7 && practiceMoveOn < 3) //havent placed required tags (practive lvl)
-                            {
-                                eventListener.OnPointerClick(nextButton); //shows notif and prevents stuff
-                                StateManager.makeCursReset = true;
-                            }
-                            else
-                            {
-                                if (state.getState() == 7)
-                                {
-                                    state.setState(2); //set to game if in pract lvl
-                                    state.user.setLevelProgress(true, true); //set practice level trackers
-                                }
-                                StateManager.makeCursReset = true; //reset cursor to prevent many image skips?
-                                state.user.logTagData(state.tagsPlaced, imageIndex); //store image/tag data
-                                eventListener.OnPointerClick(nextButton); //click next
-                                state.user.setNewImage(imageIndex); //set new image as current image
-                            }
-                        }
-                        else if (buttonsConverted == 6) //home
-                        { //keep tags in place without them bveing a child of the tag class objects thing? new subclass?
-                            eventListener.OnPointerClick(quitButton);
+                            Debug.Log("Out of images...");
                             state.setState(1);
                         }
-                        else if (buttonsConverted == 7) //bin
+                        else if (state.getState() == 7 && practiceMoveOn < 3) //havent placed required tags (practive lvl)
                         {
-                            eventListener.OnPointerClick();
+                            eventListener.OnPointerClick(nextButton); //shows notif and prevents stuff
+                            state.makeCursReset = true;
                         }
                         else
                         {
-                            findObjClick();
-                        }
-                    }
-                    else if ((Input.GetKeyDown(KeyCode.N) || VRUser.userContinue()) && state.getSelected() != null) //deselect
-                    { // (.1f is the bounds of the screen where the cursor is on the image side)
-                        if (state.getCursorPosition().x < .1f) //placing on image canvas
-                        {
-                            if (state.getState() == 7 && state.getSelected() != null)
+                            if (state.getState() == 7)
                             {
-                                ++practiceMoveOn; //check
+                                state.setState(2); //set to game if in pract lvl
+                                state.user.setLevelProgress(true, true); //set practice level trackers
                             }
-                            eventListener.OnPointerClick();
+                            state.makeCursReset = true; //reset cursor to prevent many image skips?
+                            state.user.logTagData(state.tagsPlaced, imageIndex); //store image/tag data
+                            eventListener.OnPointerClick(nextButton); //click next
+                            state.user.setNewImage(imageIndex); //set new image as current image
                         }
-                        else if (ClickAction.binClose()) //trashing
-                        {
-                            eventListener.OnPointerClick();
-                            newTag(ClickAction.initTagPos);
-                        }
+                        state.userIsClicking = false;
+                        state.makeCursReset = true;
                     }
-                    else if (Input.GetKeyDown(KeyCode.M) && state.getSelected() != null)
+                    else if (buttonsConverted == 6) //home
+                    { //keep tags in place without them bveing a child of the tag class objects thing? new subclass?
+                        eventListener.OnPointerClick(quitButton);
+                        state.setState(1);
+                        state.makeCursReset = true;
+                        state.userIsClicking = false;
+                    }
+                    else if (buttonsConverted == 7) //bin
                     {
-                        ClickAction.dropObject();
-                        //alternative dropObject that lets you pick up and move a tag that has already been placed?
+                        eventListener.OnPointerClick();
                     }
+                    else
+                    {
+                        findObjClick();
+                    }
+                }
+                else if ((Input.GetKeyDown(KeyCode.N) || VRUser.userContinue()) && state.getSelected() != null) //deselect
+                { // (.1f is the bounds of the screen where the cursor is on the image side)
+                    if (state.getCursorPosition().x < .1f) //placing on image canvas
+                    {
+                        if (state.getState() == 7 && state.getSelected() != null)
+                        {
+                            ++practiceMoveOn; //check
+                        }
+                        eventListener.OnPointerClick();
+                    }
+                    else if (ClickAction.binClose()) //trashing
+                    {
+                        eventListener.OnPointerClick();
+                        newTag(ClickAction.initTagPos);
+                    }
+                }
+                else if (Input.GetKeyDown(KeyCode.M) && state.getSelected() != null)
+                {
+                    ClickAction.dropObject();
+                    //alternative dropObject that lets you pick up and move a tag that has already been placed?
                 }
             }
         }

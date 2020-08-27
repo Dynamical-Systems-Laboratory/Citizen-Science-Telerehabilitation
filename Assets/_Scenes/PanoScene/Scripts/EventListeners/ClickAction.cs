@@ -33,7 +33,8 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 
 	private static GameObject playerHead;
 	private static float showNum = 0; //random num that is shown in debug
-	private static float tagScalor = 0.895f; //val that downscales tags
+	private static float tagScalor = 0.885f; //val that downscales tags
+	private static Vector3 tagDownScale = new Vector3(0.00532f, 0.00704f, 0.00556f);
 
 	public void Awake()
     {
@@ -110,24 +111,26 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			state.getSelected().transform.localScale -= new Vector3(0.35f, 0.35f, 0f); //scale it down to 65% size (not thickness tho)
             tagIsFollowing = false;
 
+			state.getSelected().transform.localScale = tagDownScale;
+
 			//for each obj already a child of the tag canvas, put somewhere else, transform canvas back up to original size,
 			//put new obj in, transform back to small scale, add old objs back
-			if (state.tagsPlaced.Count > 0)
+			/*if (state.tagsPlaced.Count > 0)
             {
 				foreach (GameObject tag in state.tagsPlaced)
 				{
-					tag.transform.parent = canvas.transform;
+					tag.transform.parent = null;
 				}
 				tagCanvas.transform.localScale += new Vector3(tagScalor, tagScalor, tagScalor);
-			}
+			}*/
 			state.tagsPlaced.Add(state.getSelected()); //adds to movement list
 			state.getSelected().layer = 16; //VisibleTags layer
 			state.getSelected().transform.parent = tagCanvas.transform; //make child of other canvas to save pos
 			state.getSelected().tag = "Untagged"; //just in case
-			tagCanvas.transform.localScale -= new Vector3(tagScalor, tagScalor, tagScalor);
+			//tagCanvas.transform.localScale -= new Vector3(tagScalor, tagScalor, tagScalor);
+			offsetTagsCloser();
 
-			//MOVE tag to outter edge of sphere
-			//option 1: raycasting
+			// raycasting attempt graveyard
 			/*Ray cursorRay = new Ray(state.getCursorPosition(), (state.getCursorPosition() - playerHead.transform.position).normalized);
 			RaycastHit[] hits = Physics.RaycastAll(cursorRay, (state.getCursorPosition() - playerHead.transform.position).magnitude);
 			foreach (RaycastHit hit in hits)
@@ -147,22 +150,19 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			* Quaternion.
 			*/
 			/*int i = 0;
-			while ((state.getSelected().transform.position - playerHead.transform.position).magnitude > 0.5f && i < 100)
+			while ((state.getSelected().transform.position - playerHead.transform.position).magnitude > 0.5f && i < 1000)
 			{
-				state.getSelected().transform.position = Vector3.MoveTowards(state.getCursorPosition(), playerHead.transform.position, 0.0005f * Time.deltaTime); //move in increments of 1?
+				state.getSelected().transform.position = Vector3.MoveTowards(state.getCursorPosition(), playerHead.transform.position, 0.00000001f * Time.deltaTime); //move in increments of 1?
 				i++;
 			}*/
 
-			//option 3: scale & transform (Roni's angle formula)
-			moveCursor();
-
-			if (state.tagsPlaced.Count > 1)
+			/*if (state.tagsPlaced.Count > 1)
             {
 				foreach (GameObject tag in state.tagsPlaced)
 				{
 					tag.transform.parent = tagCanvas.transform;
 				}
-			}
+			}*/
 			state.setSelected(null);
         }
 
@@ -178,10 +178,12 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			state.getSelected().transform.GetChild(0).tag = "TrashedTag";
 
 			//newTrashedTag.transform.position = canvas.transform.TransformPoint(new Vector2(320 + horizontalBump, -55 - 12 * trashedTags.Count + verticalBump)) + Vector3.back * -0.25f;
-			float scaleFactor = 0.5f; //factor for changing trash location stuff
-			state.getSelected().transform.localPosition = new Vector3(trashy.transform.localPosition.x, trashy.transform.localPosition.y - (12.7f* scaleFactor) - (8.5f*trashedTags.Count*scaleFactor), trashy.transform.localPosition.z);
-			state.getSelected().transform.LookAt(state.getSelected().transform.position + Vector3.back * state.getSelected().transform.position.z * -1);
-            trashedTags.Add(state.getSelected());
+			state.getSelected().transform.parent = trashy.transform;
+			state.getSelected().transform.position = trashy.transform.position;
+			//state.getSelected().transform.position -= new Vector3(0f, 12f + (2.5f*trashedTags.Count), 0f);
+
+			//state.getSelected().transform.LookAt(state.getSelected().transform.position + Vector3.back * state.getSelected().transform.position.z * -1);
+			trashedTags.Add(state.getSelected());
 			//trashedTags[trashedTags.Count - 1].layer = 5; //UI
 
 			//MakeWordBank.replaceTag(state.getSelected(), false); //check over
@@ -192,11 +194,17 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		else if (objectClicked != null && objectClicked.tag == "Tag" && state.getSelected() == null) // A tag was pressed  *******
 		{//state.getCursorPosition().x < MakeWordBank.tagsRemainingText.transform.position.x
 			initTagPos = objectClicked.transform.localPosition; //save position of tag
-			tagCopy = Instantiate(objectClicked, objectClicked.transform); //create copy of tag to click/drag
-			state.setSelected(tagCopy); //clicked tag = copy of tag
-			state.getSelected().transform.localScale -= new Vector3(0.965f, 0.965f, 0.965f);
+			if (state.getSelected() == null)
+            { //double checking
+				tagCopy = Instantiate(objectClicked, objectClicked.transform); //create copy of tag to click/drag
+				state.setSelected(tagCopy); //clicked tag = copy of tag
+			}
+			else
+            {
+				Debug.LogError("Tag selection error: selecting while holding?");
+            }
+			state.getSelected().transform.localScale -= new Vector3(0.97f, 0.97f, 0.97f);
 			state.getSelected().GetComponent<Image>().color = VRUser.tagColor;
-
 			tagCopy.GetComponentInChildren<Text>().color = Color.red; //changes clicked tag's text color to red
 			//tagCopy.layer = 4; //UI Layer
 			//Image newImage = Instantiate(tagCopy.GetComponent<Image>()); //deep copy image
@@ -205,13 +213,14 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 
 			tagIsFollowing = true;
 
-			for (int i = 0; i < MakeWordBank.tags.Length; i++)
+			/*for (int i = 0; i < MakeWordBank.tags.Length; i++)
 			{
 				if (tagCopy.GetComponentInChildren<Text>().text.Equals(MakeWordBank.tags[i].getText()))
 				{//if a tag's text equals the selected tag's text, make sure its not changing color
 					MakeWordBank.tags[i].isChangingColor = false;
 				}
-			}
+			}*/
+			state.getSelected().transform.parent = GameObject.Find("SelectedTag").transform;
         }
 
 		else if (objectClicked != null && objectClicked.tag == "QuitButton") // Quit button clicked
@@ -348,17 +357,18 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		return 0;
 	}
 
-	public static void moveCursor()// takes localpos of cursor and transforms it to v3 of 
+	public static void offsetTagsCloser()// takes localpos of cursor and transforms it to v3 of 
     { // x[-90, 88], y[-90, 66]
 		// a/A = b/B, (a*B)/A = b
 		float a = (GameObject.Find("headsetForward").transform.position - playerHead.transform.position).magnitude;
 		float A = (GameObject.Find("cursorCenter").transform.position - playerHead.transform.position).magnitude;
 		float B = (GameObject.Find("exampleCursor").transform.position - playerHead.transform.position).magnitude;
 		float b = a * B / A;
-		float offset = Math.Abs(B - A) / 7f;
+		float offset = Math.Abs(B - A);
 		offset = 1 - offset;
 		showNum = offset;
-		state.getSelected().transform.position = Vector3.MoveTowards(playerHead.transform.position, state.getSelected().transform.position, b*offset);
+		Debug.Log("Super Important Val: " + b * offset / 80f);
+		state.getSelected().transform.position = Vector3.MoveTowards(playerHead.transform.position, state.getSelected().transform.position, 1f + b*offset/80f);
     }
 
 	public static void destroyTags() //error?

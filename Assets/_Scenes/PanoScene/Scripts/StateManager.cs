@@ -93,7 +93,7 @@ public class StateManager : MonoBehaviour {
     public static float cameraUpCoolDown = 0f;
     public static float cameraDownCoolDown = 0f;
 
-    public static bool makeCursReset = false; // resets the position of the cursor to the middle of the screen
+    public bool makeCursReset = false; // resets the position of the cursor to the middle of the screen
     public static bool makeCamReset = false; // resets the position of the camera to the middle of the image/starting pt.
     public static bool allSystemsGo = false; // variable that enables all movement functionality for camera and cursor upon update()
     public Vector3 cursorAdd = new Vector3(0f, 0f, 0f);

@@ -41,7 +41,7 @@ public class VRUser : MonoBehaviour
     public static GameObject farRight;
     public static GameObject farForward;
 
-    public static bool extraControls = true; //for keyboard controls and other developer stuff
+    public static bool extraControls = false; //for keyboard controls and other developer stuff
 
     public static List<GameObject> interactables = new List<GameObject>();
     public static Vector3 uiButtonOffset = new Vector3(0f, 27f, 0f); //offset needed for button accuracy with uiButton methods within clickaction
@@ -182,13 +182,13 @@ public class VRUser : MonoBehaviour
              *  the user then can move the cursor relative to the saved vals
              *  the only exception is when the user changes states or the user presses the hand triggers
              * */
-            if (cursorRelock() || StateManager.makeCursReset)
+            if (cursorRelock() || state.makeCursReset)
             {
                 trueCursor.transform.position = centerer.transform.position;
                 state.userControlActive = false;
-                StateManager.makeCursReset = false;
+                state.makeCursReset = false;
                 ClickAction.dropObject();
-                controllerVibration += .4f;
+                controllerVibration += .6f;
             }
             if (isResetting()) //user resets cursor via hand triggers
             {
@@ -362,7 +362,7 @@ public class VRUser : MonoBehaviour
             state.cursorAdd = new Vector3(0f, 0f, 0f); //resetting additive property
 
             //moves cursor by factor of all the above*****
-            trueCursor.transform.position += ((1.4f + ((5 - state.user.getSettingData()[0]) / 10f)) * 1.75f *
+            trueCursor.transform.position += ((1.4f + ((5 - state.user.getSettingData()[0]) / 10f)) * 1.73f *
                 Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.1f) + (trueCursor.transform.right * cursorMove.x)));
 
             //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-151,66], x[-90,88.4]
@@ -624,11 +624,11 @@ public class VRUser : MonoBehaviour
         {
             return (i + 1); //2-5
         }
-        else if (ClickAction.uiButtonClose())
+        else if (ClickAction.uiButtonClose()) //next
         {
             return 1;
         }
-        else if (ClickAction.uiButtonClose2())
+        else if (ClickAction.uiButtonClose2()) //home
         {
             return 6;
         }

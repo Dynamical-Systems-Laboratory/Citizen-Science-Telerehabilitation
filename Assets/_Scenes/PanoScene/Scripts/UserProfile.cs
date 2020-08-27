@@ -105,7 +105,7 @@ public class UserProfile : MonoBehaviour
 
             if (isTyping)
             {
-                if (MakeWordBank.skip())
+                if (MakeWordBank.skip()) //trigger
                 {
                     userName.DeactivateInputField();
                     isTyping = false;
@@ -156,32 +156,26 @@ public class UserProfile : MonoBehaviour
                 {
                     switch (buttonNum)
                     {
-                        case 1:
+                        case 1: //name feild
                             Debug.Log("Editing Name");
                             userName.ActivateInputField();
                             isTyping = true;
                             break;
-                        case 2:
+                        case 2: //home 
                             state.setState(1);
                             break;
-                        case 3:
-                            //below
+                        case 3: //difficulty meter (TODO: make on button down)
+                            //[-12.5,33] -- 45.5 len - (4.55) interval
+                            int slideNum = (int)((state.getCursorPosition().x + 12.5f) / 45.5f * 10f); //percentage 10.0 = 100&
+                            //Debug.Log("Slide Num: " + slideNum);
+                            difficultyMeter.value = slideNum + 1;
+                            difficulty.text = difficultyMeter.value.ToString(); //change text
+                            state.user.updateDifficulty(difficultyMeter.value); //change user settings
                             break;
                         default:
                             Debug.Log("~No Button To Press~");
                             userName.DeactivateInputField();
                             break;
-                    }
-                }
-                else if (Input.GetKey(KeyCode.B) || state.userIsClicking)
-                {
-                    if (buttonNum == 3)
-                    {
-                        //[-12.5,33] -- 45.5 len - (4.55) interval
-                        int slideNum = (int)((state.getCursorPosition().x + 12.5f) / 45.5f * 10f); //percentage 10.0 = 100&
-                        difficultyMeter.value = slideNum + 1;
-                        difficulty.text = difficultyMeter.value.ToString(); //change text
-                        state.user.updateDifficulty(difficultyMeter.value); //change user settings
                     }
                 }
                 else //if not clicking

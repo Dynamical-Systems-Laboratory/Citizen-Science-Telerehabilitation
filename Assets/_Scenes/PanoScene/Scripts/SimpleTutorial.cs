@@ -145,7 +145,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 circle.SetActive(false);
                 cam.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
                 StateManager.kinectReady = true;
-                StateManager.makeCursReset = true;
+                state.makeCursReset = true;
                 VP1.SetActive(false);
                 VP2.SetActive(false);
                 VP3.SetActive(false);
@@ -205,7 +205,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 timer += Time.deltaTime;
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
-                    StateManager.makeCursReset = true;
+                    state.makeCursReset = true;
                     text.text = "The cursor is currently in locked mode (*purple*),\n center your hands and squeeze the *hand triggers* to unlock the cursor\n"
                         + "To see a demonstration of this, " + continueText + " to a video";
                     step++;
@@ -243,7 +243,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     else if (counter == 0 && VRUser.isResetting()) //just skips cuz of getdown problems but solve later...
                     {
                         counter = 1;
-                        StateManager.makeCursReset = true;
+                        state.makeCursReset = true;
                         state.userControlActive = false;
                     }
                     else if (counter == 1 && VRUser.isNotResetting())
@@ -256,7 +256,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     {
                         //lockPanel.transform.localScale -= new Vector3(0.2f, 0.2f, 0.2f);
                         //lockPanel.GetComponentInChildren<Text>().fontSize -= 1;
-                        StateManager.makeCursReset = true;
+                        state.makeCursReset = true;
                         state.userControlActive = false;
                         timer = 0;
                         counter = 5; //default?
@@ -298,7 +298,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                         startedPlaying = false;
                         counter = 0;
                         state.cursorXMove = true; //unlock x axis movement
-                        StateManager.makeCursReset = true;
+                        state.makeCursReset = true;
                         state.userControlActive = false;
                     }
                 }
@@ -333,7 +333,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     movementAvg[counter] = VRUser.change.x;
                     timerAvg[counter] = timer;
                     counter += 1;
-                    StateManager.makeCursReset = true;
+                    state.makeCursReset = true;
                     state.userControlActive = false;
                 }
 
@@ -377,7 +377,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     movementAvg[counter] = VRUser.change.x;
                     timerAvg[counter] = timer;
                     counter += 1;
-                    StateManager.makeCursReset = true;
+                    state.makeCursReset = true;
                     state.userControlActive = false;
                 }
 
@@ -426,7 +426,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                         movementAvg[counter] = VRUser.change.y;
                         timerAvg[counter] = timer;
                         counter += 1;
-                        StateManager.makeCursReset = true;
+                        state.makeCursReset = true;
                         state.userControlActive = false;
                     }
 
@@ -473,7 +473,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     movementAvg[counter] = VRUser.change.y;
                     timerAvg[counter] = timer;
                     counter += 1;
-                    StateManager.makeCursReset = true;
+                    state.makeCursReset = true;
                     state.userControlActive = false;
                 }
 
@@ -536,7 +536,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                         movementAvg[counter] = VRUser.change.z;
                         timerAvg[counter] = timer;
                         counter += 1;
-                        StateManager.makeCursReset = true;
+                        state.makeCursReset = true;
                         state.userControlActive = false;
                         //cursor.transform.localScale = savedCursorScale;
                     }
@@ -605,7 +605,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 StateManager.moveCursorL = true;
                 StateManager.moveCursorR = true;
 
-                StateManager.makeCursReset = true;
+                state.makeCursReset = true;
                 state.cursorXMove = true;
                 state.cursorYMove = true;
 
