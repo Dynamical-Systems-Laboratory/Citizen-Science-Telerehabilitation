@@ -69,9 +69,9 @@ public class UserInfo //not sure if : this() is necessary
             movementTime[i] = times[i];
         }
     }
-    public void addMovement(float elapseTime, string systemTime, Transform head, Vector3 rightHandp, Vector3 rightHandr, Vector3 leftHandp, Vector3 leftHandr)
+    public void addMovement(float elapseTime, string systemTime, bool isMoving, Transform head, Vector3 rightHandp, Vector3 rightHandr, Vector3 leftHandp, Vector3 leftHandr)
     {
-        MovementData moves = new MovementData(elapseTime, systemTime, head.position, head.rotation.eulerAngles,
+        MovementData moves = new MovementData(elapseTime, systemTime, isMoving, head.position, head.rotation.eulerAngles,
             rightHandp, rightHandr, leftHandp, leftHandr);
         //Debug.Log("MoveData: " + String.Join(",", moves.write()));
         movements.Add(moves);
@@ -104,17 +104,14 @@ public class UserInfo //not sure if : this() is necessary
                 yield return rotation.z.ToString(decimalPlaces);
             }
         }
-        UserPositions head;
-        UserPositions leftHand;
-        UserPositions rightHand;
-        float elapseTime;
-        string systemTime;
-        public MovementData(float newElapseTime = 0f, string newSystemTime = "", Vector3 p1 = new Vector3(), Vector3 r1 = new Vector3(),
+        
+        public MovementData(float newElapseTime = 0f, string newSystemTime = "", bool isMoving = false, Vector3 p1 = new Vector3(), Vector3 r1 = new Vector3(),
                       Vector3 p2 = new Vector3(), Vector3 r2 = new Vector3(),
                       Vector3 p3 = new Vector3(), Vector3 r3 = new Vector3() )
         {
             elapseTime = newElapseTime;
             systemTime = newSystemTime;
+            isMovingCursor = isMoving;
             head = new UserPositions(p1, r1);
             rightHand = new UserPositions(p2, r2);
             leftHand = new UserPositions(p3, r3);
@@ -123,6 +120,14 @@ public class UserInfo //not sure if : this() is necessary
         {
             yield return elapseTime.ToString(decimalPlaces);
             yield return systemTime;
+            if (isMovingCursor) //boolToString
+            {
+                yield return "1";
+            }
+            else
+            {
+                yield return "0";
+            }
             //yield return head.write().SelectMany(x => string);
             foreach (String word in head.write())
             {
@@ -137,6 +142,14 @@ public class UserInfo //not sure if : this() is necessary
                 yield return word;
             }
         }
+
+        //(private) vars
+        UserPositions head;
+        UserPositions leftHand;
+        UserPositions rightHand;
+        float elapseTime;
+        string systemTime;
+        bool isMovingCursor;
     }
 
     public void setName(string newName)
@@ -369,6 +382,7 @@ public class UserInfo //not sure if : this() is necessary
     {
         yield return "*" + userName + "'s Movement Data*\n";
         yield return "Elapsed_Time,System_Time";
+        yield return "Cursor_Moving"; //whether or not user intends to move cursor
 
         string limb = "Head";
         while (limb != "done") //formatting
@@ -400,7 +414,7 @@ public class UserInfo //not sure if : this() is necessary
         yield return "**finish**"; //end marker
     }
 
-    public bool readData(string[] data) //array version
+    public bool readData(string[] data) //reading main data
     { //TODO: fix for spacing
         if (data.Length < 10) //if no data then assume default vals
         {
