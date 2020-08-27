@@ -41,7 +41,7 @@ public class VRUser : MonoBehaviour
     public static GameObject farRight;
     public static GameObject farForward;
 
-    public static bool extraControls = false; //for keyboard controls and other developer stuff
+    public static bool extraControls = true; //for keyboard controls and other developer stuff
 
     public static List<GameObject> interactables = new List<GameObject>();
     public static Vector3 uiButtonOffset = new Vector3(0f, 27f, 0f); //offset needed for button accuracy with uiButton methods within clickaction
@@ -121,7 +121,7 @@ public class VRUser : MonoBehaviour
 
             //vrInfo();
             state.user.showMoveBounds(); //Move Data Ex: (29.0044, -29.00861, 13.51058, -14.32116, 0), (3.651338, 6.311625, 4.176139, 7.143209, 0)
-            Debug.Log("Hand Tracking: " + handTracking(true) + ", Offset By: " + playerPos.arms + ", unfactored: " + handTracking(false));
+            Debug.Log("(" + (state.userControlActive ? "1":"0") + ")Hand Tracking: " + handTracking(true) + ", Offset By: " + playerPos.arms + ", unfactored: " + handTracking(false));
             Debug.Log("Cont. Clicking: " + state.userIsClicking + ", Clicking: " + state.userClick); //continuous, noncontinuous clicking
 
             /* movement correction ideas:

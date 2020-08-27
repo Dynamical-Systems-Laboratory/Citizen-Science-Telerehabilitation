@@ -35,6 +35,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 	private static float showNum = 0; //random num that is shown in debug
 	private static float tagScalor = 0.885f; //val that downscales tags
 	private static Vector3 tagDownScale = new Vector3(0.00532f, 0.00704f, 0.00556f);
+	private static Vector3 trashTagDownScale = new Vector3(1.0877f,0.98696f,0.97666f);
 
 	public void Awake()
     {
@@ -96,6 +97,8 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
     }
 	public void OnPointerClick(GameObject objectClicked = null) //same method but takes in game obj
 	{
+		//TODO: add tags into data collector before next_image
+
         //if (objectClicked != null) // check later
         //{
         //    objectClicked = background;
@@ -115,19 +118,11 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 
 			//for each obj already a child of the tag canvas, put somewhere else, transform canvas back up to original size,
 			//put new obj in, transform back to small scale, add old objs back
-			/*if (state.tagsPlaced.Count > 0)
-            {
-				foreach (GameObject tag in state.tagsPlaced)
-				{
-					tag.transform.parent = null;
-				}
-				tagCanvas.transform.localScale += new Vector3(tagScalor, tagScalor, tagScalor);
-			}*/
+
 			state.tagsPlaced.Add(state.getSelected()); //adds to movement list
 			state.getSelected().layer = 16; //VisibleTags layer
 			state.getSelected().transform.parent = tagCanvas.transform; //make child of other canvas to save pos
 			state.getSelected().tag = "Untagged"; //just in case
-			//tagCanvas.transform.localScale -= new Vector3(tagScalor, tagScalor, tagScalor);
 			offsetTagsCloser();
 
 			// raycasting attempt graveyard
@@ -156,33 +151,20 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 				i++;
 			}*/
 
-			/*if (state.tagsPlaced.Count > 1)
-            {
-				foreach (GameObject tag in state.tagsPlaced)
-				{
-					tag.transform.parent = tagCanvas.transform;
-				}
-			}*/
 			state.setSelected(null);
         }
 
 		else if (objectClicked != null && objectClicked.tag == "Bin" && state.getSelected() != null) // The bin was pressed, so we move the tag to the bin
 		{
-			//if (!MakeWordBank.inPracticeLevel && !MakeWordBank.inTutorial)
-			//{
-			//	DataCollector.AddTag(state.getSelected().transform.parent.name);
-			//}
 			state.getSelected().GetComponentInChildren<Text>().color = Color.black; //transform tag
-			state.getSelected().transform.localScale -= new Vector3(0.55f, 0.55f, 0f);
-			state.getSelected().transform.tag = "TrashedTag";
+			state.getSelected().transform.tag = "TrashedTag"; //retag
 			state.getSelected().transform.GetChild(0).tag = "TrashedTag";
-
-			//newTrashedTag.transform.position = canvas.transform.TransformPoint(new Vector2(320 + horizontalBump, -55 - 12 * trashedTags.Count + verticalBump)) + Vector3.back * -0.25f;
-			state.getSelected().transform.parent = trashy.transform;
-			state.getSelected().transform.position = trashy.transform.position;
+			state.getSelected().transform.parent = GameObject.Find("Bin").transform;
+			state.getSelected().transform.localScale = trashTagDownScale;
+			state.getSelected().transform.position = GameObject.Find("trashTagRef").transform.position;
+			//state.getSelected().transform.localPosition -= new Vector3(0f, 32.4f*trashedTags.Count, 0f);
+			//state.getSelected().transform.position -= trashy.transform.up * trashedTags.Count * .5f;
 			//state.getSelected().transform.position -= new Vector3(0f, 12f + (2.5f*trashedTags.Count), 0f);
-
-			//state.getSelected().transform.LookAt(state.getSelected().transform.position + Vector3.back * state.getSelected().transform.position.z * -1);
 			trashedTags.Add(state.getSelected());
 			//trashedTags[trashedTags.Count - 1].layer = 5; //UI
 

@@ -495,6 +495,7 @@ public class UserInfo //not sure if : this() is necessary
         {
             return "0";
         }
+        //return b ? "1" : "0"; //just use ternary
     }
     private bool stringToBool(string s)
     {
