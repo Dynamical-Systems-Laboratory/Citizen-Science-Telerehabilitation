@@ -41,7 +41,7 @@ public class VRUser : MonoBehaviour
     public static GameObject farRight;
     public static GameObject farForward;
 
-    public static bool extraControls = true; //for keyboard controls and other developer stuff
+    public static bool extraControls = false; //for keyboard controls and other developer stuff
 
     public static List<GameObject> interactables = new List<GameObject>();
     public static Vector3 uiButtonOffset = new Vector3(0f, 27f, 0f); //offset needed for button accuracy with uiButton methods within clickaction
@@ -54,7 +54,7 @@ public class VRUser : MonoBehaviour
     public static float moveThreshold2 = 0.70f;
     public static float moveThreshold3;
 
-    public static float baseZCalibration = 1f; //var that signifies how far the user is supposed to reach (z) given no calibration data
+    public static float baseZCalibration = 1.4f; //var that signifies how far the user is supposed to reach (z) given no calibration data
 
     public float totalTime = 0f;
 
@@ -121,7 +121,7 @@ public class VRUser : MonoBehaviour
 
             //vrInfo();
             state.user.showMoveBounds(); //Move Data Ex: (29.0044, -29.00861, 13.51058, -14.32116, 0), (3.651338, 6.311625, 4.176139, 7.143209, 0)
-            Debug.Log("(" + (state.userControlActive ? "1":"0") + ")Hand Tracking: " + handTracking(true) + ", Offset By: " + playerPos.arms + ", unfactored: " + handTracking(false));
+            Debug.Log("[" + (state.userControlActive ? "1":"0") + "]Hand Tracking: " + handTracking(true) + ", Offset By: " + playerPos.arms + ", unfactored: " + handTracking(false));
             Debug.Log("Cont. Clicking: " + state.userIsClicking + ", Clicking: " + state.userClick); //continuous, noncontinuous clicking
 
             /* movement correction ideas:
@@ -273,29 +273,29 @@ public class VRUser : MonoBehaviour
                 }
 
                 //upperbound haptics - tells user when they are close to their max range xy&z
-                float addHapt = 0f;
+                /*float addHapt = 0f;
                 if (state.cursorXMove && change.x < (state.user.getMovementBounds(1) * moveThreshold2)) //x
                 {
-                    addHapt += (change.x / (state.user.getMovementBounds(1) * moveThreshold2)) / 4;
+                    addHapt += (change.x / (state.user.getMovementBounds(1) * moveThreshold2)) / 5;
                 }
                 else if (change.x > (state.user.getMovementBounds(2) * moveThreshold2))
                 {
-                    addHapt += (change.x / (state.user.getMovementBounds(2) * moveThreshold2)) / 4;
+                    addHapt += (change.x / (state.user.getMovementBounds(2) * moveThreshold2)) / 5;
                 }
                 if (state.cursorYMove && change.y < (state.user.getMovementBounds(3) * moveThreshold2)) //y
                 {
-                    addHapt += (change.y / (state.user.getMovementBounds(3) * moveThreshold2)) / 4;
+                    addHapt += (change.y / (state.user.getMovementBounds(3) * moveThreshold2)) / 5;
                 }
                 else if (change.y > (state.user.getMovementBounds(4) * moveThreshold2))
                 {
-                    addHapt += (change.y / (state.user.getMovementBounds(5) * moveThreshold2)) / 4;
+                    addHapt += (change.y / (state.user.getMovementBounds(5) * moveThreshold2)) / 5;
                 }
                 if (change.z > (state.user.getMovementBounds(5) * moveThreshold2)) //z
                 {
                     addHapt += (change.z / (state.user.getMovementBounds(5) * moveThreshold2)) / 4;
                 }
                 Debug.Log("MovementBounds Haptic Adding: " + addHapt);
-                controllerVibration += addHapt;
+                controllerVibration += addHapt;*/
 
                 //clicking - click if user is a certain % of their max z range
                 //Debug.Log("Added Z Stuff: " + change.z + " vs. " + (state.user.getMovementBounds(5) * moveThreshold3));

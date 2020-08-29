@@ -181,7 +181,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
             if (MakeWordBank.skip() && timer > 1) //add && hasCompleted if you dont want the calibration to be skipable
             {
-                step = 12;//changed from 35
+                step = 11;//changed from 12
             }
             
             //saftey for user seeing when cursor is locked or not

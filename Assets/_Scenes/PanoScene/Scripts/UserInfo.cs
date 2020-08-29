@@ -507,7 +507,7 @@ public class UserInfo //not sure if : this() is necessary
         {
             return false;
         }
-        throw new Exception("String To Bool Input Error");
+        throw new Exception("String To Bool Input Error: " + s);
     }
 
     //(private) variables
