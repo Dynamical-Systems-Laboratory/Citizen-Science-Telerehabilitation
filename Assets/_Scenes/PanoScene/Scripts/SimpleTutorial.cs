@@ -238,7 +238,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     Debug.Log("Step 2 Counter: " + counter);
                     if (counter == 0 && !VRUser.isResetting())
                     {
-                        text.text = "(1)Now try unlocking the cursor yourself, the cursor will flash *green* if youve done it correctly...\n Remeber the unlock buttons are the two hand triggers.";
+                        text.text = "(1)Now try unlocking the cursor yourself, the cursor will flash *green* if you’ve done it correctly...\n Remember the unlock buttons are the two hand triggers.";
                     }
                     else if (counter == 0 && VRUser.isResetting()) //just skips cuz of getdown problems but solve later...
                     {
@@ -268,7 +268,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             else if (step == 3) //cursor moves left
             { //Show user what movements can be done
                 text.text = "Excellent! Now you'll start to move the cursor.\n Watch the video examples then try it on your own..." +
-                    "\n When your ready to see the movements in action, " + continueText;
+                    "\n When you’re ready to see the movements in action, " + continueText;
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
                     text.text = "The cursor can be moved left and right...";
@@ -503,7 +503,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     {
                         text.text = "(6)Now we'll try the *forward* direction.\n " +
                             "Unlock the cursor and move your hands/arms forward as far as you can stretch without moving your body\n" +
-                        "THEN press any of the controller buttons (A/B/X/Y) to signify your at your maximum range and relock the cursor.";
+                        "THEN press any of the controller buttons (A/B/X/Y) to signify you’re at your maximum range and relock the cursor.";
                     }
                     else if (counter > 0 && counter < 5)
                     {

@@ -661,7 +661,7 @@ public class MakeWordBank : MonoBehaviour {
             {
                 cursorGroup.transform.position = GameObject.Find("cursorPos1").transform.position;
                 tutorialText.text = "If you hover your mouse over a tag or button you can click, it will highlight red...\n" +
-                    "Once you click it, the tag will attatch to your cursor until you drop it on the image to the left of the screen.\n" +
+                    "Once you click it, the tag will attach to your cursor until you drop it on the image to the left of the screen.\n" +
                     SimpleTutorial.continueText;
                 if (moveOn() && !skip())
                 {
@@ -693,7 +693,7 @@ public class MakeWordBank : MonoBehaviour {
             {
                 cursorGroup.transform.position = GameObject.Find("cursorPos4").transform.position;
                 tutorialText.text = "If you hover over the next button and click,\n" +
-                    "the game will storre all of the tag data displayed on the screen, and show a new image to you\n" +
+                    "the game will store all of the tag data displayed on the screen, and show a new image to you\n" +
                     SimpleTutorial.continueText;
                 if (moveOn() && !skip())
                 {
@@ -714,8 +714,8 @@ public class MakeWordBank : MonoBehaviour {
             else if (stepOfTutorial == 8)
             {
                 cursorGroup.transform.position = GameObject.Find("cursorPos2").transform.position;
-                tutorialText.text = "Finally, before you start logging your data, you will ahve a chance to practice what you've learned\n" +
-                    "when your ready, " + SimpleTutorial.continueText + ", and you will start the pratice level";
+                tutorialText.text = "Finally, before you start logging your data, you will have a chance to practice what you've learned\n" +
+                    "when your ready, " + SimpleTutorial.continueText + ", and you will start the practice level";
                 if (moveOn() && !skip())
                 {
                     stepOfTutorial = 22;
