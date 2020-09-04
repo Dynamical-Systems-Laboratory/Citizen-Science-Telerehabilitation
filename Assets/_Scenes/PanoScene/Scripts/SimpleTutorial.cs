@@ -179,7 +179,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 VPA4.Play();
                 savedCursorScale = cursor.transform.localScale;
             }
-            if (MakeWordBank.skip() && timer > 1) //add && hasCompleted if you dont want the calibration to be skipable
+            else if (MakeWordBank.skip() && timer > 1) //add && hasCompleted if you dont want the calibration to be skipable
             {
                 step = 11;//changed from 12
             }

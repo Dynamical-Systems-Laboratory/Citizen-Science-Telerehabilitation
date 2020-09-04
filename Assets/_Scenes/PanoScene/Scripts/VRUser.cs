@@ -41,7 +41,7 @@ public class VRUser : MonoBehaviour
     public static GameObject farRight;
     public static GameObject farForward;
 
-    public static bool extraControls = false; //for keyboard controls and other developer stuff
+    public static bool extraControls = true; //for keyboard controls and other developer stuff
 
     public static List<GameObject> interactables = new List<GameObject>();
     public static Vector3 uiButtonOffset = new Vector3(0f, 27f, 0f); //offset needed for button accuracy with uiButton methods within clickaction
