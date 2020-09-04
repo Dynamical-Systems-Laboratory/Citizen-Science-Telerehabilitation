@@ -168,7 +168,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 }
             }
 
-            if (MakeWordBank.skip() && step == 0 && timer > 1 && VRUser.extraControls) //for testing purposes of z movements
+            if (MakeWordBank.skip() && step == 0 && timer > 1 && VRUser.extraControls && !hasCompleted) //for testing purposes of z movements
             {
                 step = 9;
                 counter = 0;

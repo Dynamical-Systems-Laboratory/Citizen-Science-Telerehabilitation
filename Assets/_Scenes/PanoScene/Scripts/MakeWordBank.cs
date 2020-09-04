@@ -600,6 +600,8 @@ public class MakeWordBank : MonoBehaviour {
                 tutorialText.text = "Place 3 tags and then move to the next image to begin data collection";
 
                 numTagsRemaining = 3;
+
+                initialized = true;
             }
             practiceLevelText.SetActive(!state.user.getPracticeLevelState()[1]);
 

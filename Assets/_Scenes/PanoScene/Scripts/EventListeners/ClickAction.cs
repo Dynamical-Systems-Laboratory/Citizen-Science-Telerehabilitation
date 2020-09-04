@@ -83,7 +83,12 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			{
 				state.getSelected().transform.position = state.getCursorPosition(false);
 			}
-			Debug.Log("(" + trashedTags.Count + ")InTrash: " + (trashedTags.Count > 0? trashedTags[trashedTags.Count - 1].name: "") + ", othrs: " + String.Join(",", trashedTags));
+			//Debug.Log("(" + trashedTags.Count + ")InTrash: " + (trashedTags.Count > 0? trashedTags[trashedTags.Count - 1].name: "") + ", othrs: " + String.Join(",", trashedTags));
+			Debug.Log("Trash Rollcall (" + trashedTags.Count + ") -->");
+			foreach(GameObject trash in trashedTags)
+            {
+				Debug.Log("--Trashed " + trash.name + ": " + trash.transform.localPosition + ", " + trash.transform.position);
+            }
 		}
     }
 	public void OnPointerClick(GameObject objectClicked = null) //same method but takes in game obj
@@ -97,7 +102,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
         if (objectClicked == null && binClose())
 		{//if the cursor is over the trash, the obj we are looking at is the trash
 			objectClicked = trashy;
-			Debug.Log("Trash switcharoo");
+			Debug.Log("Trash in click method...");
         }
 
         if (objectClicked == null && state.getSelected() != null && state.getCursorPosition().x < 21f) // tag was placed  *******
@@ -151,19 +156,15 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			state.getSelected().transform.tag = "TrashedTag"; //retag
 			state.getSelected().transform.GetChild(0).tag = "TrashedTag";
 			state.getSelected().transform.parent = GameObject.Find("trashObjects").transform;
-			state.getSelected().transform.localScale = trashTagDownScale;
-			Debug.Log("Getting to this step in trash: " + state.getSelected().name); 
-			//TODO; Alternative, instantiate example tag and actiivate components with just the tag name as replacement
+			state.getSelected().transform.localScale = GameObject.Find("trashTagRef").transform.localScale;
 			state.getSelected().transform.position = GameObject.Find("trashTagRef").transform.position;
-			//state.getSelected().transform.localPosition -= new Vector3(0f, 32.4f*trashedTags.Count, 0f);
-			//state.getSelected().transform.position -= trashy.transform.up * trashedTags.Count * .5f;
-			//state.getSelected().transform.position -= new Vector3(0f, 12f + (2.5f*trashedTags.Count), 0f);
+			state.getSelected().transform.localPosition -= new Vector3(0f, 1.05f*trashedTags.Count, 0f);
 			trashedTags.Add(state.getSelected());
 			//trashedTags[trashedTags.Count - 1].layer = 5; //UI
 
-			//MakeWordBank.replaceTag(state.getSelected(), false); //check over
+			MakeWordBank.replaceTag(state.getSelected(), false); //check over
 			state.setSelected(null);
-			Debug.Log("Getting to this step in trash: " + trashedTags[trashedTags.Count-1].name);
+			//Debug.Log("Getting to this step in trash: " + trashedTags[trashedTags.Count-1].name);
 			tagIsFollowing = false;
 		}
 
@@ -343,12 +344,13 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		float offset = Math.Abs(B - A);
 		offset = 1 - offset;
 		showNum = offset;
-		Debug.Log("Super Important Val: " + b * offset / 250f);
-		state.getSelected().transform.position = Vector3.MoveTowards(playerHead.transform.position, state.getSelected().transform.position, 1.2f + b*offset/250f);
+		Debug.Log("Super Important Val: " + b * offset / 300f);
+		state.getSelected().transform.position = Vector3.MoveTowards(playerHead.transform.position, state.getSelected().transform.position, 1.35f + b*offset/300f);
     }
 
 	public static void destroyTags() //error?
     {
+		Debug.Log("Tag clearing");
 		foreach (GameObject tag in state.tagsPlaced)
 		{
 			if (tag != null)
@@ -362,6 +364,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 
 	public static void clearTrash()
     {
+		Debug.Log("Trash clearing");
 		foreach (GameObject tag in trashedTags)
 		{
 			if (tag != null)
