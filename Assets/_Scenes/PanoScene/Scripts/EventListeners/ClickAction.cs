@@ -83,12 +83,12 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			{
 				state.getSelected().transform.position = state.getCursorPosition(false);
 			}
-			//Debug.Log("(" + trashedTags.Count + ")InTrash: " + (trashedTags.Count > 0? trashedTags[trashedTags.Count - 1].name: "") + ", othrs: " + String.Join(",", trashedTags));
-			Debug.Log("Trash Rollcall (" + trashedTags.Count + ") -->");
+			Debug.Log("(" + trashedTags.Count + ")InTrash: " + (trashedTags.Count > 0? trashedTags[trashedTags.Count - 1].name: "") + ", othrs: " + String.Join(",", trashedTags));
+			/*Debug.Log("Trash Rollcall (" + trashedTags.Count + ") -->");
 			foreach(GameObject trash in trashedTags)
             {
 				Debug.Log("--Trashed " + trash.name + ": " + trash.transform.localPosition + ", " + trash.transform.position);
-            }
+            }*/
 		}
     }
 	public void OnPointerClick(GameObject objectClicked = null) //same method but takes in game obj
@@ -339,13 +339,28 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		// a/A = b/B, (a*B)/A = b
 		float a = (GameObject.Find("headsetForward").transform.position - playerHead.transform.position).magnitude;
 		float A = (GameObject.Find("cursorCenter").transform.position - playerHead.transform.position).magnitude;
-		float B = (GameObject.Find("exampleCursor").transform.position - playerHead.transform.position).magnitude;
+		float B = (state.getSelected().transform.position - playerHead.transform.position).magnitude; //GameObject.Find("exampleCursor")
 		float b = a * B / A;
 		float offset = Math.Abs(B - A);
 		offset = 1 - offset;
+		offset *= b;
 		showNum = offset;
-		Debug.Log("Super Important Val: " + b * offset / 300f);
-		state.getSelected().transform.position = Vector3.MoveTowards(playerHead.transform.position, state.getSelected().transform.position, 1.35f + b*offset/300f);
+		Debug.Log("Tag Offset On Place: " + offset / 300f);
+
+		Vector3 moveTo = new Vector3();
+		Debug.Log("Cursor center-x offset: " + (state.getCursorPosition().x - GameObject.Find("cursorCenter").transform.position.x));
+		if ((state.getCursorPosition().x - GameObject.Find("cursorCenter").transform.position.x) < 1) //left side of the screen
+		{
+			moveTo = (playerHead.transform.position + GameObject.Find("headsetLeft").transform.position * offset) / 2; //move left/right*offset based on tag
+
+		}
+        else
+        {
+			moveTo = (playerHead.transform.position + GameObject.Find("headsetRight").transform.position * offset) / 2;
+		}
+		Debug.Log("Testing Head Offset: " + moveTo + ", vs. " + playerHead.transform.position);
+		
+		state.getSelected().transform.position = Vector3.MoveTowards(playerHead.transform.position, state.getSelected().transform.position, 1.4f + offset/300f);
     }
 
 	public static void destroyTags() //error?

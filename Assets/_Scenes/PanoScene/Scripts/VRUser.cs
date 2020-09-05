@@ -41,7 +41,7 @@ public class VRUser : MonoBehaviour
     public static GameObject farRight;
     public static GameObject farForward;
 
-    public static bool extraControls = true; //for keyboard controls and other developer stuff
+    public static bool extraControls = false; //for keyboard controls and other developer stuff
 
     public static List<GameObject> interactables = new List<GameObject>();
     public static Vector3 uiButtonOffset = new Vector3(0f, 27f, 0f); //offset needed for button accuracy with uiButton methods within clickaction
@@ -161,17 +161,21 @@ public class VRUser : MonoBehaviour
                         break;
                     case 1:
                         interactables[0].GetComponent<Image>().color = highlightColor;
+                        controllerVibration += .15f;
                         break;
                     case 6:
                         interactables[1].GetComponent<Image>().color = highlightColor;
+                        controllerVibration += .15f;
                         break;
                     case 7:
                         //GameObject.Find("Trash image").GetComponent<Image>().color = binColor2;
                         interactables[6].GetComponent<Image>().color = highlightColor;
+                        controllerVibration += .1f;
                         break;
                     default:
                         //tags (converted 2-5)
                         interactables[converted].GetComponent<Image>().color = highlightColor;
+                        controllerVibration += .1f;
                         break;
                 }
             }
