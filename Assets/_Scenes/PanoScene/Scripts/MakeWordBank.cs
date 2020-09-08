@@ -389,7 +389,7 @@ public class MakeWordBank : MonoBehaviour {
             //Debug.Log("MainC: " + mainCamera.activeSelf + ", UIC: " + UICamera.activeSelf + ", HomeC: " + homeCamera.activeSelf +
             //    ", VidC: " + videoCamera.activeSelf + ", CursorC: " + cursorCamera.activeSelf);
 
-            /* Button MoveSets
+            /* Old Control Scheme
              * * arrow keys = cursor movement
              * * b = cursor select
              * * n = cursor deselect
@@ -461,11 +461,10 @@ public class MakeWordBank : MonoBehaviour {
                     }
                 }
             }
+
             //CLICKING
-            //Debug.Log("Practice Tags: " + practiceMoveOn + ", prog: " + state.user.getProgress());
             if (state.isGaming()) //in-game or practice level or button tutorial
             {
-                //Debug.Log("IsGaming");
                 if (Input.GetKeyDown(KeyCode.B) || state.userIsClicking) //select
                 {
                     int buttonsConverted = VRUser.buttonConversion();
@@ -536,7 +535,9 @@ public class MakeWordBank : MonoBehaviour {
                 }
             }
         }
-        
+
+        //msc boolean stuff for static methods
+        //Debug.Log("Practice Tags: " + practiceMoveOn + ", prog: " + state.user.getProgress());
         if (state.getState() == 7) //inPracticeLevel
         {
             inPracticeLevel = true;
@@ -570,7 +571,7 @@ public class MakeWordBank : MonoBehaviour {
             state.user.setLevelProgress(true);
         }
 
-        //Button Tutorial Stuff
+        //Practice Level Stuff
         if (state.getState() == 7)
         {
             if (!initialized)
@@ -607,7 +608,8 @@ public class MakeWordBank : MonoBehaviour {
 
             
         }
-        if (state.getState() == 5)
+        //Button Tutorial Stuff
+        else if (state.getState() == 5)
         {
             //Debug.Log("Running Buttons");
             if (!initialized || stepOfTutorial == 0)
@@ -632,6 +634,8 @@ public class MakeWordBank : MonoBehaviour {
                 stepOfTutorial = 1;
                 initialized = true;
                 timer3 = 0;
+                tutorialText.text = "In this game, you will tag images of a polluted canal\n" +
+                    SimpleTutorial.continueText;
             }
 
             timer3 += Time.deltaTime;

@@ -44,6 +44,7 @@ public class PowerpointScript : MonoBehaviour {
 
 	void Update () {
         if (state.getState() == 6) {
+			//TODO: Change Slide Text so that it mirrors proper skip controls
 			//gameObject.SetActive(true);
 			if (background != null)
 			{
