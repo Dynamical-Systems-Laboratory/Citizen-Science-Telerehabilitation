@@ -114,7 +114,7 @@ public class VRUser : MonoBehaviour
 
             totalTime += Time.deltaTime;
             //Debug.Log("Total Elapsed Time: " + totalTime + ", System: " + System.DateTime.Now.ToString("hh:mm:ss"));
-            state.user.addMovement(totalTime, System.DateTime.Now.ToString("hh:mm:ss"), state.userControlActive, playerHead.transform,
+            state.user.addMovement(totalTime, System.DateTime.Now.ToString("hh:mm:ss.ffff"), state.userControlActive, playerHead.transform,
                 OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles,
                 OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles);
             state.user.moveDataConfirm();

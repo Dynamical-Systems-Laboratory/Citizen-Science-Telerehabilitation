@@ -329,7 +329,7 @@ public class UserInfo //not sure if : this() is necessary
     //data usage (reading/writing)
     public IEnumerable<string> writeMainData()
     {
-        yield return "*Basic_Data*\n";
+        yield return "Basic_Data:\n";
         yield return "User_Name,Date_Joined,Time_Logged,Started_PL, Finshed_PL,Difficulty,Last_Image\n"; //formatting
         yield return userName;
         yield return dateJoined;
@@ -339,7 +339,7 @@ public class UserInfo //not sure if : this() is necessary
         yield return difficulty.ToString();
         yield return lastImage.ToString();
 
-        yield return "\n*Completed_Images*\n";
+        yield return "\nCompleted_Images:\n";
         for(int i = 0; i < imagesCompleted.Count; i++) //formatting
         {
             yield return "Image#";
@@ -350,7 +350,7 @@ public class UserInfo //not sure if : this() is necessary
             yield return image.ToString();
         }
 
-        yield return "\n*Movement_Bounds*\n";
+        yield return "\nMovement_Bounds:\n";
         yield return "Offset_XLeft,Time_XLeft,Offset_XRight,Time_XRight,Offset_YDown,Time_YDown,Offset_YUp,Time_YUp,Offset_ZForward,Time_ZForward\n"; //formatting
         for (int i = 0; i < movementBounds.Length; i++) //always 8 entries
         {
@@ -358,7 +358,7 @@ public class UserInfo //not sure if : this() is necessary
             yield return movementTime[i].ToString(decimalPlaces);
         }
 
-        yield return "\n*Placed_Tags*\n"; //marker to collect tag info
+        yield return "\nPlaced_Tags:\n"; //marker to collect tag info
         yield return "Tag_Name,TagX,TagY,TagZ,Tag_Image#\n"; //formatting
         foreach (TagInfo tag in tags)
         {
@@ -369,18 +369,18 @@ public class UserInfo //not sure if : this() is necessary
             yield return tag.image.ToString() + "\n";
         }
 
-        yield return "\n*Sessions*\n";
+        yield return "\nSessions:\n";
         yield return "Date_Time,Duration\n";
         for (int i = 0; i < sessionsLogged.Count; i++)
         {
             yield return sessionsLogged[i];
             yield return sessionDuration[i].ToString(decimalPlaces) + "\n";
         }
-        yield return "**finish**"; //end marker
+        yield return "finish"; //end marker
     }
     public IEnumerable<string> writeMovementData()
     {
-        yield return "*" + userName + "'s Movement Data*\n";
+        yield return userName + "'s Movement Data:\n";
         yield return "Elapsed_Time,System_Time";
         yield return "Cursor_Moving"; //whether or not user intends to move cursor
 
@@ -411,7 +411,7 @@ public class UserInfo //not sure if : this() is necessary
             }
             yield return "\n";
         }
-        yield return "**finish**"; //end marker
+        yield return "finish"; //end marker
     }
 
     public bool readData(string[] data) //reading main data
