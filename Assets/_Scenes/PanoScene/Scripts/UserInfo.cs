@@ -27,6 +27,11 @@ public class UserInfo //not sure if : this() is necessary
         public Vector3 location;
         public int image; //associated image index
         //public Vector3 headPos;
+        public override string ToString()
+        {
+            //return base.ToString();
+            return name + "[" + image + "]";// (" + location + ")";
+        }
     }
 
     //data
@@ -316,7 +321,7 @@ public class UserInfo //not sure if : this() is necessary
     public void show()
     {
         Debug.Log("*User: " + userName + ", Time: " + getTimeLogged() + ", Date Joined: " + dateJoined);
-        Debug.Log("*LIm: " + lastImage + ", Ims: " + imagesCompleted.Count + ", Tags: " + tags.Count + ", Sessions: " + sessionsLogged.Count +
+        Debug.Log("*LIm: " + lastImage + ", Ims: " + imagesCompleted.Count + ", Tags: [" + string.Join(",", tags) + "], Sessions: " + sessionsLogged.Count +
             ", SPract: " + startedPracticeLevel + ", FPract: " + finishedPracticeLevel); //progress data
         //Debug.Log("*Settings: " + getSettingData()[0] + " " + getSettingData()[1] + " " + getSettingData()[2] + " " + getSettingData()[3] +
             //", PractState: " + boolToString(getPracticeLevelState()[0]) + " " + boolToString(getPracticeLevelState()[1]) + ", AvgSess: " + getAvgSessionDuration());

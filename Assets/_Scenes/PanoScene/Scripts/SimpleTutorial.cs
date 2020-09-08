@@ -139,7 +139,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
         if (state.getState() == 4)
         {
             Debug.Log("Calibration Step: " + step);
-            //canvas.SetActive(true);
+            //Debug.Log("Aspect1: " + VPA1.aspectRatio + "(" + VPA1.texture.width + ", " + VPA1.texture.height + ")");
             if (!initialized)
             {
                 hasCompleted = state.user.getPracticeLevelState()[0]; //started pract lvl
