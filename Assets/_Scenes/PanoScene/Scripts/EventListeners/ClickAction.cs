@@ -157,7 +157,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			state.getSelected().GetComponentInChildren<Text>().color = Color.black; //transform tag
 			state.getSelected().transform.tag = "TrashedTag"; //retag
 			state.getSelected().transform.GetChild(0).tag = "TrashedTag";
-			state.getSelected().transform.parent = GameObject.Find("trashObjects").transform;
+			state.getSelected().transform.SetParent(GameObject.Find("trashObjects").transform);
 			state.getSelected().transform.localScale = GameObject.Find("trashTagRef").transform.localScale;
 			state.getSelected().transform.position = GameObject.Find("trashTagRef").transform.position;
 			state.getSelected().transform.localPosition -= new Vector3(0f, 1.05f*trashedTags.Count, 0f);

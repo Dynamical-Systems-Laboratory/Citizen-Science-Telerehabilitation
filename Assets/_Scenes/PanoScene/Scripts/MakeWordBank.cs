@@ -517,11 +517,12 @@ public class MakeWordBank : MonoBehaviour {
                     }
                     else if (buttonsConverted == 7) //bin
                     {
-                        eventListener.OnPointerClick();
                         if (state.getSelected() != null)
                         {
+                            Debug.Log("Binning..." + state.getSelected().name);
                             //eventListener.OnPointerClick();
                             newTag(ClickAction.lastTag);
+                            eventListener.OnPointerClick();
                         }
                     }
                     else
@@ -839,9 +840,9 @@ public class MakeWordBank : MonoBehaviour {
             if (tutorialWordsIndex < tutorialWords.Length)
             {
                 newName = tutorialWords[tutorialWordsIndex];
-                tutorialWordsIndex++;
             }
             else { newName = toReplace.name; }
+            tutorialWordsIndex++;
             //tagsRemainingText.text = (tutorialWords.Length - (tutorialWordsIndex+1)).ToString() + " Tags Left";
         }
         else
