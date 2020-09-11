@@ -246,6 +246,8 @@ public class StateManager : MonoBehaviour {
             case 2: //GAME
                 MakeWordBank.nextImage(MakeWordBank.imageIndex);
                 //reload tags for image...?
+                ClickAction.destroyTags();
+                loadTags();
                 //GameObject.Find("gameText").GetComponent<Text>().text = "Game Screen";
                 break;
             case 3: //PROFILE
@@ -264,7 +266,8 @@ public class StateManager : MonoBehaviour {
                 break;
             case 7: //PRACTICE LEVEL
                 //GameObject.Find("gameText").GetComponent<Text>().text = "Practice Screen";
-                //activate/deactivate practice level text & help text stuffgameText
+                ClickAction.destroyTags();
+                loadTags();
                 break;
             case 8: //Survey
                 break;
@@ -333,6 +336,32 @@ public class StateManager : MonoBehaviour {
             return (360 + num);
         }
         return num;
+    }
+
+    public bool isGaming()
+    {
+        return userState == 2 || userState == 5 || userState == 7;
+    }
+
+    public void loadTags(int image = -1) //loadTags(user.getLastImage())
+    {
+        if (image < 0)
+        {
+            image = user.getLastImage();
+        }
+        foreach (GameObject tag in user.getTags(image))
+        {
+            Debug.Log("Importing tag: " + tag.name);
+            GameObject newTag = Instantiate(GameObject.Find("tagRef"), ClickAction.canvas.transform);
+            newTag.GetComponentInChildren<Text>().color = Color.blue;
+            newTag.name = tag.name;
+            newTag.tag = "Untagged";
+            newTag.transform.parent = GameObject.Find("tagCanvas").transform; //saftey
+            newTag.layer = 16;//4;
+            newTag.transform.position = tag.transform.position;
+            newTag.transform.localScale = ClickAction.tagDownScale;
+            tagsPlaced.Add(newTag);
+        }
     }
 
     void Awake()
@@ -575,27 +604,6 @@ public class StateManager : MonoBehaviour {
 
             //Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
             //Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);
-        }
-    }
-
-    public bool isGaming()
-    {
-        return userState == 2 || userState == 5 || userState == 7;
-    }
-
-    public void loadTags(int images) //loadTags(user.getLastImage())
-    {
-        foreach (GameObject tag in user.getTags(images))
-        {
-            GameObject newTag = Instantiate(GameObject.Find("tagRef"), ClickAction.canvas.transform);
-            newTag.GetComponentInChildren<Text>().color = Color.blue;
-            newTag.name = tag.name;
-            newTag.tag = tag.name;
-            newTag.transform.parent = GameObject.Find("tagCanvas").transform; //saftey
-            newTag.layer = 16;//4;
-            newTag.transform.position = tag.transform.position;
-            //newTag.transform.localScale -= new Vector3(0.5f, 0.5f, 0f);
-            tagsPlaced.Add(newTag);
         }
     }
 }

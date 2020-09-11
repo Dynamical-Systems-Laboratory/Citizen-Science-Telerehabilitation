@@ -116,8 +116,8 @@ public class VRUser : MonoBehaviour
             //Debug.Log("Total Elapsed Time: " + totalTime + ", System: " + System.DateTime.Now.ToString("hh:mm:ss"));
             state.user.addMovement(totalTime, System.DateTime.Now.ToString("hh:mm:ss.ffff"), state.userControlActive, playerHead.transform,
                 OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles,
-                OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles);
-            state.user.moveDataConfirm();
+                OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.LHand).eulerAngles);
+            //state.user.moveDataConfirm();
 
             //vrInfo();
             state.user.showMoveBounds(); //Move Data Ex: (29.0044, -29.00861, 13.51058, -14.32116, 0), (3.651338, 6.311625, 4.176139, 7.143209, 0)
@@ -161,21 +161,21 @@ public class VRUser : MonoBehaviour
                         break;
                     case 1:
                         interactables[0].GetComponent<Image>().color = highlightColor;
-                        controllerVibration += .15f;
+                        //controllerVibration += .15f;
                         break;
                     case 6:
                         interactables[1].GetComponent<Image>().color = highlightColor;
-                        controllerVibration += .15f;
+                        //controllerVibration += .15f;
                         break;
                     case 7:
                         //GameObject.Find("Trash image").GetComponent<Image>().color = binColor2;
                         interactables[6].GetComponent<Image>().color = highlightColor;
-                        controllerVibration += .1f;
+                       // controllerVibration += .1f;
                         break;
                     default:
                         //tags (converted 2-5)
                         interactables[converted].GetComponent<Image>().color = highlightColor;
-                        controllerVibration += .1f;
+                        //controllerVibration += .1f;
                         break;
                 }
             }

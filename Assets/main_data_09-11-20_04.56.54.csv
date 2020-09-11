@@ -1,0 +1,19 @@
+Basic_Data:
+,User_Name,Date_Joined,Time_Logged,Started_PL, Finshed_PL,Difficulty,Last_Image
+,ExampleName,09/11/2020,81,1,0,5,0,
+Completed_Images:
+,
+,
+Movement_Bounds:
+,Offset_XLeft,Time_XLeft,Offset_XRight,Time_XRight,Offset_YDown,Time_YDown,Offset_YUp,Time_YUp,Offset_ZForward,Time_ZForward
+,0.00000,0.00000,0.00000,0.00000,0.00000,0.00000,0.00000,0.00000,0.00000,0.00000,
+Placed_Tags:
+,Tag_Name,TagX,TagY,TagZ,Tag_Image#
+,Tire(Clone),0.21438,-0.21102,1.34183,0
+,Shore(Clone),-1.01370,-0.52430,0.92313,0
+,Shore(Clone),-0.46081,0.24284,1.25942,0
+,
+Sessions:
+,Date_Time,Duration
+,9/11/2020 4:55:30 AM,81.38010
+,finish,

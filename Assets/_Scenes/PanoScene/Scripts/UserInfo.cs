@@ -35,17 +35,22 @@ public class UserInfo //not sure if : this() is necessary
     }
 
     //data
-    public void logTagData(List<GameObject> addTags, int addImage)
+    public void logTag(GameObject addTag)
     {
         //TODO check locational data - if bad, use (0,0,0) nextCamera offset to correct
-        foreach (GameObject newTag in addTags)
-        {
-            TagInfo tempTag = new TagInfo(newTag.name, newTag.transform.position, addImage);
-            tags.Add(tempTag);
-        }
-        imagesCompleted.Add(addImage);
+        TagInfo tempTag = new TagInfo(addTag.name, addTag.transform.position, lastImage);
+        tags.Add(tempTag);
     }
-    public void setNewImage(int newImage) { lastImage = newImage; }
+    public void logImageDone(int addImage)
+    {
+        Debug.Log("Image attempted log " + addImage);
+        imagesCompleted.Add(addImage);
+        lastImage = -1; //saftey?
+    }
+    public void logCurrentImage(int addImage)
+    {
+        lastImage = addImage;
+    }
 
     public void logJoin()
     {
@@ -303,14 +308,14 @@ public class UserInfo //not sure if : this() is necessary
     }
     
     public IEnumerable<GameObject> getTags(int image)
-    {
+    { //informational gameobject
         foreach (TagInfo tagInform in tags)
         {
             if (tagInform.image == image)
             {
                 GameObject tag = new GameObject(tagInform.name);
                 tag.transform.position = tagInform.location;
-                tag.transform.localScale -= new Vector3(.88f, .88f, .88f);
+                //tag.transform.localScale -= new Vector3(.88f, .88f, .88f);
                 //TODO: make it look like a normal tag (cleanup with MakeWordBank as well)
                 yield return tag;
             }
@@ -325,6 +330,11 @@ public class UserInfo //not sure if : this() is necessary
             ", SPract: " + startedPracticeLevel + ", FPract: " + finishedPracticeLevel); //progress data
         //Debug.Log("*Settings: " + getSettingData()[0] + " " + getSettingData()[1] + " " + getSettingData()[2] + " " + getSettingData()[3] +
             //", PractState: " + boolToString(getPracticeLevelState()[0]) + " " + boolToString(getPracticeLevelState()[1]) + ", AvgSess: " + getAvgSessionDuration());
+    }
+    public void showTagStuff()
+    {
+        Debug.Log("*[" + lastImage + "]Images: (" + string.Join(",", imagesCompleted) + ")");
+        Debug.Log("*[" + tags.Count + "]Tags: (" + string.Join(",", tags) + ")");
     }
     public void showMoveBounds()
     {
@@ -527,7 +537,7 @@ public class UserInfo //not sure if : this() is necessary
     private bool finishedPracticeLevel = false;
 
     private List<int> imagesCompleted = new List<int>(); //list of images by index - last index'd image is most recent/present
-    private int lastImage = 0; //current image the user is editing
+    private int lastImage = -1; //current image the user is editing
     private List<TagInfo> tags = new List<TagInfo>(); //in case the user wants to access their past tagged images we save all the tag infos
 
     private float cameraSpeed; //personalized settings 

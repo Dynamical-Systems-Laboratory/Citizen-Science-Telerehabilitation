@@ -40,72 +40,69 @@ public class IMU : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        while (false)
-        {  //never happens cuz update bad ************************************************************************************
-            /*try
+        /*try
+        {
+            string new_line = sp.ReadLine();//read from the port that the arduino is accessing
+
+            List<string> new_list = new_line.Split().ToList();
+            if (new_list.Count >= 11)
             {
-                string new_line = sp.ReadLine();//read from the port that the arduino is accessing
-
-                List<string> new_list = new_line.Split().ToList();
-                if (new_list.Count >= 11)
+                float temp_Euler_Roll = Convert.ToSingle(new_list[2]);
+                if (temp_Euler_Roll >= 0)
                 {
-                    float temp_Euler_Roll = Convert.ToSingle(new_list[2]);
-                    if (temp_Euler_Roll >= 0)
-                    {
-                        Euler_Roll = temp_Euler_Roll;
-                    }
-                    else
-                    {
-                        Euler_Roll = 360 + temp_Euler_Roll;
-                    }
-
-                    float temp_Euler_Pitch = Convert.ToSingle(new_list[3]);
-                    if (temp_Euler_Pitch >= 0)
-                    {
-                        Euler_Pitch = temp_Euler_Pitch;
-                    }
-                    else
-                    {
-                        Euler_Pitch = 360 + temp_Euler_Pitch;
-                    }
-
-                    float temp_Euler_Yaw = Convert.ToSingle(new_list[4]);
-                    if (temp_Euler_Yaw >= 0)
-                    {
-                        Euler_Yaw = temp_Euler_Yaw;
-                    }
-                    else
-                    {
-                        Euler_Yaw = 360 + temp_Euler_Yaw;
-                    }
-
-                    Gyro_Roll = Convert.ToSingle(new_list[5]);
-                    Gyro_Pitch = Convert.ToSingle(new_list[6]);
-                    Gyro_Yaw = Convert.ToSingle(new_list[7]);
-                    Accel_x = Convert.ToSingle(new_list[8]);
-                    Accel_y = Convert.ToSingle(new_list[9]);
-                    Accel_z = Convert.ToSingle(new_list[10]);
+                    Euler_Roll = temp_Euler_Roll;
                 }
+                else
+                {
+                    Euler_Roll = 360 + temp_Euler_Roll;
+                }
+
+                float temp_Euler_Pitch = Convert.ToSingle(new_list[3]);
+                if (temp_Euler_Pitch >= 0)
+                {
+                    Euler_Pitch = temp_Euler_Pitch;
+                }
+                else
+                {
+                    Euler_Pitch = 360 + temp_Euler_Pitch;
+                }
+
+                float temp_Euler_Yaw = Convert.ToSingle(new_list[4]);
+                if (temp_Euler_Yaw >= 0)
+                {
+                    Euler_Yaw = temp_Euler_Yaw;
+                }
+                else
+                {
+                    Euler_Yaw = 360 + temp_Euler_Yaw;
+                }
+
+                Gyro_Roll = Convert.ToSingle(new_list[5]);
+                Gyro_Pitch = Convert.ToSingle(new_list[6]);
+                Gyro_Yaw = Convert.ToSingle(new_list[7]);
+                Accel_x = Convert.ToSingle(new_list[8]);
+                Accel_y = Convert.ToSingle(new_list[9]);
+                Accel_z = Convert.ToSingle(new_list[10]);
             }
-            catch (Exception e)
-            {
-                Gyro_Roll = 0f;
-                Gyro_Pitch = 0f;
-                Gyro_Yaw = 0f;
-                Accel_x = 0f;
-                Accel_y = 0f;
-                Accel_z = 0f;
-
-                // if an exception is thrown(no connection to a port) a reconnection is made here
-                string port = connect();
-                if (port.Length > 1)
-                {
-                    sp = new SerialPort(port, 9600);
-                    sp.Open();
-                    sp.ReadTimeout = 2500;
-                }
-            }*/
         }
+        catch (Exception e)
+        {
+            Gyro_Roll = 0f;
+            Gyro_Pitch = 0f;
+            Gyro_Yaw = 0f;
+            Accel_x = 0f;
+            Accel_y = 0f;
+            Accel_z = 0f;
+
+            // if an exception is thrown(no connection to a port) a reconnection is made here
+            string port = connect();
+            if (port.Length > 1)
+            {
+                sp = new SerialPort(port, 9600);
+                sp.Open();
+                sp.ReadTimeout = 2500;
+            }
+        }*/
     }
 
     string connect()
@@ -120,8 +117,6 @@ public class IMU : MonoBehaviour
         foreach (string port in ports)
         {
             Debug.Log(port);
-            
-            
         }
 
         //for (int i = 0; i < ports.Length; i++)

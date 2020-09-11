@@ -35,7 +35,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 	private static GameObject playerHead;
 	private static float showNum = 0; //random num that is shown in debug
 	//private static float tagScalor = 0.885f; //val that downscales tags
-	private static Vector3 tagDownScale = new Vector3(0.00532f, 0.00704f, 0.00556f);
+	public static Vector3 tagDownScale = new Vector3(0.00532f, 0.00704f, 0.00556f);
 	private static Vector3 trashTagDownScale = new Vector3(1.0877f,0.98696f,0.97666f);
 
 	public void Awake()
@@ -121,7 +121,6 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			state.getSelected().transform.parent = tagCanvas.transform; //make child of other canvas to save pos
 			state.getSelected().tag = "Untagged"; //just in case
 			offsetTagsCloser();
-
 			// raycasting attempt graveyard
 			/*Ray cursorRay = new Ray(state.getCursorPosition(), (state.getCursorPosition() - playerHead.transform.position).normalized);
 			RaycastHit[] hits = Physics.RaycastAll(cursorRay, (state.getCursorPosition() - playerHead.transform.position).magnitude);
@@ -146,7 +145,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 				state.getSelected().transform.position = Vector3.MoveTowards(state.getCursorPosition(), playerHead.transform.position, 0.00000001f * Time.deltaTime); //move in increments of 1?
 				i++;
 			}*/
-
+			state.user.logTag(state.getSelected());
 			state.setSelected(null);
         }
 
@@ -206,8 +205,8 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		}
 		else if (objectClicked != null && objectClicked.tag == "NextButton") // Next button clicked
 		{
-			++MakeWordBank.imageIndex;
-			MakeWordBank.nextImage(MakeWordBank.imageIndex);
+			//++MakeWordBank.imageIndex;
+			//MakeWordBank.nextImage(MakeWordBank.imageIndex);
 			//tagSphere.GetComponent<Renderer>().material = imageMaterials[imageIndex]
 		}
         else
@@ -343,9 +342,9 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		float b = a * B / A;
 		float offset = Math.Abs(B - A);
 		offset = 1 - offset;
-		offset *= b;
+		offset *= b / 20f;
 		showNum = offset;
-		Debug.Log("Tag Offset On Place: " + offset / 300f);
+		Debug.Log("Tag Offset On Place: " + offset);
 
 		Vector3 moveTo = new Vector3();
 		Debug.Log("Cursor center-x offset: " + (state.getCursorPosition().x - GameObject.Find("cursorCenter").transform.position.x));
@@ -360,7 +359,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		}
 		Debug.Log("Testing Head Offset: " + moveTo + ", vs. " + playerHead.transform.position);
 		
-		state.getSelected().transform.position = Vector3.MoveTowards(playerHead.transform.position, state.getSelected().transform.position, 1.4f + offset/300f);
+		state.getSelected().transform.position = Vector3.MoveTowards(playerHead.transform.position, state.getSelected().transform.position, 1.3f);
     }
 
 	public static void destroyTags() //error?
@@ -368,6 +367,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		Debug.Log("Tag clearing");
 		foreach (GameObject tag in state.tagsPlaced)
 		{
+			Debug.Log("Tag Destroyed-" + tag.name);
 			if (tag != null)
 			{
 				Destroy(tag); //preventing memory leakage?
