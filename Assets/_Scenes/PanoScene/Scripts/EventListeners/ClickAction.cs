@@ -21,7 +21,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 	public Material tagMaterial;
 
 	public static GameObject tagCopy;
-	public static Vector3 initTagPos;
+	public static int lastTag = -1;
 	public static GameObject background; //image ref
 
     public static bool tagIsFollowing = false;
@@ -35,7 +35,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 	private static GameObject playerHead;
 	private static float showNum = 0; //random num that is shown in debug
 	//private static float tagScalor = 0.885f; //val that downscales tags
-	public static Vector3 tagDownScale = new Vector3(0.00532f, 0.00704f, 0.00556f);
+	public static Vector3 tagDownScale = new Vector3(0.0036577f, 0.004839725f, 0.003823717f);
 	private static Vector3 trashTagDownScale = new Vector3(1.0877f,0.98696f,0.97666f);
 
 	public void Awake()
@@ -57,6 +57,9 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
         trashy = GameObject.Find("Bin");
 		nextButton = MakeWordBank.nextButton;
 		quitButton = MakeWordBank.quitButton;
+
+		tagDownScale = GameObject.Find("tagRef").transform.localScale;
+		//trashTagDownScale = GameObject.Find("trashTagRef").transform.localScale;
 	}
 
     /* Clicking Logic:
@@ -83,7 +86,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			{
 				state.getSelected().transform.position = state.getCursorPosition(false);
 			}
-			Debug.Log("(" + trashedTags.Count + ")InTrash: " + (trashedTags.Count > 0? trashedTags[trashedTags.Count - 1].name: "") + ", othrs: " + String.Join(",", trashedTags));
+			Debug.Log("(" + trashedTags.Count + ")InTrash: " + String.Join(",", trashedTags));
 			/*Debug.Log("Trash Rollcall (" + trashedTags.Count + ") -->");
 			foreach(GameObject trash in trashedTags)
             {
@@ -118,7 +121,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 
 			state.tagsPlaced.Add(state.getSelected()); //adds to movement list
 			state.getSelected().layer = 16; //VisibleTags layer
-			state.getSelected().transform.parent = tagCanvas.transform; //make child of other canvas to save pos
+			state.getSelected().transform.SetParent(tagCanvas.transform);//make child of other canvas to save pos
 			state.getSelected().tag = "Untagged"; //just in case
 			offsetTagsCloser();
 			// raycasting attempt graveyard
@@ -161,7 +164,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			trashedTags.Add(state.getSelected());
 			//trashedTags[trashedTags.Count - 1].layer = 5; //UI
 
-			MakeWordBank.replaceTag(state.getSelected(), false); //check over
+			//MakeWordBank.replaceTag(state.getSelected(), false); //check over
 			state.setSelected(null);
 			//Debug.Log("Getting to this step in trash: " + trashedTags[trashedTags.Count-1].name);
 			tagIsFollowing = false;
@@ -169,7 +172,8 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 
 		else if (objectClicked != null && objectClicked.tag == "Tag" && state.getSelected() == null) // A tag was pressed  *******
 		{//state.getCursorPosition().x < MakeWordBank.tagsRemainingText.transform.position.x
-			initTagPos = objectClicked.transform.localPosition; //save position of tag
+		 //initTagPos = objectClicked.transform.localPosition; //save position of tag
+			//lastTag = VRUser.interactables[objConv];
 			if (state.getSelected() == null)
             { //double checking
 				tagCopy = Instantiate(objectClicked, objectClicked.transform); //create copy of tag to click/drag
@@ -224,7 +228,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		Destroy(state.getSelected());
 		state.setSelected(null);
 		tagIsFollowing = false;
-		initTagPos = new Vector3(0f,0f,0f);
+		lastTag = -1;// new Vector3(0f,0f,0f);
 		//tagCopy = null;
 	}
 
@@ -346,18 +350,17 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		showNum = offset;
 		Debug.Log("Tag Offset On Place: " + offset);
 
-		Vector3 moveTo = new Vector3();
+		/*Vector3 moveTo = new Vector3();
 		Debug.Log("Cursor center-x offset: " + (state.getCursorPosition().x - GameObject.Find("cursorCenter").transform.position.x));
 		if ((state.getCursorPosition().x - GameObject.Find("cursorCenter").transform.position.x) < 1) //left side of the screen
 		{
 			moveTo = (playerHead.transform.position + GameObject.Find("headsetLeft").transform.position * offset) / 2; //move left/right*offset based on tag
-
 		}
         else
         {
 			moveTo = (playerHead.transform.position + GameObject.Find("headsetRight").transform.position * offset) / 2;
 		}
-		Debug.Log("Testing Head Offset: " + moveTo + ", vs. " + playerHead.transform.position);
+		Debug.Log("Testing Head Offset: " + moveTo + ", vs. " + playerHead.transform.position);*/
 		
 		state.getSelected().transform.position = Vector3.MoveTowards(playerHead.transform.position, state.getSelected().transform.position, 1.3f);
     }

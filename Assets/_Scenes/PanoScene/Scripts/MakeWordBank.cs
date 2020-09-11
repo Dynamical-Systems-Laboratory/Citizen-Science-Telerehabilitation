@@ -243,7 +243,7 @@ public class MakeWordBank : MonoBehaviour {
     //tag GameObjects should have unique names (doesn't matter what the names are), the parent
     //GameObjects' names can be changed though with no problem
     public static Tag[] tags;
-    public static int practiceMoveOn;
+    //public static int practiceMoveOn;
 
     public static GameObject cursorGroup;
     public VRUser userMovement;
@@ -314,7 +314,7 @@ public class MakeWordBank : MonoBehaviour {
         }
         tagsRemainingText = GameObject.FindGameObjectWithTag("TagsRemainingText").GetComponent<Text>(); // remaining tags**
 
-        tagGameObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag("Tag"));
+        tagGameObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag("Tag")); //same as 2-5 vr user interactables
         /*foreach (Transform child in transform) //add all of children of this object as tags
         {
             if (child != transform) // The first child will be the parent transform, which should be excluded
@@ -472,6 +472,7 @@ public class MakeWordBank : MonoBehaviour {
                     //Debug.Log("IsClicking! " + buttonsConverted);
                     if (buttonsConverted == 1) //next
                     {
+                        Debug.Log("Next Imaging!!!");
                         if (imageIndex >= imageMaterials.Length - 1) //out of images
                         {
                             Debug.Log("Out of images...");
@@ -483,10 +484,12 @@ public class MakeWordBank : MonoBehaviour {
                             tutorialText.text = "Please place another " + (3 - state.tagsPlaced.Count) + " tags to continue.";
                         }
                         //TODO: implement 3tag system for main levels depending on difficulty
-                        /*else if (state.getState() == 2 && state.tagsPlaced.Count < 1)
+                        else if (state.getState() == 2 && state.tagsPlaced.Count < 1)
                         {
                             //smaller notif
-                        }*/
+                            helpTextContainer.SetActive(true);
+                            tutorialText.text = "Please place at least 1 tag before moving onto another image.";
+                        }
                         else
                         {
                             if (state.getState() == 7)
@@ -500,6 +503,7 @@ public class MakeWordBank : MonoBehaviour {
                             imageIndex++;
                             nextImage(imageIndex);
                             state.user.logCurrentImage(imageIndex); //set new image as current image
+                            helpTextContainer.SetActive(false);
                         }
                         state.userIsClicking = false;
                         state.makeCursReset = true;
@@ -514,14 +518,19 @@ public class MakeWordBank : MonoBehaviour {
                     else if (buttonsConverted == 7) //bin
                     {
                         eventListener.OnPointerClick();
+                        if (state.getSelected() != null)
+                        {
+                            //eventListener.OnPointerClick();
+                            newTag(ClickAction.lastTag);
+                        }
                     }
                     else
                     {
-                        findObjClick();
+                        findObjClick(buttonsConverted);
                     }
                 }
-                else if ((Input.GetKeyDown(KeyCode.N) || VRUser.userContinue()) && state.getSelected() != null) //deselect
-                { // (.1f is the bounds of the screen where the cursor is on the image side)
+                /*else if ((Input.GetKeyDown(KeyCode.N) || VRUser.userContinue()) && state.getSelected() != null) //deselect
+                {
                     if (state.getCursorPosition().x < .1f) //placing on image canvas
                     {
                         if (state.getState() == 7 && state.getSelected() != null)
@@ -533,9 +542,9 @@ public class MakeWordBank : MonoBehaviour {
                     else if (ClickAction.binClose()) //trashing
                     {
                         eventListener.OnPointerClick();
-                        newTag(ClickAction.initTagPos);
+                        newTag(ClickAction.lastTag);
                     }
-                }
+                }*/
                 else if (Input.GetKeyDown(KeyCode.M) && state.getSelected() != null)
                 {
                     ClickAction.dropObject();
@@ -550,7 +559,7 @@ public class MakeWordBank : MonoBehaviour {
         {
             inPracticeLevel = true;
             state.user.setLevelProgress(true);
-            practiceMoveOn = state.tagsPlaced.Count;
+            //practiceMoveOn = state.tagsPlaced.Count;
         }
         else
         {
@@ -572,15 +581,11 @@ public class MakeWordBank : MonoBehaviour {
         }
 
         //Practice Level Stuff
-            if (state.getState() == 7)
+        if (state.getState() == 7)
         {
             if (!initialized)
             {
                 stepOfTutorial = 23;
-                if (state.tagsPlaced.Count != 0) //has already started and is reloading practice level
-                {
-                    //reload prev tags?
-                }
                 sequenceIndex = 0; //Reset tags
                 for (int i = 0; i < tags.Length; i++)
                 {
@@ -733,7 +738,7 @@ public class MakeWordBank : MonoBehaviour {
                 welcomeScreen.SetActive(true);
                 welcomeText.text = "Now let's do a practice level" + "\n" + "It will be just like a real level but data will not be collected" + "\n" + "(Push the rod forward to begin the practice level)";
                 //StateManager.allSystemsGo = true;
-                if (moveOn() || skip())
+                if (moveOn())
                 {
                     timer = 0;
                     //practice level initialization
@@ -786,14 +791,14 @@ public class MakeWordBank : MonoBehaviour {
         }
         return false;
     }
-    public void findObjClick() //basically call clicking method
+    public void findObjClick(int objConv) //basically call clicking method
     {//theory --> go through index of tags and find the tag with the shortest distance to the cursor location to a certain val
 
         //if not holding an object and close to either the quit or the next image button do that
         //create get rid of object button
-        if (VRUser.buttonConversion() != 0 && VRUser.buttonConversion() != 7)// && Input.GetKeyDown(KeyCode.G)) - doublecheck
+        if (objConv != 0 && objConv != 7)// && Input.GetKeyDown(KeyCode.G)) - doublecheck
         {
-            float shortDist = 1000000f;
+            //float shortDist = 1000000f;
             /*foreach (GameObject tag in tagGameObjects) //mathf.abs
             {
                 float newMin = (state.getCursorPosition() - tag.transform.localPosition).magnitude; //confirm tag
@@ -804,15 +809,16 @@ public class MakeWordBank : MonoBehaviour {
                     toClick = tag;
                 }
             }*/
-            toClick = VRUser.interactables[VRUser.buttonConversion()];
+            toClick = VRUser.interactables[objConv];
 
-            Debug.Log("Closest Object" + toClick.name + ", Tag: " + toClick.tag + ", Distance: " + shortDist);
+            //Debug.Log("Closest Object" + toClick.name + ", Tag: " + toClick.tag + ", Distance: " + shortDist);
             if (state.getSelected() != null)
             {
                 Destroy(state.getSelected());
                 state.setSelected(null);
             }
             //state.setSelected(toClick);
+            ClickAction.lastTag = objConv;
             eventListener.OnPointerClick(toClick);
         }
         else
@@ -822,33 +828,28 @@ public class MakeWordBank : MonoBehaviour {
         toClick = null;
     }
 
-    public void newTag(Vector3 location) //takes in the location of the tag u need replacing
+    public void newTag(int tagIndex) //takes in the location of the tag u need replacing
     {
         //replace previous tag
-        float minDist = 1000000f;
-        GameObject toReplace = tagGameObjects[0];
-        foreach (GameObject tag in tagGameObjects) //find obj
-        {
-            float newDist = (location - tag.transform.position).magnitude;
-            if (newDist < minDist)
-            {
-                minDist = newDist;
-                toReplace = tag;
-            }
-        }
-        string newName;
+        GameObject toReplace = VRUser.interactables[tagIndex];//tagGameObjects[tagIndex];
+
+        string newName = "newNamePlaceholder";
         if ((state.getState() == 5 || state.getState() == 7))
         {
-            newName = tutorialWords[tutorialWordsIndex];
-            tutorialWordsIndex++;
-            tagsRemainingText.text = (tutorialWords.Length - (tutorialWordsIndex+1)).ToString() + " Tags Left";
+            if (tutorialWordsIndex < tutorialWords.Length)
+            {
+                newName = tutorialWords[tutorialWordsIndex];
+                tutorialWordsIndex++;
+            }
+            else { newName = toReplace.name; }
+            //tagsRemainingText.text = (tutorialWords.Length - (tutorialWordsIndex+1)).ToString() + " Tags Left";
         }
         else
         {
             newName = wordBank[SEQUENCE[imageIndex, sequenceIndex]];
             sequenceIndex++; //same as practice level?
             //newName = "placeholder";
-            tagsRemainingText.text = (SEQUENCE.Length/51 - (sequenceIndex+1)).ToString() + " Tags Left";
+            //tagsRemainingText.text = (SEQUENCE.Length/51 - (sequenceIndex+1)).ToString() + " Tags Left";
         }
         Debug.Log("Replacing " + toReplace.name + " to " + newName);
         for (int i = 0; i < tags.Length; i++) //replace tag text
@@ -858,7 +859,15 @@ public class MakeWordBank : MonoBehaviour {
                 tags[i].setText(newName); //replace tutorialWords with more
             }
         }
-        toReplace.name = newName; //replace name of tagtag
+        //toReplace.name = newName; //replace name of tagtag
+        if (state.tagsPlaced.Count <= state.numTagsToPlace())
+        {
+            tagsRemainingText.text = (state.numTagsToPlace() - state.tagsPlaced.Count) + " Tags Left";
+        }
+        else
+        {
+            tagsRemainingText.text = "No Tags Left :)";
+        }
     }
 
     public static void nextImage(int img = 0)

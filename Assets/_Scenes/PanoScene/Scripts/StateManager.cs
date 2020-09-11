@@ -163,6 +163,10 @@ public class StateManager : MonoBehaviour {
     }
     public void setState(int newState)
     {
+        if (isGaming(true)) //if current state is in game, destroy tags
+        {
+            ClickAction.destroyTags();
+        }
         userState = newState;
         updateState();
         makeCursReset = true;
@@ -183,9 +187,10 @@ public class StateManager : MonoBehaviour {
         userControlActive = false;
         makeCursReset = true;
 
-        if (isGaming()) //failsafe for seeing tags?
+        if (isGaming(true))
         {
-            GameObject.Find("tagCanvas").GetComponent<Canvas>().overrideSorting = true;
+            //GameObject.Find("tagCanvas").GetComponent<Canvas>().overrideSorting = true;  //failsafe for seeing tags?
+            loadTags(); //load in tags
         }
 
         switch (userState)
@@ -245,9 +250,6 @@ public class StateManager : MonoBehaviour {
                 break;
             case 2: //GAME
                 MakeWordBank.nextImage(MakeWordBank.imageIndex);
-                //reload tags for image...?
-                ClickAction.destroyTags();
-                loadTags();
                 //GameObject.Find("gameText").GetComponent<Text>().text = "Game Screen";
                 break;
             case 3: //PROFILE
@@ -266,8 +268,6 @@ public class StateManager : MonoBehaviour {
                 break;
             case 7: //PRACTICE LEVEL
                 //GameObject.Find("gameText").GetComponent<Text>().text = "Practice Screen";
-                ClickAction.destroyTags();
-                loadTags();
                 break;
             case 8: //Survey
                 break;
@@ -338,9 +338,16 @@ public class StateManager : MonoBehaviour {
         return num;
     }
 
-    public bool isGaming()
+    public bool isGaming(bool restricted = false)
     {
-        return userState == 2 || userState == 5 || userState == 7;
+        if (!restricted)
+        {
+            return userState == 2 || userState == 5 || userState == 7;
+        }
+        else
+        {
+            return userState == 2 || userState == 7;
+        }
     }
 
     public void loadTags(int image = -1) //loadTags(user.getLastImage())
@@ -356,11 +363,40 @@ public class StateManager : MonoBehaviour {
             newTag.GetComponentInChildren<Text>().color = Color.blue;
             newTag.name = tag.name;
             newTag.tag = "Untagged";
-            newTag.transform.parent = GameObject.Find("tagCanvas").transform; //saftey
+            newTag.transform.transform.SetParent(GameObject.Find("tagCanvas").transform); //saftey
             newTag.layer = 16;//4;
             newTag.transform.position = tag.transform.position;
             newTag.transform.localScale = ClickAction.tagDownScale;
             tagsPlaced.Add(newTag);
+        }
+    }
+
+    public int numTagsToPlace()
+    {
+        switch (user.getSettingData()[0])
+        {
+            case 1:
+                return 0;
+            case 2:
+                return 0;
+            case 3:
+                return 1;
+            case 4:
+                return 1;
+            case 5:
+                return 2;
+            case 6:
+                return 2;
+            case 7:
+                return 3;
+            case 8:
+                return 3;
+            case 9:
+                return 4;
+            case 10:
+                return 5;
+            default:
+                return 0;
         }
     }
 

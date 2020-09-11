@@ -38,6 +38,7 @@ public class UserInfo //not sure if : this() is necessary
     public void logTag(GameObject addTag)
     {
         //TODO check locational data - if bad, use (0,0,0) nextCamera offset to correct
+        Debug.Log("Tag attempted log " + addTag.name);
         TagInfo tempTag = new TagInfo(addTag.name, addTag.transform.position, lastImage);
         tags.Add(tempTag);
     }
@@ -333,8 +334,8 @@ public class UserInfo //not sure if : this() is necessary
     }
     public void showTagStuff()
     {
-        Debug.Log("*[" + lastImage + "]Images: (" + string.Join(",", imagesCompleted) + ")");
-        Debug.Log("*[" + tags.Count + "]Tags: (" + string.Join(",", tags) + ")");
+        Debug.Log("*[" + imagesCompleted.Count + "]Images(" + lastImage +"): (" + string.Join(",", imagesCompleted) + ")\n" +
+            "*[" + tags.Count + "]Tags: (" + string.Join(",", tags) + ")");
     }
     public void showMoveBounds()
     {
@@ -391,7 +392,7 @@ public class UserInfo //not sure if : this() is necessary
             yield return sessionsLogged[i];
             yield return sessionDuration[i].ToString(decimalPlaces) + "\n";
         }
-        yield return "finish"; //end marker
+        yield return "\nfinish"; //end marker
     }
     public IEnumerable<string> writeMovementData()
     {
