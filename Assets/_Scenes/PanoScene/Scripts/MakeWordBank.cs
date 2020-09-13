@@ -462,7 +462,6 @@ public class MakeWordBank : MonoBehaviour {
                     }
                 }
             }
-
             //CLICKING
             if (state.isGaming()) //in-game or practice level or button tutorial
             {
