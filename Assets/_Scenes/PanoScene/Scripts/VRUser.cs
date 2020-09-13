@@ -138,7 +138,7 @@ public class VRUser : MonoBehaviour
             controllerVibration = 0f;
 
             //FORCE QUIT
-            if (Input.GetKey(KeyCode.Q))
+            if (Input.GetKey(KeyCode.Q) && extraControls)
             {
                 state.setState(0);
             }
@@ -213,6 +213,7 @@ public class VRUser : MonoBehaviour
                 controllerVibration += .2f; //feedback to tell user is being reset
                 state.userIsClicking = false;
                 state.userClick = false;
+                ClickAction.dropObject();
             }
 
             //EXTRA (thumbstick) cursor control
@@ -235,10 +236,8 @@ public class VRUser : MonoBehaviour
                 change = new Vector3(0f, 0f, 0f);
             }
 
-            Debug.Log("Move Change: " + change + ", Threshold: " + state.user.formattedMoveBounds() + ", " + state.user.formattedMoveBounds(moveThreshold1));
-            //Debug.Log("Thresholds(1/2/3): " + moveThreshold1 + ", " + moveThreshold2 + ", " + moveThreshold3);
-
             //set add controller stuff to cursorMove
+            Debug.Log("Move Change: " + change + ", Threshold: " + state.user.formattedMoveBounds() + ", " + state.user.formattedMoveBounds(moveThreshold1));
             if (state.user.getPracticeLevelState()[0]) //has started practice level, aka has finished calibration
             { //Note: with the factored handpos, all axis' are reversed* (signs changed)
                 //lowerbound threshold - controls when the cursor can move based on a % of the calibration values (x&y)
