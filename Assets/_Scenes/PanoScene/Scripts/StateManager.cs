@@ -636,7 +636,7 @@ public class StateManager : MonoBehaviour {
                 cursorPos = nextCursorPos;
             }
             Vector3 outCursor = cursorPos * cursorPosMod; //modifier to match tag vals (was 180)
-            Debug.Log("Cursor Info: " + getCursorPosition() + ", Mag: " + getCursorPosition().magnitude + ", Size: " + -cursorSize);
+            Debug.Log("Cursor Info: " + getCursorPosition() + ", Unfiltered: " + getCursorPosition(false) + ", Size: " + -cursorSize);
 
             //Debug.Log("LRUD Cursor: " + moveCursorL + "/" + moveCursorR + "/" + moveCursorU + "/" + moveCursorD); // log info on what can and cannot move
             //Debug.Log("LRUD Camera: " + moveCameraL + "/" + moveCameraR + "/" + moveCameraU + "/" + moveCameraD);
