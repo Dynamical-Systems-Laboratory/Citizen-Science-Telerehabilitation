@@ -1,8 +1,8 @@
 # VR Interface for Citizen Science-Base Telerehabilitation
 ## Purpose
-Fostering a better option for stroke patients in their at-home rehabilitation.
+The overall purpose of this project has been the creation a better option for stroke patients in their at-home rehabilitation. Virtual reality and citizen science provide a combination of immersion and purpose that engage the patient in their rehabilitation while the remote nature of the interface provides accessibility and longevity.
 The initial vision was for patients to be able to better progress and feel motivated in completing their own rehabilitation without needing a healthcare provider to assist them through it.
-Presently patients can still benefit from the direction of a healthcare provider via the difficulty meter and tracking of patient data.
+While this ideal is still preserved, patients now can optionally benefit from the direction of a healthcare provider via the difficulty meter and tracking of patient's data.
 ### Present Contributors
 Kora Stewart Hughes (Undergraduate Researcher), 
 Roni Barak Ventura (Mentor)
@@ -28,4 +28,4 @@ In the interim, the project's controls were changed to the keyboard to make navi
 Unity Version 2019.2.8f1 (2019.1.6f1 previously), 
 Edited primarily through Visual Studio
 ## View/Play Access to Game
-https://drive.google.com/file/d/1pm9YrqQNMTC-w-QHhLDQQA2GcD1DojAp/view?usp=sharing
+https://drive.google.com/drive/folders/1NllpNDdpR6g86UkhcObNQ5iXRi2OYZB1?usp=sharing
