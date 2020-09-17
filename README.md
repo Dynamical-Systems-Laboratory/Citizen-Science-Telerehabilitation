@@ -1,7 +1,7 @@
 # VR Interface for Citizen Science-Base Telerehabilitation
 ## Purpose
 The overall purpose of this project has been the creation a better option for stroke patients in their at-home rehabilitation. Virtual reality and citizen science provide a combination of immersion and purpose that engage the patient in their rehabilitation while the remote nature of the interface provides accessibility and longevity.
-The initial vision was for patients to be able to better progress and feel motivated in completing their own rehabilitation without needing a healthcare provider to assist them through it.
+The initial vision was for patients to feel motivated in completing their own rehabilitation without needing a healthcare provider -- using the direction of the interface to assist them through it.
 While this ideal is still preserved, patients now can optionally benefit from the direction of a healthcare provider via the difficulty meter and tracking of patient's data.
 ### Present Contributors
 Kora Stewart Hughes (Undergraduate Researcher), 
