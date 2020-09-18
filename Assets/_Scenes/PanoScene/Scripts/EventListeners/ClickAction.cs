@@ -35,7 +35,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 	private static GameObject playerHead;
 	private static float showNum = 0; //random num that is shown in debug
 	//private static float tagScalor = 0.885f; //val that downscales tags
-	public static Vector3 tagDownScale = new Vector3(0.0036577f, 0.004839725f, 0.003823717f);
+	public static Vector3 tagDownScale = new Vector3(0.003393029f, 0.004489522f, 0.003547033f);
 	private static Vector3 trashTagDownScale = new Vector3(1.0877f,0.98696f,0.97666f);
 
 	public void Awake()
@@ -162,6 +162,13 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			state.getSelected().transform.position = GameObject.Find("trashTagRef").transform.position;
 			state.getSelected().transform.localPosition -= new Vector3(0f, 1.05f*trashedTags.Count, 0f);
 			trashedTags.Add(state.getSelected());
+			if (trashedTags.Count >= 5 && trashedTags.Count < 11)
+            {
+				foreach (Transform tagThing in GameObject.Find("trashObjects").transform) //GameObject.Find("Bin").transform
+				{
+					tagThing.localPosition += new Vector3(0f, 1.05f, 0f); //raise all tags to fit more
+				}
+            }
 			//trashedTags[trashedTags.Count - 1].layer = 5; //UI
 
 			//MakeWordBank.replaceTag(state.getSelected(), false); //check over
