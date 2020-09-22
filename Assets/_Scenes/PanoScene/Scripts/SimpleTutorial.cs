@@ -71,8 +71,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     public static GameObject horiz;
     //public static Text lockText;
 
-    public static string continueText = "(Press* A* or *X* to continue)";
-    public static string continueText2 = "\n(Push the index trigger to skip the calibration)";
+    public static string continueText = "(Press <b>A</b> or <b>X</b> to continue)";
+    public static string continueText2 = "\n(Push the <b>index trigger<b/ to skip the calibration)";
 
     public static GameObject cursor;
     public static GameObject cursorCam;
@@ -172,7 +172,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     continueText2;
             }
 
-            if (MakeWordBank.skip() && step == 0 && timer > 1 && VRUser.extraControls && !hasCompleted) //for testing purposes of z movements
+            if (MakeWordBank.skip() && step < 9 && timer > 1 && VRUser.extraControls && !hasCompleted) //for testing purposes of z movements
             {
                 step = 9;
                 counter = 0;
@@ -210,7 +210,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
                     state.makeCursReset = true;
-                    text.text = "The cursor is currently in locked mode (*purple*),\n center your hands and squeeze the *hand triggers* to unlock the cursor\n"
+                    text.text = "The cursor is currently in <color=purple>locked mode</color>,\n center your hands and squeeze the <b>hand triggers</b> to unlock the cursor\n"
                         + "To see a demonstration of this, " + continueText + " to a video";
                     step++;
                     timer = 0;
@@ -220,7 +220,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             {
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
-                    text.text = "watching video:\n Model centering their hands and unlocking the cursor";
+                    text.text = "watching video:\n Model centering their hands and <color=green>unlocking</color> the cursor";
                     counter = 0;
                     step++;
                     //add video of someone centering their hands
@@ -242,7 +242,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     //Debug.Log("Step 2 Counter: " + counter);
                     if (counter == 0 && !VRUser.isResetting())
                     {
-                        text.text = "(Now try unlocking the cursor yourself, the cursor will flash *green* if you’ve done it correctly...\n Remember the unlock buttons are the two hand triggers.";
+                        text.text = "(Now try <color=green>unlocking</color> the cursor yourself, the cursor will flash <color=green>green</color> if you’ve done it correctly...\n Remember the unlock buttons are the two hand triggers.";
                     }
                     else if (counter == 0 && VRUser.isResetting()) //just skips cuz of getdown problems but solve later...
                     {
@@ -252,7 +252,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     }
                     else if (counter == 1 && VRUser.isNotResetting())
                     {
-                        text.text = "Great! Try to unlock the cursor one more time...";
+                        text.text = "Great! Try to <color=green>unlock</color> the cursor one more time...";
                         counter = 2;
                         state.userControlActive = false;
                     }
@@ -313,12 +313,12 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (counter == 0)
                 {
                     text.text = "Return to beginning position with the controllers near your shoulders\n" +
-                        "Unlock your cursor and move both hands to your *right*\n" +
+                        "<color=green>Unlock</color> your cursor and move both hands to your <b>right</b>\n" +
                         "Extend your arms as far as you can";
                 }
                 else if (counter > 0 && counter < 5)
                 {
-                    text.text = "Excellent! Repeat this movement " + (5 - counter) + " more times";
+                    text.text = "Excellent! Repeat this movement <b>" + (5 - counter) + "</b> more times";
                 }
                 else if (counter == 5)
                 {
@@ -353,12 +353,12 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (counter == 0)
                 {
                     text.text = "Return to beginning position with the controllers near your shoulders\n" +
-                        "Unlock your cursor and move both hands to your *left*\n" +
+                        "<color=green>Unlock</color> your cursor and move both hands to your <b>left</b>\n" +
                         "Extend your arms as far as you can";
                 }
                 else if (counter > 0 && counter < 5)
                 {
-                    text.text = "Excellent! Repeat this movement " + (5 - counter) + " more times";
+                    text.text = "Excellent! Repeat this movement <b>" + (5 - counter) + "</b> more times";
                 }
                 else if (counter == 5)
                 {
@@ -405,12 +405,12 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     if (counter == 0)
                     {
                         text.text = "Return to beginning position with the controllers near your shoulders\n" +
-                        "Unlock your cursor and move both hands to your *up*\n" +
+                        "<color=green>Unlock</color> your cursor and move both hands to your <b>up</b>\n" +
                         "Extend your arms as far as you can";
                     }
                     else if (counter > 0 && counter < 5)
                     {
-                        text.text = "Excellent! Repeat this movement " + (5 - counter) + " more times";
+                        text.text = "Excellent! Repeat this movement <b>" + (5 - counter) + "</b> more times";
                     }
                     else if (counter == 5)
                     {
@@ -447,12 +447,12 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (counter == 0)
                 {
                     text.text = "Return to beginning position with the controllers near your shoulders\n" +
-                        "Unlock your cursor and move both hands to your *down*\n" +
+                        "<color=green>Unlock</color> your cursor and move both hands to your <b>down</b>\n" +
                         "Extend your arms as far as you can";
                 }
                 else if (counter > 0 && counter < 5)
                 {
-                    text.text = "Excellent! Repeat this movement " + (5 - counter) + " more times";
+                    text.text = "Excellent! Repeat this movement <b>" + (5 - counter) + "</b> more times";
                 }
                 else if (counter == 5)
                 {
@@ -514,7 +514,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     if (counter == 0)
                     {
                         text.text = "Return to beginning position with the controllers near your shoulders\n" +
-                            "Unlock your cursor and move both hands forward\n" +
+                            "<color=green>Unlock</color> your cursor and move both hands forward\n" +
                             "When you reach the furthest you can, press A or X";
                     }
                     else if (counter > 0 && counter < 5)
@@ -562,7 +562,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
             else if (step == 11)
             {
-                text.text = "Well done! Now lock your cursor by pressing the index trigger button";
+                text.text = "Well done! Now <color=purple>lock</color> your cursor by pressing the index trigger button";
                 if (VRUser.cursorRelock())
                 {
                     step++;
@@ -570,7 +570,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
             else if (step == 12)
             {
-                text.text = "You can lock your cursor whenever you need to take a break during the game\n" +
+                text.text = "You can <color=purple>lock</color> your cursor whenever you need to take a break during the game\n" +
                         "You now completed the calibration\n" +
                         continueText;
                 if (MakeWordBank.moveOn())

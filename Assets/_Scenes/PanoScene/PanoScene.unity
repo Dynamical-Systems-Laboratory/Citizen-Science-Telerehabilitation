@@ -7506,12 +7506,12 @@ GameObject:
   - component: {fileID: 400979003}
   - component: {fileID: 400979002}
   m_Layer: 5
-  m_Name: Tag1replica
+  m_Name: Tag1
   m_TagString: Tag
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &400979001
 RectTransform:
   m_ObjectHideFlags: 0
@@ -40137,12 +40137,12 @@ GameObject:
   - component: {fileID: 2134779970}
   - component: {fileID: 2134779969}
   m_Layer: 5
-  m_Name: Tag1
+  m_Name: Tag1original
   m_TagString: Tag
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2134779968
 RectTransform:
   m_ObjectHideFlags: 0

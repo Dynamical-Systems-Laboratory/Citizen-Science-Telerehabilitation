@@ -169,8 +169,8 @@ public class StateManager : MonoBehaviour {
         }
         userState = newState;
         updateState();
-        makeCursReset = true;
-        makeCamReset = true;
+        //makeCursReset = true;
+        //makeCamReset = true;
     }
     public void updateState()
     {
@@ -184,7 +184,7 @@ public class StateManager : MonoBehaviour {
         //GameObject.Find("SimpleTutorialCanvas").SetActive(true);
         //complexUser.VRPerson.SetActive(true);
 
-        userControlActive = false;
+        //userControlActive = false;
         makeCursReset = true;
 
         if (isGaming(true))
@@ -200,7 +200,7 @@ public class StateManager : MonoBehaviour {
                 MakeWordBank.cursorCamera.SetActive(false);
                 MakeWordBank.UICamera.SetActive(false);
                 user.updateSettings();
-                user.addDuration();
+                user.logSessionEnd(MakeWordBank.imageIndex);
 
                 //RePathing (maybe make a folder)
                 string nowStamp = "_" + System.DateTime.Now.ToString("MM-dd-y_HH.mm.ss"); //"/" & ":" not allowed in address

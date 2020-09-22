@@ -501,7 +501,7 @@ public class MakeWordBank : MonoBehaviour {
                             //eventListener.OnPointerClick(nextButton); //click next (increments image)
                             imageIndex++;
                             nextImage(imageIndex);
-                            state.user.logCurrentImage(imageIndex); //set new image as current image
+                            //state.user.logCurrentImage(imageIndex); //set new image as current image
                             helpTextContainer.SetActive(false);
                         }
                         state.userIsClicking = false;
@@ -606,7 +606,7 @@ public class MakeWordBank : MonoBehaviour {
                 //numTagsRemaining = 3 - state.tagsPlaced.Count;
                 tutorialText.text = "Place a few tags and then move to the next image to begin data collection";
 
-                state.user.logCurrentImage(imageIndex); //should be 0
+                //state.user.logCurrentImage(imageIndex); //should be 0
                 initialized = true;
             }
             practiceLevelText.SetActive(!state.user.getPracticeLevelState()[1]);

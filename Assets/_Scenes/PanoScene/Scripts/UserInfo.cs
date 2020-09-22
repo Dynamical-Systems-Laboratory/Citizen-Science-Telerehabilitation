@@ -11,8 +11,6 @@ public class UserInfo //not sure if : this() is necessary
     {
         this.userName = name;
         this.dateJoined = datejoined;
-
-        updateDifficulty(difficulty);
     }
 
     private struct TagInfo //all tag related info needed to reload and track progress
@@ -38,21 +36,22 @@ public class UserInfo //not sure if : this() is necessary
     public void logTag(GameObject addTag)
     {
         //TODO check locational data - if bad, use (0,0,0) nextCamera offset to correct
-        Debug.Log("Tag attempted log " + addTag.name);
-        TagInfo tempTag = new TagInfo(addTag.name, addTag.transform.position, lastImage);
+        string tagName = addTag.name;
+        string toDelete = "(Clone)"; // ex: "Sky(Clone)"
+        if (tagName.Length > toDelete.Length && tagName.Substring(tagName.Length - toDelete.Length) == toDelete)
+        {
+            tagName = tagName.Substring(0,tagName.Length - toDelete.Length);
+        }
+        Debug.Log("Tag attempted log " + tagName);
+        TagInfo tempTag = new TagInfo(tagName, addTag.transform.position, getSession().end_im);
         tags.Add(tempTag);
     }
     public void logImageDone(int addImage)
     {
         Debug.Log("Image attempted log " + addImage);
         imagesCompleted.Add(addImage);
-        lastImage = -1; //saftey?
+        //sessions[0].end_im = -1; //saftey?
     }
-    public void logCurrentImage(int addImage)
-    {
-        lastImage = addImage;
-    }
-
     public void logJoin()
     {
         dateJoined = System.DateTime.Now.ToString("MM/dd/yyyy");
@@ -61,24 +60,103 @@ public class UserInfo //not sure if : this() is necessary
     {
         timeLogged += toAdd;
     }
+
+    public struct SessionData
+    {
+        public SessionData(string nowDate = "", int startingImage = 0, bool startedPracticeLevel = false, bool endedPracticeLevel = false, int newDifficulty = 5)
+        {
+            date = nowDate;
+            duration = 0;
+            start_im = startingImage;
+            end_im = start_im;
+            started_pl = startedPracticeLevel;
+            ended_pl = endedPracticeLevel;
+            difficulty = newDifficulty;
+            moveBounds = new float[] { 0f, 0f, 0f, 0f, 0f };
+            moveTimes = new float[] { 0f, 0f, 0f, 0f, 0f };
+        }
+
+        //helpers for accessing session stuff
+       public void logEndData(int end, bool startedPracticeLevel = false, bool endedPracticeLevel = false, int newDifficulty = 5)
+        {
+            end_im = end;
+            started_pl = startedPracticeLevel;
+            ended_pl = endedPracticeLevel;
+            difficulty = newDifficulty;
+        }
+        public void setDifficulty(int newDiff)
+        {
+            difficulty = newDiff;
+        }
+        public void setBoundaries(float[] moves, float[] times)
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                Debug.Log("Adding Movement2, ex: " + moves[i] + ", " + times[i]);
+                moveBounds[i] = moves[i];
+                moveTimes[i] = times[i];
+            }
+        }
+        public void setLevel(bool start, bool end)
+        {
+            started_pl = start;
+            ended_pl = end;
+        }
+
+        public IEnumerable<string> write()
+        {
+            yield return date;
+            yield return duration.ToString();
+            yield return start_im.ToString();
+            yield return end_im.ToString();
+            yield return boolToString(started_pl);
+            yield return boolToString(ended_pl);
+            yield return difficulty.ToString();
+            for(int i = 0; i < 4; i++)
+            {
+                yield return moveBounds[i].ToString();
+                yield return moveTimes[i].ToString();
+            }
+        }
+
+        public string date;
+        public float duration;
+        public int start_im;
+        public int end_im;
+        public bool started_pl;
+        public bool ended_pl;
+        public int difficulty;
+        public float[] moveBounds; //-x, x,-y, y, z
+        public float[] moveTimes; //can also be new float[5]?
+    }
+    private SessionData getSession()
+    {
+        if (sessions.Count != 0)
+        {
+            return sessions[sessions.Count - 1];
+        }
+        else
+        {
+            Debug.Log("***Bad session access");
+            return new SessionData(); //saftey?
+        }
+    }
+
+    public void logSessionEnd(int end, bool startedPracticeLevel = false, bool endedPracticeLevel = false, int newDifficulty = 5)
+    {
+        getSession().logEndData(end, startedPracticeLevel, endedPracticeLevel, newDifficulty);
+    }
+
     public void addSession()
     { //can be only time but atm, is date and time (tracking frequency of patient doing excercises)
-        sessionsLogged.Add(System.DateTime.Now.ToString());
+        SessionData sesh = new SessionData(System.DateTime.Now.ToString());
+        sessions.Add(sesh);
         startTime = timeLogged;
-    }
-    public void addDuration()
-    {
-        sessionDuration.Add(timeLogged - startTime);
     }
 
     public void addMovementBounds(float[] moves, float[] times)
     {
-        for (int i = 0; i < 5; i++)
-        {
-            Debug.Log("Adding Movement2, ex: " + moves[i] + ", " + times[i]);
-            movementBounds[i] = moves[i];
-            movementTime[i] = times[i];
-        }
+        getSession().setBoundaries(moves, times);
     }
     public void addMovement(float elapseTime, string systemTime, bool isMoving, Transform head, Vector3 rightHandp, Vector3 rightHandr, Vector3 leftHandp, Vector3 leftHandr)
     {
@@ -105,7 +183,7 @@ public class UserInfo //not sure if : this() is necessary
                 position = p;
                 rotation = r;
             }
-            public IEnumerable<String> write()
+            public IEnumerable<string> write()
             {
                 yield return position.x.ToString(decimalPlaces); //3 decimal places
                 yield return position.y.ToString(decimalPlaces);
@@ -127,7 +205,7 @@ public class UserInfo //not sure if : this() is necessary
             rightHand = new UserPositions(p2, r2);
             leftHand = new UserPositions(p3, r3);
         }
-        public IEnumerable<String> write()
+        public IEnumerable<string> write()
         {
             yield return elapseTime.ToString(decimalPlaces);
             yield return systemTime;
@@ -140,15 +218,15 @@ public class UserInfo //not sure if : this() is necessary
                 yield return "0";
             }
             //yield return head.write().SelectMany(x => string);
-            foreach (String word in head.write())
+            foreach (string word in head.write())
             {
                 yield return word;
             }
-            foreach (String word in rightHand.write())
+            foreach (string word in rightHand.write())
             {
                 yield return word;
             }
-            foreach (String word in leftHand.write())
+            foreach (string word in leftHand.write())
             {
                 yield return word;
             }
@@ -183,21 +261,20 @@ public class UserInfo //not sure if : this() is necessary
     //progression
     public void setLevelProgress(bool started, bool finished = false)
     {
-        startedPracticeLevel = started;
-        finishedPracticeLevel = finished;
+        getSession().setLevel(started, finished);
     }
     public int getProgress()//outputs a %/100 of progress based on user info 
     {
         //TODO: add joycon tracking
         float progress = ((imagesCompleted.Count*65) / MakeWordBank.imageMaterials.Length); //70% relies on image completion
         //assuming 4ish tags are ideally placed per image
-        progress += ((tags.Count*25f) / (MakeWordBank.imageMaterials.Length * ((difficulty+4)/2))); //25% relies on number of tags placed
+        progress += ((tags.Count*25f) / (MakeWordBank.imageMaterials.Length * ((getSession().difficulty+ 4)/2))); //25% relies on number of tags placed
         //10% relies on doing tutorials and practice lvl
-        if (startedPracticeLevel) //ppt + tutorial
+        if (getSession().started_pl) //ppt + tutorial
         {
             progress += 7;
         }
-        if (finishedPracticeLevel) // practice level
+        if (getSession().ended_pl) // practice level
         {
             progress += 3;
         }
@@ -213,7 +290,7 @@ public class UserInfo //not sure if : this() is necessary
     }
     public void updateDifficulty(float newDiff)
     {
-        difficulty = newDiff;
+        getSession().setDifficulty((int)newDiff);
         newDiff = (7-newDiff) / 9;
         StateManager.camSpeed = 2.3f * (1 + newDiff);
         StateManager.cursorSpeed = 3.75f * (1 + newDiff);
@@ -234,17 +311,17 @@ public class UserInfo //not sure if : this() is necessary
     }
     public int getAvgSessionDuration()
     {
-        if (sessionDuration.Count == 0)
+        if (sessions.Count == 0)
         {
             return 0;
         }
 
         float avg = 0;
-        foreach(float sess in sessionDuration)
+        foreach(SessionData sess in sessions)
         {
-            avg += sess;
+            avg += sess.duration;
         }
-        avg /= sessionDuration.Count;
+        avg /= sessions.Count;
         return (int)avg;
     }
     public float getMovementBounds(int index)
@@ -252,25 +329,25 @@ public class UserInfo //not sure if : this() is necessary
         switch (index)
         {
             case 1:
-                return movementBounds[0];
+                return getSession().moveBounds[0];
             case 2:
-                return movementBounds[1];
+                return getSession().moveBounds[1];
             case 3:
-                return movementBounds[2];
+                return getSession().moveBounds[2];
             case 4:
-                return movementBounds[3];
+                return getSession().moveBounds[3];
             case 5:
-                return movementBounds[4];
+                return getSession().moveBounds[4];
             case 6:
-                return movementTime[0];
+                return getSession().moveTimes[0];
             case 7:
-                return movementTime[1];
+                return getSession().moveTimes[1];
             case 8:
-                return movementTime[2];
+                return getSession().moveTimes[2];
             case 9:
-                return movementTime[3];
+                return getSession().moveTimes[3];
             case 10:
-                return movementTime[4];
+                return getSession().moveTimes[4];
             default:
                 Debug.LogError("movement bounds error");
                 return 0;
@@ -281,31 +358,31 @@ public class UserInfo //not sure if : this() is necessary
         string outStr = "";
         if (isNotTime)
         {
-            outStr += "x:[" + (movementBounds[0] * modifier).ToString("0.00") + "," + (movementBounds[1] * modifier).ToString("0.00") + "], ";
-            outStr += "y:[" + (movementBounds[2] * modifier).ToString("0.00") + "," + (movementBounds[3] * modifier).ToString("0.00") + "], ";
-            outStr += "z: [" + (movementBounds[4] * modifier).ToString("0.00") + "]";
+            outStr += "x:[" + (getSession().moveBounds[0] * modifier).ToString("0.00") + "," + (getSession().moveBounds[1] * modifier).ToString("0.00") + "], ";
+            outStr += "y:[" + (getSession().moveBounds[2] * modifier).ToString("0.00") + "," + (getSession().moveBounds[3] * modifier).ToString("0.00") + "], ";
+            outStr += "z: [" + (getSession().moveBounds[4] * modifier).ToString("0.00") + "]";
         }
         else
         {
-            outStr += "xT:[" + (movementTime[0] * modifier).ToString("0.00") + "," + (movementTime[1] * modifier).ToString("0.00") + "], ";
-            outStr += "yT:[" + (movementTime[2] * modifier).ToString("0.00") + "," + (movementTime[3] * modifier).ToString("0.00") + "], ";
-            outStr += "z: [" + (movementTime[4] * modifier).ToString("0.00") + "]";
+            outStr += "xT:[" + (getSession().moveTimes[0] * modifier).ToString("0.00") + "," + (getSession().moveTimes[1] * modifier).ToString("0.00") + "], ";
+            outStr += "yT:[" + (getSession().moveTimes[2] * modifier).ToString("0.00") + "," + (getSession().moveTimes[3] * modifier).ToString("0.00") + "], ";
+            outStr += "z: [" + (getSession().moveTimes[4] * modifier).ToString("0.00") + "]";
         }
         return outStr;
     }
 
-    public int getLastImage() { return lastImage; }
+    public int getLastImage() { return getSession().end_im; }
     public int[] getCompletionData()
     {
-        return new int[] { lastImage, imagesCompleted.Count, tags.Count, sessionsLogged.Count };
+        return new int[] { getSession().end_im, imagesCompleted.Count, tags.Count, sessions.Count };
     }
     public float[] getSettingData()
     {
-        return new float[] { difficulty, cameraSpeed, cursorSpeed, cursorSize };
+        return new float[] { getSession().difficulty, cameraSpeed, cursorSpeed, cursorSize };
     }
     public bool[] getPracticeLevelState()
     {
-        return new bool[] { startedPracticeLevel, finishedPracticeLevel };
+        return new bool[] { getSession().started_pl, getSession().ended_pl };
     }
     
     public IEnumerable<GameObject> getTags(int image)
@@ -327,55 +404,51 @@ public class UserInfo //not sure if : this() is necessary
     public void show()
     {
         Debug.Log("*User: " + userName + ", Time: " + getTimeLogged() + ", Date Joined: " + dateJoined);
-        Debug.Log("*LIm: " + lastImage + ", Ims: " + imagesCompleted.Count + ", Tags: [" + string.Join(",", tags) + "], Sessions: " + sessionsLogged.Count +
-            ", SPract: " + startedPracticeLevel + ", FPract: " + finishedPracticeLevel); //progress data
+        Debug.Log("*LIm: " + getSession().end_im + ", Ims: " + imagesCompleted.Count + ", Tags: [" + string.Join(",", tags) + "], Sessions: " + sessions.Count +
+            ", SPract: " + getSession().started_pl + ", FPract: " + getSession().ended_pl); //progress data
         //Debug.Log("*Settings: " + getSettingData()[0] + " " + getSettingData()[1] + " " + getSettingData()[2] + " " + getSettingData()[3] +
             //", PractState: " + boolToString(getPracticeLevelState()[0]) + " " + boolToString(getPracticeLevelState()[1]) + ", AvgSess: " + getAvgSessionDuration());
     }
     public void showTagStuff()
     {
-        Debug.Log("*[" + imagesCompleted.Count + "]Images(" + lastImage +"): (" + string.Join(",", imagesCompleted) + ")\n" +
+        Debug.Log("*[" + imagesCompleted.Count + "]Images(" + getSession().end_im + "): (" + string.Join(",", imagesCompleted) + ")\n" +
             "*[" + tags.Count + "]Tags: (" + string.Join(",", tags) + ")");
     }
     public void showMoveBounds()
     {
-        Debug.Log("Move Bounds: (" + string.Join(", ", movementBounds) + "), (" + string.Join(", ", movementTime) + ")");
+        Debug.Log("Move Bounds: (" + string.Join(", ", getSession().moveBounds) + "), (" + string.Join(", ", getSession().moveTimes) + ")");
     }
 
     //data usage (reading/writing)
     public IEnumerable<string> writeMainData()
     {
-        yield return "Basic_Data:\n";
-        yield return "User_Name,Date_Joined,Time_Logged,Started_PL, Finshed_PL,Difficulty,Last_Image\n"; //formatting
+        yield return "User_Name,Date_Joined,Time_Logged\n"; //formatting
         yield return userName;
         yield return dateJoined;
         yield return ((int)timeLogged).ToString(); //TODO: check if this int yields error
-        yield return boolToString(startedPracticeLevel);
-        yield return boolToString(finishedPracticeLevel);
-        yield return difficulty.ToString();
-        yield return lastImage.ToString();
 
-        yield return "\nCompleted_Images:\n";
-        for(int i = 0; i < imagesCompleted.Count; i++) //formatting
+        yield return "\nDate_Time,Duration,First_Image,Last_Image,Started_PL,Finished_PL,Difficulty," +
+            "Offset_XLeft,Time_XLeft,Offset_XRight,Time_XRight,Offset_YDown,Time_YDown,Offset_YUp,Time_YUp,Offset_ZForward,Time_ZForward\n";
+        foreach (SessionData sesh in sessions)
+        {
+            foreach (string toWrite in sesh.write())
+            {
+                yield return toWrite;
+            }
+        }
+
+        yield return "\nImages Completed:\n";
+        /*for(int i = 0; i < imagesCompleted.Count; i++) //formatting
         {
             yield return "Image#";
         }
-        yield return "\n";
+        yield return "\n";*/
         foreach (int image in imagesCompleted)
         {
             yield return image.ToString();
         }
 
-        yield return "\nMovement_Bounds:\n";
-        yield return "Offset_XLeft,Time_XLeft,Offset_XRight,Time_XRight,Offset_YDown,Time_YDown,Offset_YUp,Time_YUp,Offset_ZForward,Time_ZForward\n"; //formatting
-        for (int i = 0; i < movementBounds.Length; i++) //always 8 entries
-        {
-            yield return movementBounds[i].ToString(decimalPlaces);
-            yield return movementTime[i].ToString(decimalPlaces);
-        }
-
-        yield return "\nPlaced_Tags:\n"; //marker to collect tag info
-        yield return "Tag_Name,TagX,TagY,TagZ,Tag_Image#\n"; //formatting
+        yield return "\nTag_Name,TagX,TagY,TagZ,Tag_Image#\n"; //formatting
         foreach (TagInfo tag in tags)
         {
             yield return tag.name;
@@ -385,18 +458,12 @@ public class UserInfo //not sure if : this() is necessary
             yield return tag.image.ToString() + "\n";
         }
 
-        yield return "\nSessions:\n";
-        yield return "Date_Time,Duration\n";
-        for (int i = 0; i < sessionsLogged.Count; i++)
-        {
-            yield return sessionsLogged[i];
-            yield return sessionDuration[i].ToString(decimalPlaces) + "\n";
-        }
+        
         yield return "\nfinish"; //end marker
     }
     public IEnumerable<string> writeMovementData()
     {
-        yield return userName + "'s Movement Data:\n";
+        //yield return userName + "'s Movement Data:\n";
         yield return "Elapsed_Time,System_Time";
         yield return "Cursor_Moving"; //whether or not user intends to move cursor
 
@@ -440,7 +507,7 @@ public class UserInfo //not sure if : this() is necessary
         userName = data[0];
         dateJoined = data[1];
         timeLogged = float.Parse(data[2]);
-        startedPracticeLevel = stringToBool(data[3]);
+        /*startedPracticeLevel = stringToBool(data[3]);
         finishedPracticeLevel = stringToBool(data[4]);
         difficulty = int.Parse(data[5]);
         lastImage = int.Parse(data[6]);
@@ -483,7 +550,7 @@ public class UserInfo //not sure if : this() is necessary
         }
         counter += 8;
         //actual movement data
-        /*movements.Clear(); //saftey
+        movements.Clear(); //saftey
         while (data[counter] != "finish")
         {
             MovementData newMoveEntry = new MovementData( //alternative pos & rot, vector3's
@@ -501,7 +568,7 @@ public class UserInfo //not sure if : this() is necessary
         return true;
     }
 
-    private string boolToString(bool b)
+    private static string boolToString(bool b)
     {
         if (b)
         {
@@ -513,7 +580,7 @@ public class UserInfo //not sure if : this() is necessary
         }
         //return b ? "1" : "0"; //just use ternary
     }
-    private bool stringToBool(string s)
+    private static bool stringToBool(string s)
     {
         if (s == "1")
         {
@@ -530,24 +597,17 @@ public class UserInfo //not sure if : this() is necessary
     private string userName;
     private string dateJoined;
     private float timeLogged = 0f; //time spent in interface
-    private List<string> sessionsLogged = new List<string>(); //dates of sessions joined
-    private List<float> sessionDuration = new List<float>(); //duration of each session
+    public List<SessionData> sessions = new List<SessionData>();
     private float startTime = 0f; //helper ^
 
-    private bool startedPracticeLevel = false; //tracks basic progress
-    private bool finishedPracticeLevel = false;
-
     private List<int> imagesCompleted = new List<int>(); //list of images by index - last index'd image is most recent/present
-    private int lastImage = -1; //current image the user is editing
+
     private List<TagInfo> tags = new List<TagInfo>(); //in case the user wants to access their past tagged images we save all the tag infos
 
     private float cameraSpeed; //personalized settings 
     private float cursorSpeed;
     private float cursorSize;
-    private float difficulty = 5;
 
-    private float[] movementBounds = new float[] { 0f, 0f, 0f, 0f, 0f }; //-x, x,-y, y, z
-    private float[] movementTime = new float[] { 0f, 0f, 0f, 0f, 0f }; //can also be new float[5]?
     private List<MovementData> movements = new List<MovementData>();
     //compulsory movement tracker?
 

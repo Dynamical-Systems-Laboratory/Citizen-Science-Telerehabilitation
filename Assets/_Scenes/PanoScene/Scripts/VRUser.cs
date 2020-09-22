@@ -52,9 +52,8 @@ public class VRUser : MonoBehaviour
 
     public static float moveThreshold1 = 0.09f; //percentages for (1)reading movement & (2)displaying movement (+haptics)
     public static float moveThreshold2 = 0.70f;
-    public static float moveThreshold3;
 
-    public static float baseZCalibration = 1.4f; //var that signifies how far the user is supposed to reach (z) given no calibration data
+    public static float baseZCalibration = 1.2f; //var that signifies how far the user is supposed to reach (z) given no calibration data
 
     public float totalTime = 0f;
 
@@ -101,7 +100,6 @@ public class VRUser : MonoBehaviour
         moveThreshold2 += 0.02f * (state.user.getSettingData()[0] - 5);
         if (moveThreshold1 < 0) { moveThreshold1 = 0; }
         if (moveThreshold2 < 0) { moveThreshold2 = 0; }
-        moveThreshold3 = (moveThreshold1  + moveThreshold2) / 2f;
     }
 
     // Update is called once per frame
@@ -111,10 +109,13 @@ public class VRUser : MonoBehaviour
         {
             OVRInput.Update();
             OVRInput.FixedUpdate();
-
+            //time checks
+            Debug.Log("SystTime: (1)" + System.DateTime.Now.ToString("hh:mm:ss.fff") + "\n(2)"
+                + System.DateTime.Now.ToString("hh:mm:ss.") + System.DateTime.Now.Millisecond + "\n(3)" 
+                + System.DateTime.Now.ToString("hh:mm:ss.ffff"));
             totalTime += Time.deltaTime;
             //Debug.Log("Total Elapsed Time: " + totalTime + ", System: " + System.DateTime.Now.ToString("hh:mm:ss"));
-            state.user.addMovement(totalTime, System.DateTime.Now.ToString("hh:mm:ss.ffff"), state.userControlActive, playerHead.transform,
+            state.user.addMovement(totalTime, System.DateTime.Now.ToString("hh:mm:ss.fff"), state.userControlActive, playerHead.transform,
                 OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles,
                 OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.LHand).eulerAngles);
             //state.user.moveDataConfirm();
@@ -302,12 +303,12 @@ public class VRUser : MonoBehaviour
 
                 //clicking - click if user is a certain % of their max z range
                 //Debug.Log("Added Z Stuff: " + change.z + " vs. " + (state.user.getMovementBounds(5) * moveThreshold3));
-                if ((change.z - (state.user.getMovementBounds(5) * moveThreshold3)) > 0) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
+                if ((change.z - (state.user.getMovementBounds(5) * moveThreshold2)) > 0) //TODO divide bounds by factor so user isnt always expected to go to their full range of motion
                 {
                     state.userClick = true;
                     state.userIsClicking = true;
                 }
-                else if (change.z > state.user.getMovementBounds(5) * moveThreshold3)
+                else if (change.z > state.user.getMovementBounds(5) * moveThreshold2)
                 {
                     state.userIsClicking = true;
                     state.userClick = false;
@@ -330,12 +331,12 @@ public class VRUser : MonoBehaviour
                 }
 
                 //clicking - same clicking methodology but based on an easy-to-reach position instead of calibrated data
-                if ((Math.Floor(change.z) - (baseZCalibration * moveThreshold3)) > 0)
+                if ((Math.Floor(change.z) - (baseZCalibration * moveThreshold2)) > 0)
                 {
                     state.userClick = true;
                     state.userIsClicking = true;
                 }
-                else if (change.z > baseZCalibration * moveThreshold3)
+                else if (change.z > baseZCalibration * moveThreshold2)
                 {
                     state.userIsClicking = true;
                     state.userClick = false;
