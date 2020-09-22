@@ -115,7 +115,7 @@ public class VRUser : MonoBehaviour
                 + System.DateTime.Now.ToString("hh:mm:ss.ffff"));
             totalTime += Time.deltaTime;
             //Debug.Log("Total Elapsed Time: " + totalTime + ", System: " + System.DateTime.Now.ToString("hh:mm:ss"));
-            state.user.addMovement(totalTime, System.DateTime.Now.ToString("hh:mm:ss.fff"), state.userControlActive, playerHead.transform,
+            state.user.addMovement(totalTime, System.DateTime.Now.ToString("hh:mm:ss.") + System.DateTime.Now.Millisecond, state.userControlActive, playerHead.transform,
                 OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles,
                 OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.LHand).eulerAngles);
             //state.user.moveDataConfirm();
@@ -215,6 +215,10 @@ public class VRUser : MonoBehaviour
                 state.userIsClicking = false;
                 state.userClick = false;
                 ClickAction.dropObject();
+            }
+            if (state.userControlActive == false) //saftey
+            {
+                trueCursor.transform.position = centerer.transform.position;
             }
 
             //EXTRA (thumbstick) cursor control

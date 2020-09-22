@@ -71,8 +71,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     public static GameObject horiz;
     //public static Text lockText;
 
-    public static string continueText = "(Press <b>A</b> or <b>X</b> to continue)";
-    public static string continueText2 = "\n(Push the <b>index trigger<b/ to skip the calibration)";
+    public static string continueText = "Press A or X to continue";//"(Press <b>A</b> or <b>X</b> to continue)";
+    public static string continueText2 = "\n(Push the index trigger to skip the calibration)";//"\n(Push the <b>index trigger<b/> to skip the calibration)";
 
     public static GameObject cursor;
     public static GameObject cursorCam;
@@ -210,8 +210,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
                     state.makeCursReset = true;
-                    text.text = "The cursor is currently in <color=purple>locked mode</color>,\n center your hands and squeeze the <b>hand triggers</b> to unlock the cursor\n"
-                        + "To see a demonstration of this, " + continueText + " to a video";
+                    text.text = "The cursor is currently in its <color=purple>locked mode</color>\n"
+                        + "To see a demonstration of how to <color=green>unlock</color> it, " + continueText + " to a video";
                     step++;
                     timer = 0;
                 }
@@ -242,7 +242,9 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     //Debug.Log("Step 2 Counter: " + counter);
                     if (counter == 0 && !VRUser.isResetting())
                     {
-                        text.text = "(Now try <color=green>unlocking</color> the cursor yourself, the cursor will flash <color=green>green</color> if you’ve done it correctly...\n Remember the unlock buttons are the two hand triggers.";
+                        text.text = "Now try <color=green>unlocking</color> the cursor yourself,\n" +
+                            "(Center your hands and squeeze the <b>hand triggers</b> to unlock the cursor)\n" +
+                            "the cursor will flash <color=green>green</color> if you’ve done it correctly...\n Remember the unlock buttons are the two hand triggers.";
                     }
                     else if (counter == 0 && VRUser.isResetting()) //just skips cuz of getdown problems but solve later...
                     {
@@ -252,7 +254,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     }
                     else if (counter == 1 && VRUser.isNotResetting())
                     {
-                        text.text = "Great! Try to <color=green>unlock</color> the cursor one more time...";
+                        text.text = "Let's practice <color=green>unlocking</color> the cursor once more.\n" +
+                            "(Center your hands and squeeze the <b>hand triggers</b> to unlock the cursor)";
                         counter = 2;
                         state.userControlActive = false;
                     }
@@ -271,7 +274,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
             else if (step == 3) //cursor moves left
             { //Show user what movements can be done
-                text.text = "Excellent! Now you'll start to move the cursor.\n Watch the video examples then try it on your own..." +
+                text.text = "Great! Now lets practice moving the cursor.\n" +
+                    "Stand at a starting position with your elbows bend and the controllers near your shoulders" +
                     "\n When you’re ready to see the movements in action, " + continueText;
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {

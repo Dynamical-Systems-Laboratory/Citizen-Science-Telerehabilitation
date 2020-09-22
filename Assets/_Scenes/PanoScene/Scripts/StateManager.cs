@@ -184,7 +184,7 @@ public class StateManager : MonoBehaviour {
         //GameObject.Find("SimpleTutorialCanvas").SetActive(true);
         //complexUser.VRPerson.SetActive(true);
 
-        //userControlActive = false;
+        userControlActive = false;
         makeCursReset = true;
 
         if (isGaming(true))

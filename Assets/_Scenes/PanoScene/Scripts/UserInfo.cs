@@ -422,12 +422,15 @@ public class UserInfo //not sure if : this() is necessary
     //data usage (reading/writing)
     public IEnumerable<string> writeMainData()
     {
+        yield return "Basic Data:\n";
         yield return "User_Name,Date_Joined,Time_Logged\n"; //formatting
         yield return userName;
         yield return dateJoined;
         yield return ((int)timeLogged).ToString(); //TODO: check if this int yields error
 
-        yield return "\nDate_Time,Duration,First_Image,Last_Image,Started_PL,Finished_PL,Difficulty," +
+        yield return "\nSession Data: \n";
+
+        yield return "Date_Time,Duration,First_Image,Last_Image,Started_PL,Finished_PL,Difficulty," +
             "Offset_XLeft,Time_XLeft,Offset_XRight,Time_XRight,Offset_YDown,Time_YDown,Offset_YUp,Time_YUp,Offset_ZForward,Time_ZForward\n";
         foreach (SessionData sesh in sessions)
         {
@@ -449,6 +452,7 @@ public class UserInfo //not sure if : this() is necessary
         }
 
         yield return "\nTag_Name,TagX,TagY,TagZ,Tag_Image#\n"; //formatting
+        //yield return "\n";
         foreach (TagInfo tag in tags)
         {
             yield return tag.name;
@@ -484,7 +488,7 @@ public class UserInfo //not sure if : this() is necessary
                 limb = "done";
             }
         }
-        yield return "\n";
+        //yield return "\n";
 
         foreach (MovementData move in movements)
         {
