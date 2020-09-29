@@ -239,7 +239,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		//tagCopy = null;
 	}
 
-	public static int tagClose() //tags -- maybe try implicit operator to easily int->bool convert?
+	/*public static int tagClose() //tags -- maybe try implicit operator to easily int->bool convert?
 	{ //nextButton.transform.position
 		Vector3 diff = state.getCursorPosition();
 		if (diff.x > 25 && diff.x < 55.8)
@@ -248,7 +248,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			{
 				return 1;
 			}
-			else if (diff.y > -12.7 && diff.y < 0.7 )
+			else if (diff.y > -12.7 && diff.y < 0.7)
 			{
 				return 2;
 			}
@@ -263,7 +263,44 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		}
 
 		return 0;
+	}*/
+	public static bool tag1Close() //bin
+	{
+		Vector3 diff = state.getCursorPosition();
+		if (diff.x > 25 && diff.x < 55.8 && diff.y > 4.2 && diff.y < 16.8)
+		{
+			return true;
+		}
+		return false;
 	}
+	public static bool tag2Close() //bin
+	{
+		Vector3 diff = state.getCursorPosition();
+		if (diff.x > 25 && diff.x < 55.8 && diff.y > -12.7 && diff.y < 0.7)
+		{
+			return true;
+		}
+		return false;
+	}
+	public static bool tag3Close() //bin
+	{
+		Vector3 diff = state.getCursorPosition();
+		if (diff.x > 25 && diff.x < 55.8 && diff.y > -28.7 && diff.y < -15.6)
+		{
+			return true;
+		}
+		return false;
+	}
+	public static bool tag4Close() //bin
+	{
+		Vector3 diff = state.getCursorPosition();
+		if (diff.x > 25 && diff.x < 55.8 && diff.y > -45.5 && diff.y < -32.2)
+		{
+			return true;
+		}
+		return false;
+	}
+
 	public static bool binClose() //bin
 	{
 		Vector3 diff = state.getCursorPosition();

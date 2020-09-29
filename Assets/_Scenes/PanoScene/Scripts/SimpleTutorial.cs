@@ -204,6 +204,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
             //start of steps
             //TODO: maybe go over color coding?
+            //TODO; take out video of first step
             if (step == 0) //introduces calibration
             {
                 timer += Time.deltaTime;
@@ -244,7 +245,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     {
                         text.text = "Now try <color=green>unlocking</color> the cursor yourself,\n" +
                             "(Center your hands and squeeze the <b>hand triggers</b> to unlock the cursor)\n" +
-                            "the cursor will flash <color=green>green</color> if you’ve done it correctly...\n Remember the unlock buttons are the two hand triggers.";
+                            "the cursor will flash <color=green>green</color> if you’ve done it correctly...";
                     }
                     else if (counter == 0 && VRUser.isResetting()) //just skips cuz of getdown problems but solve later...
                     {
@@ -275,8 +276,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             else if (step == 3) //cursor moves left
             { //Show user what movements can be done
                 text.text = "Great! Now lets practice moving the cursor.\n" +
-                    "Stand at a starting position with your elbows bend and the controllers near your shoulders" +
-                    "\n When you’re ready to see the movements in action, " + continueText;
+                    "Stand at a starting position with your elbows bent and the controllers near your shoulders" +
+                    "\n When you’re ready to see these movements in action, " + continueText;
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
                     text.text = "The cursor can be moved left and right...";
@@ -519,11 +520,12 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     {
                         text.text = "Return to beginning position with the controllers near your shoulders\n" +
                             "<color=green>Unlock</color> your cursor and move both hands forward\n" +
-                            "When you reach the furthest you can, press A or X";
+                            "When you reach the furthest you can, press A or X\n" +
+                            "The cursor should highlight <color=red>red</color> if you reach far enough";
                     }
                     else if (counter > 0 && counter < 5)
                     {
-                        text.text = "Excellent! Repeat this movement " + (5 - counter) + " more times";
+                        text.text = "Excellent! Repeat this movement <b>" + (5 - counter) + "</b> more times";
                     }
                     else if (counter == 5)
                     {
@@ -566,7 +568,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
             else if (step == 11)
             {
-                text.text = "Well done! Now <color=purple>lock</color> your cursor by pressing the index trigger button";
+                text.text = "Well done! Now <color=purple>lock</color> your cursor by pressing the <b>index trigger</b> button";
                 if (VRUser.cursorRelock())
                 {
                     step++;

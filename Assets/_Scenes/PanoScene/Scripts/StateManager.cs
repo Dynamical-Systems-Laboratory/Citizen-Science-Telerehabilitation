@@ -228,12 +228,12 @@ public class StateManager : MonoBehaviour {
                 foreach (string data in user.writeMainData()) //or String.Join(",", enum)
                 {
                     writer.Write(data + ","); //comma separated value file = csv
-                    //Debug.Log("Data: " + data);
+                    //Debug.Log("DataMain: " + data);
                 }
                 foreach (string data in user.writeMovementData())
                 {
                     writer2.Write(data + ",");
-                    //Debug.Log("Data2: " + data);
+                    Debug.Log("DataMove: " + data); //check for timestamp sigfigs
                 }
                 writer.Write("\n"); //indent for new data (delete previous data in another step)
                 Debug.Log("Data Finished Writting...");

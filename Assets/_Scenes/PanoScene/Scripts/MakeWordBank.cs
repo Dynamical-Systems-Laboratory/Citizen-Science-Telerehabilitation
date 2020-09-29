@@ -579,7 +579,7 @@ public class MakeWordBank : MonoBehaviour {
         {
             initialized = false;
         }
-
+ 
         //Practice Level Stuff
         if (state.getState() == 7)
         {

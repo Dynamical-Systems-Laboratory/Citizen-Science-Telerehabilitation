@@ -51,9 +51,9 @@ public class VRUser : MonoBehaviour
     public static bool showMoveStats = false; //bool to debug.log calibration stats
 
     public static float moveThreshold1 = 0.09f; //percentages for (1)reading movement & (2)displaying movement (+haptics)
-    public static float moveThreshold2 = 0.70f;
+    public static float moveThreshold2 = 0.75f;
 
-    public static float baseZCalibration = 1.2f; //var that signifies how far the user is supposed to reach (z) given no calibration data
+    public static float baseZCalibration = 1.1f; //var that signifies how far the user is supposed to reach (z) given no calibration data
 
     public float totalTime = 0f;
 
@@ -109,13 +109,13 @@ public class VRUser : MonoBehaviour
         {
             OVRInput.Update();
             OVRInput.FixedUpdate();
-            //time checks
-            Debug.Log("SystTime: (1)" + System.DateTime.Now.ToString("hh:mm:ss.fff") + "\n(2)"
-                + System.DateTime.Now.ToString("hh:mm:ss.") + System.DateTime.Now.Millisecond + "\n(3)" 
-                + System.DateTime.Now.ToString("hh:mm:ss.ffff"));
+
+            //Debug.Log("SystTime: (1)" + System.DateTime.Now.ToString("hh:mm:ss.fff") + "\n(2)" //time checks
+            //+ System.DateTime.Now.ToString("hh:mm:ss.") + System.DateTime.Now.Millisecond + "\n(3)" 
+            //+ System.DateTime.Now.ToString("hh:mm:ss.ffff"));
             totalTime += Time.deltaTime;
             //Debug.Log("Total Elapsed Time: " + totalTime + ", System: " + System.DateTime.Now.ToString("hh:mm:ss"));
-            state.user.addMovement(totalTime, System.DateTime.Now.ToString("hh:mm:ss.") + System.DateTime.Now.Millisecond, state.userControlActive, playerHead.transform,
+            state.user.addMovement(totalTime, System.DateTime.Now.ToString("HH:mm:ss.fff"), state.userControlActive, playerHead.transform,
                 OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles,
                 OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.LHand).eulerAngles);
             //state.user.moveDataConfirm();
@@ -627,10 +627,26 @@ public class VRUser : MonoBehaviour
 
     public static int buttonConversion() //for MakeWordBank
     {
-        int i = ClickAction.tagClose();
+        /*int i = ClickAction.tagClose();
         if (i != 0)
         {
             return (i + 1); //2-5
+        }*/
+        if (ClickAction.tag1Close()) //tags [1,4] (top to bottom)
+        {
+            return 2;
+        }
+        else if (ClickAction.tag2Close())
+        {
+            return 3;
+        }
+        else if (ClickAction.tag3Close())
+        {
+            return 4;
+        }
+        else if (ClickAction.tag4Close())
+        {
+            return 5;
         }
         else if (ClickAction.uiButtonClose()) //next
         {

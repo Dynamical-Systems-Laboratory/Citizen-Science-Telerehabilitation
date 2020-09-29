@@ -428,7 +428,7 @@ public class UserInfo //not sure if : this() is necessary
         yield return dateJoined;
         yield return ((int)timeLogged).ToString(); //TODO: check if this int yields error
 
-        yield return "\nSession Data: \n";
+        yield return "\nSession Data:\n";
 
         yield return "Date_Time,Duration,First_Image,Last_Image,Started_PL,Finished_PL,Difficulty," +
             "Offset_XLeft,Time_XLeft,Offset_XRight,Time_XRight,Offset_YDown,Time_YDown,Offset_YUp,Time_YUp,Offset_ZForward,Time_ZForward\n";
@@ -467,7 +467,7 @@ public class UserInfo //not sure if : this() is necessary
     }
     public IEnumerable<string> writeMovementData()
     {
-        //yield return userName + "'s Movement Data:\n";
+        yield return userName + "'s Movement Data:\n";
         yield return "Elapsed_Time,System_Time";
         yield return "Cursor_Moving"; //whether or not user intends to move cursor
 
