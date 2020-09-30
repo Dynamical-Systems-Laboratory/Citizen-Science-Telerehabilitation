@@ -16,7 +16,7 @@ public class MakeWordBank : MonoBehaviour {
     //public FalconPointer fpointer;
 
     public TextAsset tagsText;
-    private List<GameObject> tagGameObjects;
+    //private List<GameObject> tagGameObjects;
     StateManager state; //For tutorial only
 
     // The Text object will be a child of the panel representing that tag, so it is fine to have one array representing the GameObject and the Tag for each tag
@@ -250,21 +250,29 @@ public class MakeWordBank : MonoBehaviour {
 
     //TODO: randomize indexes and tags
     //private static System.Random rng = new System.Random();
+    //System.Random random = new System.Random(); //test randomizer
+    /*public static void shuffle<t>(this ilist<t> list)
+    {
+        int n = list.count;
+        while (n > 1)
+        {
+            n--;
+            int k = rng.next(n + 1);
+            t value = list[k];
+            list[k] = list[n];
+            list[n] = value;
+        }
+    }
+    shuffle<string>(tutorialwords);
+    shuffle(imageMaterials);
+    for (int i = inputArray.Length - 1; i > 0; i--)
+    {
+     int randomIndex = random.Next(0, i + 1);
 
-    //public static void Shuffle<T>(this IList<T> list)
-    //{
-    //    int n = list.Count;
-    //    while (n > 1)
-    //    {
-    //        n--;
-    //        int k = rng.Next(n + 1);
-    //        T value = list[k];
-    //        list[k] = list[n];
-    //        list[n] = value;
-    //    }
-    //}
-    //Shuffle<string>(tutorialWords);
-    //Shuffle(imageMaterials);
+        int temp = inputArray[i];
+        inputArray[i] = inputArray[randomIndex];
+     inputArray[randomIndex] = temp;
+    }*/
 
     void Awake() {
         userMovement = GameObject.Find("VRPerson").GetComponent<VRUser>();
@@ -314,7 +322,7 @@ public class MakeWordBank : MonoBehaviour {
         }
         tagsRemainingText = GameObject.FindGameObjectWithTag("TagsRemainingText").GetComponent<Text>(); // remaining tags**
 
-        tagGameObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag("Tag")); //same as 2-5 vr user interactables
+        //tagGameObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag("Tag")); //same as 2-5 vr user interactables (interactableTag)
         /*foreach (Transform child in transform) //add all of children of this object as tags
         {
             if (child != transform) // The first child will be the parent transform, which should be excluded
@@ -327,13 +335,20 @@ public class MakeWordBank : MonoBehaviour {
         tagGameObjects.Add(GameObject.Find("Tag3"));
         tagGameObjects.Add(GameObject.Find("Tag4"));*/
 
-        tags = new Tag[tagGameObjects.Count];
-        for (int i = 0; i < tags.Length; i++) {
-            tags[i] = new Tag(tagGameObjects[i], i);
+        tags = new Tag[4]; //tagGameObjects.Count (maybe make dynamic tag number later?)
+        int tagCounter = 0;
+        foreach (GameObject newTag in GameObject.FindGameObjectsWithTag("interactableTag")) //adding GameObject refrences for tags
+        {
+            //tags[i] = new Tag(tagGameObjects[i], i);
+            tags[tagCounter] = new Tag(newTag, tagCounter);
+            tagCounter++;
         }
-
+        /*tags[0] = new Tag(GameObject.Find("Tag1"), 0);
+        tags[1] = new Tag(GameObject.Find("Tag2"), 1);
+        tags[2] = new Tag(GameObject.Find("Tag3"), 2);
+        tags[3] = new Tag(GameObject.Find("Tag4"), 3);*/
         //Read CSV File:
-        using (StringReader sr = new StringReader(tagsText.text))
+        using (StringReader sr = new StringReader(tagsText.text)) //reading tag names?
         {
             string line;
 
@@ -359,7 +374,7 @@ public class MakeWordBank : MonoBehaviour {
         renderBackground(0, tutorialImageMaterial); //renders background, img # doesnt matter
 
         //Word bank isn't applicable for the tutorial level:
-        for (int i = 0; i < tags.Length; i++)
+        for (int i = 0; i < tags.Length; i++) //setting init tag vals
         {
             tags[i].setText(tutorialWords[tutorialWordsIndex]);
             tutorialWordsIndex++;
@@ -469,7 +484,7 @@ public class MakeWordBank : MonoBehaviour {
                 {
                     int buttonsConverted = VRUser.buttonConversion();
                     //Debug.Log("IsClicking! " + buttonsConverted);
-                    if (buttonsConverted == 1) //next
+                    if (buttonsConverted == 0) //next
                     {
                         Debug.Log("Next Imaging!!!");
                         if (imageIndex >= imageMaterials.Length - 1) //out of images
@@ -507,14 +522,14 @@ public class MakeWordBank : MonoBehaviour {
                         state.userIsClicking = false;
                         state.makeCursReset = true;
                     }
-                    else if (buttonsConverted == 6) //home
+                    else if (buttonsConverted == 5) //home
                     { //keep tags in place without them bveing a child of the tag class objects thing? new subclass?
                         eventListener.OnPointerClick(quitButton);
                         state.setState(1);
                         state.makeCursReset = true;
                         state.userIsClicking = false;
                     }
-                    else if (buttonsConverted == 7) //bin
+                    else if (buttonsConverted == 6) //bin
                     {
                         if (state.getSelected() != null)
                         {
@@ -524,7 +539,7 @@ public class MakeWordBank : MonoBehaviour {
                             eventListener.OnPointerClick();
                         }
                     }
-                    else
+                    else //mostely 1-4 & 8
                     {
                         findObjClick(buttonsConverted);
                     }
@@ -583,6 +598,13 @@ public class MakeWordBank : MonoBehaviour {
         //Practice Level Stuff
         if (state.getState() == 7)
         {
+            /* Tag pos (tag then center then trash then next then home
+             * 1: x(46, 11, -596.1)
+             * 2: x(-14, 15, -596.1)
+             * 3: x(69, -6.5, -596.1)
+             * 4: x(45, 28, -596.1)
+             * 5: x(45, -55.5, -596.1)
+             */
             if (!initialized)
             {
                 stepOfTutorial = 23;
@@ -661,7 +683,7 @@ public class MakeWordBank : MonoBehaviour {
             {
                 tutorialText.text = "This is the game view, take a moment to look around...\n" +
                     "What you see in the background is an example of one of the images you will be placing tags in.\n" +
-                    "When your ready to start placing tags" + SimpleTutorial.continueText;
+                    "When your ready to start placing tags, " + SimpleTutorial.continueText;
                 if (moveOn() && !skip())
                 {
                     stepOfTutorial++;
@@ -761,7 +783,7 @@ public class MakeWordBank : MonoBehaviour {
                 LoadingIconScript.active = false;
             }
         }
-        */
+        
         for (int i = 0; i < tags.Length; i++) //?
         {
             if (tags[i].isChangingColor)
@@ -772,7 +794,7 @@ public class MakeWordBank : MonoBehaviour {
             {
                 tags[i].isChangingColor = false;
             }
-        }
+        }*/
     }
 
     public static bool moveOn() //basically the catch-all method for continuing
@@ -796,22 +818,10 @@ public class MakeWordBank : MonoBehaviour {
 
         //if not holding an object and close to either the quit or the next image button do that
         //create get rid of object button
-        if (objConv != 0 && objConv != 7)// && Input.GetKeyDown(KeyCode.G)) - doublecheck
-        {
-            //float shortDist = 1000000f;
-            /*foreach (GameObject tag in tagGameObjects) //mathf.abs
-            {
-                float newMin = (state.getCursorPosition() - tag.transform.localPosition).magnitude; //confirm tag
-                //newMin = Mathf.Abs(newMin); //absolute value
-                if (newMin < shortDist)
-                {
-                    shortDist = newMin;
-                    toClick = tag;
-                }
-            }*/
+        if (objConv <= 4 && objConv >= 1)// && Input.GetKeyDown(KeyCode.G)) <- doublecheck
+        {  // (if obj is tag)
             toClick = VRUser.interactables[objConv];
 
-            //Debug.Log("Closest Object" + toClick.name + ", Tag: " + toClick.tag + ", Distance: " + shortDist);
             if (state.getSelected() != null)
             {
                 Destroy(state.getSelected());
@@ -821,7 +831,7 @@ public class MakeWordBank : MonoBehaviour {
             ClickAction.lastTag = objConv;
             eventListener.OnPointerClick(toClick);
         }
-        else
+        else //placing something down or clicking nothing (handled by ClickAction)
         {
             eventListener.OnPointerClick();
         }

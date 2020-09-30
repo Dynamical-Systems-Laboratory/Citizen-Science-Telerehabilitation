@@ -23,12 +23,13 @@ public class VRUser : MonoBehaviour
 
     public static Color nothing = new Color(1, 1, 1, 0);
     public static Color selectedColor;
-    public static Color highlightColor = new Color(1, 253/255, 126/255, 1);
+    public static Color highlightColor = Color.magenta; // new Color(1, 253/255, 126/255, 1);
 
     public static GameObject cursorPos;
-    public static Color cursorHighlight = Color.green;
-    public static Color cursorHighlight2 = Color.red;
-    public static Color cursorHighlight3 = Color.magenta;
+    //TODO fix tutorial text coloring
+    public static Color cursorHighlight = Color.blue;//new Color(88/255, 6/255, 140/255, 159/255);//HomeScreen.nyuPurple;
+    public static Color cursorHighlight2 = Color.green;//Color.red;
+    public static Color cursorHighlight3 = Color.yellow; // Color.magenta;
     public static Color tagColor = new Color(1, 1, 1, 101 / 255);
     public static Color binColor = new Color(134 / 255, 150 / 255, 167 / 255, 186 / 255);
     public static Color binColor2 = new Color(167 / 255, 134 / 255, 143 / 255, 186 / 255);
@@ -44,7 +45,7 @@ public class VRUser : MonoBehaviour
     public static bool extraControls = false; //for keyboard controls and other developer stuff
 
     public static List<GameObject> interactables = new List<GameObject>();
-    public static Vector3 uiButtonOffset = new Vector3(0f, 27f, 0f); //offset needed for button accuracy with uiButton methods within clickaction
+    public static Vector3 uiButtonOffset = new Vector3(-5f, 0f, 0f); //offset needed for button accuracy with uiButton methods within clickaction
 
     public static Vector3 change; //modified change of controller movement
 
@@ -58,6 +59,11 @@ public class VRUser : MonoBehaviour
     public float totalTime = 0f;
 
     public static float controllerVibration = 0f;
+
+    public static GameObject clickColor;
+    public static GameObject clickLock;
+    private static Color showLock;
+    private static Color hideLock;
     /*  TODO!!
      * rework cameras:
      * * * work with survey stuff later
@@ -68,11 +74,7 @@ public class VRUser : MonoBehaviour
     // Start is called before the first frame update
     private void Awake()
     { //Ctrl+K+C = comment (+K+U = uncomment)
-        cursorHighlight.a = 105f / 255f;
-        cursorHighlight2.a = 75f / 255f;
-        //cursorHighlight3 = HomeScreen.nyuPurple;
-        cursorHighlight3.a = 80f / 255f;
-        //player head and controllers set within Unity Scene (VRPerson's children)
+        //(general player stuff) player head and controllers set within Unity Scene (VRPerson's children)
         VRPerson = GameObject.Find("VRPerson");
         playerHead = GameObject.Find("CenterEyeAnchor");
         state = GameObject.Find("Canvas").GetComponent<StateManager>();
@@ -81,25 +83,42 @@ public class VRUser : MonoBehaviour
         playerArms = GameObject.Find("arms");
         playerPos = new UserBounds(playerHead.transform.position - new Vector3(0f,3f,0f), playerHead.transform.position);
 
+        //headset anchors
         centerer = GameObject.Find("cursorCenter");
         farUp = GameObject.Find("headsetUp");
         farRight = GameObject.Find("headsetRight");
         farForward = GameObject.Find("headsetForward");
 
-        interactables.Add(GameObject.Find("NextButtonPanel"));
-        interactables.Add(GameObject.Find("HomeButtonPanel"));
-        foreach (GameObject tag in GameObject.FindGameObjectsWithTag("Tag"))
+        //interactables
+        interactables.Add(GameObject.Find("NextButtonPanel")); //0
+        foreach (GameObject tag in GameObject.FindGameObjectsWithTag("interactableTag"))
         {
-            interactables.Add(tag);
+            interactables.Add(tag); //1-4 tags
         }
-        interactables.Add(GameObject.Find("Bin"));
-        tagColor = interactables[2].GetComponent<Image>().color; //precausion
+        /*interactables.Add(GameObject.Find("Tag1"));
+        interactables.Add(GameObject.Find("Tag2"));
+        interactables.Add(GameObject.Find("Tag3"));
+        interactables.Add(GameObject.Find("Tag4"));*/
+        interactables.Add(GameObject.Find("HomeButtonPanel")); //5
+        interactables.Add(GameObject.Find("Bin")); //6
+        tagColor = interactables[1].GetComponent<Image>().color; //precausion
         binColor = interactables[6].GetComponent<Image>().color;
 
+        //threshold val changes
         moveThreshold1 += 0.025f * (state.user.getSettingData()[0] - 5); //mod by difficulty
         moveThreshold2 += 0.02f * (state.user.getSettingData()[0] - 5);
         if (moveThreshold1 < 0) { moveThreshold1 = 0; }
         if (moveThreshold2 < 0) { moveThreshold2 = 0; }
+
+        //color stuff
+        clickColor = GameObject.Find("showClick");
+        clickLock = GameObject.Find("showLock");
+        showLock = GameObject.Find("showLock").GetComponent<RawImage>().color;
+        hideLock = showLock;
+        hideLock.a = 0;
+        cursorHighlight.a = 120f / 255f; //unlocking
+        cursorHighlight2.a = 85f / 255f; //clicking
+        cursorHighlight3.a = 60f / 255f; //locked
     }
 
     // Update is called once per frame
@@ -122,7 +141,7 @@ public class VRUser : MonoBehaviour
 
             //vrInfo();
             state.user.showMoveBounds(); //Move Data Ex: (29.0044, -29.00861, 13.51058, -14.32116, 0), (3.651338, 6.311625, 4.176139, 7.143209, 0)
-            Debug.Log("[" + (state.userControlActive ? "1":"0") + "]Hand Tracking: " + handTracking(true) + ", Offset By: " + playerPos.arms + ", unfactored: " + handTracking(false));
+            //Debug.Log("[" + (state.userControlActive ? "1":"0") + "]Hand Tracking: " + handTracking(true) + ", Offset By: " + playerPos.arms + ", unfactored: " + handTracking(false));
             Debug.Log("Cont. Clicking: " + state.userIsClicking + ", Clicking: " + state.userClick); //continuous, noncontinuous clicking
 
             /* movement correction ideas:
@@ -150,31 +169,29 @@ public class VRUser : MonoBehaviour
                 int converted = buttonConversion();
                 switch (converted)
                 {
-                    case 0:
+                    case 8: //nothing detected
                         interactables[0].GetComponent<Image>().color = new Color(1, 1, 1, 1); //next
-                        interactables[1].GetComponent<Image>().color = new Color(1, 1, 1, 1); //home
-                        interactables[2].GetComponent<Image>().color = tagColor; //tags
+                        interactables[1].GetComponent<Image>().color = tagColor; //tags
+                        interactables[2].GetComponent<Image>().color = tagColor;
                         interactables[3].GetComponent<Image>().color = tagColor;
                         interactables[4].GetComponent<Image>().color = tagColor;
-                        interactables[5].GetComponent<Image>().color = tagColor;
-                        //GameObject.Find("Trash image").GetComponent<Image>().color = binUnhighlight; //trash
+                        interactables[5].GetComponent<Image>().color = new Color(1, 1, 1, 1); //home
                         interactables[6].GetComponent<Image>().color = binColor;
                         break;
-                    case 1:
+                    case 0: //next
                         interactables[0].GetComponent<Image>().color = highlightColor;
                         //controllerVibration += .15f;
                         break;
-                    case 6:
-                        interactables[1].GetComponent<Image>().color = highlightColor;
+                    case 6: // home
+                        interactables[5].GetComponent<Image>().color = highlightColor;
                         //controllerVibration += .15f;
                         break;
-                    case 7:
-                        //GameObject.Find("Trash image").GetComponent<Image>().color = binColor2;
+                    case 7: //trash
                         interactables[6].GetComponent<Image>().color = highlightColor;
                        // controllerVibration += .1f;
                         break;
                     default:
-                        //tags (converted 2-5)
+                        //tags (converted 1-4)
                         interactables[converted].GetComponent<Image>().color = highlightColor;
                         //controllerVibration += .1f;
                         break;
@@ -394,20 +411,24 @@ public class VRUser : MonoBehaviour
             //highlights the cursor based on certain actions
             if (isResetting(true) || isResetting(false)) //green = resetting
             {
-                GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight;
+                clickColor.GetComponent<Image>().color = cursorHighlight;
+                clickLock.GetComponent<RawImage>().color = hideLock;
             }
             else if (!state.userControlActive) //purple = locked
             {
-                GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight3;
+                clickColor.GetComponent<Image>().color = cursorHighlight3;
+                clickLock.GetComponent<RawImage>().color = showLock;
             }
             else if ((state.userIsClicking || state.userClick) && state.getState() != 5 && state.getState() != 6) //red = clicking
             {
                 //Debug.Log("Red Clicking should be shown");
-                GameObject.Find("showClick").GetComponent<Image>().color = cursorHighlight2;
+                clickColor.GetComponent<Image>().color = cursorHighlight2;
+                clickLock.GetComponent<RawImage>().color = hideLock;
             }
             else
             {
-                GameObject.Find("showClick").GetComponent<Image>().color = nothing;
+                clickColor.GetComponent<Image>().color = nothing;
+                clickLock.GetComponent<RawImage>().color = hideLock;
             }
 
             //extra haptics with thumbsticks
@@ -625,7 +646,7 @@ public class VRUser : MonoBehaviour
         else { return 0; }
     }
 
-    public static int buttonConversion() //for MakeWordBank
+    public static int buttonConversion() //8 = nothing
     {
         /*int i = ClickAction.tagClose();
         if (i != 0)
@@ -634,33 +655,33 @@ public class VRUser : MonoBehaviour
         }*/
         if (ClickAction.tag1Close()) //tags [1,4] (top to bottom)
         {
-            return 2;
+            return 1;
         }
         else if (ClickAction.tag2Close())
         {
-            return 3;
+            return 2;
         }
         else if (ClickAction.tag3Close())
         {
-            return 4;
+            return 3;
         }
         else if (ClickAction.tag4Close())
         {
-            return 5;
+            return 4;
         }
         else if (ClickAction.uiButtonClose()) //next
         {
-            return 1;
+            return 0;
         }
         else if (ClickAction.uiButtonClose2()) //home
         {
-            return 6;
+            return 5;
         }
         else if (ClickAction.binClose())
         {
             return 7;
         }
-        return 0;
+        return 8;
     }
 
     public static void armsFixes()

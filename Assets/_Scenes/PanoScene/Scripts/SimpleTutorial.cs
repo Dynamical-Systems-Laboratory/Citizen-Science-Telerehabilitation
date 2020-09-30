@@ -211,8 +211,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
                     state.makeCursReset = true;
-                    text.text = "The cursor is currently in its <color=purple>locked mode</color>\n"
-                        + "To see a demonstration of how to <color=green>unlock</color> it, " + continueText + " to a video";
+                    text.text = "The cursor is currently in its <color=yellow>locked mode</color>\n"
+                        + "To see a demonstration of how to <color=blue>unlock</color> it, " + continueText + " to a video";
                     step++;
                     timer = 0;
                 }
@@ -221,7 +221,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             {
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
-                    text.text = "watching video:\n Model centering their hands and <color=green>unlocking</color> the cursor";
+                    text.text = "watching video:\n Model centering their hands and <color=blue>unlocking</color> the cursor";
                     counter = 0;
                     step++;
                     //add video of someone centering their hands
@@ -243,9 +243,9 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     //Debug.Log("Step 2 Counter: " + counter);
                     if (counter == 0 && !VRUser.isResetting())
                     {
-                        text.text = "Now try <color=green>unlocking</color> the cursor yourself,\n" +
+                        text.text = "Now try <color=blue>unlocking</color> the cursor yourself,\n" +
                             "(Center your hands and squeeze the <b>hand triggers</b> to unlock the cursor)\n" +
-                            "the cursor will flash <color=green>green</color> if you’ve done it correctly...";
+                            "the cursor will flash <color=blue>blue</color> if you’ve done it correctly...";
                     }
                     else if (counter == 0 && VRUser.isResetting()) //just skips cuz of getdown problems but solve later...
                     {
@@ -255,7 +255,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     }
                     else if (counter == 1 && VRUser.isNotResetting())
                     {
-                        text.text = "Let's practice <color=green>unlocking</color> the cursor once more.\n" +
+                        text.text = "Let's practice <color=blue>unlocking</color> the cursor once more.\n" +
                             "(Center your hands and squeeze the <b>hand triggers</b> to unlock the cursor)";
                         counter = 2;
                         state.userControlActive = false;
@@ -318,7 +318,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (counter == 0)
                 {
                     text.text = "Return to beginning position with the controllers near your shoulders\n" +
-                        "<color=green>Unlock</color> your cursor and move both hands to your <b>right</b>\n" +
+                        "<color=blue>Unlock</color> your cursor and move both hands to your <b>right</b>\n" +
                         "Extend your arms as far as you can";
                 }
                 else if (counter > 0 && counter < 5)
@@ -358,7 +358,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (counter == 0)
                 {
                     text.text = "Return to beginning position with the controllers near your shoulders\n" +
-                        "<color=green>Unlock</color> your cursor and move both hands to your <b>left</b>\n" +
+                        "<color=blue>Unlock</color> your cursor and move both hands to your <b>left</b>\n" +
                         "Extend your arms as far as you can";
                 }
                 else if (counter > 0 && counter < 5)
@@ -410,7 +410,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     if (counter == 0)
                     {
                         text.text = "Return to beginning position with the controllers near your shoulders\n" +
-                        "<color=green>Unlock</color> your cursor and move both hands to your <b>up</b>\n" +
+                        "<color=blue>Unlock</color> your cursor and move both hands to your <b>up</b>\n" +
                         "Extend your arms as far as you can";
                     }
                     else if (counter > 0 && counter < 5)
@@ -452,7 +452,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (counter == 0)
                 {
                     text.text = "Return to beginning position with the controllers near your shoulders\n" +
-                        "<color=green>Unlock</color> your cursor and move both hands to your <b>down</b>\n" +
+                        "<color=blue>Unlock</color> your cursor and move both hands to your <b>down</b>\n" +
                         "Extend your arms as far as you can";
                 }
                 else if (counter > 0 && counter < 5)
@@ -504,7 +504,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             {
                 if (VPA4.isPlaying)
                 {
-                    text.text = "The cursor can be clicked";
+                    text.text = "The cursor can be <color=green>clicked</color>";
                     startedPlaying = true;
                 }
                 if (!VPA4.isPlaying && startedPlaying)
@@ -519,9 +519,9 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     if (counter == 0)
                     {
                         text.text = "Return to beginning position with the controllers near your shoulders\n" +
-                            "<color=green>Unlock</color> your cursor and move both hands forward\n" +
+                            "<color=blue>Unlock</color> your cursor and move both hands forward\n" +
                             "When you reach the furthest you can, press A or X\n" +
-                            "The cursor should highlight <color=red>red</color> if you reach far enough";
+                            "The cursor should highlight <color=green>green</color> if you reach far enough";
                     }
                     else if (counter > 0 && counter < 5)
                     {
@@ -568,7 +568,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
             else if (step == 11)
             {
-                text.text = "Well done! Now <color=purple>lock</color> your cursor by pressing the <b>index trigger</b> button";
+                text.text = "Well done! Now <color=yellow>lock</color> your cursor by pressing the <b>index trigger</b> button";
                 if (VRUser.cursorRelock())
                 {
                     step++;
@@ -576,7 +576,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
             else if (step == 12)
             {
-                text.text = "You can <color=purple>lock</color> your cursor whenever you need to take a break during the game\n" +
+                text.text = "You can <color=yellow>lock</color> your cursor whenever you need to take a break during the game\n" +
                         "You now completed the calibration\n" +
                         continueText;
                 if (MakeWordBank.moveOn())

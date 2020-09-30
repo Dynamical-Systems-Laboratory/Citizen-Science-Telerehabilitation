@@ -38,6 +38,7 @@ TagManager:
   - ProgressBackground
   - ProgressPercent
   - UserInfo
+  - interactableTag
   layers:
   - Default
   - TransparentFX

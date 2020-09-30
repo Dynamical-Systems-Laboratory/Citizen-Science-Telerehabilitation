@@ -422,7 +422,7 @@ public class UserInfo //not sure if : this() is necessary
     //data usage (reading/writing)
     public IEnumerable<string> writeMainData()
     {
-        yield return "Basic Data:\n";
+        yield return userName + "'s Basic Data:\n";
         yield return "User_Name,Date_Joined,Time_Logged\n"; //formatting
         yield return userName;
         yield return dateJoined;

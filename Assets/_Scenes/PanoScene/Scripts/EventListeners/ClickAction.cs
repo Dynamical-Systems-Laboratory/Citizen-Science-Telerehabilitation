@@ -36,7 +36,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 	private static float showNum = 0; //random num that is shown in debug
 	//private static float tagScalor = 0.885f; //val that downscales tags
 	public static Vector3 tagDownScale = new Vector3(0.003393029f, 0.004489522f, 0.003547033f);
-	private static Vector3 trashTagDownScale = new Vector3(1.0877f,0.98696f,0.97666f);
+	private static Vector3 trashTagDownScale = new Vector3(0.02400159f, 0.03175797f, 0.02509099f);
 
 	public void Awake()
     {
@@ -79,7 +79,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 	public void Update() {
 		if (state.isGaming())
         {
-			Debug.Log("Tag%Num: " + showNum);
+			//Debug.Log("Tag%Num: " + showNum);
 
 			//Debug.Log("Selected Elem: " + state.getSelected() + ", isNull? " + isNull.ToString());
 			if (tagIsFollowing)
@@ -158,17 +158,18 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			state.getSelected().transform.tag = "TrashedTag"; //retag
 			state.getSelected().transform.GetChild(0).tag = "TrashedTag";
 			state.getSelected().transform.SetParent(GameObject.Find("trashObjects").transform);
-			state.getSelected().transform.localScale = GameObject.Find("trashTagRef").transform.localScale;
+			state.getSelected().transform.localScale = trashTagDownScale;// GameObject.Find("trashTagRef").transform.localScale;
 			state.getSelected().transform.position = GameObject.Find("trashTagRef").transform.position;
 			state.getSelected().transform.localPosition -= new Vector3(0f, 1.05f*trashedTags.Count, 0f);
 			trashedTags.Add(state.getSelected());
 			if (trashedTags.Count >= 5 && trashedTags.Count < 11)
             {
-				foreach (Transform tagThing in GameObject.Find("trashObjects").transform) //GameObject.Find("Bin").transform
+				GameObject.Find("trashObjects").transform.localPosition += new Vector3(0f, 1.05f, 0f); //raise all tags to fit more
+				/*foreach (Transform tagThing in GameObject.Find("trashObjects").transform) //GameObject.Find("Bin").transform
 				{
 					tagThing.localPosition += new Vector3(0f, 1.05f, 0f); //raise all tags to fit more
-				}
-            }
+				}*/
+			}
 			//trashedTags[trashedTags.Count - 1].layer = 5; //UI
 
 			//MakeWordBank.replaceTag(state.getSelected(), false); //check over
@@ -177,7 +178,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			tagIsFollowing = false;
 		}
 
-		else if (objectClicked != null && objectClicked.tag == "Tag" && state.getSelected() == null) // A tag was pressed  *******
+		else if (objectClicked != null && objectClicked.tag == "interactableTag" && state.getSelected() == null) // A tag was pressed  *******
 		{//state.getCursorPosition().x < MakeWordBank.tagsRemainingText.transform.position.x
 		 //initTagPos = objectClicked.transform.localPosition; //save position of tag
 			//lastTag = VRUser.interactables[objConv];
@@ -264,36 +265,36 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 
 		return 0;
 	}*/
-	public static bool tag1Close() //bin
+	public static bool tag1Close()
 	{
-		Vector3 diff = state.getCursorPosition();
+		Vector3 diff = state.getCursorPosition() + VRUser.uiButtonOffset;
 		if (diff.x > 25 && diff.x < 55.8 && diff.y > 4.2 && diff.y < 16.8)
 		{
 			return true;
 		}
 		return false;
 	}
-	public static bool tag2Close() //bin
+	public static bool tag2Close()
 	{
-		Vector3 diff = state.getCursorPosition();
+		Vector3 diff = state.getCursorPosition() + VRUser.uiButtonOffset;
 		if (diff.x > 25 && diff.x < 55.8 && diff.y > -12.7 && diff.y < 0.7)
 		{
 			return true;
 		}
 		return false;
 	}
-	public static bool tag3Close() //bin
+	public static bool tag3Close()
 	{
-		Vector3 diff = state.getCursorPosition();
+		Vector3 diff = state.getCursorPosition() + VRUser.uiButtonOffset;
 		if (diff.x > 25 && diff.x < 55.8 && diff.y > -28.7 && diff.y < -15.6)
 		{
 			return true;
 		}
 		return false;
 	}
-	public static bool tag4Close() //bin
+	public static bool tag4Close()
 	{
-		Vector3 diff = state.getCursorPosition();
+		Vector3 diff = state.getCursorPosition() + VRUser.uiButtonOffset;
 		if (diff.x > 25 && diff.x < 55.8 && diff.y > -45.5 && diff.y < -32.2)
 		{
 			return true;
@@ -303,7 +304,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 
 	public static bool binClose() //bin
 	{
-		Vector3 diff = state.getCursorPosition();
+		Vector3 diff = state.getCursorPosition() + VRUser.uiButtonOffset;
 		if (diff.x > 58.5 && diff.x < 76.3 && diff.y > -20 && diff.y < 33.8)
 		{
 			return true;
@@ -312,7 +313,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 	}
 	public static bool uiButtonClose() //next
 	{
-		Vector3 diff = state.getCursorPosition();
+		Vector3 diff = state.getCursorPosition() + VRUser.uiButtonOffset;
 		if (diff.x > 25.8 && diff.x < 55 && diff.y > 21.6 && diff.y < 33.8)
         {
 			return true;
@@ -321,7 +322,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 	}
 	public static bool uiButtonClose2() //home
 	{
-		Vector3 diff = state.getCursorPosition();
+		Vector3 diff = state.getCursorPosition() + VRUser.uiButtonOffset;
 		if (diff.x > 25.8 && diff.x < 55 && diff.y > -61.8 && diff.y < -49.7)
 		{
 			return true;

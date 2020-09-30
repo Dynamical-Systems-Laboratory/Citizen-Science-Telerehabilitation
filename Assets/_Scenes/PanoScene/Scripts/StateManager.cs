@@ -362,7 +362,7 @@ public class StateManager : MonoBehaviour {
             GameObject newTag = Instantiate(GameObject.Find("tagRef"), ClickAction.canvas.transform);
             newTag.GetComponentInChildren<Text>().color = Color.blue;
             newTag.name = tag.name;
-            newTag.tag = "Untagged";
+            newTag.tag = "interactableTag";
             newTag.transform.transform.SetParent(GameObject.Find("tagCanvas").transform); //saftey
             newTag.layer = 16;//4;
             newTag.transform.position = tag.transform.position;
