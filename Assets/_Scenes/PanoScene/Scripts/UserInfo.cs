@@ -61,14 +61,14 @@ public class UserInfo //not sure if : this() is necessary
         timeLogged += toAdd;
     }
 
-    public struct SessionData
+    public struct SessionData //**
     {
-        public SessionData(string nowDate = "", int startingImage = 0, bool startedPracticeLevel = false, bool endedPracticeLevel = false, int newDifficulty = 5)
+        public SessionData(string nowDate = "", int startingImage = 0, bool startedPracticeLevel = false, bool endedPracticeLevel = false, int newDifficulty = 5, float newDuration = 0f, int newEndIm = -1)
         {
             date = nowDate;
-            duration = 0;
+            duration = newDuration;
             start_im = startingImage;
-            end_im = start_im;
+            end_im = newEndIm;
             started_pl = startedPracticeLevel;
             ended_pl = endedPracticeLevel;
             difficulty = newDifficulty;
@@ -77,18 +77,16 @@ public class UserInfo //not sure if : this() is necessary
         }
 
         //helpers for accessing session stuff
-       public void logEndData(int end, bool startedPracticeLevel = false, bool endedPracticeLevel = false, int newDifficulty = 5)
+       public void logEndData(int end, float newDuration)
         {
             end_im = end;
-            started_pl = startedPracticeLevel;
-            ended_pl = endedPracticeLevel;
-            difficulty = newDifficulty;
+            duration = newDuration;
         }
-        public void setDifficulty(int newDiff)
+        public void setDifficulty(int newDiff) //difficulty updates throughout runtime
         {
             difficulty = newDiff;
         }
-        public void setBoundaries(float[] moves, float[] times)
+        public void setBoundaries(float[] moves, float[] times) //must be array length 5
         {
             for (int i = 0; i < 5; i++)
             {
@@ -97,7 +95,7 @@ public class UserInfo //not sure if : this() is necessary
                 moveTimes[i] = times[i];
             }
         }
-        public void setLevel(bool start, bool end)
+        public void setLevel(bool start, bool end) //pl status updates throughout runtime (not on end)
         {
             started_pl = start;
             ended_pl = end;
@@ -142,15 +140,25 @@ public class UserInfo //not sure if : this() is necessary
         }
     }
 
-    public void logSessionEnd(int end, bool startedPracticeLevel = false, bool endedPracticeLevel = false, int newDifficulty = 5)
+    public void logSessionEnd(int end)
     {
-        getSession().logEndData(end, startedPracticeLevel, endedPracticeLevel, newDifficulty);
+        getSession().logEndData(end, (timeLogged - startTime));
     }
 
     public void addSession()
     { //can be only time but atm, is date and time (tracking frequency of patient doing excercises)
-        SessionData sesh = new SessionData(System.DateTime.Now.ToString());
-        sessions.Add(sesh);
+        if (sessions.Count > 0)
+        {
+            //take initial data from last test (last image becomes start image)
+            startTime = getSession().duration;
+            SessionData sesh = new SessionData(System.DateTime.Now.ToString(), getSession().end_im, getSession().started_pl, getSession().ended_pl, getSession().difficulty, getSession().duration);
+            sessions.Add(sesh);
+        }
+        else
+        { //first session
+            SessionData sesh = new SessionData(System.DateTime.Now.ToString());
+            sessions.Add(sesh);
+        }
         startTime = timeLogged;
     }
 
@@ -311,18 +319,7 @@ public class UserInfo //not sure if : this() is necessary
     }
     public int getAvgSessionDuration()
     {
-        if (sessions.Count == 0)
-        {
-            return 0;
-        }
-
-        float avg = 0;
-        foreach(SessionData sess in sessions)
-        {
-            avg += sess.duration;
-        }
-        avg /= sessions.Count;
-        return (int)avg;
+        return (int)(timeLogged / sessions.Count);
     }
     public float getMovementBounds(int index)
     {
@@ -462,9 +459,65 @@ public class UserInfo //not sure if : this() is necessary
             yield return tag.image.ToString() + "\n";
         }
 
-        
         yield return "\nfinish"; //end marker
     }
+    public bool readData(string[] data) //reading main data
+    { //TODO: fix for spacing
+        if (data.Length < 6) //if no data then assume default vals
+        {
+            return false;
+        }
+        //general info
+        userName = data[0];
+        dateJoined = data[1];
+        timeLogged = float.Parse(data[2]);
+
+        int counter = 11;///... + 1(title) + 7(description) + 1(next index);
+        //session data
+        while (data[counter] != "Images Completed:") //"Session Data"
+        {
+            /*
+             * yield return date;
+            yield return duration.ToString();
+            yield return start_im.ToString();
+            yield return end_im.ToString();
+            yield return boolToString(started_pl);
+            yield return boolToString(ended_pl);
+            yield return difficulty.ToString();
+            for(int i = 0; i < 4; i++)
+            {
+                yield return moveBounds[i].ToString();
+                yield return moveTimes[i].ToString();
+            }
+             * */
+            SessionData newData = new SessionData(data[counter], int.Parse(data[counter + 2]), stringToBool(data[counter + 4]), 
+                stringToBool(data[counter + 5]), int.Parse(data[counter + 6]), int.Parse(data[counter + 1]), int.Parse(data[counter + 3]) );
+            newData.setBoundaries(
+                new float[] { float.Parse(data[counter + 7]), float.Parse(data[counter + 9]), float.Parse(data[counter + 11]), float.Parse(data[counter + 13]), float.Parse(data[counter + 15])},
+                new float[] { float.Parse(data[counter + 8]), float.Parse(data[counter + 10]), float.Parse(data[counter + 12]), float.Parse(data[counter + 14]), float.Parse(data[counter + 16])} );
+            sessions.Add(newData);
+            counter += 17;
+        }
+        //image data
+        counter++; //\nImages Completed:\n
+        while (data[counter] != "Tag_Name,TagX,TagY,TagZ,Tag_Image#") //"\nTag_Name,TagX,TagY,TagZ,Tag_Image#\n"
+        {
+            imagesCompleted.Add(int.Parse(data[counter]));
+            counter++;
+        }
+        //tag data
+        counter++;
+        while (data[counter] != "finish")
+        {
+            TagInfo newTag = new TagInfo(data[counter],
+                new Vector3(float.Parse(data[counter+1]), float.Parse(data[counter + 2]), float.Parse(data[counter + 3])),
+                int.Parse(data[counter + 4]));
+            counter += 6;
+        }
+
+        return true;
+    }
+
     public IEnumerable<string> writeMovementData()
     {
         yield return userName + "'s Movement Data:\n";
@@ -501,77 +554,6 @@ public class UserInfo //not sure if : this() is necessary
         yield return "finish"; //end marker
     }
 
-    public bool readData(string[] data) //reading main data
-    { //TODO: fix for spacing
-        if (data.Length < 10) //if no data then assume default vals
-        {
-            return false;
-        }
-        //general info
-        userName = data[0];
-        dateJoined = data[1];
-        timeLogged = float.Parse(data[2]);
-        /*startedPracticeLevel = stringToBool(data[3]);
-        finishedPracticeLevel = stringToBool(data[4]);
-        difficulty = int.Parse(data[5]);
-        lastImage = int.Parse(data[6]);
-
-        int counter = 7;
-        imagesCompleted.Clear(); //saftey
-        while (data[counter] != "tag")
-        { //adding images
-            imagesCompleted.Add(int.Parse(data[counter]));
-            ++counter;
-        }
-        ++counter; //after "tag"
-
-        tags.Clear(); //saftey
-        while (data[counter] != "session")
-        {                                //tag data
-            TagInfo tag = new TagInfo(
-                data[counter],
-                new Vector3(float.Parse(data[counter + 1]), float.Parse(data[counter + 2]), float.Parse(data[counter + 3])),
-                int.Parse(data[counter + 4]));
-            tags.Add(tag);
-            counter += 5;
-        }
-        ++counter; //after "session"
-
-        sessionsLogged.Clear(); //saftey
-        sessionDuration.Clear(); //saftey
-        while (data[counter] != "movement") //session data
-        { //adding sessions
-            sessionsLogged.Add(data[counter]);
-            sessionDuration.Add(float.Parse(data[counter + 1]));
-            counter += 2;
-        }
-        counter++;
-
-        for (int i = counter; i < (counter + 4); i++) //movement bounds stuff
-        {
-            movementBounds[i - counter] = float.Parse(data[i]);
-            movementTime[i - counter + 4] = float.Parse(data[i]);
-        }
-        counter += 8;
-        //actual movement data
-        movements.Clear(); //saftey
-        while (data[counter] != "finish")
-        {
-            MovementData newMoveEntry = new MovementData( //alternative pos & rot, vector3's
-                new Vector3(float.Parse(data[counter]), float.Parse(data[counter + 1]), float.Parse(data[counter + 2])),
-                 new Vector3(float.Parse(data[counter + 3]), float.Parse(data[counter + 4]), float.Parse(data[counter + 5])),
-                new Vector3(float.Parse(data[counter + 6]), float.Parse(data[counter + 7]), float.Parse(data[counter + 8])),
-                 new Vector3(float.Parse(data[counter + 9]), float.Parse(data[counter + 10]), float.Parse(data[counter + 11])),
-                new Vector3(float.Parse(data[counter + 12]), float.Parse(data[counter + 13]), float.Parse(data[counter + 14])),
-                 new Vector3(float.Parse(data[counter + 15]), float.Parse(data[counter + 16]), float.Parse(data[counter + 17]))
-                );
-            movements.Add(newMoveEntry);
-            counter += 18;
-        }*/ //TODO: Fix for spacing in reading data
-        //counter++;
-        return true;
-    }
-
     private static string boolToString(bool b)
     {
         if (b)
@@ -600,7 +582,7 @@ public class UserInfo //not sure if : this() is necessary
     //(private) variables
     private string userName;
     private string dateJoined;
-    private float timeLogged = 0f; //time spent in interface
+    private float timeLogged = 0f; //total time spent in interface
     public List<SessionData> sessions = new List<SessionData>();
     private float startTime = 0f; //helper ^
 

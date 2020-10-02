@@ -140,7 +140,7 @@ public class VRUser : MonoBehaviour
                 OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles,
                 OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.LHand).eulerAngles);
             //state.user.moveDataConfirm();
-
+            
             //vrInfo();
             state.user.showMoveBounds(); //Move Data Ex: (29.0044, -29.00861, 13.51058, -14.32116, 0), (3.651338, 6.311625, 4.176139, 7.143209, 0)
             //Debug.Log("[" + (state.userControlActive ? "1":"0") + "]Hand Tracking: " + handTracking(true) + ", Offset By: " + playerPos.arms + ", unfactored: " + handTracking(false));
