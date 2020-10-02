@@ -43,6 +43,8 @@ public class VRUser : MonoBehaviour
     public static GameObject farForward;
 
     public static bool extraControls = false; //for keyboard controls and other developer stuff
+    private static bool buildExclusiveFunc = true; //bool to set elements of code active (to be set true on build and false otherwise)
+    /* Fixes some unknown issues that exist between build and the Unity Editor versions :( */
 
     public static List<GameObject> interactables = new List<GameObject>();
     public static Vector3 uiButtonOffset = new Vector3(-5f, 0f, 0f); //offset needed for button accuracy with uiButton methods within clickaction
@@ -655,10 +657,18 @@ public class VRUser : MonoBehaviour
         }*/
         if (ClickAction.tag1Close()) //tags [1,4] (top to bottom)
         {
+            if (buildExclusiveFunc)
+            {
+                return 4;
+            }
             return 1;
         }
         else if (ClickAction.tag2Close())
         {
+            if (buildExclusiveFunc)
+            {
+                return 1;
+            }
             return 2;
         }
         else if (ClickAction.tag3Close())
@@ -667,6 +677,10 @@ public class VRUser : MonoBehaviour
         }
         else if (ClickAction.tag4Close())
         {
+            if (buildExclusiveFunc)
+            {
+                return 2;
+            }
             return 4;
         }
         else if (ClickAction.uiButtonClose()) //next
