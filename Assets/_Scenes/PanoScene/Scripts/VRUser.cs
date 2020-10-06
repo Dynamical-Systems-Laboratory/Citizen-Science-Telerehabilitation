@@ -62,6 +62,8 @@ public class VRUser : MonoBehaviour
 
     public static float controllerVibration = 0f;
 
+    public static bool specialClick = false; //for tutorial showing...
+
     public static GameObject clickColor;
     public static GameObject clickLock;
     private static Color showLock;
@@ -390,7 +392,7 @@ public class VRUser : MonoBehaviour
 
             //moves cursor by factor of all the above*****
             trueCursor.transform.position += ((1.4f + ((5 - state.user.getSettingData()[0]) / 10f)) * 1.73f *
-                Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.1f) + (trueCursor.transform.right * cursorMove.x)));
+                Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.05f) + (trueCursor.transform.right * cursorMove.x)));
 
             //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-151,66], x[-90,88.4]
             if (trueCursor.transform.localPosition.x > 88)
@@ -409,7 +411,7 @@ public class VRUser : MonoBehaviour
             {
                 trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, -150, trueCursor.transform.localPosition.z);
             }
-
+            
             //highlights the cursor based on certain actions
             if (isResetting(true) || isResetting(false)) //green = resetting
             {
@@ -431,6 +433,13 @@ public class VRUser : MonoBehaviour
             {
                 clickColor.GetComponent<Image>().color = nothing;
                 clickLock.GetComponent<RawImage>().color = hideLock;
+            }
+            //Debug.Log("isSelecting2: " + specialClick.ToString()); //test
+            if (specialClick)
+            {
+                clickColor.GetComponent<Image>().color = cursorHighlight2;
+                clickLock.GetComponent<RawImage>().color = hideLock;
+                //Debug.Log("isSelecting3: " + specialClick.ToString());
             }
 
             //extra haptics with thumbsticks

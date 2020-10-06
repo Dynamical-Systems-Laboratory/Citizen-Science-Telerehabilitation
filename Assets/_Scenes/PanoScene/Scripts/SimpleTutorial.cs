@@ -84,6 +84,12 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     public static float[] movementAvg = new float[5];
     public static float[] timerAvg = new float[5];
 
+    private static bool hasStartedTut = false; //initial bool to start tutorial
+    private static Vector3 initCenter = new Vector3();
+    private static GameObject cursorAnchor;
+
+    private static float cursorMoveMod = 10.35f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -122,6 +128,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
         // to play a video, activate the associated player and call activator.Play(), then ask compiler activator.isPlaying?, deactivate if not playing
 
         //lockText = GameObject.Find("lockText").GetComponent<Text>() as Text;
+        initCenter = GameObject.Find("cursorCenter").transform.localPosition;
+        cursorAnchor = GameObject.Find("cursorCenter");
     }
 
     /* Simple Tutorial aka Calibration Breakdown
@@ -201,15 +209,87 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }*/
             //Debug.Log("isLocked: " + !state.userControlActive);
 
-
+            //edge conditions
+            if (step > 0)
+            {
+                cursorAnchor.transform.localPosition = initCenter;
+                VRUser.specialClick = false;
+            }
             //start of steps
-            //TODO: maybe go over color coding?
-            //TODO; take out video of first step
             if (step == 0) //introduces calibration
             {
-                timer += Time.deltaTime;
+                timer += Time.deltaTime * 0.56f; // time mod for pacing reasons
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
+                    hasStartedTut = true;
+                }
+                if (hasStartedTut && timer < 39)
+                {
+                    if (timer >= 0 && timer <= 6)
+                    {
+                        text.text = "In this game there are <b>five</b> actions you can perform.";
+                    }
+                    else if (timer > 6 && timer <= 7)
+                    {
+                        text.text = "You can move the cursor to the <b>right</b>";
+                    }
+                    else if (timer > 7 && timer <= 11)
+                    {
+                        cursorAnchor.transform.localPosition += new Vector3(cursorMoveMod * Time.deltaTime, 0, 0);
+                    }
+                    else if (timer > 11 && timer <= 12)
+                    {
+                        text.text = "You can move the cursor to the <b>left</b>";
+                    }
+                    else if (timer > 12 && timer <= 20)
+                    {
+                        cursorAnchor.transform.localPosition += new Vector3(-cursorMoveMod * Time.deltaTime, 0, 0);
+                    }
+                    else if (timer > 20 && timer <= 20.5)
+                    {
+                        text.text = "You can move the cursor <b>up</b>";
+                    }
+                    else if (timer > 20.5 && timer <= 21) //halfway cursor swap to help pacing
+                    {
+                        cursorAnchor.transform.localPosition = initCenter;
+                    }
+                    else if (timer > 21 && timer <= 25)
+                    {
+                        cursorAnchor.transform.localPosition += new Vector3(0, cursorMoveMod * Time.deltaTime * 0.85f, 0); //85% for y scalign
+                    }
+                    else if (timer > 25 && timer <= 26)
+                    {
+                        text.text = "You can move the cursor <b>down</b>";
+                    }
+                    else if (timer > 26 && timer <= 34)
+                    {
+                        cursorAnchor.transform.localPosition += new Vector3(0, -cursorMoveMod * Time.deltaTime * 0.85f, 0);
+                    }
+                    else if (timer > 34 && timer <= 35)
+                    {
+                        cursorAnchor.transform.localPosition = initCenter;
+                        text.text = "And you can <color=green>select</color> objects";
+                    }
+                    else if (timer > 35 && timer <= 38)
+                    {
+                        VRUser.specialClick = true;
+                    }
+                    /* "In this game there are five actions you can perform (wait 6 seconds)
+                    *  You can move the cursor to the right (pause 1, move 4)
+                    *  You can move the cursor to the left (pause 1, move 8)
+                    *  You can move the cursor up (pause 1, move 4)
+                    *  You can move the cursor down (pause 1, move 8)
+                    *  And you can select objects (pause 1, highlight 3)
+                    */
+                    else
+                    {
+                        cursorAnchor.transform.localPosition = initCenter;
+                    }
+                }
+                else if (hasStartedTut && timer >= 39)
+                {
+                    cursorAnchor.transform.localPosition = initCenter;
+                    VRUser.specialClick = false;
                     state.makeCursReset = true;
                     text.text = "The cursor is currently in its <color=yellow>locked mode</color>\n"
                         + "To see a demonstration of how to <color=blue>unlock</color> it, " + continueText + " to a video";
@@ -632,6 +712,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 //MakeWordBank.inTutorial = true;
                 inSimpleTutorial = false; //stops simple tutorial
                 initialized = false;
+                hasStartedTut = false;
 
                 //lockPanel.SetActive(false);
                 if (hasCompleted)
