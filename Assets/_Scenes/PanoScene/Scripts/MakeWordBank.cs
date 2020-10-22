@@ -130,7 +130,7 @@ public class MakeWordBank : MonoBehaviour {
         }
     };
 
-    public static string[] tutorialWords = {
+    public static string[] tutorialWords = { //tag names that are used in exclusively the tutorial/practice level
         "Water","Bank", "Tree", "Building", "Sky", "Sun", "Boat", "Mountain",
         "Man", "Sign", "Bridge", "Rail", "Vent", "Billboard", "Truck"
     }; //15
@@ -140,6 +140,7 @@ public class MakeWordBank : MonoBehaviour {
 
     static int numTagsRemaining = 3;
 
+    //image sphere relatied things
     public static GameObject[] tagSphere = new GameObject[] {};
     public Material[] imageMaterialsToDragIn;
     public Material tutorialImageMaterialDragFromEditor;
@@ -148,9 +149,10 @@ public class MakeWordBank : MonoBehaviour {
 
     public static Text tagsRemainingText;
 
-    public static GameObject nextButton; //button refs
+    public static GameObject nextButton; //button refs (HUB ui)
     public static GameObject quitButton;
 
+    //text objects and assorted controllers for tutorial
     public static List<string> wordBank = new List<string>();
     //public static GameObject focusor;
     //public static GameObject tutorialArrow;
@@ -165,9 +167,10 @@ public class MakeWordBank : MonoBehaviour {
     public static GameObject dataCollector;
     public static Vector3 positionLastTag, rotationLastTag, scaleLastTag; //For use in PlayerScript when the last tag of an image is dropped:
 
-    public static bool inTutorial = false; //***
+    public static bool inTutorial = false; //old locational bools
     public static bool inPracticeLevel = false;
 
+    //more tutorial navigation
     public static int stepOfTutorial = 0;
     public static float timePannedInTutorial = 0f;
     public static float timeSpentOnStep8 = 0f;
@@ -179,8 +182,7 @@ public class MakeWordBank : MonoBehaviour {
     public static float timeSpentAfterSurvey = 0.5f;
     public static float timeSpentInFive = 0f;
     public static float timeSpentInSix = 0f;
-
-    public static bool skipTaggingTutorialStep = false;
+    public static bool skipTaggingTutorialStep = false; //bool skips?
     public static bool skipTrashingTutorialStep = false;
     public static bool continueAfterOtherQuit = false;
 
@@ -189,51 +191,44 @@ public class MakeWordBank : MonoBehaviour {
     public static float upperBound = 58.4f / StateManager.cursorPosMod;///0.239f;
     public static float lowerBound = -0.215f;
 
-    public static float camHorizontalBound = -20f; // camera
+    public static float camHorizontalBound = -20f; // camera stuff
     public static float camVerticalBound = -16f;
     public static float camTop = 90;
     public static float camBot = -90;
 
-    public static Vector3 centerScreen = new Vector3(0f, 0.01f, 0f);
-
     public static GameObject taggerPanel, trasherPanel;
-
     //int buttons;
     int buttonsPrev;
 
-    //VideoPlayers
+    //VideoPlayers (video stuff)
     public static GameObject VP1;
     public static GameObject VP2;
     public static GameObject VP3;
     public static GameObject VP4;
     public static GameObject VP5;
-
-    public static UnityEngine.Video.VideoPlayer cameraLRVP;
+    public static UnityEngine.Video.VideoPlayer cameraLRVP; //video refrences
     public static UnityEngine.Video.VideoPlayer cameraUDVP;
     public static UnityEngine.Video.VideoPlayer cursorLRVP;
     public static UnityEngine.Video.VideoPlayer cursorUDVP;
     public static UnityEngine.Video.VideoPlayer clickVP;
-
-    public static bool startedPlaying = false;
-
-    public static float timer = 0f;
+    public static bool startedPlaying = false; //video helper
+    public static float timer = 0f; //time keepers
     public static float timer2 = 0f;
     public static float timer3 = 0f;
-
-    public static bool prevClick = true;
-
-    public static GameObject mainCamera;
-    public static GameObject UICamera;
-    public static GameObject videoCamera;
-    public static GameObject cursorCamera;
-
-    public static bool play1 = false;
+    public static bool play1 = false; //more helpers
     public static bool play2 = false;
     public static bool play3 = false;
     public static bool play4 = false;
     public static bool play5 = false;
-    public static bool step5proceed = false;
+    public static bool step5proceed = false; //tutorial navigators
     public static bool step22proceed = false;//For skipping all previous steps
+
+    public static bool prevClick = true;
+
+    public static GameObject mainCamera; //camera controllers
+    public static GameObject UICamera;
+    public static GameObject videoCamera;
+    public static GameObject cursorCamera;
 
     public static bool initialized = false;
 
@@ -248,6 +243,8 @@ public class MakeWordBank : MonoBehaviour {
 
     public static GameObject cursorGroup;
     public VRUser userMovement;
+
+    public GameObject toClick = null; // clicking helper
 
     //TODO: randomize indexes and tags
     //private static System.Random rng = new System.Random();
@@ -323,20 +320,7 @@ public class MakeWordBank : MonoBehaviour {
             imageMaterials[i] = imageMaterialsToDragIn[i];
         }
         tagsRemainingText = GameObject.FindGameObjectWithTag("TagsRemainingText").GetComponent<Text>(); // remaining tags**
-
-        //tagGameObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag("Tag")); //same as 2-5 vr user interactables (interactableTag)
-        /*foreach (Transform child in transform) //add all of children of this object as tags
-        {
-            if (child != transform) // The first child will be the parent transform, which should be excluded
-            {
-                tagGameObjects.Add(child.gameObject);
-            }
-        }
-        tagGameObjects.Add(GameObject.Find("Tag1"));
-        tagGameObjects.Add(GameObject.Find("Tag2"));
-        tagGameObjects.Add(GameObject.Find("Tag3"));
-        tagGameObjects.Add(GameObject.Find("Tag4"));*/
-
+        
         //Add Tags
         tags = new Tag[4]; //tagGameObjects.Count (maybe make dynamic tag number later?)
         int tagCounter = 0;
@@ -346,10 +330,6 @@ public class MakeWordBank : MonoBehaviour {
             tags[tagCounter] = new Tag(newTag, tagCounter);
             tagCounter++;
         }
-        /*tags[0] = new Tag(GameObject.Find("Tag1"), 0);
-        tags[1] = new Tag(GameObject.Find("Tag2"), 1);
-        tags[2] = new Tag(GameObject.Find("Tag3"), 2);
-        tags[3] = new Tag(GameObject.Find("Tag4"), 3);*/
 
         //Read CSV File: (Word Bank)
         using (StringReader sr = new StringReader(tagsText.text)) //reading tag names?
@@ -368,12 +348,6 @@ public class MakeWordBank : MonoBehaviour {
         }
         wordBank.RemoveAt(0); //<-- Column name
         Debug.Log("Got here.... (pre tutorial)");
-        // **************** TUTORIAL: ******************************
-        ///
-        /// 
-        //////// 
-        //dataCollector = GameObject.FindGameObjectWithTag("DataCollector"); //Turn off data collection for tutorial
-        //dataCollector.SetActive(false);
 
         renderBackground(0, tutorialImageMaterial); //renders background, img # doesnt matter
 
@@ -395,8 +369,6 @@ public class MakeWordBank : MonoBehaviour {
         Debug.Log("**********************Awake**********************");
     }
     
-    public GameObject toClick = null; // obj for clicking
-
     // Update is called once per frame
     void Update(/*EventSystem eventSystem*/)
     {
@@ -417,11 +389,10 @@ public class MakeWordBank : MonoBehaviour {
              * * wasd = camera movement
              * * v = progress
              * * m = drop object
+             * --> directly below are old controls for keyboard testing
              */
             if (VRUser.extraControls)//stepOfTutorial >= 12 && (SimpleTutorial.step > 34))
             {
-                //old controls
-                //Debug.Log("in the movement loop...");
                 //StateManager.allSystemsGo = true;
                 StateManager.moveCursorL = true; // cursors
                 StateManager.moveCursorR = true;
@@ -431,7 +402,6 @@ public class MakeWordBank : MonoBehaviour {
                 StateManager.moveCameraR = true;
                 StateManager.moveCameraU = true;
                 StateManager.moveCameraD = true;
-                //OLD MOVEMENT (keyboard)
                 if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow)) //cursor
                 {
                     StateManager.moveCameraR = false;
@@ -463,36 +433,32 @@ public class MakeWordBank : MonoBehaviour {
                     StateManager.moveCursorD = false;
                     if (Input.GetKey(KeyCode.D))
                     {
-                        //StateManager.cameraAdd.x = -.6f;
                         StateManager.moveCameraR = true;
                     }
                     if (Input.GetKey(KeyCode.A))
                     {
-                        //StateManager.cameraAdd.x = .6f;
                         StateManager.moveCameraL = true;
                     }
                     if (Input.GetKey(KeyCode.W))
                     {
-                        //StateManager.cameraAdd.y = .5f;
                         StateManager.moveCameraU = true;
                     }
                     if (Input.GetKey(KeyCode.S))
                     {
-                        //StateManager.cameraAdd.y = -.5f;
                         StateManager.moveCameraD = true;
                     }
                 }
             }
-            //CLICKING
+            //CLICKING  -  Note: this is just clicking logic, actual clicking can be found at various control stages (ex; ovr clicking in VRUser.cs)
             if (state.isGaming()) //in-game or practice level or button tutorial
             {
                 if (Input.GetKeyDown(KeyCode.B) || state.userIsClicking) //select
                 {
-                    int buttonsConverted = VRUser.buttonConversion();
+                    int buttonsConverted = VRUser.buttonConversion(); //find the object clicked according to cursor location
                     //Debug.Log("IsClicking! " + buttonsConverted);
                     if (buttonsConverted == 0) //next
                     {
-                        Debug.Log("Next Imaging!!!");
+                        //Debug.Log("Next Imaging!!!");
                         if (imageIndex >= imageMaterials.Length - 1) //out of images
                         {
                             Debug.Log("Out of images...");
@@ -550,7 +516,7 @@ public class MakeWordBank : MonoBehaviour {
                         findObjClick(buttonsConverted);
                     }
                 }
-                /*else if ((Input.GetKeyDown(KeyCode.N) || VRUser.userContinue()) && state.getSelected() != null) //deselect
+                /*else if ((Input.GetKeyDown(KeyCode.N) || VRUser.userContinue()) && state.getSelected() != null) //deselection
                 {
                     if (state.getCursorPosition().x < .1f) //placing on image canvas
                     {
@@ -574,7 +540,7 @@ public class MakeWordBank : MonoBehaviour {
             }
         }
 
-        //msc boolean stuff for static methods
+        //msc boolean stuff for static methods (remenants of old code barely in use)
         //Debug.Log("Practice Tags: " + practiceMoveOn + ", prog: " + state.user.getProgress());
         if (state.getState() == 7) //inPracticeLevel
         {
@@ -622,13 +588,13 @@ public class MakeWordBank : MonoBehaviour {
                 }
                 renderBackground(imageIndex);
                 //imageIndex++;
-                for (int i = 0; i < ClickAction.trashedTags.Count; i++)
+                for (int i = 0; i < ClickAction.trashedTags.Count; i++) //clear tag trash just in case
                 {
                     Destroy(ClickAction.trashedTags[i]);
                 }
                 ClickAction.trashedTags.Clear();
 
-                practiceLevelText.SetActive(true);
+                practiceLevelText.SetActive(true); //set proper text objects
                 welcomeScreen.SetActive(false);
                 helpTextContainer.SetActive(true);
                 //numTagsRemaining = 3 - state.tagsPlaced.Count;
@@ -653,7 +619,7 @@ public class MakeWordBank : MonoBehaviour {
                 welcomeScreen.SetActive(true);
                 helpTextContainer.SetActive(true);
 
-                StateManager.moveCameraU = true;
+                StateManager.moveCameraU = true; //double check that user control is enabled
                 StateManager.moveCameraD = true;
                 StateManager.moveCameraL = true;
                 StateManager.moveCameraR = true;
@@ -671,7 +637,7 @@ public class MakeWordBank : MonoBehaviour {
             }
 
             timer3 += Time.deltaTime;
-            if (skip() && stepOfTutorial > 0 && timer3 > 1)
+            if (skip() && stepOfTutorial > 0 && timer3 > 1) //skipping tutorial logic
             {
                 stepOfTutorial = 22;
                 //state.setState(7);
@@ -776,31 +742,7 @@ public class MakeWordBank : MonoBehaviour {
                     initialized = false;
                 }
             }
-            //prevClick = StateManager.falconButtons[1];
         }
-        /*
-        if (waitingForOtherPlayer)
-        {
-            if (otherPlayerHasFinished)
-            {
-                dataCollector.SetActive(true);
-                //welcomeScreen.SetActive(false);
-                waitingForOtherPlayer = false;
-                LoadingIconScript.active = false;
-            }
-        }
-        
-        for (int i = 0; i < tags.Length; i++) //?
-        {
-            if (tags[i].isChangingColor)
-            {
-                tags[i].text.color = Color.Lerp(tags[i].text.color, Color.black, 0.015f);
-            }
-            if (tags[i].isChangingColor && tags[i].text.color == Color.black)
-            {
-                tags[i].isChangingColor = false;
-            }
-        }*/
     }
 
     public static bool moveOn() //basically the catch-all method for continuing
@@ -811,7 +753,7 @@ public class MakeWordBank : MonoBehaviour {
         }
         return false;
     }
-    public static bool skip()
+    public static bool skip() //skipping button logic
     {
         if ((Input.GetKeyDown(KeyCode.Escape) && VRUser.extraControls) || VRUser.userSkip(false))
         {
@@ -819,7 +761,7 @@ public class MakeWordBank : MonoBehaviour {
         }
         return false;
     }
-    public void findObjClick(int objConv) //basically call clicking method
+    public void findObjClick(int objConv) // call clicking method
     {//theory --> go through index of tags and find the tag with the shortest distance to the cursor location to a certain val
 
         //if not holding an object and close to either the quit or the next image button do that
@@ -888,22 +830,7 @@ public class MakeWordBank : MonoBehaviour {
 
     public static void nextImage(int img = 0)
     { //Change to the next image, reset tags, clear bin
-        //if (!inPracticeLevel)
-        //{ //Are we not in the practice level:
-        //    DataCollector.Flush();
-        //}
-        //if (!skipTaggingTutorialStep) //from old version of game with multiple people
-        //{ //Only set these if you're the tagger:
-        //    Transform lastTag = tagSphere.transform.GetChild(tagSphere.transform.childCount - 1);
-
-        //    positionLastTag = lastTag.localPosition;
-        //    rotationLastTag = lastTag.localRotation.eulerAngles;
-        //    scaleLastTag = lastTag.localScale;
-        //}
-
-        //state.setSelected(null);
         ClickAction.destroyTags();
-
         renderBackground(img);
         sequenceIndex = 0;
         for (int tagsIndex = 0; tagsIndex < tags.Length; tagsIndex++)
@@ -1012,12 +939,11 @@ public class MakeWordBank : MonoBehaviour {
     
 }
 
-
 /*
  * Container class for each tag which contains the 
  * Tag GameObject and the Text object: 
  */
-public class Tag
+public class Tag //(old)
 {
     public GameObject tag;
     public Text text;
