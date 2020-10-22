@@ -29,22 +29,11 @@ public class StateManager : MonoBehaviour {
     public VRUser complexUser; //user's main body
 
     private GameObject selected = null; // The current tag being selected
-    private GameObject falconCursor; // The cursor being manipulated by the falcon
 
-    private Camera falconCamera;
-
-    public static bool[] falconButtons = new bool[4];
-
+    public static bool[] falconButtons = new bool[4]; //old var (not sure if can be deleted)
     //private int buttons; // bit 1 is the pan button, bit 2 is the click button, bit 3 is the top button of the falcon
-
     public static bool kinectReady = false;
-
     //private float pushCoolDown = 0f;
-
-    private float prevLHand_z = Kinect.LHandPos.z;
-    private float prevRHand_z = Kinect.RHandPos.z;
-    private float prevLElbow_y = Kinect.LElbowPos.y;
-    private float prevRElbow_y = Kinect.RElbowPos.y;
 
     public static Vector3 cursorPos = new Vector3(0f, 0f, 0.418f);
     public static Vector3 cameraPos = Vector3.zero;
@@ -52,33 +41,15 @@ public class StateManager : MonoBehaviour {
     public static Vector3 nextCursorPos;
     public static Vector3 nextCameraPos;
 
-    //private float smallestLHdiff = 999f;
-    //private float smallestRHdiff = 999f;
-    //private float largestLEdiff = 0f;
-    //private float largestREdiff = 0f;
-
-    public static float LHandSpeed = 0f;
-    public static float RHandSpeed = 0f;
-    public static float LElbowSpeed = 0f;
-    public static float RElbowSpeed = 0f;
-
-    private List<Tuple<float, float, float, float>> speeds;
-
-   // private float speedInitializeTime = 0f;
-
-    //private float avgDistance_x = 0f;
-    //private float avgDistance_y = 0f;
-
-    public static bool cameraL = false;
+    //limit movement of cursor and camera at various steps (not generally in use)
+    public static bool cameraL = false; //cam
     public static bool cameraR = false;
     public static bool cameraU = false;
     public static bool cameraD = false;
-
-    public static bool cursorL = false;
+    public static bool cursorL = false; //curs
     public static bool cursorR = false;
     public static bool cursorU = false;
     public static bool cursorD = false;
-
     //Limit cursor and camera movement in tutorials
     public static bool moveCameraU = true;
     public static bool moveCameraD = true;
@@ -89,9 +60,6 @@ public class StateManager : MonoBehaviour {
     public static bool moveCursorL = true;
     public static bool moveCursorR = true;
     public static bool rodClicked = false;
-
-    public static float cameraUpCoolDown = 0f;
-    public static float cameraDownCoolDown = 0f;
 
     public bool makeCursReset = false; // resets the position of the cursor to the middle of the screen
     public static bool makeCamReset = false; // resets the position of the camera to the middle of the image/starting pt.
@@ -420,7 +388,6 @@ public class StateManager : MonoBehaviour {
          */
 
         falconButtons = new bool[4] { false, false, false, false };
-        speeds = new List<Tuple<float, float, float, float>>();
         mainCamera = GameObject.Find("Main Camera");
         trueCursor = GameObject.Find("exampleCursor");
         cursorOffset = GameObject.Find("cursorCenter");
@@ -444,14 +411,6 @@ public class StateManager : MonoBehaviour {
         profileCull = (1 << LayerMask.NameToLayer("Profile"));
         //cursorCull = GameObject.Find("CursorCamera").GetComponent<Camera>().cullingMask;
     }
-    /*private IEnumerator Start()
-    {
-        yield return new WaitForSeconds(5f);
-        this.falconCursor = GameObject.Find("CursorSphere");
-        this.falconCamera = GameObject.Find("CursorCamera").GetComponent<Camera>();
-        //mainCamera = GameObject.Find("Main Camera");
-        //mainCamera = MakeWordBank.mainCamera;
-    }*/
 
     private static bool stateInit = false;
     private void Update()
@@ -529,9 +488,6 @@ public class StateManager : MonoBehaviour {
             cameraR = false;
             cameraU = false;
             cameraD = false;
-
-            cameraUpCoolDown += Time.deltaTime;
-            cameraDownCoolDown += Time.deltaTime;
 
             //TODO: Set cameraPos to orientation of oculus
             cameraPos = GameObject.Find("CenterEyeAnchor").transform.rotation.eulerAngles;

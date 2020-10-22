@@ -39,11 +39,6 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     public static float longInterval = shortInterval * 2f;
     public static float miniPause = 0.6f;
 
-    public static float cursor_x = 0f;
-    public static float cursor_y = 0f;
-    public static float camera_x = 0f;
-    public static float camera_y = 0f;
-
     public static int counter = 0;
     public static bool logged = false;
     public static bool moved = false;

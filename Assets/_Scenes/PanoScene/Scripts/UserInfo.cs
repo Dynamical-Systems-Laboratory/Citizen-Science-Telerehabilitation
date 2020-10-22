@@ -8,7 +8,7 @@ using UnityEngine;
 public class UserInfo //not sure if : this() is necessary
 {// no ": MonoBehaviour" to make the class consistently run 
     public UserInfo(string name = "ExampleName", string datejoined = "mm/dd/yyyy")
-    {
+    { //constructor
         this.userName = name;
         this.dateJoined = datejoined;
     }
@@ -61,7 +61,7 @@ public class UserInfo //not sure if : this() is necessary
         timeLogged += toAdd;
     }
 
-    public struct SessionData //**
+    public struct SessionData
     {
         public SessionData(string nowDate = "", int startingImage = 0, bool startedPracticeLevel = false, bool endedPracticeLevel = false, int newDifficulty = 5, float newDuration = 0f, int newEndIm = -1)
         {
@@ -292,16 +292,22 @@ public class UserInfo //not sure if : this() is necessary
     //user settings
     public void updateSettings()
     {
-        cameraSpeed = StateManager.camSpeed;
         cursorSpeed = StateManager.cursorSpeed;
         cursorSize = StateManager.cursorSize;
     }
-    public void updateDifficulty(float newDiff)
+    public void updateDifficulty(float newDiff = 5f)
     {
         getSession().setDifficulty((int)newDiff);
+        //threshold val changes
+        VRUser.moveThreshold1 = .1f + (0.025f * (newDiff - 5)); //mod by difficulty
+        VRUser.moveThreshold2 = .75f + (0.02f * (newDiff - 5));
+        if (VRUser.moveThreshold1 < 0) { VRUser.moveThreshold1 = 0; }
+        if (VRUser.moveThreshold2 < 0) { VRUser.moveThreshold2 = 0; }
+
         newDiff = (7-newDiff) / 9;
-        StateManager.camSpeed = 2.3f * (1 + newDiff);
+        //setting data
         StateManager.cursorSpeed = 3.75f * (1 + newDiff);
+
         updateSettings();
     }
 
@@ -375,7 +381,7 @@ public class UserInfo //not sure if : this() is necessary
     }
     public float[] getSettingData()
     {
-        return new float[] { getSession().difficulty, cameraSpeed, cursorSpeed, cursorSize };
+        return new float[] { getSession().difficulty, /*cameraSpeed*/0f, cursorSpeed, cursorSize };
     }
     public bool[] getPracticeLevelState()
     {
@@ -590,7 +596,7 @@ public class UserInfo //not sure if : this() is necessary
 
     private List<TagInfo> tags = new List<TagInfo>(); //in case the user wants to access their past tagged images we save all the tag infos
 
-    private float cameraSpeed; //personalized settings 
+   //personalized settings 
     private float cursorSpeed;
     private float cursorSize;
 

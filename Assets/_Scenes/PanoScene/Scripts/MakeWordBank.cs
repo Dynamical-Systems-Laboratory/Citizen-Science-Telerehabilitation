@@ -8,6 +8,8 @@ using System;
 using UnityEngine.Video;
 
 public class MakeWordBank : MonoBehaviour {
+    // TODO: Organize and Trim this File***
+
 
     //I'm putting the CSV files in the directory Assets/Tags, 
     //Using the final wordbank Roni gave me:
@@ -137,7 +139,6 @@ public class MakeWordBank : MonoBehaviour {
     public static int imageIndex = 0; //Index for which 360 Material to use as well as which predetermined random int sequence to use
 
     static int numTagsRemaining = 3;
-
 
     public static GameObject[] tagSphere = new GameObject[] {};
     public Material[] imageMaterialsToDragIn;
@@ -317,6 +318,7 @@ public class MakeWordBank : MonoBehaviour {
         //taggerPanel.transform.Translate(new Vector3(0, 5000, 0)); //Moving it out of the way for tutorial
         //trasherPanel.transform.Translate(new Vector3(0, 5000, 0));
 
+        //Add Images
         for (int i = 0; i < imageMaterials.Length; i++) {
             imageMaterials[i] = imageMaterialsToDragIn[i];
         }
@@ -335,6 +337,7 @@ public class MakeWordBank : MonoBehaviour {
         tagGameObjects.Add(GameObject.Find("Tag3"));
         tagGameObjects.Add(GameObject.Find("Tag4"));*/
 
+        //Add Tags
         tags = new Tag[4]; //tagGameObjects.Count (maybe make dynamic tag number later?)
         int tagCounter = 0;
         foreach (GameObject newTag in GameObject.FindGameObjectsWithTag("interactableTag")) //adding GameObject refrences for tags
@@ -347,7 +350,8 @@ public class MakeWordBank : MonoBehaviour {
         tags[1] = new Tag(GameObject.Find("Tag2"), 1);
         tags[2] = new Tag(GameObject.Find("Tag3"), 2);
         tags[3] = new Tag(GameObject.Find("Tag4"), 3);*/
-        //Read CSV File:
+
+        //Read CSV File: (Word Bank)
         using (StringReader sr = new StringReader(tagsText.text)) //reading tag names?
         {
             string line;
@@ -399,7 +403,8 @@ public class MakeWordBank : MonoBehaviour {
         if (state.getState() != 0)
         {
             state.user.logTime(Time.deltaTime); //add time
-            //state.user.show(); //displaying data
+            //displaying data
+            //state.user.show(); 
             state.user.showTagStuff();
 
             //Debug.Log("MainC: " + mainCamera.activeSelf + ", UIC: " + UICamera.activeSelf + ", HomeC: " + homeCamera.activeSelf +
@@ -415,6 +420,7 @@ public class MakeWordBank : MonoBehaviour {
              */
             if (VRUser.extraControls)//stepOfTutorial >= 12 && (SimpleTutorial.step > 34))
             {
+                //old controls
                 //Debug.Log("in the movement loop...");
                 //StateManager.allSystemsGo = true;
                 StateManager.moveCursorL = true; // cursors
@@ -425,7 +431,7 @@ public class MakeWordBank : MonoBehaviour {
                 StateManager.moveCameraR = true;
                 StateManager.moveCameraU = true;
                 StateManager.moveCameraD = true;
-                //MOVEMENT
+                //OLD MOVEMENT (keyboard)
                 if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow)) //cursor
                 {
                     StateManager.moveCameraR = false;

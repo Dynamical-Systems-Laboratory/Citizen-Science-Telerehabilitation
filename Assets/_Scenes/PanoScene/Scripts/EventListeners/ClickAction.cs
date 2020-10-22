@@ -94,23 +94,19 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
             }*/
 		}
     }
-	public void OnPointerClick(GameObject objectClicked = null) //same method but takes in game obj
+	public void OnPointerClick(GameObject objectClicked = null) //method that handles backend stuff for clicking
 	{
-		//TODO: add tags into data collector before next_image
+		//if (objectClicked != null) { objectClicked = background; } // check later
 
-        //if (objectClicked != null) // check later
-        //{
-        //    objectClicked = background;
-        //}
-        if (objectClicked == null && binClose())
+		if (objectClicked == null && binClose())
 		{//if the cursor is over the trash, the obj we are looking at is the trash
 			objectClicked = trashy;
 			Debug.Log("Trash in click method...");
         }
 
-        if (objectClicked == null && state.getSelected() != null && state.getCursorPosition().x < 21f) // tag was placed  *******
-        {
-            state.getSelected().GetComponentInChildren<Text>().color = Color.blue; //instead of just GetComponent
+        if (objectClicked == null && state.getSelected() != null && state.getCursorPosition().x < 21f)
+		{ // tag was placed  *******
+			state.getSelected().GetComponentInChildren<Text>().color = Color.blue; //instead of just GetComponent
 			state.getSelected().transform.localScale -= new Vector3(0.35f, 0.35f, 0f); //scale it down to 65% size (not thickness tho)
             tagIsFollowing = false;
 
@@ -152,8 +148,8 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			state.setSelected(null);
         }
 
-		else if (objectClicked != null && objectClicked.tag == "Bin" && state.getSelected() != null) // The bin was pressed, so we move the tag to the bin
-		{
+		else if (objectClicked != null && objectClicked.tag == "Bin" && state.getSelected() != null)
+		{// The bin was pressed, so we move the tag to the bin
 			state.getSelected().GetComponentInChildren<Text>().color = Color.black; //transform tag
 			state.getSelected().transform.tag = "TrashedTag"; //retag
 			state.getSelected().transform.GetChild(0).tag = "TrashedTag";
@@ -178,10 +174,11 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			tagIsFollowing = false;
 		}
 
-		else if (objectClicked != null && objectClicked.tag == "interactableTag" && state.getSelected() == null) // A tag was pressed  *******
-		{//state.getCursorPosition().x < MakeWordBank.tagsRemainingText.transform.position.x
+		else if (objectClicked != null && objectClicked.tag == "interactableTag" && state.getSelected() == null)
+		{// A tag was pressed  *******
+		 //state.getCursorPosition().x < MakeWordBank.tagsRemainingText.transform.position.x
 		 //initTagPos = objectClicked.transform.localPosition; //save position of tag
-			//lastTag = VRUser.interactables[objConv];
+		 //lastTag = VRUser.interactables[objConv];
 			if (state.getSelected() == null)
             { //double checking
 				tagCopy = Instantiate(objectClicked, objectClicked.transform); //create copy of tag to click/drag
@@ -227,44 +224,8 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			//Debug.Log("Obj: " + objectClicked.name + ", tag: " + objectClicked.tag);
         }
 	}
-	internal static void OnPointerClick(EventSystem current)
-    {
-        throw new NotImplementedException();
-    }
-    public static void dropObject()
-    {
-		Destroy(state.getSelected());
-		state.setSelected(null);
-		tagIsFollowing = false;
-		lastTag = -1;// new Vector3(0f,0f,0f);
-		//tagCopy = null;
-	}
-
-	/*public static int tagClose() //tags -- maybe try implicit operator to easily int->bool convert?
-	{ //nextButton.transform.position
-		Vector3 diff = state.getCursorPosition();
-		if (diff.x > 25 && diff.x < 55.8)
-		{
-			if (diff.y > 4.2 && diff.y < 16.8)
-			{
-				return 1;
-			}
-			else if (diff.y > -12.7 && diff.y < 0.7)
-			{
-				return 2;
-			}
-			else if (diff.y > -28.7 && diff.y < -15.6)
-			{
-				return 3;
-			}
-			else if (diff.y > -45.5 && diff.y < -32.2)
-			{
-				return 4;
-			}
-		}
-
-		return 0;
-	}*/
+    
+	//Button/Tag Tracking Things
 	public static bool tag1Close()
 	{
 		Vector3 diff = state.getCursorPosition() + VRUser.uiButtonOffset;
@@ -364,7 +325,6 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		}
 		return 0;
     }
-
 	public static int profileButtonClose() //ui in profile screen
 	{
 		if (state.getCursorPosition().y > 18.3 && state.getCursorPosition().y < 26.2 && state.getCursorPosition().x > -31.4 && state.getCursorPosition().x < 0.5)
@@ -382,9 +342,10 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		return 0;
 	}
 
-	public static void offsetTagsCloser()// takes localpos of cursor and transforms it to v3 of 
-    { // x[-90, 88], y[-90, 66]
-		// a/A = b/B, (a*B)/A = b
+	public static void offsetTagsCloser()
+	{ // translates tag obj based on cursor/user position
+	  // x[-90, 88], y[-90, 66]
+	  // a/A = b/B, (a*B)/A = b
 		float a = (GameObject.Find("headsetForward").transform.position - playerHead.transform.position).magnitude;
 		float A = (GameObject.Find("cursorCenter").transform.position - playerHead.transform.position).magnitude;
 		float B = (state.getSelected().transform.position - playerHead.transform.position).magnitude; //GameObject.Find("exampleCursor")
@@ -407,10 +368,20 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		}
 		Debug.Log("Testing Head Offset: " + moveTo + ", vs. " + playerHead.transform.position);*/
 		
+		//image radius(.5) * image scale(3.47) * .75 = 1.3
 		state.getSelected().transform.position = Vector3.MoveTowards(playerHead.transform.position, state.getSelected().transform.position, 1.3f);
     }
 
-	public static void destroyTags() //error?
+	//cleaning crew
+	public static void dropObject()
+	{
+		Destroy(state.getSelected());
+		state.setSelected(null);
+		tagIsFollowing = false;
+		lastTag = -1;// new Vector3(0f,0f,0f);
+					 //tagCopy = null;
+	}
+	public static void destroyTags()
     {
 		Debug.Log("Tag clearing");
 		foreach (GameObject tag in state.tagsPlaced)
@@ -424,7 +395,6 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		state.tagsPlaced.Clear();
 		clearTrash();
 	}
-
 	public static void clearTrash()
     {
 		Debug.Log("Trash clearing");
@@ -439,6 +409,10 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 	}
 
 	//old...
+	internal static void OnPointerClick(EventSystem current) //not sure what this is for
+	{
+		throw new NotImplementedException();
+	}
 	/*
 	public void OnPointerClick(PointerEventData eventData) //not in use atm...
 	{
@@ -580,7 +554,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		{
 			Debug.Log("Image Clicked");
 			GameObject currentTag = state.getSelected();
-			if (currentTag != null && !currentTag.transform.parent.name.Equals("")) // TODO: Check if a tag is currently selected and that the tag isn't blank
+			if (currentTag != null && !currentTag.transform.parent.name.Equals(""))
 			{
 				Vector3 cursorPosition = Camera.current.WorldToScreenPoint(state.getCursorPosition()); // Use the cursor position to cast a ray onto the sphere
 				Ray ray = Camera.main.ScreenPointToRay(cursorPosition);  // The ray that will be casted onto the sphere

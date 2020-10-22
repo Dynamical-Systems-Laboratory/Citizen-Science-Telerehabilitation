@@ -44,7 +44,7 @@ public class VRUser : MonoBehaviour
 
     public static bool extraControls = false; //for keyboard controls and other developer stuff
     private static bool buildExclusiveFunc = true; //bool to set elements of code active (to be set true on build and false otherwise)
-    /* Fixes some unknown issues that exist between build and the Unity Editor versions :( */
+    /* Fixes some unknown issues that exist between build and the Unity Editor versions (especially with tag tracking) :( */
 
     public static List<GameObject> interactables = new List<GameObject>();
     public static Vector3 uiButtonOffset = new Vector3(-5f, 0f, 0f); //offset needed for button accuracy with uiButton methods within clickaction
@@ -53,7 +53,7 @@ public class VRUser : MonoBehaviour
 
     public static bool showMoveStats = false; //bool to debug.log calibration stats
 
-    public static float moveThreshold1 = 0.09f; //percentages for (1)reading movement & (2)displaying movement (+haptics)
+    public static float moveThreshold1 = 0.10f; //percentages for (1)reading movement & (2)displaying movement (+haptics)
     public static float moveThreshold2 = 0.75f;
 
     public static float baseZCalibration = 1.1f; //var that signifies how far the user is supposed to reach (z) given no calibration data
@@ -68,11 +68,6 @@ public class VRUser : MonoBehaviour
     public static GameObject clickLock;
     private static Color showLock;
     private static Color hideLock;
-    /*  TODO!!
-     * rework cameras:
-     * * * work with survey stuff later
-     * * cursor camera moved along invis sphere with r = 95% of imageSphere.r
-     */
 
     //TODO: maybe fix floating feeling with flatform at user feet (make camera lower, put platform right under, set to floor lvl instead of eye lvl)
     // Start is called before the first frame update
@@ -108,12 +103,6 @@ public class VRUser : MonoBehaviour
         tagColor = interactables[1].GetComponent<Image>().color; //precausion
         binColor = interactables[6].GetComponent<Image>().color;
 
-        //threshold val changes
-        moveThreshold1 += 0.025f * (state.user.getSettingData()[0] - 5); //mod by difficulty
-        moveThreshold2 += 0.02f * (state.user.getSettingData()[0] - 5);
-        if (moveThreshold1 < 0) { moveThreshold1 = 0; }
-        if (moveThreshold2 < 0) { moveThreshold2 = 0; }
-
         //color stuff
         clickColor = GameObject.Find("showClick");
         clickLock = GameObject.Find("showLock");
@@ -123,6 +112,9 @@ public class VRUser : MonoBehaviour
         cursorHighlight.a = 120f / 255f; //unlocking
         cursorHighlight2.a = 85f / 255f; //clicking
         cursorHighlight3.a = 60f / 255f; //locked
+
+        //(init stuff)  threshold val changes
+        state.user.updateDifficulty();
     }
 
     // Update is called once per frame
@@ -281,6 +273,7 @@ public class VRUser : MonoBehaviour
                 }
                 else
                 {
+                    cursorMove.x = 0;
                     Debug.Log("MoveChange:XNothing");
                 }
 
@@ -298,6 +291,7 @@ public class VRUser : MonoBehaviour
                 }
                 else
                 {
+                    cursorMove.y = 0;
                     Debug.Log("MoveChange:YNothing");
                 }
 
@@ -391,7 +385,7 @@ public class VRUser : MonoBehaviour
             state.cursorAdd = new Vector3(0f, 0f, 0f); //resetting additive property
 
             //moves cursor by factor of all the above*****
-            trueCursor.transform.position += ((1.4f + ((5 - state.user.getSettingData()[0]) / 10f)) * 1.73f *
+            trueCursor.transform.position += ((1.4f + ((5 - state.user.getSettingData()[0]) / 10f)) * (state.user.getSettingData()[2]/2.2f) *
                 Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.05f) + (trueCursor.transform.right * cursorMove.x)));
 
             //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-151,66], x[-90,88.4]

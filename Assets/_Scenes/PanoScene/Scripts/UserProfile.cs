@@ -98,7 +98,7 @@ public class UserProfile : MonoBehaviour
             {
                 progressBar.value = state.user.getProgress();
             }
-            //TODO: figure out horizontal transformation that coorelateds to scaler (-11.2 = 50%?)
+            
             difficultyMeter.value = state.user.getSettingData()[0];
             difficulty.text = difficultyMeter.value.ToString();
             //difficulty = diffucultyMeter.value;
