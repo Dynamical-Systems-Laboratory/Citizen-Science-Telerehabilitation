@@ -28,6 +28,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     public static bool circleWhite = true;
 
     public static bool initialized = false;
+    public static bool initialized2 = false; // helper for show/hide tag
 
     public static int step = 0;
     public static float timer = 0f;
@@ -84,6 +85,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     private static GameObject cursorAnchor;
 
     private static float cursorMoveMod = 10.35f;
+    private static GameObject tutorialTag;
 
     // Start is called before the first frame update
     void Start()
@@ -97,11 +99,11 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
         //text = GameObject.Find("Text").GetComponent<Text>() as Text;
         text = GameObject.FindGameObjectWithTag("SimpleTutorialText").GetComponent<Text>() as Text;
         canvas = GameObject.Find("SimpleTutorialCanvas");
-
+        
         circle = GameObject.Find("Circle");
         vert = GameObject.Find("Vertical"); //extra
         horiz = GameObject.Find("Horizontal");
-
+        tutorialTag = GameObject.Find("tutorialTag");
         lockPanel = GameObject.Find("lockPanel");
 
         cursor = GameObject.Find("exampleCursor");
@@ -173,6 +175,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 text.text = "Now let's do a calibration phase\n" +
                     continueText +
                     continueText2;
+                showTag(false);
             }
 
             if (MakeWordBank.skip() && step < 9 && timer > 1 && VRUser.extraControls && !hasCompleted) //for testing purposes of z movements
@@ -220,7 +223,16 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 }
                 if (hasStartedTut && timer < 39)
                 {
-                    if (timer >= 0 && timer <= 6)
+                    if (timer >= 0 && timer < 39) //lock isnt visible in this part of tue tutorial
+                    {
+                        VRUser.noLock = true;
+                    }
+                    else
+                    {
+                        VRUser.noLock = false;
+                    }
+
+                    if (timer >= 0 && timer <= 6) //explanations
                     {
                         text.text = "In this game there are <b>five</b> actions you can perform.";
                     }
@@ -256,16 +268,16 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     {
                         text.text = "You can move the cursor <b>down</b>";
                     }
-                    else if (timer > 26 && timer <= 34)
+                    else if (timer > 26 && timer <= 34.5)
                     {
                         cursorAnchor.transform.localPosition += new Vector3(0, -cursorMoveMod * Time.deltaTime * 0.85f, 0);
                     }
-                    else if (timer > 34 && timer <= 35)
+                    else if (timer > 34.5 && timer <= 35.5)
                     {
                         cursorAnchor.transform.localPosition = initCenter;
                         text.text = "And you can <color=green>select</color> objects";
                     }
-                    else if (timer > 35 && timer <= 38)
+                    else if (timer > 35.5 && timer <= 38.5)
                     {
                         VRUser.specialClick = true;
                     }
@@ -286,8 +298,9 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     cursorAnchor.transform.localPosition = initCenter;
                     VRUser.specialClick = false;
                     state.makeCursReset = true;
-                    text.text = "The cursor is currently in its <color=yellow>locked mode</color>\n"
+                    text.text = "Your cursor is currently <color=yellow>locked</color>\n"
                         + "To see a demonstration of how to <color=blue>unlock</color> it, " + continueText + " to a video";
+                    //+ "To unlock it, press the index finger trigger on either one of your controllers";
                     step++;
                     timer = 0;
                 }
@@ -319,7 +332,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     if (counter == 0 && !VRUser.isResetting())
                     {
                         text.text = "Now try <color=blue>unlocking</color> the cursor yourself,\n" +
-                            "(Center your hands and squeeze the <b>hand triggers</b> to unlock the cursor)\n" +
+                            "(Center your hands and squeeze the button under your middle and ring fingers to unlock the cursor)\n" +
                             "the cursor will flash <color=blue>blue</color> if you’ve done it correctly...";
                     }
                     else if (counter == 0 && VRUser.isResetting()) //just skips cuz of getdown problems but solve later...
@@ -593,6 +606,11 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     Debug.Log("ZCounter: " + counter);
                     if (counter == 0)
                     {
+                        if (!initialized2)
+                        {
+                            showTag(true);
+                            initialized2 = true;
+                        }
                         text.text = "Return to beginning position with the controllers near your shoulders\n" +
                             "<color=blue>Unlock</color> your cursor and move both hands forward\n" +
                             "When you reach the furthest you can, press A or X\n" +
@@ -615,6 +633,12 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
 
                         state.cursorXMove = true;
                         state.cursorYMove = true;
+                    }
+
+                    if (state.userIsClicking || state.userClick) //showing click command
+                    {
+                        tutorialTag.GetComponent<Image>().color = new Color(1f, 1f, 1f, 150f / 225f);
+                        tutorialTag.GetComponent<Text>().color = Color.red;
                     }
 
                     //Debug.Log("Move Change 2(Z): " + (VRUser.handTracking() - handPos1) + ", Button: " + VRUser.hasButton(true).ToString()); //VRUser.cursorRelock()
@@ -707,6 +731,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 //MakeWordBank.inTutorial = true;
                 inSimpleTutorial = false; //stops simple tutorial
                 initialized = false;
+                initialized2 = false;
                 hasStartedTut = false;
 
                 //lockPanel.SetActive(false);
@@ -720,6 +745,19 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     hasCompleted = true;
                 }
             }
+        }
+    }
+    public static void showTag(bool show = true)
+    {
+        if (show)
+        {
+            tutorialTag.GetComponent<Image>().color = new Color(1f, 1f, 1f, 137f / 225f);
+            tutorialTag.GetComponent<Text>().color = new Color(0f, 0f, 0f, 1f);
+        }
+        else
+        {
+            tutorialTag.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f / 225f);
+            tutorialTag.GetComponent<Text>().color = new Color(0f, 0f, 0f, 0f);
         }
     }
 

@@ -7,7 +7,7 @@ using UnityEngine;
 //all data stored from user
 public class UserInfo //not sure if : this() is necessary
 {// no ": MonoBehaviour" to make the class consistently run 
-    public UserInfo(string name = "ExampleName", string datejoined = "mm/dd/yyyy")
+    public UserInfo(string name = "Participant", string datejoined = "mm/dd/yyyy")
     { //constructor
         this.userName = name;
         this.dateJoined = datejoined;
@@ -454,9 +454,16 @@ public class UserInfo //not sure if : this() is necessary
             yield return image.ToString();
         }
 
+        foreach (String toWrite in writeTagData(true)){
+            yield return toWrite;
+        }
+        //yield return "\nfinish";
+    }
+    public IEnumerable<string> writeTagData(bool withEndMarker = false)
+    {
         yield return "\nTag_Name,TagX,TagY,TagZ,Tag_Image#\n"; //formatting
         //yield return "\n";
-        foreach (TagInfo tag in tags)
+        foreach (TagInfo tag in tags) //TODO: separate tag data into diff file (read from tag data and movement data)
         {
             yield return tag.name;
             yield return tag.location.x.ToString(decimalPlaces);
@@ -464,8 +471,10 @@ public class UserInfo //not sure if : this() is necessary
             yield return tag.location.z.ToString(decimalPlaces);
             yield return tag.image.ToString() + "\n";
         }
-
-        yield return "\nfinish"; //end marker
+        if (withEndMarker)
+        {
+            yield return "\nfinish"; //end marker
+        }
     }
     public bool readData(string[] data) //reading main data
     { //TODO: fix for spacing
@@ -473,12 +482,13 @@ public class UserInfo //not sure if : this() is necessary
         {
             return false;
         }
+        int counter = 4; 
         //general info
-        userName = data[0];
-        dateJoined = data[1];
-        timeLogged = float.Parse(data[2]);
+        userName = data[counter];
+        dateJoined = data[counter+1];
+        timeLogged = float.Parse(data[counter+2]);
 
-        int counter = 11;///... + 1(title) + 7(description) + 1(next index);
+        counter = 11;///... + 1(title) + 7(description) + 1(next index);
         //session data
         while (data[counter] != "Images Completed:") //"Session Data"
         {
@@ -526,7 +536,7 @@ public class UserInfo //not sure if : this() is necessary
 
     public IEnumerable<string> writeMovementData()
     {
-        yield return userName + "'s Movement Data:\n";
+        yield return "Movement Data:\n";
         yield return "Elapsed_Time,System_Time";
         yield return "Cursor_Moving"; //whether or not user intends to move cursor
 
@@ -547,7 +557,7 @@ public class UserInfo //not sure if : this() is necessary
                 limb = "done";
             }
         }
-        //yield return "\n";
+        yield return "\n";
 
         foreach (MovementData move in movements)
         {
@@ -557,7 +567,7 @@ public class UserInfo //not sure if : this() is necessary
             }
             yield return "\n";
         }
-        yield return "finish"; //end marker
+        //endqsS
     }
 
     private static string boolToString(bool b)

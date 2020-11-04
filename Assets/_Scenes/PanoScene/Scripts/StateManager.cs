@@ -90,8 +90,10 @@ public class StateManager : MonoBehaviour {
     public static bool newUser = true; // whether or not data was read
     //TODO: makeNewUser = false; --> when ready to fix reading data issues
     public bool makeNewUser = true; // used to bypass reading data if you want to create another save file (true for testing)
-    private string path;
-    private string path2;
+    private string folderPath;
+    private string folderID = "TeleRehabData_";
+    private string mainPath; //path to main folder
+    private string movePath;
     private static string dataName = "main_data"; //name of the file
     private static string data2Name = "move_data";
     public static string[] dataRead = new string[] { "no data" };
@@ -170,33 +172,39 @@ public class StateManager : MonoBehaviour {
                 user.updateSettings();
                 user.logSessionEnd(MakeWordBank.imageIndex);
 
-                //RePathing (maybe make a folder)
+                //RePathing (with folder)
                 string nowStamp = "_" + System.DateTime.Now.ToString("MM-dd-y_HH.mm.ss"); //"/" & ":" not allowed in address
-                path = Application.dataPath + "/" + dataName + nowStamp + ".csv"; //"_" + System.DateTime.Now.ToString("MM/dd/y_HH:mm:ss")
-                path2 = Application.dataPath + "/" + data2Name + nowStamp + ".csv";
+                if (newUser) //preexisting
+                {
+                    folderPath = Application.dataPath + "/" + folderID + user.getName() + "_Started(" + nowStamp + ")";
+                }
+                //move path init here instead of awake due to nowStamp
+                movePath = folderPath + "/" + data2Name + nowStamp + ".csv";
 
                 //WRITING DATA CODE
                 StreamWriter writer;
                 StreamWriter writer2;
                 if (newUser) //if new user or no data detected
                 {
-                    writer = System.IO.File.CreateText(path); //create new user_data file
-                    Debug.Log("File Created at " + path);
+                    
+                    var folder = Directory.CreateDirectory(folderPath);
+                    writer = System.IO.File.CreateText(mainPath); //create new user_data file
+                    Debug.Log("File Created at " + mainPath);
                     //writer.WriteLine("UserName,DateJoined,TimeLogged,StartedPL,FinishedPL,Difficulty,LastImage,ImageData,,TagData,,SessionData,,finish");
                 }
                 else
                 {
-                    writer = new StreamWriter(path, false);// overwrites insead of append = false
+                    writer = new StreamWriter(mainPath, false);// overwrites insead of append = false
                     //TODO: convert to try catch
                 }
-                writer2 = System.IO.File.CreateText(path2);
-                Debug.Log("File Created at " + path2);
+                writer2 = System.IO.File.CreateText(movePath); //movement data is always a new doc
+                Debug.Log("File Created at " + movePath);
 
                 Debug.Log("Data Writting...");
                 foreach (string data in user.writeMainData()) //or String.Join(",", enum)
                 {
                     writer.Write(data + ","); //comma separated value file = csv
-                    //Debug.Log("DataMain: " + data);
+                    Debug.Log("DataMain: " + data);
                 }
                 foreach (string data in user.writeMovementData())
                 {
@@ -370,16 +378,27 @@ public class StateManager : MonoBehaviour {
 
     void Awake()
     {
-        //READING DATA CODE
-        path = Application.dataPath + dataName + ".csv"; //MainData
-        //path = Application.dataPath + dataName + "_" + System.DateTime.Now.ToString() + ".csv";
-        //path2 = Application.dataPath + data2Name + "_" + System.DateTime.Now.ToString() + ".csv";
-        if (System.IO.File.Exists(path) && !makeNewUser)
+        mainPath = Application.dataPath + dataName + ".csv";
+        folderPath = Application.dataPath; //empty if new
+        //SEARCH FOR FOLDER
+        foreach (string file in System.IO.Directory.GetFiles(Application.dataPath))
         {
-            StreamReader reader = new StreamReader(path);
-            dataRead = reader.ReadLine().Split(','); //array
-            newUser = !user.readData(dataRead);
-            reloading = newUser;
+            if (file.Substring(0, folderID.Length) == folderID){
+                folderPath = Application.dataPath + "/" + file;
+            }
+        }
+        if (folderPath != Application.dataPath) // new folder read
+        { //READING DATA CODE
+            Debug.Log("**Found Folder: " + folderPath);
+            mainPath = folderPath + "/" + dataName + ".csv";
+            Debug.Log("***MainData Path: " + mainPath);
+            if (System.IO.File.Exists(mainPath) && !makeNewUser)
+            {
+                StreamReader reader = new StreamReader(mainPath);
+                dataRead = reader.ReadLine().Split(','); //array
+                newUser = !user.readData(dataRead);
+                reloading = newUser;
+            }
         }
 
         /* List <--> Array conversions

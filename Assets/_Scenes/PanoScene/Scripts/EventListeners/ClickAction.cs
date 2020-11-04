@@ -367,9 +367,10 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 			moveTo = (playerHead.transform.position + GameObject.Find("headsetRight").transform.position * offset) / 2;
 		}
 		Debug.Log("Testing Head Offset: " + moveTo + ", vs. " + playerHead.transform.position);*/
-		
+
 		//image radius(.5) * image scale(3.47) * .75 = 1.3
-		state.getSelected().transform.position = Vector3.MoveTowards(playerHead.transform.position, state.getSelected().transform.position, 1.3f);
+		Vector3 initPos = state.getSelected().transform.localPosition; //local vs world space
+		state.getSelected().transform.position = Vector3.MoveTowards(playerHead.transform.position, initPos, 1.3f);
     }
 
 	//cleaning crew

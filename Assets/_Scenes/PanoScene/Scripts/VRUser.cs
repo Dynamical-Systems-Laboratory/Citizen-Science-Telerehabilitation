@@ -68,6 +68,7 @@ public class VRUser : MonoBehaviour
     public static GameObject clickLock;
     private static Color showLock;
     private static Color hideLock;
+    public static bool noLock = false;
 
     //TODO: maybe fix floating feeling with flatform at user feet (make camera lower, put platform right under, set to floor lvl instead of eye lvl)
     // Start is called before the first frame update
@@ -415,7 +416,10 @@ public class VRUser : MonoBehaviour
             else if (!state.userControlActive) //purple = locked
             {
                 clickColor.GetComponent<Image>().color = cursorHighlight3;
-                clickLock.GetComponent<RawImage>().color = showLock;
+                if (!noLock)
+                {
+                    clickLock.GetComponent<RawImage>().color = showLock;
+                }
             }
             else if ((state.userIsClicking || state.userClick) && state.getState() != 5 && state.getState() != 6) //red = clicking
             {
