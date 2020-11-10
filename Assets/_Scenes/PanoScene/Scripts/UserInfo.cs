@@ -33,17 +33,18 @@ public class UserInfo //not sure if : this() is necessary
     }
 
     //data
-    public void logTag(GameObject addTag)
+    public void logTag(GameObject addTag, int image)
     {
-        //TODO check locational data - if bad, use (0,0,0) nextCamera offset to correct
         string tagName = addTag.name;
         string toDelete = "(Clone)"; // ex: "Sky(Clone)"
         if (tagName.Length > toDelete.Length && tagName.Substring(tagName.Length - toDelete.Length) == toDelete)
-        {
+        { //delete tag name extension
+            //TODO: check if correct spacing
             tagName = tagName.Substring(0,tagName.Length - toDelete.Length);
         }
         Debug.Log("Tag attempted log " + tagName);
-        TagInfo tempTag = new TagInfo(tagName, addTag.transform.position, getSession().end_im);
+        TagInfo tempTag = new TagInfo(tagName, addTag.transform.position, image);
+        sessions[sessions.Count - 1].setCurrentImage(image); // updates present image
         tags.Add(tempTag);
     }
     public void logImageDone(int addImage)
@@ -63,7 +64,7 @@ public class UserInfo //not sure if : this() is necessary
 
     public struct SessionData
     {
-        public SessionData(string nowDate = "", int startingImage = 0, bool startedPracticeLevel = false, bool endedPracticeLevel = false, int newDifficulty = 5, float newDuration = 0f, int newEndIm = -1)
+        public SessionData(string nowDate = "", float newDuration = 0f, int startingImage = 0, int newEndIm = 0, bool startedPracticeLevel = false, bool endedPracticeLevel = false, int newDifficulty = 5)
         {
             date = nowDate;
             duration = newDuration;
@@ -99,6 +100,12 @@ public class UserInfo //not sure if : this() is necessary
         {
             started_pl = start;
             ended_pl = end;
+        }
+        public bool setCurrentImage(int image)
+        { //sets present session's ending image to a given image and returns true if this image was already the last image 
+            bool ret = (end_im == image);
+            end_im = image;
+            return ret;
         }
 
         public IEnumerable<string> write()
@@ -150,8 +157,15 @@ public class UserInfo //not sure if : this() is necessary
         if (sessions.Count > 0)
         {
             //take initial data from last test (last image becomes start image)
-            startTime = getSession().duration;
-            SessionData sesh = new SessionData(System.DateTime.Now.ToString(), getSession().end_im, getSession().started_pl, getSession().ended_pl, getSession().difficulty, getSession().duration);
+            startTime = 0; //reset just in case
+            foreach (SessionData pastSesh in sessions) //calculate current total time and store it into timeLogged and set a starting marker
+            {
+                startTime += pastSesh.duration;
+            }//startTime = getSession().duration;
+            timeLogged += startTime;
+            Debug.Log("Adding Session->TimeLogged: " + timeLogged + ", started: " + startTime);
+
+            SessionData sesh = new SessionData(System.DateTime.Now.ToString(), 0/*pseudo-duration*/, getSession().end_im, getSession().end_im/*ending-image placeholder*/, getSession().started_pl, getSession().ended_pl, getSession().difficulty);
             sessions.Add(sesh);
         }
         else
@@ -164,6 +178,14 @@ public class UserInfo //not sure if : this() is necessary
 
     public void addMovementBounds(float[] moves, float[] times)
     {
+        /*while (moves.Length < 5) //edge case where z values aren't stored
+        {
+            moves.Append(0f);
+        }
+        while (times.Length < 5)
+        {
+            times.Append(0f);
+        }*/
         getSession().setBoundaries(moves, times);
     }
     public void addMovement(float elapseTime, string systemTime, bool isMoving, Transform head, Vector3 rightHandp, Vector3 rightHandr, Vector3 leftHandp, Vector3 leftHandr)
@@ -274,7 +296,7 @@ public class UserInfo //not sure if : this() is necessary
     public int getProgress()//outputs a %/100 of progress based on user info 
     {
         //TODO: add joycon tracking
-        float progress = ((imagesCompleted.Count*65) / MakeWordBank.imageMaterials.Length); //70% relies on image completion
+        float progress = ((imagesCompleted.Count*65) / MakeWordBank.imageMaterials.Length); //65% relies on image completion
         //assuming 4ish tags are ideally placed per image
         progress += ((tags.Count*25f) / (MakeWordBank.imageMaterials.Length * ((getSession().difficulty+ 4)/2))); //25% relies on number of tags placed
         //10% relies on doing tutorials and practice lvl
@@ -299,8 +321,8 @@ public class UserInfo //not sure if : this() is necessary
     {
         getSession().setDifficulty((int)newDiff);
         //threshold val changes
-        VRUser.moveThreshold1 = .1f + (0.025f * (newDiff - 5)); //mod by difficulty
-        VRUser.moveThreshold2 = .75f + (0.02f * (newDiff - 5));
+        VRUser.moveThreshold1 = .2f + (0.025f * (newDiff - 5)); //mod by difficulty
+        VRUser.moveThreshold2 = .75f + (0.02f * (newDiff - 6));
         if (VRUser.moveThreshold1 < 0) { VRUser.moveThreshold1 = 0; }
         if (VRUser.moveThreshold2 < 0) { VRUser.moveThreshold2 = 0; }
 
@@ -425,7 +447,7 @@ public class UserInfo //not sure if : this() is necessary
     //data usage (reading/writing)
     public IEnumerable<string> writeMainData()
     {
-        yield return userName + "'s Basic Data:\n";
+        yield return "Basic Data:\n";
         yield return "User_Name,Date_Joined,Time_Logged\n"; //formatting
         yield return userName;
         yield return dateJoined;
@@ -454,7 +476,7 @@ public class UserInfo //not sure if : this() is necessary
             yield return image.ToString();
         }
 
-        foreach (String toWrite in writeTagData(true)){
+        foreach (String toWrite in writeTagData()){
             yield return toWrite;
         }
         //yield return "\nfinish";
@@ -476,9 +498,9 @@ public class UserInfo //not sure if : this() is necessary
             yield return "\nfinish"; //end marker
         }
     }
-    public bool readData(string[] data) //reading main data
+    public bool readMainData(string[] data) //reading main data
     { //TODO: fix for spacing
-        if (data.Length < 6) //if no data then assume default vals
+        if (data.Length < 28) //if no data then assume new user (default vals)
         {
             return false;
         }
@@ -487,48 +509,36 @@ public class UserInfo //not sure if : this() is necessary
         userName = data[counter];
         dateJoined = data[counter+1];
         timeLogged = float.Parse(data[counter+2]);
-
-        counter = 11;///... + 1(title) + 7(description) + 1(next index);
+        //counter = 7; //+1 for next index
+        
         //session data
+        counter = 25;///... + 1(title) + 7(session data) + 10(calibration data)
         while (data[counter] != "Images Completed:") //"Session Data"
         {
-            /*
-             * yield return date;
-            yield return duration.ToString();
-            yield return start_im.ToString();
-            yield return end_im.ToString();
-            yield return boolToString(started_pl);
-            yield return boolToString(ended_pl);
-            yield return difficulty.ToString();
-            for(int i = 0; i < 4; i++)
-            {
-                yield return moveBounds[i].ToString();
-                yield return moveTimes[i].ToString();
-            }
-             * */
-            SessionData newData = new SessionData(data[counter], int.Parse(data[counter + 2]), stringToBool(data[counter + 4]), 
-                stringToBool(data[counter + 5]), int.Parse(data[counter + 6]), int.Parse(data[counter + 1]), int.Parse(data[counter + 3]) );
+            SessionData newData = new SessionData(data[counter], int.Parse(data[counter + 1]), int.Parse(data[counter + 2]),
+                int.Parse(data[counter + 3]), stringToBool(data[counter + 4]), stringToBool(data[counter + 5]), int.Parse(data[counter + 6]) );
             newData.setBoundaries(
                 new float[] { float.Parse(data[counter + 7]), float.Parse(data[counter + 9]), float.Parse(data[counter + 11]), float.Parse(data[counter + 13]), float.Parse(data[counter + 15])},
                 new float[] { float.Parse(data[counter + 8]), float.Parse(data[counter + 10]), float.Parse(data[counter + 12]), float.Parse(data[counter + 14]), float.Parse(data[counter + 16])} );
-            sessions.Add(newData);
+            sessions.Add(newData); //write new session
             counter += 17;
+            //TODO: calculate starting time and total time in this loop to save runtime later
         }
         //image data
         counter++; //\nImages Completed:\n
-        while (data[counter] != "Tag_Name,TagX,TagY,TagZ,Tag_Image#") //"\nTag_Name,TagX,TagY,TagZ,Tag_Image#\n"
+        while (data[counter] != "Tag_Name") //"\nTag_Name,TagX,TagY,TagZ,Tag_Image#\n"
         {
             imagesCompleted.Add(int.Parse(data[counter]));
             counter++;
         }
         //tag data
-        counter++;
-        while (data[counter] != "finish")
+        counter += 5; //headers
+        while (counter+4 < data.Length) //find tags to the end
         {
             TagInfo newTag = new TagInfo(data[counter],
                 new Vector3(float.Parse(data[counter+1]), float.Parse(data[counter + 2]), float.Parse(data[counter + 3])),
                 int.Parse(data[counter + 4]));
-            counter += 6;
+            counter += 5;
         }
 
         return true;

@@ -53,8 +53,8 @@ public class VRUser : MonoBehaviour
 
     public static bool showMoveStats = false; //bool to debug.log calibration stats
 
-    public static float moveThreshold1 = 0.10f; //percentages for (1)reading movement & (2)displaying movement (+haptics)
-    public static float moveThreshold2 = 0.75f;
+    public static float moveThreshold1 = 0.20f; //percentages for (1)reading movement & (2)displaying movement (+haptics)
+    public static float moveThreshold2 = 0.75f; //placeholder values*** - ref UserInfo.updateDifficulty()
 
     public static float baseZCalibration = 1.1f; //var that signifies how far the user is supposed to reach (z) given no calibration data
 
@@ -387,7 +387,7 @@ public class VRUser : MonoBehaviour
 
             //moves cursor by factor of all the above*****
             trueCursor.transform.position += ((1.4f + ((5 - state.user.getSettingData()[0]) / 10f)) * (state.user.getSettingData()[2]/2.2f) *
-                Time.deltaTime * ((trueCursor.transform.up * cursorMove.y * 1.05f) + (trueCursor.transform.right * cursorMove.x)));
+                Time.deltaTime * ((trueCursor.transform.up * cursorMove.y) + (trueCursor.transform.right * cursorMove.x)));
 
             //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-151,66], x[-90,88.4]
             if (trueCursor.transform.localPosition.x > 88)

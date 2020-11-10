@@ -396,11 +396,11 @@ public class StateManager : MonoBehaviour {
             {
                 StreamReader reader = new StreamReader(mainPath);
                 dataRead = reader.ReadLine().Split(','); //array
-                newUser = !user.readData(dataRead);
+                newUser = !user.readMainData(dataRead);
                 reloading = newUser;
             }
         }
-
+        
         /* List <--> Array conversions
          * List<string> list = new List<string>(arr);
          * string[] arr = list.ToArray()

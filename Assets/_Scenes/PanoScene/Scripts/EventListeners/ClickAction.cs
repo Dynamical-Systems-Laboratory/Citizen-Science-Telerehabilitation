@@ -144,7 +144,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 				state.getSelected().transform.position = Vector3.MoveTowards(state.getCursorPosition(), playerHead.transform.position, 0.00000001f * Time.deltaTime); //move in increments of 1?
 				i++;
 			}*/
-			state.user.logTag(state.getSelected());
+			state.user.logTag(state.getSelected(), MakeWordBank.imageIndex);
 			state.setSelected(null);
         }
 
