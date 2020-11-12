@@ -149,6 +149,7 @@ public class UserInfo //not sure if : this() is necessary
 
     public void logSessionEnd(int end)
     {
+        Debug.Log("Session end looking at: " + timeLogged + ", " + startTime);
         getSession().logEndData(end, (timeLogged - startTime));
     }
 

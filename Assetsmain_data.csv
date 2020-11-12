@@ -1,0 +1,12 @@
+Basic Data:
+,User_Name,Date_Joined,Time_Logged
+,Participant,11/10/2020,23,
+Session Data:
+,Date_Time,Duration,First_Image,Last_Image,Started_PL,Finished_PL,Difficulty,Offset_XLeft,Time_XLeft,Offset_XRight,Time_XRight,Offset_YDown,Time_YDown,Offset_YUp,Time_YUp,Offset_ZForward,Time_ZForward
+,11/10/2020 5:03:44 PM,0,0,0,0,0,5,0,0,0,0,0,0,0,0,
+Images Completed:
+,
+Tag_Name,TagX,TagY,TagZ,Tag_Image#
+,Tire,0.46861,-0.00610,1.26309,0
+,Shore,-1.12004,0.05014,0.80213,0
+,

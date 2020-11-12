@@ -91,7 +91,7 @@ public class StateManager : MonoBehaviour {
     //TODO: makeNewUser = false; --> when ready to fix reading data issues
     public bool makeNewUser = true; // used to bypass reading data if you want to create another save file (true for testing)
     private string folderPath;
-    private string folderID = "TeleRehabData_";
+    private string folderID = "UserRehabData";
     private string mainPath; //path to main folder
     private string movePath;
     private static string dataName = "main_data"; //name of the file
@@ -176,10 +176,11 @@ public class StateManager : MonoBehaviour {
                 string nowStamp = "_" + System.DateTime.Now.ToString("MM-dd-y_HH.mm.ss"); //"/" & ":" not allowed in address
                 if (newUser) //preexisting
                 {
-                    folderPath = Application.dataPath + "/" + folderID + user.getName() + "_Started(" + nowStamp + ")";
+                    folderPath = Application.dataPath + "/" + folderID + user.getName() + "(" + nowStamp + ")";
+                    mainPath = folderPath + "/" + dataName + ".cvs"; //precausion
                 }
                 //move path init here instead of awake due to nowStamp
-                movePath = folderPath + "/" + data2Name + nowStamp + ".csv";
+                movePath = folderPath + "/" + data2Name + "(" + nowStamp + ").csv";
 
                 //WRITING DATA CODE
                 StreamWriter writer;
@@ -195,6 +196,7 @@ public class StateManager : MonoBehaviour {
                 else
                 {
                     writer = new StreamWriter(mainPath, false);// overwrites insead of append = false
+                    Debug.Log("Writing to current folder path: " + mainPath);
                     //TODO: convert to try catch
                 }
                 writer2 = System.IO.File.CreateText(movePath); //movement data is always a new doc
@@ -209,7 +211,7 @@ public class StateManager : MonoBehaviour {
                 foreach (string data in user.writeMovementData())
                 {
                     writer2.Write(data + ",");
-                    Debug.Log("DataMove: " + data); //check for timestamp sigfigs
+                    //Debug.Log("DataMove: " + data); //check for timestamp sigfigs
                 }
                 writer.Write("\n"); //indent for new data (delete previous data in another step)
                 Debug.Log("Data Finished Writting...");
@@ -383,7 +385,8 @@ public class StateManager : MonoBehaviour {
         //SEARCH FOR FOLDER
         foreach (string file in System.IO.Directory.GetFiles(Application.dataPath))
         {
-            if (file.Substring(0, folderID.Length) == folderID){
+            if (file.IndexOf(folderID) != -1)
+            { //file.Substring(0, folderID.Length) == folderID
                 folderPath = Application.dataPath + "/" + file;
             }
         }
@@ -399,6 +402,10 @@ public class StateManager : MonoBehaviour {
                 newUser = !user.readMainData(dataRead);
                 reloading = newUser;
             }
+        }
+        else
+        {
+            Debug.Log("New Folder Not Found");
         }
         
         /* List <--> Array conversions
