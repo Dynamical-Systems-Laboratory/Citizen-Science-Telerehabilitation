@@ -315,6 +315,12 @@ public class MakeWordBank : MonoBehaviour {
         //taggerPanel.transform.Translate(new Vector3(0, 5000, 0)); //Moving it out of the way for tutorial
         //trasherPanel.transform.Translate(new Vector3(0, 5000, 0));
 
+        GameObject.Find("tagFocus").SetActive(false); //focusor initializations (uses setactive to appear and dissapear)
+        GameObject.Find("trashFocus").SetActive(false);
+        GameObject.Find("nextFocus").SetActive(false);
+        GameObject.Find("homeFocus").SetActive(false);
+        GameObject.Find("imageFocus").SetActive(false);
+
         //Add Images
         for (int i = 0; i < imageMaterials.Length; i++) {
             imageMaterials[i] = imageMaterialsToDragIn[i];
@@ -382,6 +388,7 @@ public class MakeWordBank : MonoBehaviour {
             //Debug.Log("MainC: " + mainCamera.activeSelf + ", UIC: " + UICamera.activeSelf + ", HomeC: " + homeCamera.activeSelf +
             //    ", VidC: " + videoCamera.activeSelf + ", CursorC: " + cursorCamera.activeSelf);
 
+            //**********************Note: from here to line 452 (clicking) the controls are from keyboard implementation, can disregard
             /* Old Control Scheme
              * * arrow keys = cursor movement
              * * b = cursor select
@@ -597,6 +604,7 @@ public class MakeWordBank : MonoBehaviour {
                 practiceLevelText.SetActive(true); //set proper text objects
                 welcomeScreen.SetActive(false);
                 helpTextContainer.SetActive(true);
+                welcomeText.text = ""; //helpTextContainer.GetComponent<Text>().text = "";
                 //numTagsRemaining = 3 - state.tagsPlaced.Count;
                 tutorialText.text = "Place a few tags and then move to the next image to begin data collection";
 
@@ -663,65 +671,77 @@ public class MakeWordBank : MonoBehaviour {
             }
             else if (stepOfTutorial == 3)
             {
-                cursorGroup.transform.position = GameObject.Find("cursorPos1").transform.position;
+                //cursorGroup.transform.position = GameObject.Find("cursorPos1").transform.position;
+                GameObject.Find("tagFocus").SetActive(true);
                 tutorialText.text = "If you hover your mouse over a tag or button you can click, it will highlight red...\n" +
                     "Once you click it, the tag will attach to your cursor until you drop it on the image to the left of the screen.\n" +
                     SimpleTutorial.continueText;
                 if (moveOn() && !skip())
                 {
                     stepOfTutorial++;
+                    GameObject.Find("tagFocus").SetActive(false);
                 }
             }
             else if (stepOfTutorial == 4)
             {
-                cursorGroup.transform.position = GameObject.Find("cursorPos2").transform.position;
+                //cursorGroup.transform.position = GameObject.Find("cursorPos2").transform.position;
+                GameObject.Find("imageFocus").SetActive(true);
                 tutorialText.text = "Then once you place it down, the tag will appear in the space around you.\n" +
                     SimpleTutorial.continueText;
                 if (moveOn() && !skip())
                 {
                     stepOfTutorial++;
+                    GameObject.Find("imageFocus").SetActive(false);
                 }
             }
             else if (stepOfTutorial == 5)
             {
-                cursorGroup.transform.position = GameObject.Find("cursorPos3").transform.position;
+                //cursorGroup.transform.position = GameObject.Find("cursorPos3").transform.position;
+                GameObject.Find("trashFocus").SetActive(true);
                 tutorialText.text = "If you dont want to use a given tag anymore, you can also place the tag in the trash...\n" +
                     "If successful, a small version of the tag will appear under the trash icon, \n" +
                     "And a new tag will appear in place of the previous... " + SimpleTutorial.continueText;
                 if (moveOn() && !skip())
                 {
                     stepOfTutorial++;
+                    GameObject.Find("trashFocus").SetActive(false);
                 }
             }
             else if (stepOfTutorial == 6)
             {
-                cursorGroup.transform.position = GameObject.Find("cursorPos4").transform.position;
+                //cursorGroup.transform.position = GameObject.Find("cursorPos4").transform.position;
+                GameObject.Find("nextFocus").SetActive(true);
                 tutorialText.text = "If you hover over the next button and click,\n" +
                     "the game will store all of the tag data displayed on the screen, and show a new image to you\n" +
                     SimpleTutorial.continueText;
                 if (moveOn() && !skip())
                 {
                     stepOfTutorial++;
+                    GameObject.Find("nextFocus").SetActive(false);
                 }
             }
             else if (stepOfTutorial == 7)
             {
-                cursorGroup.transform.position = GameObject.Find("cursorPos5").transform.position;
+                //cursorGroup.transform.position = GameObject.Find("cursorPos5").transform.position;
+                GameObject.Find("homeFocus").SetActive(true);
                 tutorialText.text = "If you hover over the home button and click,\n" +
                     "you will be taken to the home screen, where you can freely navigate between different parts of the game, \n" +
                     "as well as view your exercise progress... " + SimpleTutorial.continueText;
                 if (moveOn() && !skip())
                 {
+                    GameObject.Find("homeFocus").SetActive(false);
                     stepOfTutorial++;
                 }
             }
             else if (stepOfTutorial == 8)
             {
-                cursorGroup.transform.position = GameObject.Find("cursorPos2").transform.position;
+                //cursorGroup.transform.position = GameObject.Find("cursorPos2").transform.position;
+                GameObject.Find("imageFocus").SetActive(true);
                 tutorialText.text = "Finally, before you start logging your data, you will have a chance to practice what you've learned\n" +
                     "when your ready, " + SimpleTutorial.continueText + ", and you will start the practice level";
                 if (moveOn() && !skip())
                 {
+                    GameObject.Find("imageFocus").SetActive(false);
                     stepOfTutorial = 22;
                 }
             }

@@ -173,7 +173,7 @@ public class StateManager : MonoBehaviour {
                 user.logSessionEnd(MakeWordBank.imageIndex);
 
                 //RePathing (with folder)
-                string nowStamp = "_" + System.DateTime.Now.ToString("MM-dd-y_HH.mm.ss"); //"/" & ":" not allowed in address
+                string nowStamp = System.DateTime.Now.ToString("MM-dd-y_HH.mm.ss"); //"/" & ":" not allowed in address
                 if (newUser) //preexisting
                 {
                     folderPath = Application.dataPath + "/" + folderID + user.getName() + "(" + nowStamp + ")";

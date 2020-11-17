@@ -110,9 +110,9 @@ public class VRUser : MonoBehaviour
         showLock = GameObject.Find("showLock").GetComponent<RawImage>().color;
         hideLock = showLock;
         hideLock.a = 0;
-        cursorHighlight.a = 120f / 255f; //unlocking
-        cursorHighlight2.a = 85f / 255f; //clicking
-        cursorHighlight3.a = 60f / 255f; //locked
+        cursorHighlight.a = 100f / 255f; //unlocking
+        cursorHighlight2.a = 50f / 255f; //clicking
+        cursorHighlight3.a = 55f / 255f; //locked
 
         //(init stuff)  threshold val changes
         state.user.updateDifficulty();
@@ -408,23 +408,22 @@ public class VRUser : MonoBehaviour
             }
             
             //highlights the cursor based on certain actions
-            if (isResetting(true) || isResetting(false)) //green = resetting
+            if (isResetting(true) || isResetting(false)) //blue = resetting
             {
-                clickColor.GetComponent<Image>().color = cursorHighlight;
+                //clickColor.GetComponent<Image>().color = cursorHighlight;
                 clickLock.GetComponent<RawImage>().color = hideLock;
             }
-            else if (!state.userControlActive) //purple = locked
+            else if (!state.userControlActive) //yellow = locked
             {
-                clickColor.GetComponent<Image>().color = cursorHighlight3;
                 if (!noLock)
                 {
+                    clickColor.GetComponent<Image>().color = cursorHighlight3;
                     clickLock.GetComponent<RawImage>().color = showLock;
                 }
             }
-            else if ((state.userIsClicking || state.userClick) && state.getState() != 5 && state.getState() != 6) //red = clicking
+            else if ((state.userIsClicking || state.userClick) && state.getState() != 5 && state.getState() != 6) //green = clicking
             {
-                //Debug.Log("Red Clicking should be shown");
-                clickColor.GetComponent<Image>().color = cursorHighlight2;
+                //clickColor.GetComponent<Image>().color = cursorHighlight2;
                 clickLock.GetComponent<RawImage>().color = hideLock;
             }
             else
@@ -435,7 +434,7 @@ public class VRUser : MonoBehaviour
             //Debug.Log("isSelecting2: " + specialClick.ToString()); //test
             if (specialClick)
             {
-                clickColor.GetComponent<Image>().color = cursorHighlight2;
+                //clickColor.GetComponent<Image>().color = cursorHighlight2;
                 clickLock.GetComponent<RawImage>().color = hideLock;
                 //Debug.Log("isSelecting3: " + specialClick.ToString());
             }
