@@ -110,9 +110,9 @@ public class VRUser : MonoBehaviour
         showLock = GameObject.Find("showLock").GetComponent<RawImage>().color;
         hideLock = showLock;
         hideLock.a = 0;
-        cursorHighlight.a = 100f / 255f; //unlocking
-        cursorHighlight2.a = 50f / 255f; //clicking
-        cursorHighlight3.a = 55f / 255f; //locked
+        cursorHighlight.a = 60f / 255f; //unlocking
+        cursorHighlight2.a = 40f / 255f; //clicking
+        cursorHighlight3.a = 50f / 255f; //locked
 
         //(init stuff)  threshold val changes
         state.user.updateDifficulty();
@@ -201,7 +201,7 @@ public class VRUser : MonoBehaviour
              *  the user then can move the cursor relative to the saved vals
              *  the only exception is when the user changes states or the user presses the hand triggers
              * */
-            if (cursorRelock() || state.makeCursReset)
+            if ((cursorRelock() || state.makeCursReset) && !noLock)
             {
                 trueCursor.transform.position = centerer.transform.position;
                 state.userControlActive = false;
@@ -209,7 +209,7 @@ public class VRUser : MonoBehaviour
                 ClickAction.dropObject();
                 controllerVibration += .6f;
             }
-            if (isResetting()) //user resets cursor via hand triggers
+            if (isResetting() && !noLock) //user resets cursor via hand triggers
             {
                 //sets arm bounds to location of hands
                 //playerArms.transform.position = handPos; 
@@ -417,7 +417,7 @@ public class VRUser : MonoBehaviour
             {
                 if (!noLock)
                 {
-                    clickColor.GetComponent<Image>().color = cursorHighlight3;
+                    //clickColor.GetComponent<Image>().color = cursorHighlight3;
                     clickLock.GetComponent<RawImage>().color = showLock;
                 }
             }
@@ -577,18 +577,25 @@ public class VRUser : MonoBehaviour
         return false;*/
         return userSkip(isContinuous);
     }
-    public static bool clickDown() //getbuttondown
+    public static bool clickDown(bool isContinuous = false) //getbuttondown
     {
-        if ((OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) < .9)
-            || (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) < .9))
+        if (isContinuous)
         {
-            return true;
+            if ((OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) < .9)
+            || (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) < .9))
+            {
+                return true;
+            }
+            return false;
         }
-        return false;
+        else
+        {
+            return OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) == .4;
+        }
     }
     public static bool isResetting(bool isContinuous = false)
     {
-        if (!isContinuous)
+        /*if (!isContinuous)
         {
             return (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) < 1.9) ||
             (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) < 1.9);
@@ -597,7 +604,8 @@ public class VRUser : MonoBehaviour
         {
             return (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) > 1.9) ||
             (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) > 1.9);
-        }
+        }*/
+        return clickDown(isContinuous);
     }
     public static bool hasButton(bool isContinuous = false)
     {
