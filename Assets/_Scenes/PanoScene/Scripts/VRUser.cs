@@ -70,6 +70,8 @@ public class VRUser : MonoBehaviour
     private static Color hideLock;
     public static bool noLock = false;
 
+    public static bool forceLock = false;
+
     //TODO: maybe fix floating feeling with flatform at user feet (make camera lower, put platform right under, set to floor lvl instead of eye lvl)
     // Start is called before the first frame update
     private void Awake()
@@ -201,13 +203,17 @@ public class VRUser : MonoBehaviour
              *  the user then can move the cursor relative to the saved vals
              *  the only exception is when the user changes states or the user presses the hand triggers
              * */
-            if ((cursorRelock() || state.makeCursReset) && !noLock)
+            if (((cursorRelock() || state.makeCursReset) && !noLock) || forceLock)
             {
                 trueCursor.transform.position = centerer.transform.position;
                 state.userControlActive = false;
                 state.makeCursReset = false;
                 ClickAction.dropObject();
                 controllerVibration += .6f;
+                if (forceLock)
+                {
+                    forceLock = false;
+                }
             }
             if (isResetting() && !noLock) //user resets cursor via hand triggers
             {
@@ -417,7 +423,7 @@ public class VRUser : MonoBehaviour
             {
                 if (!noLock)
                 {
-                    //clickColor.GetComponent<Image>().color = cursorHighlight3;
+                    clickColor.GetComponent<Image>().color = cursorHighlight3;
                     clickLock.GetComponent<RawImage>().color = showLock;
                 }
             }
@@ -593,9 +599,9 @@ public class VRUser : MonoBehaviour
             return OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) == .4;
         }
     }
-    public static bool isResetting(bool isContinuous = false)
+    public static bool isResetting(bool isContinuous = false) //TODO: In the process of swapping controls
     {
-        /*if (!isContinuous)
+        if (!isContinuous)
         {
             return (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) < 1.9) ||
             (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) < 1.9);
@@ -604,8 +610,8 @@ public class VRUser : MonoBehaviour
         {
             return (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) > 1.9) ||
             (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) > 1.9);
-        }*/
-        return clickDown(isContinuous);
+        }
+        //return clickDown(isContinuous);
     }
     public static bool hasButton(bool isContinuous = false)
     {

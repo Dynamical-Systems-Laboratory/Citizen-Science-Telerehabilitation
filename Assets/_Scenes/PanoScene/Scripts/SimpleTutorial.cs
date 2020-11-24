@@ -47,7 +47,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     public static bool prevClicked = false;
 
     //Videoplayers
-    public static GameObject VP1;
+    /*public static GameObject VP1;
     public static GameObject VP2;
     public static GameObject VP3;
     public static GameObject VP4;
@@ -57,7 +57,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     public static UnityEngine.Video.VideoPlayer VPA2;
     public static UnityEngine.Video.VideoPlayer VPA3;
     public static UnityEngine.Video.VideoPlayer VPA4;
-    public static UnityEngine.Video.VideoPlayer VPA5;
+    public static UnityEngine.Video.VideoPlayer VPA5;*/
 
     public static bool startedPlaying = false;
     //public static bool calibrationEdgeCase = false;
@@ -111,7 +111,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
         //beginngingCull = cursorCam.GetComponent<Camera>().cullingMask;
 
         //video players
-        VP1 = GameObject.Find("VPlayer1"); //cursor unlocking
+        /*VP1 = GameObject.Find("VPlayer1"); //cursor unlocking
         VP2 = GameObject.Find("VPlayer2"); //cursor moving left/right
         VP3 = GameObject.Find("VPlayer3"); //cursor moving up/down
         VP4 = GameObject.Find("VPlayer4");
@@ -121,7 +121,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
         VPA2 = VP2.GetComponent<UnityEngine.Video.VideoPlayer>();
         VPA3 = VP3.GetComponent<UnityEngine.Video.VideoPlayer>();
         VPA4 = VP4.GetComponent<UnityEngine.Video.VideoPlayer>();
-        VPA5 = VP5.GetComponent<UnityEngine.Video.VideoPlayer>();
+        VPA5 = VP5.GetComponent<UnityEngine.Video.VideoPlayer>();*/
         // to play a video, activate the associated player and call activator.Play(), then ask compiler activator.isPlaying?, deactivate if not playing
 
         //lockText = GameObject.Find("lockText").GetComponent<Text>() as Text;
@@ -152,11 +152,11 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 cam.rect = new Rect(0.0f, 0.0f, 1.0f, 1.0f);
                 StateManager.kinectReady = true;
                 state.makeCursReset = true;
-                VP1.SetActive(false);
+                /*VP1.SetActive(false);
                 VP2.SetActive(false);
                 VP3.SetActive(false);
                 VP4.SetActive(false);
-                VP5.SetActive(false);
+                VP5.SetActive(false);*/
                 initialized = true;
                 step = 0;
 
@@ -185,8 +185,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 timer = 0;
                 state.cursorXMove = false;
                 state.cursorYMove = false;
-                VP4.SetActive(true);
-                VPA4.Play();
+                //VP4.SetActive(true);
+                //VPA4.Play();
                 savedCursorScale = cursor.transform.localScale;
             }
             else if (MakeWordBank.skip() && timer > 1) //&& hasCompleted if you dont want the calibration to be skipable
@@ -312,26 +312,26 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             {
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
-                    text.text = "watching video:\n Model centering their hands and unlocking the cursor"; //<color=blue>unlocking</color>
+                    //text.text = "watching video:\n Model centering their hands and unlocking the cursor"; //<color=blue>unlocking</color>
                     counter = 0;
                     step++;
                     //add video of someone centering their hands
-                    VP1.SetActive(true);
-                    VPA1.Play();
+                    //VP1.SetActive(true);
+                    //VPA1.Play();
                 }
             }
             else if (step == 2)
             {
-                if (VPA1.isPlaying)
+                if (true) //VPA1.isPlaying
                 {
                     //cursorCam.GetComponent<Camera>().cullingMask = (1 << LayerMask.NameToLayer("Nothing")); //can also use & and | to enable/disable parts of culling mask
                     startedPlaying = true;
                 }
                 //timer += Time.deltaTime;
-                if (!VPA1.isPlaying && startedPlaying) //if video done
+                if (startedPlaying) //if video done: !VPA1.isPlaying && 
                 {
-                    VP1.SetActive(false);
-                    //Debug.Log("Step 2 Counter: " + counter);
+                    //VP1.SetActive(false);
+                    Debug.Log("Step 2 Counter: " + counter);
                     if (counter == 0 && !VRUser.isResetting())
                     {
                         text.text = "Now try unlocking the cursor yourself,\n" + //<color=blue>unlocking</color>
@@ -350,6 +350,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                             "(Center your hands and squeeze the <b>hand triggers</b> to unlock the cursor)";
                         counter = 2;
                         state.userControlActive = false;
+                        //VRUser.forceLock = true;
                     }
                     else if (counter == 2 && state.userControlActive)
                     {
@@ -372,22 +373,22 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
                     text.text = "The cursor can be moved left and right...";
-                    VP2.SetActive(true);
-                    VPA2.Play();
+                    //VP2.SetActive(true);
+                    //VPA2.Play();
                     state.userControlActive = false;
                     step++;
                 }
             }
             else if (step == 4) //play left/right video
             {
-                if (VPA2.isPlaying)
+                if (true) //VPA2.isPlaying
                 {
                     //cursorCam.GetComponent<Camera>().cullingMask = (1 << LayerMask.NameToLayer("Nothing"));
                     startedPlaying = true;
                 }
-                if (!VPA2.isPlaying && startedPlaying)
+                if (startedPlaying) //!VPA2.isPlaying &&
                 {
-                    VP2.SetActive(false);
+                    //VP2.SetActive(false);
                     //cursorCam.GetComponent<Camera>().cullingMask = beginngingCull;
 
                     timer += Time.deltaTime;
@@ -475,8 +476,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     timer = 0;
                     state.cursorXMove = false;
                     state.cursorYMove = true;
-                    VP3.SetActive(true);
-                    VPA3.Play();
+                    //VP3.SetActive(true);
+                    //VPA3.Play();
                 }
 
                 if (state.getCursorPosition().x <= -89f && state.userControlActive)
@@ -497,15 +498,15 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
             else if (step == 7)
             {
-                if (VPA3.isPlaying)
+                if (true) //VPA3.isPlaying
                 {
                     text.text = "The cursor can be moved upward and downward...";
                     startedPlaying = true;
                 }
-                if (!VPA3.isPlaying && startedPlaying)
+                if (startedPlaying) //!VPA3.isPlaying && 
                 {
                     timer += Time.deltaTime;
-                    VP3.SetActive(false);
+                    //VP3.SetActive(false);
                     if (counter == 0)
                     {
                         text.text = "Return to beginning position with the controllers near your shoulders\n" +
@@ -603,21 +604,21 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
                     step++;
-                    VP4.SetActive(true);
-                    VPA4.Play();
+                    //VP4.SetActive(true);
+                    //VPA4.Play();
                 }
             }
             else if (step == 10)
             {
-                if (VPA4.isPlaying)
+                if (true) //VPA4.isPlaying
                 {
                     text.text = "The cursor can be <color=green>clicked</color>";
                     startedPlaying = true;
                 }
-                if (!VPA4.isPlaying && startedPlaying)
+                if (startedPlaying) //!VPA4.isPlaying && 
                 {
                     timer += Time.deltaTime;
-                    VP4.SetActive(false);
+                    //VP4.SetActive(false);
                     /*if (state.userControlActive)
                     {
                         cursor.transform.localScale += new Vector3((VRUser.handTracking() - handPos1).z, (VRUser.handTracking() - handPos1).z, (VRUser.handTracking() - handPos1).z)/5f;
