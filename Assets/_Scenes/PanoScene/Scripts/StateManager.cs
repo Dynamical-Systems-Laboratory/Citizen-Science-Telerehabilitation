@@ -247,7 +247,7 @@ public class StateManager : MonoBehaviour {
             case 7: //PRACTICE LEVEL
                 //GameObject.Find("gameText").GetComponent<Text>().text = "Practice Screen";
                 break;
-            case 8: //Survey
+            case 8: //Survey --> currently unused
                 break;
             default: //STATE ERROR
                 //complexUser.VRPerson.SetActive(false);

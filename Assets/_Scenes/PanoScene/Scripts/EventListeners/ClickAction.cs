@@ -38,9 +38,13 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 	public static Vector3 tagDownScale = new Vector3(0.003393029f, 0.004489522f, 0.003547033f);
 	private static Vector3 trashTagDownScale = new Vector3(0.02400159f, 0.03175797f, 0.02509099f);
 
+	public static GameObject gameSphere;
+
 	public void Awake()
     {
-        state = GameObject.Find("Canvas").GetComponent<StateManager>();
+		gameSphere = GameObject.Find("gameSphere");
+
+		state = GameObject.Find("Canvas").GetComponent<StateManager>();
 		playerHead = GameObject.Find("CenterEyeAnchor");
 
 		tagPrefab = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -205,7 +209,7 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 					MakeWordBank.tags[i].isChangingColor = false;
 				}
 			}*/
-			state.getSelected().transform.parent = GameObject.Find("SelectedTag").transform;
+			state.getSelected().transform.SetParent(GameObject.Find("SelectedTag").transform);
         }
 
 		else if (objectClicked != null && objectClicked.tag == "QuitButton") // Quit button clicked
@@ -368,10 +372,16 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		}
 		Debug.Log("Testing Head Offset: " + moveTo + ", vs. " + playerHead.transform.position);*/
 
-		//image radius(.5) * image scale(3.47) * .75 = 1.3
-		Vector3 initPos = state.getSelected().transform.localPosition; //local vs world space
-		state.getSelected().transform.position = Vector3.MoveTowards(playerHead.transform.position, initPos, 1.3f);
-    }
+		GameObject tempTag = state.getSelected();
+		tempTag.transform.SetParent(playerHead.transform);
+		Vector3 moveTo = tempTag.transform.localPosition; //local vs world space  - position
+		Vector3 current = playerHead.transform.position; ///2?
+		float moveDist = gameSphere.GetComponent<SphereCollider>().radius * (gameSphere.transform.localScale.x + gameSphere.transform.localScale.y+ gameSphere.transform.localScale.z)/3f * 0.8f;
+		Debug.Log("MoveDist should be 1.3: " + moveDist.ToString()); //image radius(.5) * image scale(3.47) * .75 = 1.3
+		state.getSelected().transform.position = Vector3.MoveTowards(current, moveTo, moveDist);
+		tempTag.transform.SetParent(tagCanvas.transform);
+		//state.getSelected().transform.LookAt(playerHead.transform);
+	}
 
 	//cleaning crew
 	public static void dropObject()

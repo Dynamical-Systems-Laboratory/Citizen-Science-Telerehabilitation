@@ -254,6 +254,11 @@ public class MakeWordBank : MonoBehaviour {
     public static GameObject trashF;
 
     private static bool hasMoved = false; //helper for simple tutorial
+    private static bool practiceNext = false; //helpers for clicking
+    private static bool practiceHome = false;
+
+    public static GameObject gameNotif;
+    public static Text gameNotifText;
 
     //TODO: randomize indexes and tags
     //private static System.Random rng = new System.Random();
@@ -289,6 +294,10 @@ public class MakeWordBank : MonoBehaviour {
         videoCamera = GameObject.Find("VideoCamera");
         cursorCamera = GameObject.Find("CursorCamera");
         cursorGroup = GameObject.Find("exampleCursor");
+        gameNotif = GameObject.Find("GameNotification");
+        gameNotifText = GameObject.Find("GameNotifText").GetComponent<Text>();
+        gameNotif.SetActive(true);
+        gameNotifText.text = "";
         
         eventListener = GameObject.Find("Canvas").GetComponent<ClickAction>();
 
@@ -329,11 +338,7 @@ public class MakeWordBank : MonoBehaviour {
         nextF = GameObject.Find("nextFocus");
         homeF = GameObject.Find("homeFocus");
         imageF = GameObject.Find("imageFocus");
-        tagF.SetActive(false);
-        trashF.SetActive(false);
-        nextF.SetActive(false);
-        homeF.SetActive(false);
-        imageF.SetActive(false);
+        setFocusors(false);
         
         //Add Images
         for (int i = 0; i < imageMaterials.Length; i++) {
@@ -480,7 +485,12 @@ public class MakeWordBank : MonoBehaviour {
                     if (buttonsConverted == 0) //next
                     {
                         //Debug.Log("Next Imaging!!!");
-                        if (imageIndex >= imageMaterials.Length - 1) //out of images
+                        if (state.getState() == 5)
+                        {
+                            //pass on next
+                            practiceNext = true;
+                        }
+                        else if (imageIndex >= imageMaterials.Length - 1) //out of images
                         {
                             Debug.Log("Out of images...");
                             state.setState(1);
@@ -488,17 +498,19 @@ public class MakeWordBank : MonoBehaviour {
                         else if (state.getState() == 7 && state.tagsPlaced.Count < 3) //havent placed required tags (practive lvl)
                         {
                             //eventListener.OnPointerClick(nextButton); //shows notif and prevents stuff
-                            tutorialText.text = "Please place another " + (3 - state.tagsPlaced.Count) + " tags to continue.";
+                            gameNotifText.text = "Please place another " + (3 - state.tagsPlaced.Count) + " tags to continue.";
                         }
                         //TODO: implement 3tag system for main levels depending on difficulty
                         else if (state.getState() == 2 && state.tagsPlaced.Count < 1)
                         {
                             //smaller notif
                             helpTextContainer.SetActive(true);
-                            tutorialText.text = "Please place at least 1 tag before moving onto another image.";
+                            gameNotifText.text = "Please place at least 1 tag before moving onto another image.";
                         }
                         else
                         {
+                            
+                            gameNotifText.text = "";
                             if (state.getState() == 7)
                             {
                                 state.setState(2); //set to game if in pract lvl
@@ -517,10 +529,17 @@ public class MakeWordBank : MonoBehaviour {
                     }
                     else if (buttonsConverted == 5) //home
                     { //keep tags in place without them bveing a child of the tag class objects thing? new subclass?
-                        eventListener.OnPointerClick(quitButton);
-                        state.setState(1);
-                        state.makeCursReset = true;
-                        state.userIsClicking = false;
+                        if (state.getState() == 5)
+                        {
+                            practiceHome = true;
+                        }
+                        else
+                        {
+                            eventListener.OnPointerClick(quitButton);
+                            state.setState(1);
+                            state.makeCursReset = true;
+                            state.userIsClicking = false;
+                        }
                     }
                     else if (buttonsConverted == 6) //bin
                     {
@@ -621,7 +640,8 @@ public class MakeWordBank : MonoBehaviour {
                 helpTextContainer.SetActive(true);
                 welcomeText.text = ""; //helpTextContainer.GetComponent<Text>().text = "";
                 //numTagsRemaining = 3 - state.tagsPlaced.Count;
-                tutorialText.text = "Place a few tags and then move to the next image to begin data collection";
+                gameNotif.SetActive(true);
+                gameNotifText.text = "Place a few tags and then move to the next image to begin data collection";
 
                 //state.user.logCurrentImage(imageIndex); //should be 0
                 initialized = true;
@@ -641,7 +661,7 @@ public class MakeWordBank : MonoBehaviour {
 
                 nextImage(imageIndex); //makes background brighter
                 welcomeScreen.SetActive(true);
-                helpTextContainer.SetActive(true);
+                helpTextContainer.SetActive(false);
 
                 StateManager.moveCameraU = true; //double check that user control is enabled
                 StateManager.moveCameraD = true;
@@ -653,6 +673,8 @@ public class MakeWordBank : MonoBehaviour {
                 StateManager.moveCursorR = true;
 
                 hasMoved = false;
+                practiceNext = false;
+                practiceHome = false;
 
                 stepOfTutorial = 1;
                 initialized = true;
@@ -660,6 +682,7 @@ public class MakeWordBank : MonoBehaviour {
                 tutorialText.text = "";
                 welcomeText.text = "In this game, you will tag images of a polluted canal\n" +
                     SimpleTutorial.continueText;
+                setFocusors(false);
             }
 
             timer3 += Time.deltaTime;
@@ -674,6 +697,7 @@ public class MakeWordBank : MonoBehaviour {
                 if (moveOn() && !skip())
                 {
                     welcomeScreen.SetActive(false);
+                    helpTextContainer.SetActive(true);
                     stepOfTutorial++;
                 }
             }
@@ -767,8 +791,8 @@ public class MakeWordBank : MonoBehaviour {
                 nextF.SetActive(true);
                 tutorialText.text = "If you hover over the next button and click,\n" +
                     "the game will store all of the tag data displayed on the screen, and show a new image to you\n" +
-                    SimpleTutorial.continueText;
-                if (moveOn())
+                    "Click the next level button to continue...";
+                if (practiceNext) //moveOn()
                 {
                     stepOfTutorial++;
                     nextF.SetActive(false);
@@ -780,8 +804,8 @@ public class MakeWordBank : MonoBehaviour {
                 homeF.SetActive(true);
                 tutorialText.text = "If you hover over the home button and click,\n" +
                     "you will be taken to the home screen, where you can freely navigate between different parts of the game, \n" +
-                    "as well as view your exercise progress... " + SimpleTutorial.continueText;
-                if (moveOn())
+                    "as well as view your exercise progress. " + "Click the home button to continue...";
+                if (practiceHome) //moveOn()
                 {
                     homeF.SetActive(false);
                     stepOfTutorial++;
@@ -803,9 +827,14 @@ public class MakeWordBank : MonoBehaviour {
             else if (stepOfTutorial == 22)
             { //Last element of tutorial, reshowing welcome screen basically
                 //timer = 0f;
+                setFocusors(false);
                 welcomeScreen.SetActive(true);
+                helpTextContainer.SetActive(false);
+                gameNotif.SetActive(true);
                 welcomeText.text = "Now let's do a practice level" + "\n" + "It will be just like a real level but data will not be collected" + "\n" + "(" + SimpleTutorial.continueText + " to the practice level)";
                 //StateManager.allSystemsGo = true;
+                practiceHome = false;
+                practiceNext = false;
                 if (moveOn())
                 {
                     timer = 0;
@@ -836,7 +865,7 @@ public class MakeWordBank : MonoBehaviour {
         }
         return false;
     }
-    public void findObjClick(int objConv) // call clicking method
+    public void findObjClick(int objConv) // called when user clicks
     {//theory --> go through index of tags and find the tag with the shortest distance to the cursor location to a certain val
 
         //if not holding an object and close to either the quit or the next image button do that
@@ -861,8 +890,17 @@ public class MakeWordBank : MonoBehaviour {
         toClick = null;
     }
 
-    public void newTag(int tagIndex) //takes in the location of the tag u need replacing
+    private void setFocusors(bool setVal = false) //sets all focusors a given bool
     {
+        tagF.SetActive(setVal);
+        trashF.SetActive(setVal);
+        nextF.SetActive(setVal);
+        homeF.SetActive(setVal);
+        imageF.SetActive(setVal);
+    }
+
+    public void newTag(int tagIndex)
+    { //takes in the location of the tag u need replacing and sets a new tag at that location
         //replace previous tag
         GameObject toReplace = VRUser.interactables[tagIndex];//tagGameObjects[tagIndex];
 
@@ -922,7 +960,7 @@ public class MakeWordBank : MonoBehaviour {
         }
     }
     public static void renderBackground(int img, Material obj = null)
-    {
+    { //changes image of sphere around user
         foreach (GameObject sphere in tagSphere)
         {
             if (obj == null)
@@ -989,7 +1027,7 @@ public class MakeWordBank : MonoBehaviour {
             if (numTagsRemaining > 2)
             { //Plural "tags remaining" vs singular "tag remaining" (minor detail):
                 numTagsRemaining--;
-                tutorialText.text = "Place " + numTagsRemaining + " more tags to begin data collection";
+                gameNotifText.text = "Place " + numTagsRemaining + " more tags to begin data collection";
             }
             else
             {
@@ -998,7 +1036,7 @@ public class MakeWordBank : MonoBehaviour {
                 {
                     if (!(skipTaggingTutorialStep && inPracticeLevel))
                     {
-                        tutorialText.text = "Place " + numTagsRemaining + " more tag to begin data collection";
+                        gameNotifText.text = "Place " + numTagsRemaining + " more tag to begin data collection";
                     }
                 }
                 else

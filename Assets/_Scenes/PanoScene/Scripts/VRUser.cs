@@ -128,7 +128,7 @@ public class VRUser : MonoBehaviour
             OVRInput.Update();
             OVRInput.FixedUpdate();
 
-            //Debug.Log("SystTime: (1)" + System.DateTime.Now.ToString("hh:mm:ss.fff") + "\n(2)" //time checks
+            Debug.Log("SystTime: (1)" + System.DateTime.Now.ToString("HH:mm:ss.fff"));// + "\n(2)" //time checks
             //+ System.DateTime.Now.ToString("hh:mm:ss.") + System.DateTime.Now.Millisecond + "\n(3)" 
             //+ System.DateTime.Now.ToString("hh:mm:ss.ffff"));
             totalTime += Time.deltaTime;
@@ -423,7 +423,7 @@ public class VRUser : MonoBehaviour
             {
                 if (!noLock)
                 {
-                    clickColor.GetComponent<Image>().color = cursorHighlight3;
+                    //clickColor.GetComponent<Image>().color = cursorHighlight3;
                     clickLock.GetComponent<RawImage>().color = showLock;
                 }
             }

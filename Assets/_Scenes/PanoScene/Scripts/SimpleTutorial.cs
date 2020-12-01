@@ -221,7 +221,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 {
                     hasStartedTut = true;
                 }
-                if (hasStartedTut && timer < 39)
+                if (false) //hasStartedTut && timer < 39
                 {
                     if (timer >= 0 && timer < 39) //lock isnt visible in this part of tue tutorial
                     {
@@ -293,7 +293,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                         cursorAnchor.transform.localPosition = initCenter;
                     }
                 }
-                else if (hasStartedTut && timer >= 39)
+                else if (true) //hasStartedTut && timer >= 39
                 {
                     cursorAnchor.transform.localPosition = initCenter;
                     VRUser.specialClick = false;
@@ -329,7 +329,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 }
                 //timer += Time.deltaTime;
                 if (startedPlaying) //if video done: !VPA1.isPlaying && 
-                {
+                { 
                     //VP1.SetActive(false);
                     Debug.Log("Step 2 Counter: " + counter);
                     if (counter == 0 && !VRUser.isResetting())
