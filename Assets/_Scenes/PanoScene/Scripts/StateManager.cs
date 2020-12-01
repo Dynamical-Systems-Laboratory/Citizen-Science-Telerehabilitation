@@ -162,6 +162,8 @@ public class StateManager : MonoBehaviour {
             //GameObject.Find("tagCanvas").GetComponent<Canvas>().overrideSorting = true;  //failsafe for seeing tags?
             loadTags(); //load in tags
         }
+        MakeWordBank.initialized = false; //TODO: Make sure this works
+        SimpleTutorial.initialized = false;
 
         switch (userState)
         {

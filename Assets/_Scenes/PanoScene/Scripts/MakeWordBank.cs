@@ -637,7 +637,7 @@ public class MakeWordBank : MonoBehaviour {
 
                 practiceLevelText.SetActive(true); //set proper text objects
                 welcomeScreen.SetActive(false);
-                helpTextContainer.SetActive(true);
+                helpTextContainer.SetActive(false);
                 welcomeText.text = ""; //helpTextContainer.GetComponent<Text>().text = "";
                 //numTagsRemaining = 3 - state.tagsPlaced.Count;
                 gameNotif.SetActive(true);
@@ -839,9 +839,10 @@ public class MakeWordBank : MonoBehaviour {
                 {
                     timer = 0;
                     //practice level initialization
-                    stepOfTutorial++; //End
+                    //stepOfTutorial++; //End
                     inPracticeLevel = true;
                     state.setState(7);
+                    stepOfTutorial = 1;
                     initialized = false;
                 }
             }

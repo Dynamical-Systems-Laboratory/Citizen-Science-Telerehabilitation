@@ -177,7 +177,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     continueText2;
                 showTag(false);
             }
-
+            
             /*if (MakeWordBank.skip() && step < 9 && timer > 1 && VRUser.extraControls && !hasCompleted) //for testing purposes of z movements
             {
                 step = 9;
@@ -216,7 +216,41 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             //start of steps
             if (step == 0) //introduces calibration
             {
-                timer += Time.deltaTime * 0.56f; // time mod for pacing reasons
+                text.text = "Welcome to the calibration! Before you start, we're going to need to know which is your dominant hand.\n" +
+                    "Press any button on the controller your most comfortable with using.\n" +
+                    "Don't worry, you can change this later if you need.";
+                if ((OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch)) &&
+                    (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch) || OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.LTouch)))
+                {
+                    text.text = "Please only press buttons on one controller at a time.";
+                }
+                else if (VRUser.userContinue(true)) //hasStartedTut && timer >= 39
+                {
+                    if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.RTouch))
+                    {
+                        state.user.setIsRightHanded(true);
+                    }
+                    else if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.LTouch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.LTouch))
+                    {
+                        state.user.setIsRightHanded(false);
+                    }
+                    else
+                    {
+                        Debug.LogError("Handedness tracking error!");
+                    }
+                    cursorAnchor.transform.localPosition = initCenter;
+                    VRUser.specialClick = false;
+                    state.makeCursReset = true;
+                    text.text = "Your cursor is currently <color=yellow>locked</color>\n"
+                        //+ "To see a demonstration of how to <color=blue>unlock</color> it, " + continueText + " to a video";
+                        + "To unlock it, press the trigger on your pointer finger (the index trigger).\n" +
+                        "When you are ready to try this, " + continueText;
+                    step = 2;
+                    startedPlaying = true;
+                    //step++;
+                    timer = 0;
+                }
+                /*timer += Time.deltaTime * 0.56f; // time mod for pacing reasons
                 if (MakeWordBank.moveOn() && !MakeWordBank.skip())
                 {
                     hasStartedTut = true;
@@ -281,32 +315,18 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     {
                         VRUser.specialClick = true;
                     }
-                    /* "In this game there are five actions you can perform (wait 6 seconds)
-                    *  You can move the cursor to the right (pause 1, move 4)
-                    *  You can move the cursor to the left (pause 1, move 8)
-                    *  You can move the cursor up (pause 1, move 4)
-                    *  You can move the cursor down (pause 1, move 8)
-                    *  And you can select objects (pause 1, highlight 3)
-                    */
-                    else
+                    //In this game there are five actions you can perform (wait 6 seconds)
+                    //You can move the cursor to the right (pause 1, move 4)
+                    //You can move the cursor to the left (pause 1, move 8)
+                    //You can move the cursor up (pause 1, move 4)
+                    //You can move the cursor down (pause 1, move 8)
+                    //And you can select objects (pause 1, highlight 3)
+                    //else
                     {
                         cursorAnchor.transform.localPosition = initCenter;
                     }
-                }
-                else if (true) //hasStartedTut && timer >= 39
-                {
-                    cursorAnchor.transform.localPosition = initCenter;
-                    VRUser.specialClick = false;
-                    state.makeCursReset = true;
-                    text.text = "Your cursor is currently <color=yellow>locked</color>\n"
-                        //+ "To see a demonstration of how to <color=blue>unlock</color> it, " + continueText + " to a video";
-                        + "To unlock it, press the trigger on your pointer finger (the index trigger).\n" +
-                        "When you are ready to try this, " + continueText;
-                    step = 2;
-                    startedPlaying = true;
-                    //step++;
-                    timer = 0;
-                }
+                }*/
+
             }
             else if (step == 1)
             {

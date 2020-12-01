@@ -375,12 +375,13 @@ public class ClickAction : MonoBehaviour //, IPointerClickHandler
 		GameObject tempTag = state.getSelected();
 		tempTag.transform.SetParent(playerHead.transform);
 		Vector3 moveTo = tempTag.transform.localPosition; //local vs world space  - position
-		Vector3 current = playerHead.transform.position; ///2?
-		float moveDist = gameSphere.GetComponent<SphereCollider>().radius * (gameSphere.transform.localScale.x + gameSphere.transform.localScale.y+ gameSphere.transform.localScale.z)/3f * 0.8f;
-		Debug.Log("MoveDist should be 1.3: " + moveDist.ToString()); //image radius(.5) * image scale(3.47) * .75 = 1.3
+		Vector3 current = playerHead.transform.position;
+		float moveDist = gameSphere.GetComponent<SphereCollider>().radius * (gameSphere.transform.localScale.x + gameSphere.transform.localScale.y+ gameSphere.transform.localScale.z)/3f * 0.85f;
+		//Debug.Log("MoveDist should be 1.3: " + moveDist.ToString()); //image radius(.5) * image scale(3.47) * .85 = 1.4
 		state.getSelected().transform.position = Vector3.MoveTowards(current, moveTo, moveDist);
 		tempTag.transform.SetParent(tagCanvas.transform);
-		//state.getSelected().transform.LookAt(playerHead.transform);
+		//tempTag.transform.LookAt(playerHead.transform);
+		tempTag.transform.rotation = Quaternion.LookRotation(tempTag.transform.position - playerHead.transform.position); //transform.rotation = Quaternion.LookRotation(transform.position - target.position);
 	}
 
 	//cleaning crew
