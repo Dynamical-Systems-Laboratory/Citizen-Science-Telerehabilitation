@@ -374,7 +374,7 @@ public class VRUser : MonoBehaviour
                 }
             }
             //failsafe for clicking
-            if (extraControls)
+            /*if (extraControls)
             {
                 if (userStickButton(false))
                 {
@@ -384,7 +384,7 @@ public class VRUser : MonoBehaviour
                 {
                     state.userIsClicking = true;
                 }
-            }
+            }*/
 
             //adds hand position stuff to cursor movements
             cursorMove += new Vector2(state.cursorAdd.x, state.cursorAdd.y);
@@ -396,21 +396,22 @@ public class VRUser : MonoBehaviour
                 Time.deltaTime * ((trueCursor.transform.up * cursorMove.y) + (trueCursor.transform.right * cursorMove.x)));
 
             //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-151,66], x[-90,88.4]
-            if (trueCursor.transform.localPosition.x > 88)
+            Debug.Log("**True Cursor Location: " + trueCursor.transform.localPosition.ToString());
+            if (trueCursor.transform.localPosition.x > 87)
             {
-                trueCursor.transform.localPosition = new Vector3(88f, trueCursor.transform.localPosition.y, trueCursor.transform.localPosition.z);
+                trueCursor.transform.localPosition = new Vector3(87f, trueCursor.transform.localPosition.y, trueCursor.transform.localPosition.z);
             }
-            else if (trueCursor.transform.localPosition.x < -90)
+            else if (trueCursor.transform.localPosition.x < -78)
             {
-                trueCursor.transform.localPosition = new Vector3(-90f, trueCursor.transform.localPosition.y, trueCursor.transform.localPosition.z);
+                trueCursor.transform.localPosition = new Vector3(-78f, trueCursor.transform.localPosition.y, trueCursor.transform.localPosition.z);
             }
-            if (trueCursor.transform.localPosition.y > 66)
+            if (trueCursor.transform.localPosition.y > 55)
             {
-                trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, 66f, trueCursor.transform.localPosition.z);
+                trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, 55f, trueCursor.transform.localPosition.z);
             }
-            else if (trueCursor.transform.localPosition.y < -85)
+            else if (trueCursor.transform.localPosition.y < -67)
             {
-                trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, -150, trueCursor.transform.localPosition.z);
+                trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, -67f, trueCursor.transform.localPosition.z);
             }
             
             //highlights the cursor based on certain actions
@@ -531,7 +532,7 @@ public class VRUser : MonoBehaviour
         }
     }
 
-    public static bool userContinue(bool isContinuous = false) //implemented for both hands
+    public static bool userContinue(bool isContinuous = false) //controls progression through tutorial instructions and ppt
     {
         if (OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.RTouch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.LTouch))
         {
@@ -547,9 +548,9 @@ public class VRUser : MonoBehaviour
             return OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.LTouch);
         }
      }
-    public static bool userSkip(bool isContinuous = false)
+    public static bool userSkip(bool isContinuous = false) //controls user's skipping throughout tutorial && locking of the cursor
     {
-        if (isContinuous)
+        /*if (isContinuous)
         {
             return OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) >= .99 || OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) >= .99;
         }
@@ -557,7 +558,8 @@ public class VRUser : MonoBehaviour
         {
             return (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) < .9 && OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) >= .15) ||
                 (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) >= .9 && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) >= .15);
-        }
+        }*/
+        return userStickButton(isContinuous);
     }
     public static bool userStickButton(bool isContinuous = false)
     {
@@ -583,52 +585,23 @@ public class VRUser : MonoBehaviour
         return false;*/
         return userSkip(isContinuous);
     }
-    public static bool clickDown(bool isContinuous = false) //getbuttondown
-    {
-        if (isContinuous)
-        {
-            if ((OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) < .9)
-            || (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) < .9))
-            {
-                return true;
-            }
-            return false;
-        }
-        else
-        {
-            return OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) == .4;
-        }
-    }
-    public static bool isResetting(bool isContinuous = false) //TODO: In the process of swapping controls
+    public static bool isResetting(bool isContinuous = false) //Resets baseline for cursor movement
     {
         if (!isContinuous)
         {
-            return (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) < 1.9) ||
-            (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) < 1.9);
+            return (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) < 1.9) ||
+            (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) < 1.9);
         }
         else
         {
-            return (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) > 1.9) ||
-            (OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) > 1.9);
+            return (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) > 1.9) ||
+            (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) > 1.9);
         }
         //return clickDown(isContinuous);
     }
-    public static bool hasButton(bool isContinuous = false)
-    {
-        if (!isContinuous)
-        {
-            return OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch)
-                || OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.LTouch);
-        }
-        else
-        {
-            return OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.LTouch)
-                || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.RTouch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.LTouch);
-        }
-    }
     public static bool isNotResetting()
     {
-        return (OVRInput.Get(OVRInput.Axis1D.PrimaryHandTrigger, OVRInput.Controller.Touch) == 0 && OVRInput.Get(OVRInput.Axis1D.SecondaryHandTrigger, OVRInput.Controller.Touch) == 0);
+        return (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) == 0 && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) == 0);
     }
 
     public static Vector3 handTracking(bool factored = true)

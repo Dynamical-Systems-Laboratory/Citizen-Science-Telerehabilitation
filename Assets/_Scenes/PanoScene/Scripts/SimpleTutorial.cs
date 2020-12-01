@@ -68,7 +68,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     //public static Text lockText;
 
     public static string continueText = "Press A or X to continue";//"(Press <b>A</b> or <b>X</b> to continue)";
-    public static string continueText2 = "\n(Push the index trigger to skip the calibration)";//"\n(Push the <b>index trigger<b/> to skip the calibration)";
+    public static string continueText2 = "\n(Push the thumbstick button to skip the calibration)";//"\n(Push the <b>index trigger<b/> to skip the calibration)";
 
     public static GameObject cursor;
     public static GameObject cursorCam;
@@ -178,7 +178,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 showTag(false);
             }
 
-            if (MakeWordBank.skip() && step < 9 && timer > 1 && VRUser.extraControls && !hasCompleted) //for testing purposes of z movements
+            /*if (MakeWordBank.skip() && step < 9 && timer > 1 && VRUser.extraControls && !hasCompleted) //for testing purposes of z movements
             {
                 step = 9;
                 counter = 0;
@@ -188,10 +188,10 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 //VP4.SetActive(true);
                 //VPA4.Play();
                 savedCursorScale = cursor.transform.localScale;
-            }
-            else if (MakeWordBank.skip() && timer > 1) //&& hasCompleted if you dont want the calibration to be skipable
+            }*/
+            if (MakeWordBank.skip() && ((timer > 1.5 && step == 0) || (step <= 2))) //&& hasCompleted if you dont want the calibration to be skipable
             {
-                step = 12;//changed from 13
+                step = 13;
             }
 
             //saftey for user seeing when cursor is locked or not
@@ -300,7 +300,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     state.makeCursReset = true;
                     text.text = "Your cursor is currently <color=yellow>locked</color>\n"
                         //+ "To see a demonstration of how to <color=blue>unlock</color> it, " + continueText + " to a video";
-                        + "To unlock it, press the ring finger trigger on either one of your controllers.\n" +
+                        + "To unlock it, press the trigger on your pointer finger (the index trigger).\n" +
                         "When you are ready to try this, " + continueText;
                     step = 2;
                     startedPlaying = true;
@@ -335,7 +335,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     if (counter == 0 && !VRUser.isResetting())
                     {
                         text.text = "Now try unlocking the cursor yourself,\n" + //<color=blue>unlocking</color>
-                            "(Center your hands and squeeze the button under your middle and ring fingers to unlock the cursor)\n";
+                            "(Center your hands and squeeze the index trigger to unlock the cursor)\n";
                             //+ "the cursor will flash <color=blue>blue</color> if you’ve done it correctly...";
                     }
                     else if (counter == 0 && VRUser.isResetting()) //just skips cuz of getdown problems but solve later...
@@ -347,7 +347,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     else if (counter == 1 && VRUser.isNotResetting())
                     {
                         text.text = "Let's practice unlocking the cursor once more.\n" + //<color=blue>unlocking</color>
-                            "(Center your hands and squeeze the <b>hand triggers</b> to unlock the cursor)";
+                            "(Center your hands and squeeze the <b>index trigger</b> to unlock the cursor)";
                         counter = 2;
                         state.userControlActive = false;
                         //VRUser.forceLock = true;

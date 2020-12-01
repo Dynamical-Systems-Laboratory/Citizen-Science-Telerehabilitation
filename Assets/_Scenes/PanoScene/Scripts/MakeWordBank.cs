@@ -686,7 +686,7 @@ public class MakeWordBank : MonoBehaviour {
             }
 
             timer3 += Time.deltaTime;
-            if (skip() && stepOfTutorial > 0 && timer3 > 1) //skipping tutorial logic
+            if (skip() && stepOfTutorial <= 2 && timer3 > 1.5) //skipping tutorial logic
             {
                 stepOfTutorial = 22;
                 //state.setState(7);
