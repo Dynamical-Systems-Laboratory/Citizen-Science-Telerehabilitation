@@ -333,6 +333,11 @@ public class UserInfo //not sure if : this() is necessary
 
         updateSettings();
     }
+    public void setIsRightHanded(bool userIsRightHanded = true)  //users are right handed by defualt
+    {
+        isRightHanded = userIsRightHanded;
+    }
+    public bool getIsRightHanded() { return isRightHanded; }
 
     //accessors
     public string getName() { return userName; }
@@ -624,4 +629,5 @@ public class UserInfo //not sure if : this() is necessary
     //compulsory movement tracker?
 
     private static string decimalPlaces = "0.00000";//data collection significant figures (5 atm)
+    private static bool isRightHanded = true;
 }

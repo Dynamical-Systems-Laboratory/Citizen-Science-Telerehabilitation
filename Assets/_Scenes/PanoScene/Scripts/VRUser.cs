@@ -72,6 +72,9 @@ public class VRUser : MonoBehaviour
 
     public static bool forceLock = false;
 
+    public static bool isRightHanded = true; //static refrence for user's dominant hand (within UserInfo class)
+    //Note: True = using right touch / secondary controller, False = left touch / primary controller
+
     //TODO: maybe fix floating feeling with flatform at user feet (make camera lower, put platform right under, set to floor lvl instead of eye lvl)
     // Start is called before the first frame update
     private void Awake()
@@ -118,6 +121,7 @@ public class VRUser : MonoBehaviour
 
         //(init stuff)  threshold val changes
         state.user.updateDifficulty();
+        isRightHanded = state.user.getIsRightHanded();
     }
 
     // Update is called once per frame
@@ -447,8 +451,12 @@ public class VRUser : MonoBehaviour
             }
 
             //extra haptics with thumbsticks
-            float scaledVal = Math.Abs(OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch).y + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch).y +
-                                       OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch).x + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch).x) / 4f;
+            float scaledVal = 0f;
+            if (extraControls)
+            {
+                scaledVal = Math.Abs(OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch).y + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch).y +
+                                     OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch).x + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch).x) / 4f;
+            }
             //Debug.Log("scaled val: " + scaledVal);
             controllerVibration += scaledVal * 0.8f;
 
@@ -534,18 +542,27 @@ public class VRUser : MonoBehaviour
 
     public static bool userContinue(bool isContinuous = false) //controls progression through tutorial instructions and ppt
     {
-        if (OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.RTouch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.LTouch))
-        {
-            return false;
-        }
-
         if (!isContinuous) 
         {
-            return OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch);
+            if (isRightHanded)
+            {
+                return OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch);
+            }
+            else
+            {
+                return OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch) || OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.LTouch);
+            }
         }
         else
         {
-            return OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.LTouch);
+            if (isRightHanded)
+            {
+                return OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.RTouch);
+            }
+            else
+            {
+                return OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.LTouch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.LTouch);
+            }
         }
      }
     public static bool userSkip(bool isContinuous = false) //controls user's skipping throughout tutorial && locking of the cursor
@@ -565,11 +582,24 @@ public class VRUser : MonoBehaviour
     {
         if (!isContinuous)
         {
-            return OVRInput.GetDown(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) || OVRInput.GetDown(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch);
+            if (!isRightHanded){
+                return OVRInput.GetDown(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch);
+            }
+            else
+            {
+                return OVRInput.GetDown(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch);
+            }
         }
         else
         {
-            return OVRInput.Get(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch);
+            if (!isRightHanded)
+            {
+                return OVRInput.Get(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch);
+            }
+            else
+            {
+                return OVRInput.Get(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch);
+            }
         }
     }
     public static bool cursorRelock(bool isContinuous = true)
@@ -589,19 +619,38 @@ public class VRUser : MonoBehaviour
     {
         if (!isContinuous)
         {
-            return (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) < 1.9) ||
-            (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) < 1.9);
+            if (!isRightHanded)
+            {
+                return (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) < 1.9);
+            }
+            else
+            {
+                return (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) < 1.9);
+            }
         }
         else
         {
-            return (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) > 1.9) ||
-            (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) > 1.9);
+            if (!isRightHanded)
+            {
+                return (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) > 1.9);
+            }
+            else
+            {
+                return (OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) > 1.9);
+            }
         }
         //return clickDown(isContinuous);
     }
     public static bool isNotResetting()
     {
-        return (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) == 0 && OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) == 0);
+        if (!isRightHanded)
+        {
+            return OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) == 0;
+        }
+        else
+        {
+            return OVRInput.Get(OVRInput.Axis1D.SecondaryIndexTrigger, OVRInput.Controller.Touch) == 0;
+        }
     }
 
     public static Vector3 handTracking(bool factored = true)
@@ -618,7 +667,7 @@ public class VRUser : MonoBehaviour
         }
     }
 
-    public static int getStickState()
+    public static int getStickState()  //not in use atm
     {
         Vector2 stick = OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch);
         if (stick.x > .25 && stick.x < .8) //large range of stick vals but not fully pressed
