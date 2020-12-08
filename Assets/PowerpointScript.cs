@@ -82,7 +82,10 @@ public class PowerpointScript : MonoBehaviour {
 					}
                     else
                     { //Wait for keystroke
-						if (MakeWordBank.moveOn() && !Input.GetKeyDown(KeyCode.BackQuote) && !MakeWordBank.skip())
+						//Note: Replaced from MakeWordBank.moveOn() to accomodate the initial feature of right/lefthandedness
+						if (((OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.Touch) ||
+					OVRInput.Get(OVRInput.Button.Three, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Four, OVRInput.Controller.Touch)))
+					&& !Input.GetKeyDown(KeyCode.BackQuote) && !MakeWordBank.skip())
                         {
 							slideIndex++;
 							delay = 0f;
@@ -90,7 +93,8 @@ public class PowerpointScript : MonoBehaviour {
 						}
 					}
 				} else { //Powerpoint over:
-					if (MakeWordBank.moveOn()) {
+					if ((OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.Touch) ||
+					OVRInput.Get(OVRInput.Button.Three, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Four, OVRInput.Controller.Touch))) {
 						slideIndex = 1;
 						if (!hasBeenToTutorial || !state.user.getPracticeLevelState()[0])
 						{

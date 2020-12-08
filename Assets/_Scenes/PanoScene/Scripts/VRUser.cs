@@ -141,8 +141,16 @@ public class VRUser : MonoBehaviour
                 OVRInput.GetLocalControllerPosition(OVRInput.Controller.RHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.RHand).eulerAngles,
                 OVRInput.GetLocalControllerPosition(OVRInput.Controller.LHand), OVRInput.GetLocalControllerRotation(OVRInput.Controller.LHand).eulerAngles);
             //state.user.moveDataConfirm();
-            
+
             //vrInfo();
+            if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.Touch))
+            {
+                Debug.Log("USER PUSHING RIGHT");
+            }
+            if (OVRInput.Get(OVRInput.Button.Three, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Four, OVRInput.Controller.Touch))
+            {
+                Debug.Log("USER PUSHING LEFT");
+            }
             state.user.showMoveBounds(); //Move Data Ex: (29.0044, -29.00861, 13.51058, -14.32116, 0), (3.651338, 6.311625, 4.176139, 7.143209, 0)
             //Debug.Log("[" + (state.userControlActive ? "1":"0") + "]Hand Tracking: " + handTracking(true) + ", Offset By: " + playerPos.arms + ", unfactored: " + handTracking(false));
             Debug.Log("Cont. Clicking: " + state.userIsClicking + ", Clicking: " + state.userClick); //continuous, noncontinuous clicking
@@ -619,7 +627,7 @@ public class VRUser : MonoBehaviour
     {
         if (!isContinuous)
         {
-            if (!isRightHanded)
+            if (!isRightHanded) //TODO: Should this be according to handedness or both by default
             {
                 return (OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) > .2 && OVRInput.Get(OVRInput.Axis1D.PrimaryIndexTrigger, OVRInput.Controller.Touch) < 1.9);
             }

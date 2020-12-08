@@ -454,24 +454,26 @@ public class UserInfo //not sure if : this() is necessary
     public IEnumerable<string> writeMainData()
     {
         //yield return "Basic Data:\n";
-        yield return "User_Name,Date_Joined,Time_Logged\n"; //formatting
+        yield return "User_Name,Date_Joined,Time_Logged,isRightHanded,\n"; //formatting
         yield return userName;
         yield return dateJoined;
         yield return ((int)timeLogged).ToString(); //TODO: check if this int yields error
+        yield return boolToString(isRightHanded);
 
         //yield return "\nSession Data:\n";
 
-        yield return "Date_Time,Duration,First_Image,Last_Image,Started_PL,Finished_PL,Difficulty," +
-            "Offset_XLeft,Time_XLeft,Offset_XRight,Time_XRight,Offset_YDown,Time_YDown,Offset_YUp,Time_YUp,Offset_ZForward,Time_ZForward\n";
+        yield return "\n,Date_Time,Duration,First_Image,Last_Image,Started_PL,Finished_PL,Difficulty," +
+            "Offset_XLeft,Time_XLeft,Offset_XRight,Time_XRight,Offset_YDown,Time_YDown,Offset_YUp,Time_YUp,Offset_ZForward,Time_ZForward,\n";
         foreach (SessionData sesh in sessions)
         {
             foreach (string toWrite in sesh.write())
             {
                 yield return toWrite;
             }
+            yield return "\n";
         }
 
-        //yield return "\nImages Completed:\n";
+        yield return "Images Completed:,\n";
         /*for(int i = 0; i < imagesCompleted.Count; i++) //formatting
         {
             yield return "Image#";
@@ -489,7 +491,7 @@ public class UserInfo //not sure if : this() is necessary
     }
     public IEnumerable<string> writeTagData(bool withEndMarker = false)
     {
-        yield return "\nTag_Name,TagX,TagY,TagZ,Tag_Image#\n"; //formatting
+        yield return "\n,Tag_Name,TagX,TagY,TagZ,Tag_Image#,\n"; //formatting
         //yield return "\n";
         foreach (TagInfo tag in tags) //TODO: separate tag data into diff file (read from tag data and movement data)
         {
@@ -497,7 +499,7 @@ public class UserInfo //not sure if : this() is necessary
             yield return tag.location.x.ToString(decimalPlaces);
             yield return tag.location.y.ToString(decimalPlaces);
             yield return tag.location.z.ToString(decimalPlaces);
-            yield return tag.image.ToString() + "\n";
+            yield return tag.image.ToString() + ",\n";
         }
         if (withEndMarker)
         {
@@ -515,10 +517,11 @@ public class UserInfo //not sure if : this() is necessary
         userName = data[counter];
         dateJoined = data[counter+1];
         timeLogged = float.Parse(data[counter+2]);
+        isRightHanded = stringToBool(data[counter + 3]);
         //counter = 7; //+1 for next index
         
         //session data
-        counter = 25;///... + 1(title) + 7(session data) + 10(calibration data)
+        counter = 25;///... /*+ 1(title)*/ + 8(session data) + 10(calibration data)
         while (data[counter] != "Images Completed:") //"Session Data"
         {
             SessionData newData = new SessionData(data[counter], int.Parse(data[counter + 1]), int.Parse(data[counter + 2]),

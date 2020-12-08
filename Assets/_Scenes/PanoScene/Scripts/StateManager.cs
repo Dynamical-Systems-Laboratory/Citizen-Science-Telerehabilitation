@@ -179,7 +179,7 @@ public class StateManager : MonoBehaviour {
                 if (newUser) //preexisting
                 {
                     folderPath = Application.dataPath + "/" + folderID + user.getName() + "(" + nowStamp + ")";
-                    mainPath = folderPath + "/" + dataName + ".cvs"; //precausion
+                    mainPath = folderPath + "/" + dataName + ".csv"; //precausion
                 }
                 //move path init here instead of awake due to nowStamp
                 movePath = folderPath + "/" + data2Name + "(" + nowStamp + ").csv";
@@ -403,6 +403,7 @@ public class StateManager : MonoBehaviour {
                 dataRead = reader.ReadLine().Split(','); //array
                 newUser = !user.readMainData(dataRead);
                 reloading = newUser;
+                VRUser.isRightHanded = user.getIsRightHanded(); //edge case
             }
         }
         else

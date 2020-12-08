@@ -219,31 +219,36 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 text.text = "Welcome to the calibration! Before you start, we're going to need to know which is your dominant hand.\n" +
                     "Press any button on the controller your most comfortable with using.\n" +
                     "Don't worry, you can change this later if you need.";
-                if ((OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.RTouch)) &&
-                    (OVRInput.GetDown(OVRInput.Button.One, OVRInput.Controller.LTouch) || OVRInput.GetDown(OVRInput.Button.Two, OVRInput.Controller.LTouch)))
+                if ((OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.Touch)) &&
+                    (OVRInput.Get(OVRInput.Button.Three, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Four, OVRInput.Controller.Touch)))
                 {
                     text.text = "Please only press buttons on one controller at a time.";
                 }
-                else if (VRUser.userContinue(true)) //hasStartedTut && timer >= 39
+                else if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.Touch) ||
+                    OVRInput.Get(OVRInput.Button.Three, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Four, OVRInput.Controller.Touch)) //hasStartedTut && timer >= 39 -> VRUser.userContinue(true)
                 {
-                    if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.RTouch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.RTouch))
+                    if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.Touch))
                     {
                         state.user.setIsRightHanded(true);
+                        Debug.Log("USER IS *RIGHT* HANDED: " + state.user.getIsRightHanded().ToString());
                     }
-                    else if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.LTouch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.LTouch))
+                    else if (OVRInput.Get(OVRInput.Button.Three, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Four, OVRInput.Controller.Touch))
                     {
                         state.user.setIsRightHanded(false);
+                        Debug.Log("USER IS *LEFT* HANDED: " + state.user.getIsRightHanded().ToString());
                     }
                     else
                     {
                         Debug.LogError("Handedness tracking error!");
                     }
+                    VRUser.isRightHanded = state.user.getIsRightHanded();
+
                     cursorAnchor.transform.localPosition = initCenter;
                     VRUser.specialClick = false;
                     state.makeCursReset = true;
                     text.text = "Your cursor is currently <color=yellow>locked</color>\n"
                         //+ "To see a demonstration of how to <color=blue>unlock</color> it, " + continueText + " to a video";
-                        + "To unlock it, press the trigger on your pointer finger (the index trigger).\n" +
+                        + "To unlock it, press the trigger on your <b>pointer finger</b> (the index trigger).\n" +
                         "When you are ready to try this, " + continueText;
                     step = 2;
                     startedPlaying = true;
