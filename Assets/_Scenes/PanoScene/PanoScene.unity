@@ -3027,8 +3027,8 @@ GameObject:
   - component: {fileID: 143325390}
   - component: {fileID: 143325392}
   - component: {fileID: 143325391}
-  m_Layer: 12
-  m_Name: tutorialTag
+  m_Layer: 0
+  m_Name: simpleTutorialTag
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3068,7 +3068,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.5372549}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -41806,8 +41806,8 @@ GameObject:
   - component: {fileID: 2100089367}
   - component: {fileID: 2100089369}
   - component: {fileID: 2100089368}
-  m_Layer: 12
-  m_Name: Text
+  m_Layer: 0
+  m_Name: simpleTutorialTagText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

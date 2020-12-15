@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.UI;
-
+using System.Text;
 using System.IO;
 using System.Linq;
 using UnityEngine.SocialPlatforms;
@@ -191,13 +191,15 @@ public class StateManager : MonoBehaviour {
                 {
                     
                     var folder = Directory.CreateDirectory(folderPath);
-                    writer = System.IO.File.CreateText(mainPath); //create new user_data file
+                    //writer = System.IO.File.CreateText(mainPath); //create new user_data file
+                    new FileStream(mainPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None).Close();
+                    writer = new StreamWriter(mainPath, true, Encoding.ASCII);
                     Debug.Log("File Created at " + mainPath);
                     //writer.WriteLine("UserName,DateJoined,TimeLogged,StartedPL,FinishedPL,Difficulty,LastImage,ImageData,,TagData,,SessionData,,finish");
                 }
                 else
                 {
-                    writer = new StreamWriter(mainPath, false);// overwrites insead of append = false
+                    writer = new StreamWriter(mainPath, true, Encoding.ASCII);// overwrites insead of append = false
                     Debug.Log("Writing to current folder path: " + mainPath);
                     //TODO: convert to try catch
                 }

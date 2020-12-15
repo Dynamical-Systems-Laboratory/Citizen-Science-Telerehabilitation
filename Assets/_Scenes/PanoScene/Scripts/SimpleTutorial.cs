@@ -84,8 +84,9 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     private static Vector3 initCenter = new Vector3();
     private static GameObject cursorAnchor;
 
-    private static float cursorMoveMod = 10.35f;
-    private static GameObject tutorialTag;
+   // private static float cursorMoveMod = 10.35f;
+    public static GameObject tutorialTag;
+    public static Text tutorialTagText;
 
     // Start is called before the first frame update
     void Start()
@@ -104,6 +105,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
         vert = GameObject.Find("Vertical"); //extra
         horiz = GameObject.Find("Horizontal");
         tutorialTag = GameObject.Find("simpleTutorialTag");
+        tutorialTagText = GameObject.Find("simpleTutorialTagText").GetComponent<Text>();
         lockPanel = GameObject.Find("lockPanel");
 
         cursor = GameObject.Find("exampleCursor");
@@ -175,7 +177,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 text.text = "Now let's do a calibration phase\n" +
                     continueText +
                     continueText2;
-                showTag(false);
+                tutorialTag.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f / 225f);
+                tutorialTagText.text = "";//.color = new Color(0f, 0f, 0f, 0f);
             }
             
             /*if (MakeWordBank.skip() && step < 9 && timer > 1 && VRUser.extraControls && !hasCompleted) //for testing purposes of z movements
@@ -639,6 +642,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 {
                     text.text = "The cursor can be <color=green>clicked</color>";
                     startedPlaying = true;
+                    counter = 0;
+                    initialized2 = false; //precautions
                 }
                 if (startedPlaying) //!VPA4.isPlaying && 
                 {
@@ -653,7 +658,9 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     {
                         if (!initialized2)
                         {
-                            showTag(true);
+                            Debug.Log("Got to tag showing...");
+                            tutorialTag.GetComponent<Image>().color = new Color(1f, 1f, 1f, 137f / 225f);
+                            tutorialTagText.text = "ExampleTag";//.color = new Color(0f, 0f, 0f, 1f);
                             initialized2 = true;
                         }
                         text.text = "Return to beginning position with the controllers near your shoulders\n" +
@@ -679,6 +686,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                         startedPlaying = false;
                         counter = 0;
                         timer = 0;
+                        tutorialTag.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f / 225f);
+                        tutorialTagText.text = "";//.color = new Color(0f, 0f, 0f, 0f);
 
                         state.cursorXMove = true;
                         state.cursorYMove = true;
@@ -687,7 +696,12 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     if (state.userIsClicking || state.userClick) //showing click command
                     {
                         tutorialTag.GetComponent<Image>().color = new Color(1f, 1f, 1f, 150f / 225f);
-                        tutorialTag.GetComponent<Text>().color = Color.red;
+                        tutorialTagText.color = Color.red;
+                    }
+                    else
+                    {
+                        tutorialTag.GetComponent<Image>().color = new Color(1f, 1f, 1f, 137f / 225f);
+                        tutorialTagText.color = Color.black;
                     }
 
                     //Debug.Log("Move Change 2(Z): " + (VRUser.handTracking() - handPos1) + ", Button: " + VRUser.hasButton(true).ToString()); //VRUser.cursorRelock()
@@ -783,7 +797,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 initialized = false;
                 initialized2 = false;
                 hasStartedTut = false;
-                showTag(false);
+                tutorialTag.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f / 225f);
+                tutorialTagText.text = "";//.color = new Color(0f, 0f, 0f, 0f);
 
                 //lockPanel.SetActive(false);
                 if (hasCompleted)
@@ -798,19 +813,19 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
         }
     }
-    public static void showTag(bool show)
+    /*public static void showTag(bool show)
     {
         if (show)
         {
             tutorialTag.GetComponent<Image>().color = new Color(1f, 1f, 1f, 137f / 225f);
-            tutorialTag.GetComponent<Text>().text = "ExampleTag";//.color = new Color(0f, 0f, 0f, 1f);
+            tutorialTagText.text = "ExampleTag";//.color = new Color(0f, 0f, 0f, 1f);
         }
         else
         {
             tutorialTag.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f / 225f);
-            tutorialTag.GetComponent<Text>().text = "";//.color = new Color(0f, 0f, 0f, 0f);
+            tutorialTagText.text = "";//.color = new Color(0f, 0f, 0f, 0f);
         }
-    }
+    }*/
 
     float Kinect_Angle(float x1, float y1, float standard_x, float standard_y)
     { //Calculate rod rotation about the z axis
