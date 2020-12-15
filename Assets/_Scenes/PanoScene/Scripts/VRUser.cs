@@ -42,6 +42,12 @@ public class VRUser : MonoBehaviour
     public static GameObject farRight;
     public static GameObject farForward;
 
+    //revised true cursor bounds** - y[-67,55], x[-79,87]
+    public static float cursorBoundUp = 55f;
+    public static float cursorBoundDown = -67f;
+    public static float cursorBoundLeft = -79f;
+    public static float cursorBoundRight = 87f;
+
     public static bool extraControls = false; //for keyboard controls and other developer stuff
     private static bool buildExclusiveFunc = true; //bool to set elements of code active (to be set true on build and false otherwise)
     /* Fixes some unknown issues that exist between build and the Unity Editor versions (especially with tag tracking) :( */
@@ -407,23 +413,23 @@ public class VRUser : MonoBehaviour
             trueCursor.transform.position += ((1.4f + ((5 - state.user.getSettingData()[0]) / 10f)) * (state.user.getSettingData()[2]/2.2f) *
                 Time.deltaTime * ((trueCursor.transform.up * cursorMove.y) + (trueCursor.transform.right * cursorMove.x)));
 
-            //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-151,66], x[-90,88.4]
+            //Cursor cannot move past screen borders (bondaries) -- cursor bounds  y[-67,55], x[-79,87]
             Debug.Log("**True Cursor Location: " + trueCursor.transform.localPosition.ToString());
-            if (trueCursor.transform.localPosition.x > 87)
+            if (trueCursor.transform.localPosition.x > cursorBoundRight)
             {
-                trueCursor.transform.localPosition = new Vector3(87f, trueCursor.transform.localPosition.y, trueCursor.transform.localPosition.z);
+                trueCursor.transform.localPosition = new Vector3(cursorBoundRight, trueCursor.transform.localPosition.y, trueCursor.transform.localPosition.z);
             }
-            else if (trueCursor.transform.localPosition.x < -78)
+            else if (trueCursor.transform.localPosition.x < cursorBoundLeft)
             {
-                trueCursor.transform.localPosition = new Vector3(-78f, trueCursor.transform.localPosition.y, trueCursor.transform.localPosition.z);
+                trueCursor.transform.localPosition = new Vector3(cursorBoundLeft, trueCursor.transform.localPosition.y, trueCursor.transform.localPosition.z);
             }
-            if (trueCursor.transform.localPosition.y > 55)
+            if (trueCursor.transform.localPosition.y > cursorBoundUp)
             {
-                trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, 55f, trueCursor.transform.localPosition.z);
+                trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, cursorBoundUp, trueCursor.transform.localPosition.z);
             }
-            else if (trueCursor.transform.localPosition.y < -67)
+            else if (trueCursor.transform.localPosition.y < cursorBoundDown)
             {
-                trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, -67f, trueCursor.transform.localPosition.z);
+                trueCursor.transform.localPosition = new Vector3(trueCursor.transform.localPosition.x, cursorBoundDown, trueCursor.transform.localPosition.z);
             }
             
             //highlights the cursor based on certain actions

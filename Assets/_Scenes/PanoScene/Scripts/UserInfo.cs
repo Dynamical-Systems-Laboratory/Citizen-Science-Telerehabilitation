@@ -454,11 +454,13 @@ public class UserInfo //not sure if : this() is necessary
     public IEnumerable<string> writeMainData()
     {
         //yield return "Basic Data:\n";
+        yield return "\n";
         yield return "User_Name,Date_Joined,Time_Logged,isRightHanded,\n"; //formatting
         yield return userName;
         yield return dateJoined;
         yield return ((int)timeLogged).ToString(); //TODO: check if this int yields error
         yield return boolToString(isRightHanded);
+        yield return "\n";
 
         //yield return "\nSession Data:\n";
 
@@ -473,7 +475,7 @@ public class UserInfo //not sure if : this() is necessary
             yield return "\n";
         }
 
-        yield return "Images Completed:,\n";
+        yield return "\n,Images Completed:,\n";
         /*for(int i = 0; i < imagesCompleted.Count; i++) //formatting
         {
             yield return "Image#";
@@ -555,6 +557,7 @@ public class UserInfo //not sure if : this() is necessary
 
     public IEnumerable<string> writeMovementData()
     {
+        yield return "\n"; //formatting precausion...
         yield return "Elapsed_Time,System_Time";
         yield return "Cursor_Moving"; //whether or not user intends to move cursor
 

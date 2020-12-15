@@ -103,7 +103,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
         circle = GameObject.Find("Circle");
         vert = GameObject.Find("Vertical"); //extra
         horiz = GameObject.Find("Horizontal");
-        tutorialTag = GameObject.Find("tutorialTag");
+        tutorialTag = GameObject.Find("simpleTutorialTag");
         lockPanel = GameObject.Find("lockPanel");
 
         cursor = GameObject.Find("exampleCursor");
@@ -457,7 +457,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     timer = 0;
                 }
 
-                if (state.getCursorPosition().x >= 87f && state.userControlActive)
+                if (state.getCursorPosition().x >= VRUser.cursorBoundRight && state.userControlActive)
                 {
                     //movementAvg[counter] = (VRUser.handTracking() - handPos1).x; //mult by cursorspeed for factoring
                     movementAvg[counter] = VRUser.change.x;
@@ -505,7 +505,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     //VPA3.Play();
                 }
 
-                if (state.getCursorPosition().x <= -89f && state.userControlActive)
+                if (state.getCursorPosition().x <= VRUser.cursorBoundLeft && state.userControlActive)
                 {
                     //movementAvg[counter] = (VRUser.handTracking() - handPos1).x;
                     movementAvg[counter] = VRUser.change.x;
@@ -558,7 +558,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                         timer = 0;
                     }
 
-                    if (state.getCursorPosition().y >= 65f && state.userControlActive)
+                    if (state.getCursorPosition().y >= VRUser.cursorBoundUp && state.userControlActive)
                     {
                         //movementAvg[counter] = (VRUser.handTracking() - handPos1).y;
                         movementAvg[counter] = VRUser.change.y;
@@ -607,7 +607,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     //savedCursorScale = cursor.transform.localScale;
                 }
 
-                if (state.getCursorPosition().y <= -84f && state.userControlActive)
+                if (state.getCursorPosition().y <= VRUser.cursorBoundDown && state.userControlActive)
                 {
                     //movementAvg[counter] = (VRUser.handTracking() - handPos1).y;
                     movementAvg[counter] = VRUser.change.y;
@@ -783,6 +783,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 initialized = false;
                 initialized2 = false;
                 hasStartedTut = false;
+                showTag(false);
 
                 //lockPanel.SetActive(false);
                 if (hasCompleted)
@@ -797,17 +798,17 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
         }
     }
-    public static void showTag(bool show = true)
+    public static void showTag(bool show)
     {
         if (show)
         {
             tutorialTag.GetComponent<Image>().color = new Color(1f, 1f, 1f, 137f / 225f);
-            tutorialTag.GetComponent<Text>().color = new Color(0f, 0f, 0f, 1f);
+            tutorialTag.GetComponent<Text>().text = "ExampleTag";//.color = new Color(0f, 0f, 0f, 1f);
         }
         else
         {
             tutorialTag.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f / 225f);
-            tutorialTag.GetComponent<Text>().color = new Color(0f, 0f, 0f, 0f);
+            tutorialTag.GetComponent<Text>().text = "";//.color = new Color(0f, 0f, 0f, 0f);
         }
     }
 
