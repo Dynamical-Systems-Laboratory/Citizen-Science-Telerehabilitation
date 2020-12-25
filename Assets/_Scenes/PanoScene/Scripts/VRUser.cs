@@ -149,14 +149,7 @@ public class VRUser : MonoBehaviour
             //state.user.moveDataConfirm();
 
             //vrInfo();
-            if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.Touch))
-            {
-                Debug.Log("USER PUSHING RIGHT");
-            }
-            if (OVRInput.Get(OVRInput.Button.Three, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Four, OVRInput.Controller.Touch))
-            {
-                Debug.Log("USER PUSHING LEFT");
-            }
+            
             state.user.showMoveBounds(); //Move Data Ex: (29.0044, -29.00861, 13.51058, -14.32116, 0), (3.651338, 6.311625, 4.176139, 7.143209, 0)
             //Debug.Log("[" + (state.userControlActive ? "1":"0") + "]Hand Tracking: " + handTracking(true) + ", Offset By: " + playerPos.arms + ", unfactored: " + handTracking(false));
             Debug.Log("Cont. Clicking: " + state.userIsClicking + ", Clicking: " + state.userClick); //continuous, noncontinuous clicking
@@ -548,6 +541,16 @@ public class VRUser : MonoBehaviour
 
         Debug.Log("LStick: " + OVRInput.Get(OVRInput.Axis2D.PrimaryThumbstick, OVRInput.Controller.Touch) + ", RStick: " + OVRInput.Get(OVRInput.Axis2D.SecondaryThumbstick, OVRInput.Controller.Touch));
         Debug.Log("LStickP: " + OVRInput.Get(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch) + ", RStickP: " + OVRInput.Get(OVRInput.Button.SecondaryThumbstick, OVRInput.Controller.Touch));
+
+        if (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.Touch))
+        {
+            Debug.Log("USER PUSHING RIGHT");
+        }
+        if (OVRInput.Get(OVRInput.Button.Three, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Four, OVRInput.Controller.Touch))
+        {
+            Debug.Log("USER PUSHING LEFT");
+        }
+
         if (showMoveStats)
         {
             state.user.showMoveBounds();
@@ -608,7 +611,7 @@ public class VRUser : MonoBehaviour
         {
             if (!isRightHanded)
             {
-                return OVRInput.Get(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch);
+                return OVRInput.Get(OVRInput.Button.PrimaryThumbstick, OVRInput.Controller.Touch); //thumbstickdown?
             }
             else
             {

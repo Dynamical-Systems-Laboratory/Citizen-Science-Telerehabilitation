@@ -88,6 +88,8 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
     public static GameObject tutorialTag;
     public static Text tutorialTagText;
 
+    private static int zCounter = 0; //special counter for z axis changes because the normal one is being finicky
+
     // Start is called before the first frame update
     void Start()
     {
@@ -192,8 +194,9 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                 //VPA4.Play();
                 savedCursorScale = cursor.transform.localScale;
             }*/
-            if (MakeWordBank.skip() && ((timer > 1.5 && step == 0) || (step <= 2))) //&& hasCompleted if you dont want the calibration to be skipable
+            if (MakeWordBank.skip() && timer > 1.5 && step == 0) //&& hasCompleted if you dont want the calibration to be skipable
             {
+                //Debug.Log("Error Here!");
                 step = 13;
             }
 
@@ -234,11 +237,13 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     {
                         state.user.setIsRightHanded(true);
                         Debug.Log("USER IS *RIGHT* HANDED: " + state.user.getIsRightHanded().ToString());
+                        continueText = "Press A to continue";
                     }
                     else if (OVRInput.Get(OVRInput.Button.Three, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Four, OVRInput.Controller.Touch))
                     {
                         state.user.setIsRightHanded(false);
                         Debug.Log("USER IS *LEFT* HANDED: " + state.user.getIsRightHanded().ToString());
+                        continueText = "Press X to continue";
                     }
                     else
                     {
@@ -643,6 +648,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     text.text = "The cursor can be <color=green>clicked</color>";
                     startedPlaying = true;
                     counter = 0;
+                    zCounter = 0;
                     initialized2 = false; //precautions
                 }
                 if (startedPlaying) //!VPA4.isPlaying && 
@@ -653,12 +659,12 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     {
                         cursor.transform.localScale += new Vector3((VRUser.handTracking() - handPos1).z, (VRUser.handTracking() - handPos1).z, (VRUser.handTracking() - handPos1).z)/5f;
                     }*/
-                    Debug.Log("ZCounter: " + counter);
-                    if (counter == 0)
+                    Debug.Log("ZCounter: " + zCounter + ", actual: " + counter);
+                    if (zCounter == 0)
                     {
                         if (!initialized2)
                         {
-                            Debug.Log("Got to tag showing...");
+                            //Debug.Log("Got to tag showing...");
                             tutorialTag.GetComponent<Image>().color = new Color(1f, 1f, 1f, 137f / 225f);
                             tutorialTagText.text = "ExampleTag";//.color = new Color(0f, 0f, 0f, 1f);
                             initialized2 = true;
@@ -668,15 +674,15 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                             "When you reach the furthest you can, press A or X\n";
                             //+ "The cursor should highlight <color=green>green</color> if you reach far enough";
                     }
-                    else if (counter == 4)
+                    else if (zCounter == 4)
                     {
                         text.text = "Excellent! Repeat this movement <b>1</b> more time.";
                     }
-                    else if (counter > 0 && counter < 5)
+                    else if (zCounter > 0 && zCounter < 5)
                     {
-                        text.text = "Excellent! Repeat this movement <b>" + (5 - counter) + "</b> more times";
+                        text.text = "Excellent! Repeat this movement <b>" + (5 - zCounter) + "</b> more times";
                     }
-                    else if (counter == 5)
+                    else if (zCounter == 5)
                     {
                         float avg = movementAvg[0] + movementAvg[1] + movementAvg[2] + movementAvg[3] + movementAvg[4];
                         userMovement.rangeOfMotion[4] = avg / 5;
@@ -685,6 +691,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                         step++;
                         startedPlaying = false;
                         counter = 0;
+                        zCounter = 0;
                         timer = 0;
                         tutorialTag.GetComponent<Image>().color = new Color(1f, 1f, 1f, 0f / 225f);
                         tutorialTagText.text = "";//.color = new Color(0f, 0f, 0f, 0f);
@@ -693,6 +700,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                         state.cursorYMove = true;
                     }
 
+                    //displaying clicking action on practice tag
                     if (state.userIsClicking || state.userClick) //showing click command
                     {
                         tutorialTag.GetComponent<Image>().color = new Color(1f, 1f, 1f, 150f / 225f);
@@ -711,10 +719,12 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
                     }
                     else if (Math.Abs(VRUser.change.z) >= VRUser.baseZCalibration / 2 && MakeWordBank.moveOn() && state.userControlActive) //VRUser.change.z
                     {
-                        //movementAvg[counter] = (VRUser.handTracking() - handPos1).z;
-                        movementAvg[counter] = VRUser.change.z;
-                        timerAvg[counter] = timer;
+                        //movementAvg[zCounter] = (VRUser.handTracking() - handPos1).z;
+                        movementAvg[zCounter] = VRUser.change.z;
+                        timerAvg[zCounter] = timer;
+                        zCounter += 1;
                         counter += 1;
+                        //Debug.Log("zCounter Supposed To Be Inc!!!");
                         state.makeCursReset = true;
                         state.userControlActive = false;
                         //cursor.transform.localScale = savedCursorScale;
@@ -730,7 +740,7 @@ public class SimpleTutorial : MonoBehaviour //for all intensive purposes can be 
             }
             else if (step == 11)
             {
-                text.text = "Well done! Now <color=yellow>lock</color> your cursor by pressing the <b>index trigger</b> button";
+                text.text = "Well done! Now <color=yellow>lock</color> your cursor by pressing the <b>stick button</b>";
                 if (VRUser.cursorRelock())
                 {
                     step++;

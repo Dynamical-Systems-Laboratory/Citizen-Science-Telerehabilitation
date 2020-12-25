@@ -191,9 +191,9 @@ public class StateManager : MonoBehaviour {
                 {
                     
                     var folder = Directory.CreateDirectory(folderPath);
-                    //writer = System.IO.File.CreateText(mainPath); //create new user_data file
-                    new FileStream(mainPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None).Close();
-                    writer = new StreamWriter(mainPath, true, Encoding.ASCII);
+                    writer = System.IO.File.CreateText(mainPath); //create new user_data file
+                    //new FileStream(mainPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None).Close();
+                    //writer = new StreamWriter(mainPath, true, Encoding.ASCII);
                     Debug.Log("File Created at " + mainPath);
                     //writer.WriteLine("UserName,DateJoined,TimeLogged,StartedPL,FinishedPL,Difficulty,LastImage,ImageData,,TagData,,SessionData,,finish");
                 }

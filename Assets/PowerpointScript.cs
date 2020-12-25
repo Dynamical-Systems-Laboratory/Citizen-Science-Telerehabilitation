@@ -93,19 +93,30 @@ public class PowerpointScript : MonoBehaviour {
 						}
 					}
 				} else { //Powerpoint over:
-					if ((OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.Touch) ||
-					OVRInput.Get(OVRInput.Button.Three, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Four, OVRInput.Controller.Touch))) {
-						slideIndex = 1;
-						if (!hasBeenToTutorial || !state.user.getPracticeLevelState()[0])
+					if (hasBeenToTutorial || state.user.getPracticeLevelState()[0])
+					{
+						if (VRUser.isRightHanded && (OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.Touch)))
+						{ //right
+							slideIndex = 1;
+							state.setState(1);
+							background.SetActive(false);
+						}
+						else if (!VRUser.isRightHanded && (OVRInput.Get(OVRInput.Button.Three, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Four, OVRInput.Controller.Touch)))
+						{ //left
+							slideIndex = 1;
+							state.setState(1);
+							background.SetActive(false);
+						}
+					}
+					else
+					{
+						if ((OVRInput.Get(OVRInput.Button.One, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Two, OVRInput.Controller.Touch) ||
+					OVRInput.Get(OVRInput.Button.Three, OVRInput.Controller.Touch) || OVRInput.Get(OVRInput.Button.Four, OVRInput.Controller.Touch)))
 						{
+							slideIndex = 1;
 							//SimpleTutorial.inSimpleTutorial = true;
 							state.setState(4); //calibrating
 							hasBeenToTutorial = true;
-						}
-						else
-						{
-							state.setState(1);
-							background.SetActive(false);
 						}
 					}
 				}
